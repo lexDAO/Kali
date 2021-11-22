@@ -1,0 +1,89 @@
+[
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "contract KaliDAO",
+				"name": "kaliDAO",
+				"type": "address"
+			}
+		],
+		"name": "DAOdeployed",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "name_",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "symbol_",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "paused_",
+				"type": "bool"
+			},
+			{
+				"internalType": "address[]",
+				"name": "voters_",
+				"type": "address[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "shares_",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint32",
+				"name": "votingPeriod_",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint8",
+				"name": "quorum_",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint8",
+				"name": "supermajority_",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint8",
+				"name": "mint_",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint8",
+				"name": "burn_",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint8",
+				"name": "call_",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint8",
+				"name": "gov_",
+				"type": "uint8"
+			}
+		],
+		"name": "deployKaliDAO",
+		"outputs": [
+			{
+				"internalType": "contract KaliDAO",
+				"name": "kaliDAO",
+				"type": "address"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	}
+]

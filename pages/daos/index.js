@@ -68,7 +68,7 @@ class App extends Component {
 
     // * get proposals - will need to add more logic - maybe using block.timestamp * //
     const proposals = [];
-    const proposalTypes = ["MINT", "BURN", "CALL", "PERIOD", "QUORUM", "SUPERMAJORITY", "PAUSE"];
+    const proposalTypes = ["MINT", "BURN", "CALL", "PERIOD", "QUORUM", "SUPERMAJORITY", "PAUSE", "EXTENSION"];
 
     const cutoff = parseInt(Date.now() / 1000 - votingPeriod);
     for (var i = 0; i < proposalCount; i++) {

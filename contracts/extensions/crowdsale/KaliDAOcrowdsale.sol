@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.0;
 
-import '../ReentrancyGuard.sol';
+import '../../ReentrancyGuard.sol';
 
 /// @notice Crowdsale contract that receives ETH or tokens to mint DAO tokens.
 contract KaliDAOcrowdsale is ReentrancyGuard {

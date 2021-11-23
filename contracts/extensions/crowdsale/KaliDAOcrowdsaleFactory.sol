@@ -11,15 +11,15 @@ contract KaliDAOcrowdsaleFactory {
     function deployKaliDAOcrowdsale(
         address dao_, 
         address purchaseToken_, 
-        uint8 purchaseMultiplier_,
         bool ethBased_,
+        uint8 purchaseMultiplier_,
         uint256 purchaseLimit_
     ) public virtual returns (KaliDAOcrowdsale kaliDAOcrowdsale) {
         kaliDAOcrowdsale = new KaliDAOcrowdsale(
             dao_, 
-            purchaseToken_, 
-            purchaseMultiplier_,
+            purchaseToken_,
             ethBased_, 
+            purchaseMultiplier_, 
             purchaseLimit_ 
         );
 

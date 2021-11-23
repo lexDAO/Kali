@@ -31,7 +31,9 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
 
     uint8 public supermajority; // 1-100
 
-    bool private initialized;
+    bool internal initialized;
+    
+    bytes32 public constant VOTE_HASH = keccak256("SignVote(address signer,uint256 proposal,bool approve)");
     
     mapping(address => bool) public extensions;
 
@@ -183,7 +185,36 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
     }
 
     function vote(uint256 proposal, bool approve) public nonReentrant onlyTokenHolders virtual {
-        require(!voted[proposal][msg.sender], 'ALREADY_VOTED');
+        _vote(msg.sender, proposal, approve);
+    }
+    
+    function voteBySig(address signer, uint256 proposal, bool approve, uint8 v, bytes32 r, bytes32 s) public nonReentrant virtual {
+        // validate signature elements
+        bytes32 digest =
+            keccak256(
+                abi.encodePacked(
+                    "\x19\x01",
+                    DOMAIN_SEPARATOR(),
+                    keccak256(
+                        abi.encode(
+                            VOTE_HASH,
+                            signer,
+                            proposal,
+                            approve
+                        )
+                    )
+                )
+            );
+            
+        address recoveredAddress = ecrecover(digest, v, r, s);
+        
+        require(recoveredAddress == signer, "INVALID_SIG");
+        
+        _vote(signer, proposal, approve);
+    }
+    
+    function _vote(address signer, uint256 proposal, bool approve) internal virtual {
+        require(!voted[proposal][signer], 'ALREADY_VOTED');
         
         Proposal storage prop = proposals[proposal];
         
@@ -193,7 +224,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
             require(block.timestamp <= prop.creationTime + votingPeriod, 'VOTING_ENDED');
         }
 
-        uint224 weight = uint224(getPriorVotes(msg.sender, prop.creationTime));
+        uint224 weight = uint224(getPriorVotes(signer, prop.creationTime));
         
         // this is safe from overflow because `yesVotes` and `noVotes` are capped by `totalSupply`
         // which is checked for overflow in `KaliDAOtoken` contract
@@ -205,9 +236,9 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
             }
         }
         
-        voted[proposal][msg.sender] = true;
+        voted[proposal][signer] = true;
         
-        emit VoteCast(msg.sender, proposal, approve);
+        emit VoteCast(signer, proposal, approve);
     }
 
     function processProposal(uint256 proposal) public nonReentrant virtual returns (bytes[] memory results) {

@@ -3,7 +3,7 @@ const abi = require('../abi/KaliDAOfactory.json');
 
 const factory = new web3.eth.Contract(
   abi,
-  "0x144086302f6c8840860117a20d0f81e9d6Ecca87"
+  "0xBfe01d81A64e6537a53D3825699A719f6b9C01b8"
 );
 
 export default factory;

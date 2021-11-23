@@ -9,23 +9,23 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
     address public immutable dao;
     
     address public immutable purchaseToken;
-    
-    uint8 public immutable purchaseMultiplier;
 
     bool public immutable ethBased;
+    
+    uint8 public immutable purchaseMultiplier;
 
     uint256 public immutable purchaseLimit;
 
     uint256 public amountPurchased;
     
-    constructor(address dao_, address purchaseToken_, uint8 purchaseMultiplier_, bool ethBased_, uint256 purchaseLimit_) {
+    constructor(address dao_, address purchaseToken_, bool ethBased_, uint8 purchaseMultiplier_, uint256 purchaseLimit_) {
         dao = dao_;
         
         purchaseToken = purchaseToken_;
-        
-        purchaseMultiplier = purchaseMultiplier_;
 
         ethBased = ethBased_;
+        
+        purchaseMultiplier = purchaseMultiplier_;
 
         purchaseLimit = purchaseLimit_;
     }
@@ -38,12 +38,12 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
 
             require(amountPurchased + amountOut <= purchaseLimit, "PURCHASE_LIMIT");
             
-            // send ETH back to Kali
+            // send ETH back to `dao`
             safeTransferETH(msg.sender, msg.value);
 
             amountPurchased += amountOut;
         } else {
-            // send tokens back to Kali
+            // send tokens back to `dao`
             safeTransferFrom(purchaseToken, account, msg.sender, amount);
             
             amountOut = amount * purchaseMultiplier;

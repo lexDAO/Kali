@@ -57,17 +57,17 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
     /*///////////////////////////////////////////////////////////////
                             TRANSFER HELPERS
     //////////////////////////////////////////////////////////////*/
+
+    function safeTransferETH(address to, uint256 value) internal virtual {
+        (bool success, ) = to.call{value: value}("");
+        
+        require(success, "ETH_TRANSFER_FAILED");
+    }
     
     function safeTransferFrom(address token, address from, address to, uint256 amount) internal virtual {
         // transferFrom(address,address,uint256)
         (bool success, bytes memory data) = token.call(abi.encodeWithSelector(0x23b872dd, from, to, amount));
         
         require(success && (data.length == 0 || abi.decode(data, (bool))), "PULL_FAILED");
-    }
-    
-    function safeTransferETH(address to, uint256 value) internal virtual {
-        (bool success, ) = to.call{value: value}("");
-        
-        require(success, "ETH_TRANSFER_FAILED");
     }
 }

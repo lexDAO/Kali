@@ -38,12 +38,12 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
 
             require(amountPurchased + amountOut <= purchaseLimit, "PURCHASE_LIMIT");
             
-            // send ETH back to `dao`
+            // send ETH to `dao`
             safeTransferETH(msg.sender, msg.value);
 
             amountPurchased += amountOut;
         } else {
-            // send tokens back to `dao`
+            // send tokens to `dao`
             safeTransferFrom(purchaseToken, account, msg.sender, amount);
             
             amountOut = amount * purchaseMultiplier;

@@ -18,7 +18,12 @@ class Nav extends Component {
           KaliDAO
         </Box>
         <Spacer />
-        <Button bg="kali.400" size="sm" mr={2}>
+        <Button
+          bgGradient="linear(to-br, kali.600, kali.700)"
+          size="md"
+          variant="ghost"
+          mr={2}
+        >
           {this.props.account == null ? "Connect Wallet" : this.props.account}
         </Button>
       </Flex>

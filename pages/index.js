@@ -1,3 +1,4 @@
+/* eslint-disable react/no-children-prop */
 import React, { Component } from "react";
 import { ChakraProvider, Container } from "@chakra-ui/react";
 import factory from "../eth/factory.js";
@@ -10,7 +11,7 @@ import {
   Button,
   Text,
   Textarea,
-  Box,
+  Stack,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -113,12 +114,11 @@ class Factory extends Component {
   render() {
     return (
       <Layout loading={this.state.loading}>
-        <Box
+        <Stack
           display="flex"
           flexDirection="column"
           as="form"
           bgGradient="linear(to-br, kali.200, kali.100)"
-          onSubmit={this.createDAO}
           p={5}
           color="kali.900"
           fontSize="l"
@@ -126,6 +126,7 @@ class Factory extends Component {
           lineHeight="tight"
           boxShadow="xs"
           rounded="xl"
+          onSubmit={this.createDAO}
         >
           <Text>
             <b>Name</b>
@@ -210,7 +211,7 @@ class Factory extends Component {
           >
             Summon
           </Button>
-        </Box>
+        </Stack>
       </Layout>
     );
   }

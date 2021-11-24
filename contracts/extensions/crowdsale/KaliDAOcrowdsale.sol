@@ -39,12 +39,12 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
             require(amountPurchased + amountOut <= purchaseLimit, "PURCHASE_LIMIT");
             
             // send ETH to `dao`
-            safeTransferETH(msg.sender, msg.value);
+            _safeTransferETH(msg.sender, msg.value);
 
             amountPurchased += amountOut;
         } else {
             // send tokens to `dao`
-            safeTransferFrom(purchaseToken, account, msg.sender, amount);
+            _safeTransferFrom(purchaseToken, account, msg.sender, amount);
             
             amountOut = amount * purchaseMultiplier;
 
@@ -58,13 +58,13 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
                             TRANSFER HELPERS
     //////////////////////////////////////////////////////////////*/
 
-    function safeTransferETH(address to, uint256 value) internal virtual {
+    function _safeTransferETH(address to, uint256 value) internal virtual {
         (bool success, ) = to.call{value: value}("");
         
         require(success, "ETH_TRANSFER_FAILED");
     }
     
-    function safeTransferFrom(address token, address from, address to, uint256 amount) internal virtual {
+    function _safeTransferFrom(address token, address from, address to, uint256 amount) internal virtual {
         // transferFrom(address,address,uint256)
         (bool success, bytes memory data) = token.call(abi.encodeWithSelector(0x23b872dd, from, to, amount));
         

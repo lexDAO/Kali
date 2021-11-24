@@ -24,6 +24,8 @@ contract KaliDAOredemption is ReentrancyGuard {
     }
 
     function extensionCall(address account, uint256 amount) public nonReentrant virtual returns (uint256 amountOut) {
+        require(msg.sender == dao, 'NOT_DAO');
+        
         uint256 totalSupply = dao.totalSupply();
         
         for (uint256 i; i < tokens.length; i++) {

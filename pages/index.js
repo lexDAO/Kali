@@ -121,43 +121,34 @@ class Factory extends Component {
           bgGradient="linear(to-br, kali.200, kali.100)"
           p={5}
           color="kali.900"
-          fontSize="l"
+          fontSize="md"
           letterSpacing="wide"
           lineHeight="tight"
           boxShadow="xs"
           rounded="xl"
+          mb={5}
           onSubmit={this.createDAO}
         >
-          <Text>
-            <b>Name</b>
-          </Text>
+          <Text fontWeight="semibold">Name</Text>
           <Input name="name" placeholder="KaliDAO"></Input>
-          <Text>
-            <b>Symbol</b>
-          </Text>
+          <Text fontWeight="semibold">Symbol</Text>
           <Input name="symbol" placeholder="KALI"></Input>
-          <Text>
-            <b>Founders</b>
-          </Text>
+          <Text fontWeight="semibold">Founders</Text>
           <Textarea name="voters" placeholder="0xabc, 0xdef, 0xghi" />
-          <Text>
-            <b>Shares</b>
-          </Text>
+          <Text fontWeight="semibold">Shares</Text>
           <Textarea name="shares" placeholder="1, 2, 3" />
-          <Text>
-            <b>Voting Period</b>
-          </Text>
+          <Text fontWeight="semibold">Voting Period</Text>
           <NumberInput defaultValue={3} name="votingPeriod">
             <NumberInputField focusBorderColor="red.200" />
             <NumberInputStepper>
               <NumberIncrementStepper
-                bg="green.200"
-                _active={{ bg: "green.300" }}
+                bg="green.600"
+                _active={{ bg: "green.500" }}
                 children="+"
               />
               <NumberDecrementStepper
-                bg="pink.200"
-                _active={{ bg: "pink.300" }}
+                bg="red.600"
+                _active={{ bg: "red.500" }}
                 children="-"
               />
             </NumberInputStepper>
@@ -173,20 +164,18 @@ class Factory extends Component {
             <option value="days">Days</option>
             <option value="weeks">Weeks</option>
           </Select>
-          <Text>
-            <b>Quorum %</b>
-          </Text>
+          <Text fontWeight="semibold">Quorum %</Text>
           <NumberInput defaultValue={10} min={0} max={100} name="quorum">
             <NumberInputField focusBorderColor="red.200" />
             <NumberInputStepper>
               <NumberIncrementStepper
-                bg="green.200"
-                _active={{ bg: "green.300" }}
+                bg="green.600"
+                _active={{ bg: "green.500" }}
                 children="+"
               />
               <NumberDecrementStepper
-                bg="pink.200"
-                _active={{ bg: "pink.300" }}
+                bg="red.600"
+                _active={{ bg: "red.500" }}
                 children="-"
               />
             </NumberInputStepper>

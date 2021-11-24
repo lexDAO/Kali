@@ -37,13 +37,13 @@ class ProposeMember extends Component {
               <NumberInputField focusBorderColor="red.200" />
               <NumberInputStepper>
                 <NumberIncrementStepper
-                  bg="green.200"
-                  _active={{ bg: "green.300" }}
+                  bg="green.600"
+                  _active={{ bg: "green.500" }}
                   children="+"
                 />
                 <NumberDecrementStepper
-                  bg="pink.200"
-                  _active={{ bg: "pink.300" }}
+                  bg="red.600"
+                  _active={{ bg: "red.500" }}
                   children="-"
                 />
               </NumberInputStepper>

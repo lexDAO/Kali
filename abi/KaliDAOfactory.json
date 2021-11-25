@@ -25,6 +25,11 @@
 				"type": "string"
 			},
 			{
+				"internalType": "string",
+				"name": "docs_",
+				"type": "string"
+			},
+			{
 				"internalType": "bool",
 				"name": "paused_",
 				"type": "bool"
@@ -57,11 +62,6 @@
 			{
 				"internalType": "uint8",
 				"name": "mint_",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint8",
-				"name": "burn_",
 				"type": "uint8"
 			},
 			{

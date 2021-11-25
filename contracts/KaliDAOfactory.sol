@@ -11,6 +11,7 @@ contract KaliDAOfactory {
     function deployKaliDAO(
         string memory name_,
         string memory symbol_,
+        string memory docs_,
         bool paused_,
         address[] memory voters_,
         uint256[] memory shares_,
@@ -18,13 +19,13 @@ contract KaliDAOfactory {
         uint8 quorum_,
         uint8 supermajority_,
         uint8 mint_,
-        uint8 burn_,
         uint8 call_,
         uint8 gov_
     ) external payable returns (KaliDAO kaliDAO) {
         kaliDAO = new KaliDAO{value: msg.value}(
             name_, 
             symbol_, 
+            docs_,
             paused_, 
             voters_, 
             shares_, 
@@ -33,7 +34,7 @@ contract KaliDAOfactory {
             supermajority_
         );
         
-        kaliDAO.setVoteTypes(mint_, burn_, call_, gov_);
+        kaliDAO.setVoteTypes(mint_, call_, gov_);
         
         emit DAOdeployed(kaliDAO);
     }

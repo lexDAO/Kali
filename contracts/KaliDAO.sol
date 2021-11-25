@@ -32,6 +32,8 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
     uint8 public supermajority; // 1-100
 
     bool internal initialized;
+
+    string public docs;
     
     bytes32 public constant VOTE_HASH = keccak256("SignVote(address signer,uint256 proposal,bool approve)");
     
@@ -51,7 +53,8 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         QUORUM,
         SUPERMAJORITY,
         PAUSE,
-        EXTENSION
+        EXTENSION,
+        DOCS
     }
 
     enum VoteType {
@@ -79,6 +82,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
     constructor(
         string memory name_,
         string memory symbol_,
+        string memory docs_,
         bool paused_,
         address[] memory voters_,
         uint256[] memory shares_,
@@ -92,6 +96,8 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         
         require(supermajority_ > 51 && supermajority_ <= 100, 'SUPERMAJORITY_BOUNDS');
         
+        docs = docs_;
+        
         votingPeriod = votingPeriod_;
         
         quorum = quorum_;
@@ -101,7 +107,6 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
 
     function setVoteTypes(
         uint8 mint_,
-        uint8 burn_,
         uint8 call_,
         uint8 gov_
     ) public virtual {
@@ -109,7 +114,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
 
         proposalVoteTypes[ProposalType.MINT] = VoteType(mint_);
 
-        proposalVoteTypes[ProposalType.BURN] = VoteType(burn_);
+        proposalVoteTypes[ProposalType.BURN] = VoteType(mint_);
 
         proposalVoteTypes[ProposalType.CALL] = VoteType(call_);
 
@@ -122,6 +127,8 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         proposalVoteTypes[ProposalType.PAUSE] = VoteType(gov_);
         
         proposalVoteTypes[ProposalType.EXTENSION] = VoteType(gov_);
+
+        proposalVoteTypes[ProposalType.DOCS] = VoteType(gov_);
 
         initialized = true;
     }
@@ -303,6 +310,9 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
                 
                 if (prop.proposalType == ProposalType.EXTENSION) 
                     if (prop.amount[0] > 0) extensions[prop.account[0]] = !extensions[prop.account[0]];
+                
+                if (prop.proposalType == ProposalType.DOCS) 
+                    if (prop.amount[0] > 0) docs = prop.description;
             }
         }
 

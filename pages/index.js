@@ -46,13 +46,13 @@ class Factory extends Component {
     var {
       name,
       symbol,
+      docs,
       voters,
       shares,
       votingPeriod,
       quorum,
       supermajority,
       mint,
-      burn,
       call,
       gov,
       votePeriodUnit,
@@ -75,6 +75,15 @@ class Factory extends Component {
       votingPeriod *= 60 * 60 * 24 * 7;
     }
 
+    // convert docs to appropriate links
+    if (docs == "COC") {
+      docs = "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/CodeOfConduct.md";
+    } else if (docs == "UNA") {
+      docs = "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/TUNAA.md";
+    } else if (docs == "LLC") {
+      docs = "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/operating/DelawareOperatingAgreement.md";
+    } 
+
     console.log(votingPeriod);
 
     const accounts = await web3.eth.getAccounts();
@@ -85,6 +94,7 @@ class Factory extends Component {
         .deployKaliDAO(
           name,
           symbol,
+          docs,
           true,
           voters.split(","),
           sharesArray,
@@ -92,7 +102,6 @@ class Factory extends Component {
           quorum,
           supermajority,
           mint,
-          burn,
           call,
           gov
         )
@@ -133,6 +142,17 @@ class Factory extends Component {
           <Input name="name" placeholder="KaliDAO"></Input>
           <Text fontWeight="semibold">Symbol</Text>
           <Input name="symbol" placeholder="KALI"></Input>
+          <Text fontWeight="semibold">Docs</Text>
+          <Select
+            name="docs"
+            color="kali.800"
+            bg="kali.900"
+            opacity="0.90"
+          >
+            <option value="COC">Code of Conduct</option>
+            <option value="UNA">UNA</option>
+            <option value="LLC">LLC</option>
+          </Select>
           <Text fontWeight="semibold">Founders</Text>
           <Textarea name="voters" placeholder="0xabc, 0xdef, 0xghi" />
           <Text fontWeight="semibold">Shares</Text>
@@ -182,7 +202,6 @@ class Factory extends Component {
           </NumberInput>
           <Input type="hidden" name="supermajority" value={60} />
           <Input type="hidden" name="mint" value={1} />
-          <Input type="hidden" name="burn" value={3} />
           <Input type="hidden" name="call" value={1} />
           <Input type="hidden" name="gov" value={3} />
           <br></br>

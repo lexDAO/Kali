@@ -35,6 +35,15 @@ class Factory extends Component {
     this.setState({ account });
   }
 
+  static async getInitialProps() {
+    const events = await factory.getPastEvents('DAOdeployed', {fromBlock: 0, toBlock: 'latest'});
+    const eventArray = [];
+    for(let i=0; i < events.length; i++) {
+      eventArray.push(events[i]['returnValues']['kaliDAO']);
+    }
+    return { eventArray };
+  }
+
   createDAO = async (e) => {
     e.preventDefault();
     this.setState({ loading: true });
@@ -122,6 +131,7 @@ class Factory extends Component {
   };
 
   render() {
+
     return (
       <Layout loading={this.state.loading}>
         <Flex

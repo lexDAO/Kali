@@ -24,8 +24,9 @@ const Layout = (props) => {
       {props.loading == true ? (
         <Center
           position="absolute"
-          width="100%"
-          height="100%"
+          width="100vw
+          "
+          height="100vh"
           backgroundColor="grey"
           opacity=".4"
         >
@@ -38,7 +39,6 @@ const Layout = (props) => {
       <Container
         minheight="100vh"
         maxW="container.md"
-        alignItems="center"
         justifyContent="center"
       >
         {props.children}

@@ -42,13 +42,13 @@ class Proposals extends Component {
                     <Text><b><i>account</i></b>: {p['account'][0]}<br />
                     <b><i>proposed shares:</i></b> {web3.utils.fromWei(p['amount'][0])}</Text>
                     : p['proposalType'] == 1 ?
-                    <Text>address: {p['account'][0]}<br />
-                    shares to burn: {p['amount'][0]}</Text>
+                    <Text><b><i>address:</i></b> {p['account'][0]}<br />
+                    <b><i>shares to burn:</i></b> {p['amount'][0]}</Text>
                     : p['proposalType'] == 2 ?
-                    <Text>address of contract to call: {p['account'][0]}<br />
-                    proposed payload: {p['payload'][0]}</Text>
+                    <Text><b><i>contract to call:</i></b> {p['account'][0]}<br />
+                    <b><i>proposed payload:</i></b> {p['payload'][0]}</Text>
                     : p['proposalType'] == 3 ?
-                    <Text>amount: {p['amount'][0]}</Text>
+                    <Text><b><i>amount:</i></b> {p['amount'][0]}</Text>
                     : ''
                   }
                 </Td>

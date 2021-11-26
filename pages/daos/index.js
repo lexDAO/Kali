@@ -2,12 +2,15 @@
 import React, { Component } from "react";
 import { ChakraProvider, Container } from "@chakra-ui/react";
 import factory from "../../eth/factory.js";
+const abi = require("../../abi/KaliDAO.json");
 import web3 from "../../eth/web3.js";
 import Router, { useRouter } from "next/router";
 import Layout from "../../components/Layout.js";
 import Link from 'next/link';
 import {
   Flex,
+  Heading,
+  Text
   } from "@chakra-ui/react";
 
 class Daos extends Component {
@@ -26,7 +29,10 @@ class Daos extends Component {
     const events = await factory.getPastEvents('DAOdeployed', {fromBlock: 0, toBlock: 'latest'});
     const eventArray = [];
     for(let i=0; i < events.length; i++) {
-      let dao = events[i]['returnValues'];
+      const address = events[i]['returnValues']['kaliDAO'];
+      const instance = await new web3.eth.Contract(abi, address);
+      const name = await instance.methods.name().call();
+      const dao = { kaliDAO: address, name: name };
       eventArray.push(dao);
     }
     return { eventArray };
@@ -52,7 +58,10 @@ class Daos extends Component {
             rounded="xl"
             mb={5}
           >
-          <Link href={`/daos/${e['kaliDAO']}`}>{e['kaliDAO']}</Link>
+            <Link href={`/daos/${e['kaliDAO']}`}>
+              <Text>{e['name']}</Text>
+            </Link>
+            <Text>{e['kaliDAO']}</Text>
           </Flex>
         ))}
       </Layout>

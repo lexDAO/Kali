@@ -24,8 +24,7 @@ const Layout = (props) => {
       {props.loading == true ? (
         <Center
           position="absolute"
-          width="100vw
-          "
+          width="100vw"
           height="100vh"
           backgroundColor="grey"
           opacity=".4"

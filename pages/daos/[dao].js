@@ -207,7 +207,7 @@ class App extends Component {
         <Stack spacing={5}>
           <Flex alignItems="center" justifyContent="center">
             <Text color="kali.800">
-              {this.props.dao["name"]} \\ {this.props.dao["address"]}
+              <b>{this.props.dao["name"]}</b> 
             </Text>
           </Flex>
 

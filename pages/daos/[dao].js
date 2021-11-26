@@ -4,6 +4,7 @@ const abi = require("../../abi/KaliDAO.json");
 import web3 from "../../eth/web3.js";
 import Router, { useRouter } from "next/router";
 import Layout from "../../components/Layout.js";
+import Link from 'next/link';
 import {
   chakra,
   Flex,
@@ -129,7 +130,7 @@ class App extends Component {
         .send({ from: accounts[0] });
 
       Router.push({
-        pathname: "/daos",
+        pathname: "/daos/[dao]",
         query: { dao: dao },
       });
 

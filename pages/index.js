@@ -5,6 +5,7 @@ import factory from "../eth/factory.js";
 import web3 from "../eth/web3.js";
 import Router, { useRouter } from "next/router";
 import Layout from "../components/Layout.js";
+import Link from 'next/link';
 import {
   Flex,
   Input,
@@ -110,7 +111,7 @@ class Factory extends Component {
       let dao = result["events"]["DAOdeployed"]["returnValues"]["kaliDAO"];
 
       Router.push({
-        pathname: "/daos",
+        pathname: "/daos/[dao]",
         query: { dao: dao },
       });
     } catch (e) {

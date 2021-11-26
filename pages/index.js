@@ -39,7 +39,8 @@ class Factory extends Component {
     const events = await factory.getPastEvents('DAOdeployed', {fromBlock: 0, toBlock: 'latest'});
     const eventArray = [];
     for(let i=0; i < events.length; i++) {
-      eventArray.push(events[i]['returnValues']['kaliDAO']);
+      let dao = events[i]['returnValues'];
+      eventArray.push(dao);
     }
     return { eventArray };
   }
@@ -131,6 +132,8 @@ class Factory extends Component {
   };
 
   render() {
+
+    console.log(this.props.eventArray);
 
     return (
       <Layout loading={this.state.loading}>

@@ -82,7 +82,7 @@ class Factory extends Component {
       docs = "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/TUNAA.md";
     } else if (docs == "LLC") {
       docs = "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/operating/DelawareOperatingAgreement.md";
-    } 
+    }
 
     console.log(votingPeriod);
 
@@ -181,7 +181,7 @@ class Factory extends Component {
           >
             <option value="minutes">Minutes</option>
             <option value="hours">Hours</option>
-            <option value="days">Days</option>
+            <option value="days" selected>Days</option>
             <option value="weeks">Weeks</option>
           </Select>
           <Text fontWeight="semibold">Quorum %</Text>

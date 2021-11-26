@@ -123,10 +123,9 @@ class Factory extends Component {
   render() {
     return (
       <Layout loading={this.state.loading}>
-        <Stack
+        <Flex
           display="flex"
           flexDirection="column"
-          as="form"
           bgGradient="linear(to-br, kali.200, kali.100)"
           p={5}
           color="kali.900"
@@ -136,90 +135,91 @@ class Factory extends Component {
           boxShadow="xs"
           rounded="xl"
           mb={5}
-          onSubmit={this.createDAO}
         >
-          <Text fontWeight="semibold">Name</Text>
-          <Input name="name" placeholder="KaliDAO"></Input>
-          <Text fontWeight="semibold">Symbol</Text>
-          <Input name="symbol" placeholder="KALI"></Input>
-          <Text fontWeight="semibold">Docs</Text>
-          <Select
-            name="docs"
-            color="kali.800"
-            bg="kali.900"
-            opacity="0.90"
-          >
-            <option value="COC">Code of Conduct</option>
-            <option value="UNA">UNA</option>
-            <option value="LLC">LLC</option>
-          </Select>
-          <Text fontWeight="semibold">Founders</Text>
-          <Textarea name="voters" placeholder="0xabc, 0xdef, 0xghi" />
-          <Text fontWeight="semibold">Shares</Text>
-          <Textarea name="shares" placeholder="1, 2, 3" />
-          <Text fontWeight="semibold">Voting Period</Text>
-          <NumberInput defaultValue={3} name="votingPeriod">
-            <NumberInputField focusBorderColor="red.200" />
-            <NumberInputStepper>
-              <NumberIncrementStepper
-                bg="green.600"
-                _active={{ bg: "green.500" }}
-                children="+"
-              />
-              <NumberDecrementStepper
-                bg="red.600"
-                _active={{ bg: "red.500" }}
-                children="-"
-              />
-            </NumberInputStepper>
-          </NumberInput>
-          <Select
-            name="votePeriodUnit"
-            color="kali.800"
-            bg="kali.900"
-            opacity="0.90"
-          >
-            <option value="minutes">Minutes</option>
-            <option value="hours">Hours</option>
-            <option value="days" selected>Days</option>
-            <option value="weeks">Weeks</option>
-          </Select>
-          <Text fontWeight="semibold">Quorum %</Text>
-          <NumberInput defaultValue={10} min={0} max={100} name="quorum">
-            <NumberInputField focusBorderColor="red.200" />
-            <NumberInputStepper>
-              <NumberIncrementStepper
-                bg="green.600"
-                _active={{ bg: "green.500" }}
-                children="+"
-              />
-              <NumberDecrementStepper
-                bg="red.600"
-                _active={{ bg: "red.500" }}
-                children="-"
-              />
-            </NumberInputStepper>
-          </NumberInput>
-          <Input type="hidden" name="supermajority" value={60} />
-          <Input type="hidden" name="mint" value={1} />
-          <Input type="hidden" name="call" value={1} />
-          <Input type="hidden" name="gov" value={3} />
-          <br></br>
-          <Button
-            display="flex"
-            justifyContent="center"
-            alignItem="center"
-            colorScheme="kali"
-            size="md"
-            variant="outline"
-            _hover={{
-              color: "kali.500",
-            }}
-            type="submit"
-          >
-            Summon
-          </Button>
-        </Stack>
+          <form onSubmit={this.createDAO}>
+            <Text fontWeight="semibold">Name</Text>
+            <Input name="name" placeholder="KaliDAO"></Input>
+            <Text fontWeight="semibold">Symbol</Text>
+            <Input name="symbol" placeholder="KALI"></Input>
+            <Text fontWeight="semibold">Docs</Text>
+            <Select
+              name="docs"
+              color="kali.800"
+              bg="kali.900"
+              opacity="0.90"
+            >
+              <option value="COC">Code of Conduct</option>
+              <option value="UNA">UNA</option>
+              <option value="LLC">LLC</option>
+            </Select>
+            <Text fontWeight="semibold">Founders</Text>
+            <Textarea name="voters" placeholder="0xabc, 0xdef, 0xghi" />
+            <Text fontWeight="semibold">Shares</Text>
+            <Textarea name="shares" placeholder="1, 2, 3" />
+            <Text fontWeight="semibold">Voting Period</Text>
+            <NumberInput defaultValue={3} name="votingPeriod">
+              <NumberInputField focusBorderColor="red.200" />
+              <NumberInputStepper>
+                <NumberIncrementStepper
+                  bg="green.600"
+                  _active={{ bg: "green.500" }}
+                  children="+"
+                />
+                <NumberDecrementStepper
+                  bg="red.600"
+                  _active={{ bg: "red.500" }}
+                  children="-"
+                />
+              </NumberInputStepper>
+            </NumberInput>
+            <Select
+              name="votePeriodUnit"
+              color="kali.800"
+              bg="kali.900"
+              opacity="0.90"
+            >
+              <option value="minutes">Minutes</option>
+              <option value="hours">Hours</option>
+              <option value="days" selected>Days</option>
+              <option value="weeks">Weeks</option>
+            </Select>
+            <Text fontWeight="semibold">Quorum %</Text>
+            <NumberInput defaultValue={10} min={0} max={100} name="quorum">
+              <NumberInputField focusBorderColor="red.200" />
+              <NumberInputStepper>
+                <NumberIncrementStepper
+                  bg="green.600"
+                  _active={{ bg: "green.500" }}
+                  children="+"
+                />
+                <NumberDecrementStepper
+                  bg="red.600"
+                  _active={{ bg: "red.500" }}
+                  children="-"
+                />
+              </NumberInputStepper>
+            </NumberInput>
+            <Input type="hidden" name="supermajority" value={60} />
+            <Input type="hidden" name="mint" value={1} />
+            <Input type="hidden" name="call" value={1} />
+            <Input type="hidden" name="gov" value={3} />
+            <br></br>
+            <Button
+              display="flex"
+              justifyContent="center"
+              alignItem="center"
+              colorScheme="kali"
+              width="100%"
+              variant="outline"
+              _hover={{
+                color: "kali.500",
+              }}
+              type="submit"
+            >
+              Summon
+            </Button>
+          </form>
+        </Flex>
       </Layout>
     );
   }

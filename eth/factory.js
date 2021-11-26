@@ -1,14 +1,14 @@
 import web3 from "./web3";
 const abi = require('../abi/KaliDAOfactory.json');
 
-const polygon = "0x112f6748817CD5A479382dFEbaADB493a1dd6c6f";
-const rinkeby = "0xa81a3Bc02C3BE846B93d2cdFF514837eFB4eF666";
+const polygon = "0x33c8268e4A0ED135DDAc52Ea4CCE67F10e9605Cb";
+const rinkeby = "0x411a1EBd260eB0E4cB534Cb3f4974B7952ebD4e9";
 
 const factory = new web3.eth.Contract(
   abi,
   rinkeby
 );
 
-// polygon: 0x112f6748817CD5A479382dFEbaADB493a1dd6c6f
+// polygon: 0x33c8268e4A0ED135DDAc52Ea4CCE67F10e9605Cb
 
 export default factory;

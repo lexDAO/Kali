@@ -33,13 +33,21 @@ Proposals can be made under 9 types:
 ![image](https://user-images.githubusercontent.com/92001561/143659511-7a3f93da-c966-430c-83af-a428442de87c.png)
 
 `MINT`: create more membership tokens.
+
 `BURN`: burn membership tokens, similar to Moloch DAO `ragekick()`.
+
 `CALL`: make external calls to other smart contracts, similar to Moloch DAO [`Minion`](https://github.com/raid-guild/moloch-minion). 
+
 `PERIOD`: adjust voting period.
-`QUORUM`: adjust voting quorum requirement, that is, the % of membership tokens that must vote for proposals to pass
+
+`QUORUM`: adjust voting quorum requirement, that is, the % of membership tokens that must vote for proposals to pass.
+
 `SUPERMAJORITY`: adjust super-majority requirement, that is, the % of approvals required for proposals to pass.
+
 `PAUSE`: toggle member token transferability.
+
 `EXTENSION`: toggle approval for external calls via `extensionCall()`.
+
 `DOCS`: update docs stored in smart contract that provides underlying context for membership and proposals.
 
 ## Voting Types
@@ -49,8 +57,11 @@ Proposals can be made under 9 types:
 ![image](https://user-images.githubusercontent.com/92001561/143660105-a9c80c7a-33fb-49ff-ad34-323788a7a3be.png)
 
 `SIMPLE_MAJORITY`: Proposal must pass 51% threshold.
+
 `SIMPLE_MAJORITY_QUORUM_REQUIRED`: Proposal must pass both 51% threshold and quorum setting.
+
 `SUPERMAJORITY`: Proposal must pass supermajority threshold (which will be greater than 51%).
+
 `SUPERMAJORITY_QUORUM_REQUIRED`: Proposal must pass supermajority threshold and quorum setting.
 
 ## Extensions

@@ -4,6 +4,12 @@
 		"inputs": [
 			{
 				"indexed": true,
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": true,
 				"internalType": "contract KaliDAO",
 				"name": "kaliDAO",
 				"type": "address"

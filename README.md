@@ -1,5 +1,4 @@
 # Kali
-
 > Optimized DAC Protocol
 
 ```ml
@@ -27,7 +26,40 @@ Meta-transactions can also be made with Kali tokens, such as gas-less (relayed) 
 
 Kali tokens are designed with gas efficiency in mind and have incorporated optimization techniques from RariCapital's [`solmate`](https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol) library.
 
-## Proposal System
+## Proposal Types
+
+Proposals can be made under 9 types: 
+
+![image](https://user-images.githubusercontent.com/92001561/143659511-7a3f93da-c966-430c-83af-a428442de87c.png)
+
+`MINT`: create more membership tokens.
+`BURN`: burn membership tokens, similar to Moloch DAO `ragekick()`.
+`CALL`: make external calls to other smart contracts, similar to Moloch DAO [`Minion`](https://github.com/raid-guild/moloch-minion). 
+`PERIOD`: adjust voting period.
+`QUORUM`: adjust voting quorum requirement, that is, the % of membership tokens that must vote for proposals to pass
+`SUPERMAJORITY`: adjust super-majority requirement, that is, the % of approvals required for proposals to pass.
+`PAUSE`: toggle member token transferability.
+`EXTENSION`: toggle approval for external calls via `extensionCall()`.
+`DOCS`: update docs stored in smart contract that provides underlying context for membership and proposals.
+
+## Voting Types
+
+`VoteType` is assigned to `ProposalType` upon Kali creation and provides threshold vote settings for proposals to pass.
+
+![image](https://user-images.githubusercontent.com/92001561/143660105-a9c80c7a-33fb-49ff-ad34-323788a7a3be.png)
+
+`SIMPLE_MAJORITY`: Proposal must pass 51% threshold.
+`SIMPLE_MAJORITY_QUORUM_REQUIRED`: Proposal must pass both 51% threshold and quorum setting.
+`SUPERMAJORITY`: Proposal must pass supermajority threshold (which will be greater than 51%).
+`SUPERMAJORITY_QUORUM_REQUIRED`: Proposal must pass supermajority threshold and quorum setting.
+
+## Extensions
+
+Kali allows orgs to flexibly extend the rules for minting and burning shares through external contracts by using an interface, `IKaliExtension` and `extensionCall()`.
+
+![image](https://user-images.githubusercontent.com/92001561/143661076-84ed75c6-5247-489b-81c8-8cb22b233a6a.png)
+
+For example, an org may wish to deploy with non-transferable shares but open its membership to whitelisted contributors in order to expedite its growth beyond `MINT` proposals. To do this, an extension could be approved through an `EXTENSION` proposal that contains logic to check credentials and exchange tokens for contributions, allowing compliant fundraising. Other use cases include: (i) Moloch-style `ragequit()` banking contract extension that exchanges a fair share of deposited capital in return for burning tokens, (ii) crowdsales open to public with transferable tokens, and (iii) merkle-style airdrops to upgrade existing DAOs into Kali or otherwise immediately grant voting rights to a large group at once.
 
 ## Deployments
 

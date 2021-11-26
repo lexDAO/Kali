@@ -63,14 +63,14 @@ class Proposals extends Component {
                       <option value={1}>👍</option>
                       <option value={0}>👎</option>
                     </Select>
-                    <Button colorScheme="teal" size="sm" variant="outline" type="submit">Vote</Button>
+                    <Button colorScheme="teal" size="md" variant="outline" type="submit">Vote</Button>
 
                   </form>
                 :
                   <form onSubmit={this.props.process}>
                     <Input type="hidden" name="dao" value={this.props.dao['address']} />
                     <Input type="hidden" name="index" value={index} />
-                    <Button colorScheme="teal" size="sm" variant="outline" type="submit">Process</Button>
+                    <Button colorScheme="teal" size="md" variant="outline" type="submit">Process</Button>
                   </form>
                 }
                 </Td>

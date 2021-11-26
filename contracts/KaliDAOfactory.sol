@@ -6,7 +6,7 @@ import './KaliDAO.sol';
 
 /// @notice Factory to deploy KaliDAO.
 contract KaliDAOfactory {
-    event DAOdeployed(KaliDAO indexed kaliDAO);
+    event DAOdeployed(string indexed name, KaliDAO indexed kaliDAO);
     
     function deployKaliDAO(
         string memory name_,
@@ -36,6 +36,6 @@ contract KaliDAOfactory {
         
         kaliDAO.setVoteTypes(mint_, call_, gov_);
         
-        emit DAOdeployed(kaliDAO);
+        emit DAOdeployed(name_, kaliDAO);
     }
 }

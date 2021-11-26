@@ -10,21 +10,21 @@
 │  │ ├─KaliDAOtoken — "Pausable Comp-style voting token with metaTX support"
 ```
 
-`Kali` is a framework for DAOs inspired by [Compound](https://github.com/compound-finance/compound-protocol/tree/master/contracts/Governance) and [Moloch DAO](https://github.com/MolochVentures/moloch) governance. The smart contract code is *simple* to make it easier to read and secure organizations on (less code, less to break). For example, Kali reduces Comp-style governance into a single contract, and can support extensions to add contracts as apps, such as crowdsale and 'ragequit' redemptions against pooled funds. Kali contracts are further optimized for gas efficiency and functions are written to be easily adapted into modules through overrides. 
+`Kali` is a framework for on-chain orgs inspired by [Compound](https://github.com/compound-finance/compound-protocol/tree/master/contracts/Governance) and [Moloch DAO](https://github.com/MolochVentures/moloch) governance. The smart contract code is *simple* to make it easier to read and secure assets on (less code, less to break). For example, Kali reduces Comp-style governance into a single contract, and can support extensions to add contracts as apps, such as crowdsales and redemptions against pooled funds. Kali contracts are further optimized for gas efficiency and functions are written to be easily adapted via modules through overrides. 
 
 ## Designed for [DAC](https://lawbitrage.typepad.com/blog/2015/02/empowering-distributed-autonomous-companies.html)
 
-Kali is built first for on-chain companies and funds. Proposals are broken out into a variety of types that each can have their own governance settings, such as simple/super majority and quorum requirements. Further, Kali supports hashing and amending docs from deployment and through proposals, providing a hook to wrap organizations into legal templates to rationalize membership rules and liabilities. [Legal forms](https://github.com/lexDAO/LexCorpus/tree/master/contracts/legal) are maintained as open source goods by LexDAO legal engineers. 
+Kali is built first for on-chain companies and funds. Proposals are broken out into a variety of types that each can have their own governance settings, such as simple/super majority and quorum requirements. Further, Kali supports hashing and amending docs from deployment and through proposals, providing a hook to wrap organizations into legal templates to rationalize membership rules and liabilities. [Legal forms](https://github.com/lexDAO/LexCorpus/tree/master/contracts/legal) are maintained as open source goods by [LexDAO](https://twitter.com/lex_DAO) legal engineers. 
 
 ## Token Voting and Delegation
 
-Kali tokens represent voting stakes, and can be launched as transferable or non-transferable, with such settings updateable through proposals. This allows for DACs to launch with closed membership (similar to Moloch-style 'clubs') but still retain the option to open their seats to the public. 
+Kali tokens represent voting stakes, and can be launched as transferable or non-transferable, with such settings being updateable via proposal. This allows for DACs to launch with closed membership (similar to Moloch-style 'clubs') but still retain the option to open their seats to the public. This configurability, in addition to appealing to different deployer preferences, can allow orgs to plan around compliance objectives.
 
 Voting weight can also be delegated, and such weight automatically updates upon token transfers from delegators, incorporating functionality from Comp-style tokens.
 
-Meta-transactions can also be made with Kali tokens, such as gas-less (relayed) transfers via [EIP-2612 `permit()`](https://eips.ethereum.org/EIPS/eip-2612), and delegation using [EIP-712](https://eips.ethereum.org/EIPS/eip-712) off-chain signatures. 
+As a UX feature, meta-transactions can be made with Kali tokens, such as gas-less (relayed) transfers via [EIP-2612 `permit()`](https://eips.ethereum.org/EIPS/eip-2612), and delegation using [EIP-712](https://eips.ethereum.org/EIPS/eip-712) off-chain signatures. 
 
-Kali tokens are designed with gas efficiency in mind and have incorporated optimization techniques from RariCapital's [`solmate`](https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol) library.
+Kali tokens are further designed with gas efficiency in mind and have incorporated optimization techniques from RariCapital's [`solmate`](https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol) library.
 
 ## Proposal Types
 
@@ -42,17 +42,17 @@ Proposals can be made under 9 types:
 
 `QUORUM`: adjust voting quorum requirement, that is, the % of membership tokens that must vote for proposals to pass.
 
-`SUPERMAJORITY`: adjust super-majority requirement, that is, the % of approvals required for proposals to pass.
+`SUPERMAJORITY`: adjust super-majority requirement, that is, the % of member approvals required for proposals to pass.
 
 `PAUSE`: toggle member token transferability.
 
-`EXTENSION`: toggle approval for external calls via `extensionCall()`.
+`EXTENSION`: toggle approval for certain contract external calls via `extensionCall()`.
 
-`DOCS`: update docs stored in smart contract that provides underlying context for membership and proposals.
+`DOCS`: update `docs` string stored in smart contract that provides underlying context for membership and proposals.
 
 ## Voting Types
 
-`VoteType` is assigned to `ProposalType` upon Kali creation and provides threshold vote settings for proposals to pass.
+`VoteType` is assigned to `ProposalType` upon Kali creation and determines threshold vote settings for proposals to pass.
 
 ![image](https://user-images.githubusercontent.com/92001561/143660105-a9c80c7a-33fb-49ff-ad34-323788a7a3be.png)
 
@@ -66,11 +66,14 @@ Proposals can be made under 9 types:
 
 ## Extensions
 
-Kali allows orgs to flexibly extend the rules for minting and burning shares through external contracts by using an interface, `IKaliExtension` and `extensionCall()`.
+Kali allows orgs to flexibly extend their rules for minting and burning shares through external contract calls by using an interface, `IKaliDAOExtension` and `extensionCall()`. In this manner, the core Kali contracts can remain simple and easy to verify, while still giving a great deal of optionality to orgs as they determine their goals.
 
 ![image](https://user-images.githubusercontent.com/92001561/143661076-84ed75c6-5247-489b-81c8-8cb22b233a6a.png)
 
-For example, an org may wish to deploy with non-transferable shares but open its membership to whitelisted contributors in order to expedite its growth beyond `MINT` proposals. To do this, an extension could be approved through an `EXTENSION` proposal that contains logic to check credentials and exchange tokens for contributions, allowing compliant fundraising. Other use cases include: (i) Moloch-style `ragequit()` banking contract extension that exchanges a fair share of deposited capital in return for burning tokens, (ii) crowdsales open to public with transferable tokens, and (iii) merkle-style airdrops to upgrade existing DAOs into Kali or otherwise immediately grant voting rights to a large group at once.
+For example, an org may wish to deploy with non-transferable tokens but open its membership to whitelisted contributors in order to expedite its growth beyond `MINT` proposals. 
+To do this, an extension could be approved through an `EXTENSION` proposal that contains logic to check credentials and exchange tokens for contributions, allowing compliant fundraising. 
+
+Other use cases include: (i) Moloch-style `ragequit()` banking contract extension that exchanges a fair share of deposited capital in return for burning tokens, (ii) crowdsales open to public with transferable tokens, and (iii) merkle-style airdrops to upgrade existing DAOs into Kali or otherwise immediately grant voting rights to a large group at once.
 
 ## Deployments
 

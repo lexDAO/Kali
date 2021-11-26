@@ -11,6 +11,12 @@
 │  │ ├─KaliDAOtoken — "Pausable Comp-style voting token with metaTX support"
 ```
 
+`Kali` is a framework for modular DAOs inspired by Compound and Moloch governance. The smart contract code is *simple* to make it easier to read and secure organizations on (less code, less to break). Kali contracts are further optimized for gas efficiency and functions are written to be easily adapted as modules into other smart contracts through overrides. 
+
+## Designed for DAC
+
+Kali is built first for on-chain companies and funds. Proposals are broken out into a variety of types that each can have their own governance settings, such as simple/super majority and quorum requirements. Further, Kali supports hashing and amending docs from deployment and through proposals, providing a hook to wrap organizations into legal templates to rationalize membership rules and liabilities. 
+
 ## Deployments
 
 ### Polygon

@@ -306,13 +306,13 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
                     if (prop.amount[0] > 0) supermajority = uint8(prop.amount[0]);
                 
                 if (prop.proposalType == ProposalType.PAUSE) 
-                    if (prop.amount[0] > 0) _togglePause();
+                    _togglePause();
                 
                 if (prop.proposalType == ProposalType.EXTENSION) 
-                    if (prop.amount[0] > 0) extensions[prop.account[0]] = !extensions[prop.account[0]];
+                    extensions[prop.account[0]] = !extensions[prop.account[0]];
                 
                 if (prop.proposalType == ProposalType.DOCS) 
-                    if (prop.amount[0] > 0) docs = prop.description;
+                    docs = prop.description;
             }
         }
 

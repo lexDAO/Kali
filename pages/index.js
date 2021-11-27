@@ -1,242 +1,135 @@
 /* eslint-disable react/no-children-prop */
-import React, { Component } from "react";
-import { ChakraProvider, Container } from "@chakra-ui/react";
-import factory from "../eth/factory.js";
+import React, { useState, useEffect } from "react";
 import web3 from "../eth/web3.js";
 import Router, { useRouter } from "next/router";
 import Layout from "../components/Layout.js";
-import Link from 'next/link';
-import {
-  Flex,
-  Input,
-  Button,
-  Text,
-  Textarea,
-  Stack,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  Select,
-  InputGroup,
-  InputRightAddon,
-} from "@chakra-ui/react";
+import Link from "next/link";
+import { Button, Flex, Box, Text, Container, Spacer } from "@chakra-ui/react";
+import Factory from "../components/Factory";
+import LoadingIndicator from "../components/LoadingIndicator";
+import Daos from "./daos/index";
+import Footer from "../components/Footer";
 
-class Factory extends Component {
-  state = {
-    loading: false,
-    account: null,
-  };
+export default function Home() {
+  const [loading, setLoading] = useState(false);
+  const [currentAccount, setCurrentAccount] = useState(null);
 
-  async componentDidMount() {
-    const accounts = await web3.eth.getAccounts();
-    const account = accounts[0];
-    this.setState({ account });
-  }
-
-  static async getInitialProps() {
-    const events = await factory.getPastEvents('DAOdeployed', {fromBlock: 0, toBlock: 'latest'});
-    const eventArray = [];
-    for(let i=0; i < events.length; i++) {
-      let dao = events[i]['returnValues'];
-      eventArray.push(dao);
-    }
-    return { eventArray };
-  }
-
-  createDAO = async (e) => {
-    e.preventDefault();
-    this.setState({ loading: true });
-    let object = e.target;
-    var array = [];
-    for (let i = 0; i < object.length; i++) {
-      array[object[i].name] = object[i].value;
-    }
-    console.log(array);
-    var {
-      name,
-      symbol,
-      docs,
-      voters,
-      shares,
-      votingPeriod,
-      quorum,
-      supermajority,
-      mint,
-      call,
-      gov,
-      votePeriodUnit,
-    } = array;
-    console.log(array);
-    // convert shares to wei
-    var sharesArray = [];
-    for (let i = 0; i < shares.split(",").length; i++) {
-      sharesArray.push(web3.utils.toWei(shares.split(",")[i]));
-    }
-
-    // convert vote period to appropriate unit
-    if (votePeriodUnit == "minutes") {
-      votingPeriod *= 60;
-    } else if (votePeriodUnit == "hours") {
-      votingPeriod *= 60 * 60;
-    } else if (votePeriodUnit == "days") {
-      votingPeriod *= 60 * 60 * 24;
-    } else if (votePeriodUnit == "weeks") {
-      votingPeriod *= 60 * 60 * 24 * 7;
-    }
-
-    // convert docs to appropriate links
-    if (docs == "COC") {
-      docs = "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/CodeOfConduct.md";
-    } else if (docs == "UNA") {
-      docs = "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/TUNAA.md";
-    } else if (docs == "LLC") {
-      docs = "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/operating/DelawareOperatingAgreement.md";
-    }
-
-    console.log(votingPeriod);
-
-    const accounts = await web3.eth.getAccounts();
-    console.log(accounts[0]);
-
+  const checkWalletConnected = async () => {
     try {
-      let result = await factory.methods
-        .deployKaliDAO(
-          name,
-          symbol,
-          docs,
-          true,
-          voters.split(","),
-          sharesArray,
-          votingPeriod,
-          quorum,
-          supermajority,
-          mint,
-          call,
-          gov
-        )
-        .send({ from: accounts[0] });
+      const { ethereum } = window;
+      if (!ethereum) {
+        console.log("Make sure you have MetaMask!");
+        return;
+      } else {
+        console.log("We have the ethereum object", ethereum);
 
-      let dao = result["events"]["DAOdeployed"]["returnValues"]["kaliDAO"];
+        const accounts = await ethereum.request({ method: "eth_accounts" });
 
-      Router.push({
-        pathname: "/daos/[dao]",
-        query: { dao: dao },
-      });
-    } catch (e) {
-      alert(e);
-      console.log(e);
+        if (accounts.length !== 0) {
+          const account = accounts[0];
+          console.log("Found an authorised account: ", account);
+          setCurrentAccount(account);
+        } else {
+          console.log("No authorised account found");
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
-    this.setState({ loading: false });
+
+    setLoading(false);
   };
 
-  render() {
+  const connectWallet = async () => {
+    try {
+      const { ethereum } = window;
 
-    console.log(this.props.eventArray);
+      if (!ethereum) {
+        alert("Get MetaMask!");
+        return;
+      }
 
-    return (
-      <Layout loading={this.state.loading}>
-        <Flex
-          display="flex"
-          flexDirection="column"
-          bgGradient="linear(to-br, kali.200, kali.100)"
-          p={5}
-          color="kali.900"
-          fontSize="md"
-          letterSpacing="wide"
-          lineHeight="tight"
-          boxShadow="xs"
-          rounded="xl"
-          mb={5}
-        >
-          <form onSubmit={this.createDAO}>
-            <Text fontWeight="semibold">Name</Text>
-            <Input name="name" placeholder="KaliDAO"></Input>
-            <Text fontWeight="semibold">Symbol</Text>
-            <Input name="symbol" placeholder="KALI"></Input>
-            <Text fontWeight="semibold">Docs</Text>
-            <Select
-              name="docs"
-              color="kali.800"
-              bg="kali.900"
-              opacity="0.90"
-            >
-              <option value="COC">Code of Conduct</option>
-              <option value="UNA">UNA</option>
-              <option value="LLC">LLC</option>
-            </Select>
-            <Text fontWeight="semibold">Founders</Text>
-            <Textarea name="voters" placeholder="0xabc, 0xdef, 0xghi" />
-            <Text fontWeight="semibold">Shares</Text>
-            <Textarea name="shares" placeholder="1, 2, 3" />
-            <Text fontWeight="semibold">Voting Period</Text>
-            <NumberInput defaultValue={3} name="votingPeriod">
-              <NumberInputField focusBorderColor="red.200" />
-              <NumberInputStepper>
-                <NumberIncrementStepper
-                  bg="green.600"
-                  _active={{ bg: "green.500" }}
-                  children="+"
-                />
-                <NumberDecrementStepper
-                  bg="red.600"
-                  _active={{ bg: "red.500" }}
-                  children="-"
-                />
-              </NumberInputStepper>
-            </NumberInput>
-            <Select
-              name="votePeriodUnit"
-              color="kali.800"
-              bg="kali.900"
-              opacity="0.90"
-            >
-              <option value="minutes">Minutes</option>
-              <option value="hours">Hours</option>
-              <option value="days" selected>Days</option>
-              <option value="weeks">Weeks</option>
-            </Select>
-            <Text fontWeight="semibold">Quorum %</Text>
-            <NumberInput defaultValue={10} min={0} max={100} name="quorum">
-              <NumberInputField focusBorderColor="red.200" />
-              <NumberInputStepper>
-                <NumberIncrementStepper
-                  bg="green.600"
-                  _active={{ bg: "green.500" }}
-                  children="+"
-                />
-                <NumberDecrementStepper
-                  bg="red.600"
-                  _active={{ bg: "red.500" }}
-                  children="-"
-                />
-              </NumberInputStepper>
-            </NumberInput>
-            <Input type="hidden" name="supermajority" value={60} />
-            <Input type="hidden" name="mint" value={1} />
-            <Input type="hidden" name="call" value={1} />
-            <Input type="hidden" name="gov" value={3} />
-            <br></br>
-            <Button
-              display="flex"
-              justifyContent="center"
-              alignItem="center"
-              colorScheme="kali"
-              width="100%"
-              variant="outline"
-              _hover={{
-                color: "kali.500",
-              }}
-              type="submit"
-            >
-              Summon
-            </Button>
-          </form>
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      console.log("Connected", accounts[0]);
+      setCurrentAccount(accounts[0]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const renderFactory = () => {
+    // TODO: render
+    return <Factory />;
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    checkWalletConnected();
+  }, []);
+
+  return (
+    (<Layout />),
+    (
+      <>
+        <Flex padding={5} width="100vw">
+          <Box
+            as="h1"
+            letterSpacing="wide"
+            fontWeight="extrabold"
+            fontSize="4xl"
+            bgGradient="linear(to-br, kali.900, kali.600)"
+            bgClip="text"
+            textShadow="2.4px 0.4px kali.900"
+            ml={2}
+          >
+            KaliDAO
+          </Box>
+          <Spacer />
+          <Button
+            bgGradient="linear(to-br, kali.600, kali.700)"
+            size="md"
+            variant="ghost"
+            mr={2}
+            onClick={connectWallet}
+          >
+            {currentAccount == null ? "Connect Wallet" : currentAccount}
+          </Button>
         </Flex>
-      </Layout>
-    );
-  }
+        <Flex
+          direction="row"
+          justifyContent="center"
+          alignItems="space-between"
+          padding={6}
+          m={3}
+        >
+          <Container>
+            <Text
+              as="h2"
+              letterSpacing="wide"
+              fontWeight="extrabold"
+              fontSize="2xl"
+            >
+              Welcome!
+            </Text>
+            <Text as="p" fontWeight="semibold" fontsize="md">
+              Kali is an optimised DAC protocol.
+            </Text>
+            <Button
+              bgGradient="linear(to-br, kali.600, kali.700)"
+              size="md"
+              variant="ghost"
+              onClick={renderFactory}
+            >
+              Create Kali DAO!
+            </Button>
+          </Container>
+          <Container>{/*Fix Daos component. Display here.*/}</Container>
+        </Flex>
+        <Footer />
+      </>
+    )
+  );
 }
-
-export default Factory;

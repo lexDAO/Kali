@@ -13,7 +13,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
                             EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event NewProposal(uint256 indexed proposal);
+    event NewProposal(address indexed proposer, uint256 indexed proposal);
     
     event VoteCast(address indexed voter, uint256 indexed proposal, bool indexed approve);
 
@@ -35,7 +35,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
 
     string public docs;
     
-    bytes32 public constant VOTE_HASH = keccak256("SignVote(address signer,uint256 proposal,bool approve)");
+    bytes32 public constant VOTE_HASH = keccak256('SignVote(address signer,uint256 proposal,bool approve)');
     
     mapping(address => bool) public extensions;
 
@@ -52,6 +52,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         PERIOD,
         QUORUM,
         SUPERMAJORITY,
+        TYPE,
         PAUSE,
         EXTENSION,
         DOCS
@@ -123,6 +124,8 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         proposalVoteTypes[ProposalType.QUORUM] = VoteType(gov_);
         
         proposalVoteTypes[ProposalType.SUPERMAJORITY] = VoteType(gov_);
+
+        proposalVoteTypes[ProposalType.TYPE] = VoteType(gov_);
         
         proposalVoteTypes[ProposalType.PAUSE] = VoteType(gov_);
         
@@ -188,7 +191,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
             proposalCount++;
         }
 
-        emit NewProposal(proposal);
+        emit NewProposal(msg.sender, proposal);
     }
 
     function vote(uint256 proposal, bool approve) public nonReentrant onlyTokenHolders virtual {
@@ -215,7 +218,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
             
         address recoveredAddress = ecrecover(digest, v, r, s);
         
-        require(recoveredAddress == signer, "INVALID_SIG");
+        require(recoveredAddress == signer, 'INVALID_SIG');
         
         _vote(signer, proposal, approve);
     }
@@ -251,12 +254,12 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
     function processProposal(uint256 proposal) public nonReentrant virtual returns (bytes[] memory results) {
         // we want underflow in this case to allow for first proposal
         unchecked {
-            require(proposals[proposal - 1].creationTime == 0, "PREV_NOT_PROCESSED");
+            require(proposals[proposal - 1].creationTime == 0, 'PREV_NOT_PROCESSED');
         }
         
         Proposal storage prop = proposals[proposal];
 
-        require(prop.creationTime > 0, "PROCESSED");
+        require(prop.creationTime > 0, 'PROCESSED');
         
         // this is safe from overflow because `votingPeriod` is capped so it will not combine
         // with unix time to exceed 'type(uint256).max'
@@ -304,6 +307,9 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
                 
                 if (prop.proposalType == ProposalType.SUPERMAJORITY) 
                     if (prop.amount[0] > 0) supermajority = uint8(prop.amount[0]);
+                
+                if (prop.proposalType == ProposalType.TYPE) 
+                    proposalVoteTypes[ProposalType(prop.amount[0])] = VoteType(prop.amount[1]);
                 
                 if (prop.proposalType == ProposalType.PAUSE) 
                     _togglePause();
@@ -359,7 +365,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
     receive() external payable virtual {}
     
     function extensionCall(address extension, uint256 amount, bool mint) public payable nonReentrant virtual returns (uint256 amountOut) {
-        require(extensions[extension], "NOT_EXTENSION");
+        require(extensions[extension], 'NOT_EXTENSION');
         
         amountOut = IKaliDAOextension(extension).extensionCall{value: msg.value}(msg.sender, amount);
         

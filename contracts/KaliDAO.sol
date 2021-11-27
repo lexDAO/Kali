@@ -172,6 +172,8 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         
         if (proposalType == ProposalType.SUPERMAJORITY) require(amount[0] > 51 && amount[0] <= 100, 'SUPERMAJORITY_BOUNDS');
 
+        if (proposalType == ProposalType.TYPE) require(amount[0] <=9 && amount[1] <= 3, 'TYPE_MAX');
+
         uint256 proposal = proposalCount;
 
         proposals[proposal] = Proposal({
@@ -252,11 +254,6 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
     }
 
     function processProposal(uint256 proposal) public nonReentrant virtual returns (bytes[] memory results) {
-        // we want underflow in this case to allow for first proposal
-        unchecked {
-            require(proposals[proposal - 1].creationTime == 0, 'PREV_NOT_PROCESSED');
-        }
-        
         Proposal storage prop = proposals[proposal];
 
         require(prop.creationTime > 0, 'PROCESSED');
@@ -271,9 +268,9 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
 
         bool didProposalPass = _countVotes(voteType, prop.yesVotes, prop.noVotes);
         
-        // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
         if (didProposalPass) {
+            // this is reasonably safe from overflow because incrementing `i` loop beyond
+            // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
             unchecked {
                 if (prop.proposalType == ProposalType.MINT) 
                     for (uint256 i; i < prop.account.length; i++) {

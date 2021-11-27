@@ -1,7 +1,10 @@
 # Kali
-> Optimized DAC Protocol
+> the arm of the law is long, with many hands
+
+![FEL8PaoXIAABPQK](https://user-images.githubusercontent.com/92001561/143664476-15ce0d5b-8529-433b-96d5-eaadb4ef055e.jpg)
 
 ```ml
+Optimized DAC Protocol
 ├─ KaliDAOfactory — "Deploys new Kali DAO with event and return of address"
 │  ├─ KaliDAO — "DAO core module with Comp-style token voting and adjustment of membership, low-level calls on quorum/supermajority"
 │  │ ├─IKaliDAOextension — "Interface for DAO to mint and burn shares as outputs of interactions with whitelisted external contracts, providing simple modularity"
@@ -14,7 +17,7 @@
 
 ## Designed for [DAC](https://lawbitrage.typepad.com/blog/2015/02/empowering-distributed-autonomous-companies.html)
 
-Kali is built for on-chain companies and funds. Proposals are broken out into a variety of types that each can have their own governance settings, such as simple/super majority and quorum requirements. Further, Kali supports hashing and amending docs from deployment and through proposals, providing a hook to wrap organizations into legal templates to rationalize membership rules and liabilities. [Legal forms](https://github.com/lexDAO/LexCorpus/tree/master/contracts/legal) are maintained as open source goods by [LexDAO](https://twitter.com/lex_DAO) legal engineers. Incorporation, and full-service legal engineering support is also being integarted into an MVP UI to allow Kali users to solve their org painpoints quickly and cheaply (stay tuned).
+Kali is built for on-chain companies and funds. Proposals are broken out into a variety of types that each can have their own governance settings, such as simple/super majority and quorum requirements. Further, Kali supports hashing and amending docs from deployment and through proposals, providing a hook to wrap organizations into legal templates to rationalize membership rules and liabilities. [Legal forms](https://github.com/lexDAO/LexCorpus/tree/master/contracts/legal) are maintained as open source goods by [LexDAO](https://twitter.com/lex_DAO) legal engineers. Incorporation, and full-service legal engineering support is also being integrated into an MVP UI to allow Kali users to solve their org painpoints quickly and cheaply (stay tuned).
 
 ## Token Voting, Delegation & MetaTX
 

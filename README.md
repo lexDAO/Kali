@@ -114,4 +114,4 @@ KaliDAOfactory: `0xBc87B1A40796070d29e7aC8d08fB61D2A7685A27`
 - [Shivanshi Tyagi](https://twitter.com/nerderlyne)
 - [Ross Campbell](https://twitter.com/r_ross_campbell)
 
-Special thanks to [Auryn Macmillan](https://twitter.com/auryn_macmillan) and [James Young](https://twitter.com/jamesyoung) for comments on early iterations of `extensions` concept, and [Q](https://twitter.com/quentinc137) for help understanding how to develop dapp.
+Special thanks to [Auryn Macmillan](https://twitter.com/auryn_macmillan) and [James Young](https://twitter.com/jamesyoung) for comments on early iterations of `extensions` concept, [t11s](https://twitter.com/transmissions11) for gas-golfing tips, and [Q](https://twitter.com/quentinc137) for help understanding how to develop dapp.

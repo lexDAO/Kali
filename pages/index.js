@@ -11,93 +11,15 @@ import Daos from "./daos/index";
 import Footer from "../components/Footer";
 
 export default function Home() {
+
   const [loading, setLoading] = useState(false);
-  const [currentAccount, setCurrentAccount] = useState(null);
-
-  const checkWalletConnected = async () => {
-    try {
-      const { ethereum } = window;
-      if (!ethereum) {
-        console.log("Make sure you have MetaMask!");
-        return;
-      } else {
-        console.log("We have the ethereum object", ethereum);
-
-        const accounts = await ethereum.request({ method: "eth_accounts" });
-
-        if (accounts.length !== 0) {
-          const account = accounts[0];
-          console.log("Found an authorised account: ", account);
-          setCurrentAccount(account);
-        } else {
-          console.log("No authorised account found");
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
-    setLoading(false);
-  };
-
-  const connectWallet = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        alert("Get MetaMask!");
-        return;
-      }
-
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
-
-      console.log("Connected", accounts[0]);
-      setCurrentAccount(accounts[0]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const renderFactory = () => {
-    // TODO: render
-    return <Factory />;
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    checkWalletConnected();
-  }, []);
+  const [factoryVisible, setFactoryVisible] = useState(false);
+  
 
   return (
-    (<Layout />),
     (
-      <>
-        <Flex padding={5} width="100vw">
-          <Box
-            as="h1"
-            letterSpacing="wide"
-            fontWeight="extrabold"
-            fontSize="4xl"
-            bgGradient="linear(to-br, kali.900, kali.600)"
-            bgClip="text"
-            textShadow="2.4px 0.4px kali.900"
-            ml={2}
-          >
-            KaliDAO
-          </Box>
-          <Spacer />
-          <Button
-            bgGradient="linear(to-br, kali.600, kali.700)"
-            size="md"
-            variant="ghost"
-            mr={2}
-            onClick={connectWallet}
-          >
-            {currentAccount == null ? "Connect Wallet" : currentAccount}
-          </Button>
-        </Flex>
+      <Layout>
+
         <Flex
           direction="row"
           justifyContent="center"
@@ -114,22 +36,24 @@ export default function Home() {
             >
               Welcome!
             </Text>
-            <Text as="p" fontWeight="semibold" fontsize="md">
+            <Text as="p" fontWeight="semibold" fontSize="md">
               Kali is an optimised DAC protocol.
             </Text>
             <Button
               bgGradient="linear(to-br, kali.600, kali.700)"
               size="md"
               variant="ghost"
-              onClick={renderFactory}
+              onClick={() => setFactoryVisible(true)}
             >
               Create Kali DAO!
             </Button>
           </Container>
-          <Container>{/*Fix Daos component. Display here.*/}</Container>
+          <Container>
+            {factoryVisible==true ? <Factory /> : null}
+          </Container>
         </Flex>
         <Footer />
-      </>
+      </Layout>
     )
   );
 }

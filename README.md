@@ -10,21 +10,25 @@
 │  │ ├─KaliDAOtoken — "Pausable Comp-style voting token with metaTX support"
 ```
 
-`Kali` is a framework for on-chain orgs inspired by [Compound](https://github.com/compound-finance/compound-protocol/tree/master/contracts/Governance) and [Moloch DAO](https://github.com/MolochVentures/moloch) governance. The smart contract code is *simple* to make it easier to read and secure assets on (less code, less to break). For example, Kali reduces Comp-style governance into a single contract, and can support extensions to add contracts as apps, such as crowdsales and redemptions against pooled funds. Kali contracts are further optimized for gas efficiency and functions are written to be easily adapted via modules through overrides. 
+`Kali` is a protocol for on-chain orgs inspired by [Compound](https://github.com/compound-finance/compound-protocol/tree/master/contracts/Governance) and [Moloch DAO](https://github.com/MolochVentures/moloch) governance. The smart contract code is *simple* to make it easier to read and secure assets on (less code, less to break). For example, Kali reduces Comp-style governance into a single contract, and can support extensions to add contracts as apps, such as crowdsales and redemptions against pooled funds. Kali contracts are further optimized for gas efficiency and functions are written to be easily adapted via modules through overrides. 
 
 ## Designed for [DAC](https://lawbitrage.typepad.com/blog/2015/02/empowering-distributed-autonomous-companies.html)
 
-Kali is built first for on-chain companies and funds. Proposals are broken out into a variety of types that each can have their own governance settings, such as simple/super majority and quorum requirements. Further, Kali supports hashing and amending docs from deployment and through proposals, providing a hook to wrap organizations into legal templates to rationalize membership rules and liabilities. [Legal forms](https://github.com/lexDAO/LexCorpus/tree/master/contracts/legal) are maintained as open source goods by [LexDAO](https://twitter.com/lex_DAO) legal engineers. 
+Kali is built for on-chain companies and funds. Proposals are broken out into a variety of types that each can have their own governance settings, such as simple/super majority and quorum requirements. Further, Kali supports hashing and amending docs from deployment and through proposals, providing a hook to wrap organizations into legal templates to rationalize membership rules and liabilities. [Legal forms](https://github.com/lexDAO/LexCorpus/tree/master/contracts/legal) are maintained as open source goods by [LexDAO](https://twitter.com/lex_DAO) legal engineers. Incorporation, and full-service legal engineering support is also being integarted into an MVP UI to allow Kali users to solve their org painpoints quickly and cheaply (stay tuned).
 
-## Token Voting and Delegation
+## Token Voting, Delegation & MetaTX
 
-Kali tokens represent voting stakes, and can be launched as transferable or non-transferable, with such settings being updateable via proposal. This allows for DACs to launch with closed membership (similar to Moloch-style 'clubs') but still retain the option to open their seats to the public. This configurability, in addition to appealing to different deployer preferences, can allow orgs to plan around compliance objectives.
+Kali tokens ([`KaliDAOtoken`](https://github.com/lexDAO/Kali/blob/main/contracts/KaliDAOtoken.sol)) represent voting stakes, and can be launched as transferable or non-transferable, with such settings being updateable via `PAUSE` proposal (see below). This allows for DACs to launch with closed membership (similar to Moloch-style 'clubs') but still retain the option to open their seats to the public. This configurability, in addition to appealing to different deployer preferences, can allow orgs to plan around compliance objectives.
 
-Voting weight can also be delegated, and such weight automatically updates upon token transfers from delegators, incorporating functionality from Comp-style tokens.
+Voting weight can also be delegated, and such weight automatically updates upon token transfers from delegators, incorporating functionality from Comp-style tokens (with an improvement of 'auto delegation' to new accounts to avoid an extra transaction for Kali users). 
 
-As a UX feature, meta-transactions can be made with Kali tokens, such as gas-less (relayed) transfers via [EIP-2612 `permit()`](https://eips.ethereum.org/EIPS/eip-2612), and delegation using [EIP-712](https://eips.ethereum.org/EIPS/eip-712) off-chain signatures. 
+As a UX feature, meta-transactions can be made with Kali tokens, such as gas-less (relayed) transfers via [EIP-2612 `permit()`](https://eips.ethereum.org/EIPS/eip-2612), and delegation using [EIP-712](https://eips.ethereum.org/EIPS/eip-712) off-chain signatures. Similarly, `voteBySig()` allows for voting meta-transactions, effectively allowing DAOs to subsidize and make voting free for members. 
 
 Kali tokens are further designed with gas efficiency in mind and have incorporated optimization techniques from RariCapital's [`solmate`](https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol) library.
+
+## NFT Vault
+
+Kali supports both ERC-721 and ERC-1155 NFT `safeTransferFrom()` through the [`NFThelper`](https://github.com/lexDAO/Kali/blob/main/contracts/NFThelper.sol) module. NFTs can be managed through `CALL` proposals (see below).
 
 ## Proposal Types
 
@@ -74,6 +78,18 @@ For example, an org may wish to deploy with non-transferable tokens but open its
 To do this, an extension could be approved through an `EXTENSION` proposal that contains logic to check credentials and exchange tokens for contributions, allowing compliant fundraising. 
 
 Other use cases include: (i) Moloch-style `ragequit()` banking contract extension that exchanges a fair share of deposited capital in return for burning tokens, (ii) crowdsales open to public with transferable tokens, and (iii) merkle-style airdrops to upgrade existing DAOs into Kali or otherwise immediately grant voting rights to a large group at once.
+
+## TX Batching
+
+Proposals support batching for membership (`MINT`/`BURN`) so that groups of accounts can be updated, as well as for `EXTENSION` external calls, so that complex contract interactions can be arranged, such as approving and executing DeFi positions.
+
+![image](https://user-images.githubusercontent.com/92001561/143662674-0133c247-53da-49de-957a-b99c18336803.png)
+
+Further, all Kali function calls can be batched using `multicall()`, adapted from [Uniswap V3](https://github.com/Uniswap/v3-periphery/blob/main/contracts/base/Multicall.sol), which can allow members to make multiple proposals or process the same in a single transaction, saving gas and time. 
+
+## Security
+
+Kali adopts standard security conventions, including a [`ReentrancyGuard`](https://github.com/lexDAO/Kali/blob/main/contracts/ReentrancyGuard.sol) module for core functions to avoid the potential of reentrancy attacks, as well as an internal function, `_computeDomainSeparator()` to help protect against signature replay in the event of a blockchain fork. In addition, as much as possible, Kali incorporates well-tested and common solidity patterns to make the code easier to audit and avoid 'reinventing the wheel', which can lead to the known unknown of novel attack surfaces. [Tests](https://github.com/lexDAO/Kali/blob/main/test/KaliDAO.test.js) are also included in JavaScript to demonstrate the performance of Kali operations.
 
 ## Deployments
 

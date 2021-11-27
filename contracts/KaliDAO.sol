@@ -165,12 +165,24 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         require(account.length == amount.length && amount.length == payload.length, 'NO_ARRAY_PARITY');
         
         require(account.length <= 10, 'ARRAY_MAX');
+
+        if (proposalType == ProposalType.BURN) {
+            // this is reasonably safe from overflow because incrementing `i` loop beyond
+            // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+            unchecked {
+                for (uint256 i = 0; i < account.length; i++) {
+                    require(amount[i] <= balanceOf[account[i]]);
+                }
+            }
+        }
         
         if (proposalType == ProposalType.PERIOD) require(amount[0] <= 365 days, 'VOTING_PERIOD_MAX');
         
         if (proposalType == ProposalType.QUORUM) require(amount[0] <= 100, 'QUORUM_MAX');
         
         if (proposalType == ProposalType.SUPERMAJORITY) require(amount[0] > 51 && amount[0] <= 100, 'SUPERMAJORITY_BOUNDS');
+
+        if (proposalType == ProposalType.TYPE) require(amount[0] <=9 && amount[1] <= 3, 'TYPE_MAX');
 
         uint256 proposal = proposalCount;
 
@@ -267,13 +279,11 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
             require(block.timestamp > prop.creationTime + votingPeriod, 'VOTING_NOT_ENDED');
         }
 
-        VoteType voteType = proposalVoteTypes[prop.proposalType];
-
-        bool didProposalPass = _countVotes(voteType, prop.yesVotes, prop.noVotes);
+        bool didProposalPass = _countVotes(prop);
         
-        // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
         if (didProposalPass) {
+            // this is reasonably safe from overflow because incrementing `i` loop beyond
+            // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
             unchecked {
                 if (prop.proposalType == ProposalType.MINT) 
                     for (uint256 i; i < prop.account.length; i++) {
@@ -327,19 +337,34 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         emit ProposalProcessed(proposal);
     }
 
-    function _countVotes(
-        VoteType voteType,
-        uint256 yesVotes,
-        uint256 noVotes
-    ) internal view virtual returns (bool didProposalPass) {
-        // rule out any failed quorums
+    function _countVotes(Proposal memory prop) internal view virtual returns (bool didProposalPass) {
+        VoteType voteType = proposalVoteTypes[prop.proposalType];
+
+        // rule out token overflow
+        if (prop.proposalType == ProposalType.MINT) {
+            uint224 total = uint224(totalSupply);
+
+            // this is reasonably safe from overflow because incrementing `i` loop beyond
+            // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+            unchecked {
+                for (uint256 i = 0; i < prop.account.length; i++) {
+                    if (total + prop.amount[i] > type(uint224).max) {
+                        return false;
+                    } else {
+                        total += uint224(prop.amount[i]);
+                    }
+                }
+            }
+        }
+
+        // rule out failed quorum
         if (voteType == VoteType.SIMPLE_MAJORITY_QUORUM_REQUIRED || voteType == VoteType.SUPERMAJORITY_QUORUM_REQUIRED) {
             uint256 minVotes = (totalSupply * quorum) / 100;
             
             // this is safe from overflow because `yesVotes` and `noVotes` are capped by `totalSupply`
             // which is checked for overflow in `KaliDAOtoken` contract
             unchecked {
-                uint256 votes = yesVotes + noVotes;
+                uint256 votes = prop.yesVotes + prop.noVotes;
 
                 if (votes < minVotes) return false;
             }
@@ -347,14 +372,14 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         
         // simple majority
         if (voteType == VoteType.SIMPLE_MAJORITY || voteType == VoteType.SIMPLE_MAJORITY_QUORUM_REQUIRED) {
-            if (yesVotes > noVotes) return true;
+            if (prop.yesVotes > prop.noVotes) return true;
         // super majority
         } else {
             // example: 7 yes, 2 no, supermajority = 66
             // ((7+2) * 66) / 100 = 5.94; 7 yes will pass
-            uint256 minYes = ((yesVotes + noVotes) * supermajority) / 100;
+            uint256 minYes = ((prop.yesVotes + prop.noVotes) * supermajority) / 100;
 
-            if (yesVotes >= minYes) return true;
+            if (prop.yesVotes >= minYes) return true;
         }
     }
     
@@ -394,6 +419,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
                     
                     revert(abi.decode(result, (string)));
                 }
+
                 results[i] = result;
             }
         }

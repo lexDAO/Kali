@@ -107,3 +107,11 @@ KaliDAOfactory: `0x33c8268e4A0ED135DDAc52Ea4CCE67F10e9605Cb`
 KaliDAOfactory: `0xBc87B1A40796070d29e7aC8d08fB61D2A7685A27`
 
 ![image](https://user-images.githubusercontent.com/92001561/143658630-be24588c-a5cd-481e-8be8-d4a5d23c4caa.png)
+
+## Contributors
+
+- [Jordan Teague](https://twitter.com/jordanteague)
+- [Shivanshi Tyagi](https://twitter.com/nerderlyne)
+- [Ross Campbell](https://twitter.com/r_ross_campbell)
+
+Special thanks to [Auryn Macmillan](https://twitter.com/auryn_macmillan) and [James Young](https://twitter.com/jamesyoung) for comments on early iterations of `extensions` concept, and [Q](https://twitter.com/quentinc137) for help understanding how to develop dapp.

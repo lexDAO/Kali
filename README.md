@@ -35,9 +35,9 @@ Kali supports both ERC-721 and ERC-1155 NFT `safeTransferFrom()` through the [`N
 
 ## Proposal Types
 
-Proposals can be made under 9 types: 
+Proposals can be made under 10 types: 
 
-![image](https://user-images.githubusercontent.com/92001561/143659511-7a3f93da-c966-430c-83af-a428442de87c.png)
+![image](https://user-images.githubusercontent.com/92001561/143672017-12b6ec3f-0f78-4c9a-9932-a78d1cc00ddf.png)
 
 `MINT`: create more membership tokens.
 
@@ -51,6 +51,8 @@ Proposals can be made under 9 types:
 
 `SUPERMAJORITY`: adjust super-majority requirement, that is, the % of member approvals required for proposals to pass.
 
+`TYPE`: set `ProposalType` to a `VoteType`.
+
 `PAUSE`: toggle member token transferability.
 
 `EXTENSION`: toggle approval for certain contract external calls via `extensionCall()`.
@@ -61,7 +63,7 @@ Proposals can be made under 9 types:
 
 `VoteType` is assigned to `ProposalType` upon Kali creation and determines threshold vote settings for proposals to pass.
 
-![image](https://user-images.githubusercontent.com/92001561/143660105-a9c80c7a-33fb-49ff-ad34-323788a7a3be.png)
+![image](https://user-images.githubusercontent.com/92001561/143672159-7b19ce76-eeca-4468-b26f-e0914f347923.png)
 
 `SIMPLE_MAJORITY`: Proposal must pass 51% threshold.
 
@@ -75,7 +77,7 @@ Proposals can be made under 9 types:
 
 Kali allows orgs to flexibly extend their rules for minting and burning shares through external contract calls by using an interface, `IKaliDAOExtension` and `extensionCall()`. In this manner, the core Kali contracts can remain simple and easy to verify, while still giving a great deal of optionality to orgs as they determine their goals.
 
-![image](https://user-images.githubusercontent.com/92001561/143661076-84ed75c6-5247-489b-81c8-8cb22b233a6a.png)
+![image](https://user-images.githubusercontent.com/92001561/143672135-34b80e90-ce2d-4e8d-a35a-d03aa4637fe7.png)
 
 For example, an org may wish to deploy with non-transferable tokens but open its membership to whitelisted contributors in order to expedite its growth beyond `MINT` proposals. 
 To do this, an extension could be approved through an `EXTENSION` proposal that contains logic to check credentials and exchange tokens for contributions, allowing compliant fundraising. 
@@ -86,7 +88,7 @@ Other use cases include: (i) Moloch-style `ragequit()` banking contract extensio
 
 Proposals support batching for membership (`MINT`/`BURN`) so that groups of accounts can be updated, as well as for `EXTENSION` external calls, so that complex contract interactions can be arranged, such as approving and executing DeFi positions.
 
-![image](https://user-images.githubusercontent.com/92001561/143662674-0133c247-53da-49de-957a-b99c18336803.png)
+![image](https://user-images.githubusercontent.com/92001561/143672192-dd83ed89-915c-48b0-a609-1af2d5df6d4b.png)
 
 Further, all Kali function calls can be batched using `multicall()`, adapted from [Uniswap V3](https://github.com/Uniswap/v3-periphery/blob/main/contracts/base/Multicall.sol), which can allow members to make multiple proposals or process the same in a single transaction, saving gas and time. 
 
@@ -102,6 +104,6 @@ KaliDAOfactory: `0x33c8268e4A0ED135DDAc52Ea4CCE67F10e9605Cb`
 
 ### Rinkeby
 
-KaliDAOfactory: `0x7c5B08e18FD1864b44b23372820680a45BB7Ff3A`
+KaliDAOfactory: `0xBc87B1A40796070d29e7aC8d08fB61D2A7685A27`
 
 ![image](https://user-images.githubusercontent.com/92001561/143658630-be24588c-a5cd-481e-8be8-d4a5d23c4caa.png)

@@ -130,6 +130,12 @@
 		"inputs": [
 			{
 				"indexed": true,
+				"internalType": "address",
+				"name": "proposer",
+				"type": "address"
+			},
+			{
+				"indexed": true,
 				"internalType": "uint256",
 				"name": "proposal",
 				"type": "uint256"

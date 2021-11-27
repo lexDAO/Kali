@@ -172,7 +172,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         
         if (proposalType == ProposalType.SUPERMAJORITY) require(amount[0] > 51 && amount[0] <= 100, 'SUPERMAJORITY_BOUNDS');
 
-        if (proposalType == ProposalType.TYPE) require(amount[0] <=9 && amount[1] <= 3, 'TYPE_MAX');
+        if (proposalType == ProposalType.TYPE) require(amount[0] <= 9 && amount[1] <= 3, 'TYPE_MAX');
 
         uint256 proposal = proposalCount;
 

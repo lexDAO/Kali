@@ -9,7 +9,7 @@ abstract contract ReentrancyGuard {
     uint256 internal reentrancyStatus = 1;
 
     modifier nonReentrant() {
-        require(reentrancyStatus == 1, "REENTRANCY");
+        require(reentrancyStatus == 1, 'REENTRANCY');
 
         reentrancyStatus = 2;
 

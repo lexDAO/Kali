@@ -19,7 +19,7 @@ class DaoInfo extends Component {
     return (
       <FlexGradient>
         <Text>Name: {dao["name"]}</Text>
-        <HStack><Link href={`${chainInfo["explorer"]}/address/${dao["address"]}`}><Text>Address: {dao["address"]}</Text></Link><Icon as={BsFillArrowUpRightSquareFill} /></HStack>
+        <HStack><Text>Address: {dao["address"]}</Text><Link href={`${chainInfo["explorer"]}/address/${dao["address"]}`}><Icon as={BsFillArrowUpRightSquareFill} /></Link></HStack>
         <Text>Symbol: {dao["symbol"]}</Text>
         <Text>Shares: {dao["totalSupply"]}</Text>
         <Text>Transferable: {dao["paused"]}</Text>

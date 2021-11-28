@@ -71,8 +71,8 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         address[] account; // member(s) being added/kicked; account(s) receiving payload
         uint256[] amount; // value(s) to be minted/burned/spent; gov setting [0]
         bytes[] payload; // data for CALL proposals
-        uint224 yesVotes;
-        uint224 noVotes;
+        uint96 yesVotes;
+        uint96 noVotes;
         uint32 creationTime;
     }
 
@@ -236,7 +236,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
             require(block.timestamp <= prop.creationTime + votingPeriod, 'VOTING_ENDED');
         }
 
-        uint224 weight = uint224(getPriorVotes(signer, prop.creationTime));
+        uint96 weight = uint96(getPriorVotes(signer, prop.creationTime));
         
         // this is safe from overflow because `yesVotes` and `noVotes` are capped by `totalSupply`
         // which is checked for overflow in `KaliDAOtoken` contract

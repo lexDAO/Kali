@@ -23,7 +23,7 @@ class DaoInfo extends Component {
         <Text>Address: {dao['address']}</Text>
         <Text>Symbol: {dao['symbol']}</Text>
         <Text>Shares: {dao['totalSupply']}</Text>
-        <Text>Paused: {dao['paused']}</Text>
+        <Text>Transferable: {dao['paused']}</Text>
         <Text>Voting period: {dao['votingPeriod']}</Text>
         <Text>Quorum: {dao['quorum']}</Text>
         <Text>Supermajority: {dao['supermajority']}</Text>

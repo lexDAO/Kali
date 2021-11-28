@@ -18,7 +18,7 @@ contract KaliDAOfactory {
         uint32 votingPeriod_,
         uint8 quorum_,
         uint8 supermajority_,
-        uint8 mint_,
+        uint8 member_,
         uint8 call_,
         uint8 gov_
     ) external payable returns (KaliDAO kaliDAO) {
@@ -34,7 +34,7 @@ contract KaliDAOfactory {
             supermajority_
         );
         
-        kaliDAO.setVoteTypes(mint_, call_, gov_);
+        kaliDAO.setVoteTypes(member_, call_, gov_);
         
         emit DAOdeployed(name_, kaliDAO);
     }

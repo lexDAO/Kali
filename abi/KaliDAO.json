@@ -360,9 +360,9 @@
 				"type": "uint32"
 			},
 			{
-				"internalType": "uint224",
+				"internalType": "uint96",
 				"name": "votes",
-				"type": "uint224"
+				"type": "uint96"
 			}
 		],
 		"stateMutability": "view",
@@ -894,14 +894,14 @@
 				"type": "string"
 			},
 			{
-				"internalType": "uint224",
+				"internalType": "uint96",
 				"name": "yesVotes",
-				"type": "uint224"
+				"type": "uint96"
 			},
 			{
-				"internalType": "uint224",
+				"internalType": "uint96",
 				"name": "noVotes",
-				"type": "uint224"
+				"type": "uint96"
 			},
 			{
 				"internalType": "uint32",
@@ -962,7 +962,7 @@
 		"inputs": [
 			{
 				"internalType": "uint8",
-				"name": "mint_",
+				"name": "member_",
 				"type": "uint8"
 			},
 			{

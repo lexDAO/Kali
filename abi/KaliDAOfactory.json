@@ -67,7 +67,7 @@
 			},
 			{
 				"internalType": "uint8",
-				"name": "mint_",
+				"name": "member_",
 				"type": "uint8"
 			},
 			{

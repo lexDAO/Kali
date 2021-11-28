@@ -4,7 +4,7 @@ import factory from "../eth/factory.js";
 const abi = require("../abi/KaliDAO.json");
 import web3 from "../eth/web3.js";
 import Link from "next/link";
-import { Flex, Heading, Text, Icon, Button } from "@chakra-ui/react";
+import { Flex, Heading, Text, Icon, HStack } from "@chakra-ui/react";
 import FlexGradient from "./FlexGradient.js";
 
 import {
@@ -14,14 +14,12 @@ import {
 class DaoInfo extends Component {
   render() {
     const { dao, chainInfo } = this.props;
-    console.log(chainInfo["explorer"]);
+    console.log(chainInfo);
 
     return (
       <FlexGradient>
         <Text>Name: {dao["name"]}</Text>
-        <Button size="sm" rightIcon={<BsFillArrowUpRightSquareFill />}>
-          <Link href={`${chainInfo["explorer"]}/address/${dao["address"]}`}><Text>View</Text></Link>
-        </Button>
+        <HStack><Link href={`${chainInfo["explorer"]}/address/${dao["address"]}`}><Text>Address: {dao["address"]}</Text></Link><Icon as={BsFillArrowUpRightSquareFill} /></HStack>
         <Text>Symbol: {dao["symbol"]}</Text>
         <Text>Shares: {dao["totalSupply"]}</Text>
         <Text>Transferable: {dao["paused"]}</Text>

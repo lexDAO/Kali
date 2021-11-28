@@ -107,15 +107,15 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
     }
 
     function setVoteTypes(
-        uint8 mint_,
+        uint8 member_,
         uint8 call_,
         uint8 gov_
     ) public virtual {
         require(!initialized, 'INITIALIZED');
 
-        proposalVoteTypes[ProposalType.MINT] = VoteType(mint_);
+        proposalVoteTypes[ProposalType.MINT] = VoteType(member_);
 
-        proposalVoteTypes[ProposalType.BURN] = VoteType(mint_);
+        proposalVoteTypes[ProposalType.BURN] = VoteType(member_);
 
         proposalVoteTypes[ProposalType.CALL] = VoteType(call_);
 

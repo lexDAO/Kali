@@ -98,6 +98,10 @@ Kali adopts standard security conventions, including a [`ReentrancyGuard`](https
 
 ## Deployments
 
+### Arbitrum
+
+KaliDAOfactory: `0xd53B46aE3781904F1f61CF38Fd9d4F47A7e9242B`
+
 ### Polygon
 
 KaliDAOfactory: `0xd40223f63f8D44bE51CDE912aafc30dc340dB438`

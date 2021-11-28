@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.0;
 
-/// @notice Modern and gas-optimized ERC20 + EIP-2612 implementation with COMP-style governance and pausing,
+/// @notice Modern and gas-optimized ERC-20 + EIP-2612 implementation with COMP-style governance and pausing,
 /// @author Modified from RariCapital (https://github.com/Rari-Capital/solmate/blob/main/src/erc20/ERC20.sol)
 /// License-Identifier: AGPL-3.0-only
 abstract contract KaliDAOtoken {
@@ -31,7 +31,7 @@ abstract contract KaliDAOtoken {
     uint8 public constant decimals = 18;
 
     /*///////////////////////////////////////////////////////////////
-                            ERC20 STORAGE
+                            ERC-20 STORAGE
     //////////////////////////////////////////////////////////////*/
 
     uint256 public totalSupply;
@@ -107,7 +107,7 @@ abstract contract KaliDAOtoken {
     }
 
     /*///////////////////////////////////////////////////////////////
-                            ERC20 LOGIC
+                            ERC-20 LOGIC
     //////////////////////////////////////////////////////////////*/
 
     function approve(address spender, uint256 amount) public virtual returns (bool) {

@@ -28,6 +28,8 @@ async function advanceTime(time) {
       await kali.propose(
         0, "TEST", [proposer.address], [getBigNumber(1000)], [0x00]);
       await kali.vote(0, true);
+      await advanceTime(35);
+      await kali.processProposal(0);
     });
 
     it("Should process eviction proposal", async function () {

@@ -21,7 +21,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import FlexOutline from "./FlexOutline";
-<<<<<<< HEAD
+
 import {
     BsHandThumbsUpFill,
     BsHandThumbsDownFill,
@@ -29,9 +29,6 @@ import {
     BsFillPersonXFill,
     BsFillMegaphoneFill
 } from 'react-icons/bs';
-=======
-import { BsHandThumbsUpFill, BsHandThumbsDownFill } from "react-icons/bs";
->>>>>>> 1b10ec80d98318487f2334daaa9dbd8554b855e0
 
 class Proposals extends Component {
   vote = async () => {

@@ -100,8 +100,9 @@ class Proposals extends Component {
   };
 
   render() {
-    const { dao, proposals } = this.props;
+    const { dao, proposals, chainInfo } = this.props;
     console.log(proposals);
+    console.log(chainInfo);
 
     return (
       <>

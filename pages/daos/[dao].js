@@ -118,7 +118,35 @@ class App extends Component {
         }
       }
 
-      return { dao, proposals };
+      // chain info
+      const chains = {
+        1: {
+          name: 'mainnet',
+          explorer: 'etherscan.io'
+        },
+        4: {
+          name: 'rinkeby',
+          explorer: 'https://rinkeby.etherscan.io/'
+        },
+        137: {
+          name: 'polygon',
+          explorer: 'https://polygonscan.com/'
+        },
+        42161: {
+          name: 'arbitrum',
+          explorer: 'https://arbiscan.io/'
+        }
+      }
+
+      const chainInfo = {};
+      const chainId = await web3.eth.getChainId();
+      if(chains[chainId]!=null) {
+        chainInfo['explorer'] = chains[chainId]['explorer'];
+        chainInfo['name'] = chains[chainId]['name'];
+        chainInfo['chainId'] = chainId;
+      }
+
+      return { dao, proposals, chainInfo };
     }
 
   toggleLoading = () => {

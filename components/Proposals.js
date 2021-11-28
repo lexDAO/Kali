@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import React, { Component } from "react";
 import Router, { useRouter } from "next/router";
 import web3 from "../eth/web3.js";
@@ -16,13 +17,12 @@ import {
   Stack,
   HStack,
   VStack,
-  Spacer
-} from '@chakra-ui/react';
+  Spacer,
+} from "@chakra-ui/react";
 import FlexOutline from "./FlexOutline";
-import { BsHandThumbsUpFill, BsHandThumbsDownFill } from 'react-icons/bs';
+import { BsHandThumbsUpFill, BsHandThumbsDownFill } from "react-icons/bs";
 
 class Proposals extends Component {
-
   vote = async () => {
     event.preventDefault();
 
@@ -45,9 +45,7 @@ class Proposals extends Component {
       alert("You already voted");
       this.props.toggleLoading();
     } else {
-
       try {
-
         let result = await instance.methods
           .vote(id, parseInt(approval))
           .send({ from: accounts[0] });
@@ -56,15 +54,11 @@ class Proposals extends Component {
           pathname: "/daos/[dao]",
           query: { dao: dao },
         });
-
-      } catch (e) {
-
-      }
+      } catch (e) {}
 
       this.props.toggleLoading();
-
     }
-  }
+  };
 
   process = async () => {
     event.preventDefault();
@@ -80,7 +74,6 @@ class Proposals extends Component {
     const instance = new web3.eth.Contract(abi, dao);
 
     try {
-
       const accounts = await web3.eth.getAccounts();
       // * first, see if they already voted * //
       let result = await instance.methods
@@ -91,115 +84,137 @@ class Proposals extends Component {
         pathname: "/daos/[dao]",
         query: { dao: dao },
       });
-
     } catch (e) {
       alert(e);
     }
 
     this.props.toggleLoading();
-  }
+  };
 
   render() {
-
     const { dao, proposals } = this.props;
     console.log(proposals);
 
     return (
       <>
-
-          { proposals.length == 0 ?
-            <>
-              <Flex>
-                <Text><i>Awaiting Proposals</i></Text>
-              </Flex>
-            </>
-             :
+        {proposals.length == 0 ? (
+          <>
+            <Flex>
+              <Text>
+                <i>Awaiting Proposals</i>
+              </Text>
+            </Flex>
+          </>
+        ) : (
           <Grid templateColumns="repeat(1, 1fr)" gap={1}>
-
             {proposals.map((p, index) => (
-
               <FlexOutline>
-
                 <Stack spacing={3}>
-
                   <HStack>
-
                     <VStack
                       alignItems="left"
                       //backgroundColor="kali.800"
                       spacing={1}
                     >
-                      <Text fontSize="md"><b>{p['description']}</b></Text>
-                      {p['proposalType']==0 ?
+                      <Text fontSize="md">
+                        <b>{p["description"]}</b>
+                      </Text>
+                      {p["proposalType"] == 0 ? (
                         <>
-                          <Text fontSize="sm">Account: {p['account']}</Text>
-                          <Text fontSize="sm">Shares: {p['amount']}</Text>
+                          <Text fontSize="sm">Account: {p["account"]}</Text>
+                          <Text fontSize="sm">Shares: {p["amount"]}</Text>
                         </>
-                      : '' }
-                      {p['proposalType']==1 ?
+                      ) : (
+                        ""
+                      )}
+                      {p["proposalType"] == 1 ? (
                         <>
-                          <Text fontSize="sm">Account: {p['account']}</Text>
-                          <Text fontSize="sm">Shares: {p['amount']}</Text>
+                          <Text fontSize="sm">Account: {p["account"]}</Text>
+                          <Text fontSize="sm">Shares: {p["amount"]}</Text>
                         </>
-                      : '' }
-                      {p['proposalType']==2 ?
+                      ) : (
+                        ""
+                      )}
+                      {p["proposalType"] == 2 ? (
                         <>
-                          <Text fontSize="sm">Contract: {p['account']}</Text>
-                          <Text fontSize="sm">Payload: {p['payload']}</Text>
+                          <Text fontSize="sm">Contract: {p["account"]}</Text>
+                          <Text fontSize="sm">Payload: {p["payload"]}</Text>
                         </>
-                      : '' }
-                      <Text fontSize="sm"><i>created: {p['created']} <br />by: {p['proposer']}</i></Text>
+                      ) : (
+                        ""
+                      )}
+                      <Text fontSize="sm">
+                        <i>
+                          created: {p["created"]} <br />
+                          by: {p["proposer"]}
+                        </i>
+                      </Text>
                     </VStack>
 
                     <Spacer />
 
                     <VStack>
-
-                        <Badge colorScheme="green">yes: {web3.utils.fromWei(p['yesVotes'])}</Badge>
-                        <Badge colorScheme="red">no: {web3.utils.fromWei(p['noVotes'])}</Badge>
+                      <Badge colorScheme="green">
+                        yes: {web3.utils.fromWei(p["yesVotes"])}
+                      </Badge>
+                      <Badge colorScheme="red">
+                        no: {web3.utils.fromWei(p["noVotes"])}
+                      </Badge>
 
                       <Spacer />
 
                       <HStack>
-                      {p['open'] ?
-                        <>
-                        <form onSubmit={this.vote}>
-                          <Input type="hidden" name="dao" value={this.props.dao['address']} />
-                          <Input type="hidden" name="id" value={p['id']} />
-                          <Input type="hidden" name="approval" value={1} />
-                          <IconButton icon={<BsHandThumbsUpFill />} type="submit" />
-                        </form>
+                        {p["open"] ? (
+                          <>
+                            <form onSubmit={this.vote}>
+                              <Input
+                                type="hidden"
+                                name="dao"
+                                value={this.props.dao["address"]}
+                              />
+                              <Input type="hidden" name="id" value={p["id"]} />
+                              <Input type="hidden" name="approval" value={1} />
+                              <IconButton
+                                icon={<BsHandThumbsUpFill />}
+                                type="submit"
+                              />
+                            </form>
 
-                        <form onSubmit={this.vote}>
-                          <Input type="hidden" name="dao" value={this.props.dao['address']} />
-                          <Input type="hidden" name="id" value={p['id']} />
-                          <Input type="hidden" name="approval" value={0} />
-                          <IconButton icon={<BsHandThumbsDownFill />} type="submit" />
-                        </form>
-                        </>
-                      :
-                        <>
-                        <form onSubmit={this.process}>
-                          <Input type="hidden" name="dao" value={this.props.dao['address']} />
-                          <Input type="hidden" name="id" value={p['id']} />
-                          <Button type="submit">Process</Button>
-                        </form>
-                        </>
-                      }
-                     </HStack>
-
+                            <form onSubmit={this.vote}>
+                              <Input
+                                type="hidden"
+                                name="dao"
+                                value={this.props.dao["address"]}
+                              />
+                              <Input type="hidden" name="id" value={p["id"]} />
+                              <Input type="hidden" name="approval" value={0} />
+                              <IconButton
+                                icon={<BsHandThumbsDownFill />}
+                                type="submit"
+                              />
+                            </form>
+                          </>
+                        ) : (
+                          <>
+                            <form onSubmit={this.process}>
+                              <Input
+                                type="hidden"
+                                name="dao"
+                                value={this.props.dao["address"]}
+                              />
+                              <Input type="hidden" name="id" value={p["id"]} />
+                              <Button type="submit">Process</Button>
+                            </form>
+                          </>
+                        )}
+                      </HStack>
                     </VStack>
-
                   </HStack>
-
-               </Stack>
-
+                </Stack>
               </FlexOutline>
             ))}
-
           </Grid>
-          }
-
+        )}
       </>
     );
   }

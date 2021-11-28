@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/no-children-prop */
 import React, { Component } from "react";
 import web3 from "../eth/web3.js";

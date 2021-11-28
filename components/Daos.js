@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/link-passhref */
+/* eslint-disable react/jsx-key */
 /* eslint-disable react/no-children-prop */
 import React, { Component } from "react";
 import factory from "../eth/factory.js";

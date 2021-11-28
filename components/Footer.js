@@ -21,7 +21,7 @@ export default function Footer() {
     >
       <Text fontSize="xs">
         Brought to you by{" "}
-        <a href="https://twitter.com/lex_DAO">
+        <a href="https://twitter.com/lex_DAO" target="_blank" rel="noreferrer">
           <i>LexDAO</i>
         </a>
       </Text>

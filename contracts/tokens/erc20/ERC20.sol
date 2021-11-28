@@ -3,7 +3,7 @@
 pragma solidity >=0.8.0;
 
 /// @notice Modern and gas efficient ERC-20 + EIP-2612 implementation.
-/// @author From RariCapital (https://github.com/Rari-Capital/solmate/blob/main/src/erc20/ERC20.sol)
+/// @author Modified from RariCapital (https://github.com/Rari-Capital/solmate/blob/main/src/erc20/ERC20.sol)
 /// License-Identifier: AGPL-3.0-only
 abstract contract ERC20 {
     /*///////////////////////////////////////////////////////////////

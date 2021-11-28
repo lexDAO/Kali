@@ -12,6 +12,7 @@ import {
   Select,
   Badge,
   Grid,
+  Icon,
   IconButton,
   Stack,
   HStack,
@@ -19,7 +20,13 @@ import {
   Spacer
 } from '@chakra-ui/react';
 import FlexOutline from "./FlexOutline";
-import { BsHandThumbsUpFill, BsHandThumbsDownFill } from 'react-icons/bs';
+import {
+    BsHandThumbsUpFill,
+    BsHandThumbsDownFill,
+    BsFillPersonPlusFill,
+    BsFillPersonXFill,
+    BsFillMegaphoneFill
+} from 'react-icons/bs';
 
 class Proposals extends Component {
 
@@ -132,18 +139,21 @@ class Proposals extends Component {
                       <Text fontSize="md"><b>{p['description']}</b></Text>
                       {p['proposalType']==0 ?
                         <>
+                          <HStack><Icon as={BsFillPersonPlusFill} /><Text>Mint Shares</Text></HStack>
                           <Text fontSize="sm">Account: {p['account']}</Text>
                           <Text fontSize="sm">Shares: {p['amount']}</Text>
                         </>
                       : '' }
                       {p['proposalType']==1 ?
                         <>
+                          <HStack><Icon as={BsFillPersonXFill} /><Text>Burn Shares</Text></HStack>
                           <Text fontSize="sm">Account: {p['account']}</Text>
                           <Text fontSize="sm">Shares: {p['amount']}</Text>
                         </>
                       : '' }
                       {p['proposalType']==2 ?
                         <>
+                          <HStack><Icon as={BsFillMegaphoneFill} /><Text>Call Contract</Text></HStack>
                           <Text fontSize="sm">Contract: {p['account']}</Text>
                           <Text fontSize="sm">Payload: {p['payload']}</Text>
                         </>

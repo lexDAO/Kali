@@ -1,15 +1,19 @@
-import { Center, Spinner } from "@chakra-ui/react";
+import { Center, Flex, Spinner } from "@chakra-ui/react";
 
 export default function LoadingIndicator() {
   return (
     <Center
-      position="absolute"
-      width="100vw"
       height="100vh"
+      width="100vw"
+      position="fixed"
       backgroundColor="grey"
-      opacity=".4"
+      opacity="0.4"
     >
-      <Spinner size="xl" />
+      <Spinner
+        size="xl"
+        color="kali.700"
+        emptyColor="gray.200"
+     />
     </Center>
   );
 }

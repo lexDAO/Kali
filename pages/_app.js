@@ -1,6 +1,19 @@
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 
 const theme = extendTheme({
+  components: {
+    Button: {
+      defaultProps: {
+        colorScheme: "kali"
+      },
+      baseStyle: {
+        display: "flex",
+        justifyContent: "center",
+        alignItem: "center",
+        border: "1px",
+      },
+    }
+  },
   colors: {
     kali: {
       100: "#46254A", // american purple

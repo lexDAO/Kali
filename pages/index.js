@@ -1,59 +1,72 @@
 /* eslint-disable react/no-children-prop */
-import React, { useState, useEffect } from "react";
+import React, { Component } from "react";
 import web3 from "../eth/web3.js";
 import Router, { useRouter } from "next/router";
 import Layout from "../components/Layout.js";
-import Link from "next/link";
-import { Button, Flex, Box, Text, Container, Spacer } from "@chakra-ui/react";
+import { Button, Flex, Box, Text, Container, Spacer, VStack, Divider, Stack } from "@chakra-ui/react";
 import Factory from "../components/Factory";
+import factory from "../eth/factory.js";
+const abi = require("../abi/KaliDAO.json");
+import Daos from "../components/Daos";
 import LoadingIndicator from "../components/LoadingIndicator";
-import Daos from "./daos/index";
-import Footer from "../components/Footer";
+import FlexGradient from "../components/FlexGradient";
 
-export default function Home() {
+class Home extends Component {
 
-  const [loading, setLoading] = useState(false);
-  const [factoryVisible, setFactoryVisible] = useState(false);
-  
+  state = {
+    loading: false,
+    factoryVisible: false
+  }
 
-  return (
-    (
-      <Layout>
+  toggleLoading = () => {
+    this.setState({ loading: !this.state.loading })
+  }
 
-        <Flex
-          direction="row"
-          justifyContent="center"
-          alignItems="space-between"
-          padding={6}
-          m={3}
-        >
-          <Container>
-            <Text
-              as="h2"
-              letterSpacing="wide"
-              fontWeight="extrabold"
-              fontSize="2xl"
-            >
-              Welcome!
-            </Text>
-            <Text as="p" fontWeight="semibold" fontSize="md">
-              Kali is an optimised DAC protocol.
-            </Text>
-            <Button
-              bgGradient="linear(to-br, kali.600, kali.700)"
-              size="md"
-              variant="ghost"
-              onClick={() => setFactoryVisible(true)}
-            >
-              Create Kali DAO!
-            </Button>
-          </Container>
-          <Container>
-            {factoryVisible==true ? <Factory /> : null}
-          </Container>
-        </Flex>
-        <Footer />
-      </Layout>
-    )
-  );
+  toggleFactory = () => {
+    this.setState({ factoryVisible: !this.state.factoryVisible })
+  }
+
+  static async getInitialProps() {
+    const events = await factory.getPastEvents('DAOdeployed', {fromBlock: 0, toBlock: 'latest'});
+    const eventArray = [];
+    for(let i=0; i < events.length; i++) {
+      const address = events[i]['returnValues']['kaliDAO'];
+      const instance = await new web3.eth.Contract(abi, address);
+      const name = await instance.methods.name().call();
+      const dao = { kaliDAO: address, name: name };
+      eventArray.push(dao);
+    }
+    return { eventArray };
+  }
+
+  render() {
+
+    return (
+
+        <Layout loading={this.state.loading}>
+          <Stack spacing={5}>
+            <FlexGradient>
+              <Stack spacing={5} p={5} alignItems="center">
+                <Text fontSize="4xl" color="kali.700">KaliDAO</Text>
+                <Text fontSize="xl">KaliDAO is an optimized DAC framework like you've never seen before.  Move over, Moloch:
+                the queen has arrived.</Text>
+                <Button onClick={this.toggleFactory}>
+                  Create KaliDAO
+                </Button>
+              </Stack>
+            </FlexGradient>
+            <Divider />
+            <>
+              {this.state.factoryVisible==true ?
+                <><Factory toggleLoading={this.toggleLoading} /><Divider /></> : ''
+              }
+            </>
+             <Daos {...this.props} />
+          </Stack>
+        </Layout>
+      )
+  }
+
 }
+
+export default Home;

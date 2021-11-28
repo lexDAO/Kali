@@ -16,18 +16,12 @@ import {
   NumberDecrementStepper,
   Select,
 } from "@chakra-ui/react";
+import FlexGradient from "./FlexGradient";
 
 class Factory extends Component {
   state = {
-    loading: false,
     account: null,
   };
-
-  async componentDidMount() {
-    const accounts = await web3.eth.getAccounts();
-    const account = accounts[0];
-    this.setState({ account });
-  }
 
   static async getInitialProps() {
     const events = await factory.getPastEvents("DAOdeployed", {
@@ -44,7 +38,7 @@ class Factory extends Component {
 
   createDAO = async (e) => {
     e.preventDefault();
-    this.setState({ loading: true });
+    this.props.toggleLoading();
     let object = e.target;
     var array = [];
     for (let i = 0; i < object.length; i++) {
@@ -128,26 +122,14 @@ class Factory extends Component {
       alert(e);
       console.log(e);
     }
-    this.setState({ loading: false });
+    this.props.toggleLoading();
   };
 
   render() {
     console.log(this.props.eventArray);
 
     return (
-      <Flex
-        display="flex"
-        flexDirection="column"
-        bgGradient="linear(to-br, kali.200, kali.100)"
-        p={5}
-        color="kali.900"
-        fontSize="md"
-        letterSpacing="wide"
-        lineHeight="tight"
-        boxShadow="xs"
-        rounded="xl"
-        mb={5}
-      >
+      <FlexGradient>
         <form onSubmit={this.createDAO}>
           <Text fontWeight="semibold">Name</Text>
           <Input name="name" placeholder="KaliDAO"></Input>
@@ -213,22 +195,9 @@ class Factory extends Component {
           <Input type="hidden" name="call" value={1} />
           <Input type="hidden" name="gov" value={3} />
           <br></br>
-          <Button
-            display="flex"
-            justifyContent="center"
-            alignItem="center"
-            colorScheme="kali"
-            width="100%"
-            variant="outline"
-            _hover={{
-              color: "kali.500",
-            }}
-            type="submit"
-          >
-            Summon
-          </Button>
+          <Button type="submit">Summon</Button>
         </form>
-      </Flex>
+      </FlexGradient>
     );
   }
 }

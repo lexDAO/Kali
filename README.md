@@ -100,11 +100,11 @@ Kali adopts standard security conventions, including a [`ReentrancyGuard`](https
 
 ### Polygon
 
-KaliDAOfactory: `0x33c8268e4A0ED135DDAc52Ea4CCE67F10e9605Cb`
+KaliDAOfactory: `0xd40223f63f8D44bE51CDE912aafc30dc340dB438`
 
 ### Rinkeby
 
-KaliDAOfactory: `0xBc87B1A40796070d29e7aC8d08fB61D2A7685A27`
+KaliDAOfactory: `0xed35f7A980987AeC418C70bb4e01CA4799EC6EFd`
 
 ![image](https://user-images.githubusercontent.com/92001561/143658630-be24588c-a5cd-481e-8be8-d4a5d23c4caa.png)
 

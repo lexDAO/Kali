@@ -139,6 +139,7 @@ abstract contract ERC20 {
             );
 
             address recoveredAddress = ecrecover(digest, v, r, s);
+            
             require(recoveredAddress != address(0) && recoveredAddress == owner, 'INVALID_PERMIT_SIGNATURE');
 
             allowance[recoveredAddress][spender] = value;

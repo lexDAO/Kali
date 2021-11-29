@@ -4,7 +4,7 @@ const theme = extendTheme({
   components: {
     Button: {
       defaultProps: {
-        colorScheme: "kali"
+        colorScheme: "kali",
       },
       baseStyle: {
         display: "flex",
@@ -12,7 +12,7 @@ const theme = extendTheme({
         alignItem: "center",
         border: "1px",
       },
-    }
+    },
   },
   colors: {
     kali: {

@@ -9,11 +9,7 @@ export default function LoadingIndicator() {
       backgroundColor="grey"
       opacity="0.4"
     >
-      <Spinner
-        size="xl"
-        color="kali.700"
-        emptyColor="gray.200"
-     />
+      <Spinner size="xl" color="kali.700" emptyColor="gray.200" />
     </Center>
   );
 }

@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/no-children-prop */
 import React, { Component } from "react";
 import web3 from "../eth/web3.js";
@@ -67,8 +66,8 @@ class Home extends Component {
                 KaliDAO
               </Text>
               <Text fontSize="xl">
-                KaliDAO is an optimized DAC framework like you've never seen
-                before. Move over, Moloch: the queen has arrived.
+                KaliDAO is an optimized DAC framework like you&apos;ve never
+                seen before. Move over, Moloch: the queen has arrived.
               </Text>
               <Button onClick={this.toggleFactory}>Create KaliDAO</Button>
             </Stack>

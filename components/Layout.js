@@ -1,5 +1,11 @@
 import React from "react";
-import { Container, ChakraProvider, Flex, Spinner, Center } from "@chakra-ui/react";
+import {
+  Container,
+  ChakraProvider,
+  Flex,
+  Spinner,
+  Center,
+} from "@chakra-ui/react";
 import Head from "next/head";
 import Nav from "./Nav";
 import LoadingIndicator from "./LoadingIndicator";
@@ -8,8 +14,7 @@ import Footer from "./Footer";
 const Layout = (props) => {
   return (
     <>
-    { props.loading == true ?
-    <LoadingIndicator /> : '' }
+      {props.loading == true ? <LoadingIndicator /> : ""}
       <Head>
         <title>KaliDAO</title>
         <meta

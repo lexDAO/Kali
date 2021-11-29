@@ -1,6 +1,4 @@
 /* eslint-disable @next/next/link-passhref */
-/* eslint-disable react/jsx-key */
-/* eslint-disable react/no-children-prop */
 import React, { Component } from "react";
 import factory from "../eth/factory.js";
 const abi = require("../abi/KaliDAO.json");
@@ -20,7 +18,7 @@ class Daos extends Component {
           Deployed DAOs
         </Text>
         {eventArray.map((e, index) => (
-          <Button>
+          <Button key={eventArray.index}>
             <Link href={`/daos/${e["kaliDAO"]}`}>
               <Text fontSize="sm">
                 {e["name"]} - {e["kaliDAO"]}

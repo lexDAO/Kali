@@ -102,19 +102,19 @@ Kali adopts standard security conventions, including a [`ReentrancyGuard`](https
 
 KaliDAOfactory: [`0xd53B46aE3781904F1f61CF38Fd9d4F47A7e9242B`](https://arbiscan.io/address/0xd53b46ae3781904f1f61cf38fd9d4f47a7e9242b#code)
 
-FixedERC20factory: [`0x2985bDB7eC8f971126B6eBCd9B65662D22a59c6F`](https://arbiscan.io/address/0x2985bDB7eC8f971126B6eBCd9B65662D22a59c6F#code)
+FixedERC20factory: [`0x6C59AE79b651c686Ed628f2F5dECe8c40D517AB4`](https://arbiscan.io/address/0x6C59AE79b651c686Ed628f2F5dECe8c40D517AB4#code)
 
 ### Polygon
 
 KaliDAOfactory: [`0x582eAF6a83E55d60615A5FfB80913bE5c1724c41`](https://polygonscan.com/address/0x582eaf6a83e55d60615a5ffb80913be5c1724c41#code)
 
-FixedERC20factory: [`0x5fd571Dca13E1fd2CEff343B574D76A33c8B20C6`](https://polygonscan.com/address/0x5fd571Dca13E1fd2CEff343B574D76A33c8B20C6#code)
+FixedERC20factory: [`0x185009425978954512C23FCD94e090A5b6847eeE`](https://polygonscan.com/address/0x185009425978954512C23FCD94e090A5b6847eeE#code)
 
 ### Rinkeby
 
 KaliDAOfactory: [`0x6106375F8549fD1a688956F7070aa8bA3fdF51b2`](https://rinkeby.etherscan.io/address/0x6106375f8549fd1a688956f7070aa8ba3fdf51b2#code)
 
-FixedERC20factory: [`0x70EfE1857d508368fa9645345ceAC87f6dDB4229`](https://rinkeby.etherscan.io/address/0x70EfE1857d508368fa9645345ceAC87f6dDB4229#code)
+FixedERC20factory: [`0x0D6aDcBb5b8426931ca0Ce8E41eBaE4D87CE354E`](https://rinkeby.etherscan.io/address/0x0D6aDcBb5b8426931ca0Ce8E41eBaE4D87CE354E#code)
 
 ![image](https://user-images.githubusercontent.com/92001561/143658630-be24588c-a5cd-481e-8be8-d4a5d23c4caa.png)
 

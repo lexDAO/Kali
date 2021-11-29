@@ -14,22 +14,23 @@ import {
 class DaoInfo extends Component {
   render() {
     const { dao, chainInfo, holdersArray } = this.props;
-    
+    console.log(holdersArray)
     return (
       <FlexGradient>
         <Text>Name: {dao["name"]}</Text>
         <HStack><Text>Address: {dao["address"]}</Text><Link href={`${chainInfo["explorer"]}/address/${dao["address"]}`}><Icon as={BsFillArrowUpRightSquareFill} /></Link></HStack>
         <Text>Symbol: {dao["symbol"]}</Text>
-        <Text>Shares: {dao["totalSupply"]}</Text>
-        <Text>Transferable: {dao["paused"]}</Text>
-        <Text>Voting period: {dao["votingPeriod"]}</Text>
-        <Text>Quorum: {dao["quorum"]}</Text>
-        <Text>Supermajority: {dao["supermajority"]}</Text>
+        <Text>Shares: {dao["totalSupply"] / 1000000000000000000} </Text>
+        <Text>Members: {holdersArray.length}</Text>
+        <Text>Transferable: {dao["paused"].toString()}</Text>
+        <Text>Voting period: {dao["votingPeriod"]} seconds</Text>
+        <Text>Quorum: {dao["quorum"]}%</Text>
+        <Text>Supermajority: {dao["supermajority"]}%</Text>
         <HStack><Text isTruncated>Docs: {dao["docs"]}</Text><Link href={`${dao["docs"]}`}><Icon as={BsFillArrowUpRightSquareFill} /></Link></HStack>
         <Text>Members:</Text>
         <UnorderedList>
         {holdersArray.map((h, index) => (
-          <ListItem>{h[0]} ({web3.utils.fromWei(h[1], 'ether')} shares)</ListItem>
+          <ListItem>{h[0]} ({web3.utils.fromWei(h[1])} shares)</ListItem>
         ))}
         </UnorderedList>
       </FlexGradient>

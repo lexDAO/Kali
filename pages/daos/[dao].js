@@ -148,11 +148,23 @@ class App extends Component {
 
       // get historical token holders
       const holders = await instance.getPastEvents('Transfer', {fromBlock: 0, toBlock: 'latest'});
-      const holdersArray = [];
+      const dupes = [];
+      // list that contains duplicates
       for(let k=0; k<holders.length; k++) {
         let holder = holders[k]['returnValues']['to'];
+        dupes[k] = holder;
+      }
+      // unique list of addresses
+      const uniques = dupes.filter((v, i, a) => a.indexOf(v) === i);
+
+      const holdersArray = [];
+      for(let k=0; k<uniques.length; k++) {
+        let holder = uniques[k];
         let shares = await instance.methods.balanceOf(holder).call();
-        holdersArray[k] = [holder, shares];
+        if(shares>0) {
+          holdersArray.push([holder, shares])
+        }
+
       }
 
       return { dao, proposals, chainInfo, holdersArray };

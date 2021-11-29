@@ -39,7 +39,7 @@ abstract contract ERC20 {
     //////////////////////////////////////////////////////////////*/
 
     bytes32 public constant PERMIT_TYPEHASH =
-        keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
+        keccak256('Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)');
 
     uint256 internal immutable INITIAL_CHAIN_ID;
 
@@ -125,21 +125,21 @@ abstract contract ERC20 {
         bytes32 r,
         bytes32 s
     ) public virtual {
-        require(deadline >= block.timestamp, "PERMIT_DEADLINE_EXPIRED");
+        require(deadline >= block.timestamp, 'PERMIT_DEADLINE_EXPIRED');
 
         // this is safe because the only math done is incrementing
         // the owner's nonce which cannot realistically overflow
         unchecked {
             bytes32 digest = keccak256(
                 abi.encodePacked(
-                    "\x19\x01",
+                    '\x19\x01',
                     DOMAIN_SEPARATOR(),
                     keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, value, nonces[owner]++, deadline))
                 )
             );
 
             address recoveredAddress = ecrecover(digest, v, r, s);
-            require(recoveredAddress != address(0) && recoveredAddress == owner, "INVALID_PERMIT_SIGNATURE");
+            require(recoveredAddress != address(0) && recoveredAddress == owner, 'INVALID_PERMIT_SIGNATURE');
 
             allowance[recoveredAddress][spender] = value;
         }
@@ -155,9 +155,9 @@ abstract contract ERC20 {
         return
             keccak256(
                 abi.encode(
-                    keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"),
+                    keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
                     keccak256(bytes(name)),
-                    keccak256(bytes("1")),
+                    keccak256(bytes('1')),
                     block.chainid,
                     address(this)
                 )

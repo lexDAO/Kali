@@ -146,7 +146,16 @@ class App extends Component {
         chainInfo['chainId'] = chainId;
       }
 
-      return { dao, proposals, chainInfo };
+      // get historical token holders
+      const holders = await instance.getPastEvents('Transfer', {fromBlock: 0, toBlock: 'latest'});
+      const holdersArray = [];
+      for(let k=0; k<holders.length; k++) {
+        let holder = holders[k]['returnValues']['to'];
+        let shares = await instance.methods.balanceOf(holder).call();
+        holdersArray[k] = [holder, shares];
+      }
+
+      return { dao, proposals, chainInfo, holdersArray };
     }
 
   toggleLoading = () => {

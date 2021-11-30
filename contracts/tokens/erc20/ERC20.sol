@@ -125,7 +125,7 @@ abstract contract ERC20 {
         bytes32 r,
         bytes32 s
     ) public virtual {
-        require(deadline >= block.timestamp, 'PERMIT_DEADLINE_EXPIRED');
+        require(block.timestamp <= deadline, 'PERMIT_DEADLINE_EXPIRED');
 
         // this is safe because the only math done is incrementing
         // the owner's nonce which cannot realistically overflow

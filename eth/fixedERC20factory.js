@@ -1,13 +1,13 @@
 import web3 from "./web3";
 const abi = require('../abi/FixedERC20factory.json');
 
-const arbitrum = "0x0D6aDcBb5b8426931ca0Ce8E41eBaE4D87CE354E";
-const polygon = "0x185009425978954512C23FCD94e090A5b6847eeE";
-const rinkeby = "0x0D6aDcBb5b8426931ca0Ce8E41eBaE4D87CE354E";
+const arbitrum = "0xF85e8B97c058cb13DB8651217f69AD7D7efFf877";
+const polygon = "0xafB6aC447f765a6BFD6B0D08D03a509D028BD11a";
+const rinkeby = "0x6aBab95BB30710159B3e40bF6e049f935547D12b";
 
-const factory = new web3.eth.Contract(
+const fixedERC20factory = new web3.eth.Contract(
   abi,
   rinkeby
 );
 
-export default factory;
+export default fixedERC20factory;

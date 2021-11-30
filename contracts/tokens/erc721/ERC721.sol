@@ -264,7 +264,7 @@ abstract contract ERC721 {
     function _mint(
         address to, 
         uint256 tokenId, 
-        string memory _tokenURI
+        string memory tokenURI_
     ) internal virtual { 
         require(ownerOf[tokenId] == address(0), 'ALREADY_MINTED');
   
@@ -279,7 +279,7 @@ abstract contract ERC721 {
         
         ownerOf[tokenId] = to;
         
-        tokenURI[tokenId] = _tokenURI;
+        tokenURI[tokenId] = tokenURI_;
         
         emit Transfer(address(0), to, tokenId); 
     }

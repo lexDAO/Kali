@@ -115,6 +115,23 @@ abstract contract ERC20 {
     /*///////////////////////////////////////////////////////////////
                             EIP-2612 LOGIC
     //////////////////////////////////////////////////////////////*/
+    
+    function _computeDomainSeparator() internal view virtual returns (bytes32) {
+        return
+            keccak256(
+                abi.encode(
+                    keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
+                    keccak256(bytes(name)),
+                    keccak256(bytes('1')),
+                    block.chainid,
+                    address(this)
+                )
+            );
+    }
+    
+    function DOMAIN_SEPARATOR() public view virtual returns (bytes32) {
+        return block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
+    }
 
     function permit(
         address owner,
@@ -146,23 +163,6 @@ abstract contract ERC20 {
         }
 
         emit Approval(owner, spender, value);
-    }
-
-    function DOMAIN_SEPARATOR() public view virtual returns (bytes32) {
-        return block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
-    }
-
-    function _computeDomainSeparator() internal view virtual returns (bytes32) {
-        return
-            keccak256(
-                abi.encode(
-                    keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
-                    keccak256(bytes(name)),
-                    keccak256(bytes('1')),
-                    block.chainid,
-                    address(this)
-                )
-            );
     }
 
     /*///////////////////////////////////////////////////////////////

@@ -20,6 +20,7 @@ const abi = require("../abi/KaliDAO.json");
 import Daos from "../components/Daos";
 import LoadingIndicator from "../components/LoadingIndicator";
 import FlexGradient from "../components/FlexGradient";
+import FactoryForm from "../components/FactoryForm.js";
 
 class Home extends Component {
   state = {
@@ -76,7 +77,7 @@ class Home extends Component {
           <>
             {this.state.factoryVisible == true ? (
               <>
-                <Factory toggleLoading={this.toggleLoading} />
+                <FactoryForm toggleLoading={this.toggleLoading} />
                 <Divider />
               </>
             ) : (

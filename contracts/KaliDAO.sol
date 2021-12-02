@@ -89,15 +89,13 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         address[] memory voters_,
         uint256[] memory shares_,
         uint32 votingPeriod_,
-        uint8 quorum_,
-        uint8 supermajority_,
-        uint8 voteType_
+        uint8[] memory govSettings_
     ) payable KaliDAOtoken(name_, symbol_, paused_, voters_, shares_) {
         require(votingPeriod_ <= 365 days, 'VOTING_PERIOD_MAX');
         
-        require(quorum_ <= 100, 'QUORUM_MAX');
+        require(govSettings_[0] <= 100, 'QUORUM_MAX');
         
-        require(supermajority_ > 51 && supermajority_ <= 100, 'SUPERMAJORITY_BOUNDS');
+        require(govSettings_[1] > 51 && govSettings_[1] <= 100, 'SUPERMAJORITY_BOUNDS');
 
         // this is reasonably safe from overflow because incrementing `i` loop beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
@@ -111,30 +109,30 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         
         votingPeriod = votingPeriod_;
         
-        quorum = quorum_;
+        quorum = govSettings_[0];
         
-        supermajority = supermajority_;
+        supermajority = govSettings_[1];
 
         // set initial vote types
-        proposalVoteTypes[ProposalType.MINT] = VoteType(voteType_);
+        proposalVoteTypes[ProposalType.MINT] = VoteType(govSettings_[2]);
 
-        proposalVoteTypes[ProposalType.BURN] = VoteType(voteType_);
+        proposalVoteTypes[ProposalType.BURN] = VoteType(govSettings_[3]);
 
-        proposalVoteTypes[ProposalType.CALL] = VoteType(voteType_);
+        proposalVoteTypes[ProposalType.CALL] = VoteType(govSettings_[4]);
 
-        proposalVoteTypes[ProposalType.PERIOD] = VoteType(voteType_);
+        proposalVoteTypes[ProposalType.PERIOD] = VoteType(govSettings_[5]);
         
-        proposalVoteTypes[ProposalType.QUORUM] = VoteType(voteType_);
+        proposalVoteTypes[ProposalType.QUORUM] = VoteType(govSettings_[6]);
         
-        proposalVoteTypes[ProposalType.SUPERMAJORITY] = VoteType(voteType_);
+        proposalVoteTypes[ProposalType.SUPERMAJORITY] = VoteType(govSettings_[7]);
 
-        proposalVoteTypes[ProposalType.TYPE] = VoteType(voteType_);
+        proposalVoteTypes[ProposalType.TYPE] = VoteType(govSettings_[8]);
         
-        proposalVoteTypes[ProposalType.PAUSE] = VoteType(voteType_);
+        proposalVoteTypes[ProposalType.PAUSE] = VoteType(govSettings_[9]);
         
-        proposalVoteTypes[ProposalType.EXTENSION] = VoteType(voteType_);
+        proposalVoteTypes[ProposalType.EXTENSION] = VoteType(govSettings_[10]);
 
-        proposalVoteTypes[ProposalType.DOCS] = VoteType(voteType_);
+        proposalVoteTypes[ProposalType.DOCS] = VoteType(govSettings_[11]);
     }
 
     /*///////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 require("@nomiclabs/hardhat-waffle");
-require("hardhat-gas-reporter");
+//require("hardhat-gas-reporter");
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -62,19 +62,10 @@ module.exports = {
         settings: {
           optimizer: {
             enabled: true,
-            runs: 999999,
+            runs: 9999,
           },
         },
-      },
-      {
-        version: "0.6.12",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 999999,
-          },
-        },
-      },
+      }
     ],
   },
   mocha: {

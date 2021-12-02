@@ -4,7 +4,7 @@ pragma solidity >=0.8.0;
 
 /// @notice DAO membership extension interface.
 interface IKaliDAOextension {
-    function setExtension(address dao, bytes calldata data) external;
+    function setExtension(address dao, bytes calldata extensionData) external;
 
     function callExtension(
         address account, 

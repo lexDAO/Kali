@@ -15,12 +15,10 @@ contract KaliDAOfactory {
         bool paused_,
         address[] memory extensions_,
         bytes[] memory extensionsData_,
-        address[] memory voters_,
-        uint256[] memory shares_,
+        address[] calldata voters_,
+        uint256[] calldata shares_,
         uint32 votingPeriod_,
-        uint8 quorum_,
-        uint8 supermajority_,
-        uint8 voteType_
+        uint8[] memory govSettings_
     ) external payable returns (KaliDAO kaliDAO) {
         kaliDAO = new KaliDAO{value: msg.value}(
             name_, 
@@ -31,9 +29,7 @@ contract KaliDAOfactory {
             voters_, 
             shares_, 
             votingPeriod_, 
-            quorum_, 
-            supermajority_,
-            voteType_
+            govSettings_
         );
 
         // this is reasonably safe from overflow because incrementing `i` loop beyond

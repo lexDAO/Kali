@@ -20,11 +20,18 @@ async function advanceTime(time) {
 
       const Kali = await ethers.getContractFactory("KaliDAO");
       const kali = await Kali.deploy(
-        "KALI", "KALI", "DOCS", true, [proposer.address], [getBigNumber(1)], 30, 100, 100
+        "KALI", 
+        "KALI", 
+        "DOCS", 
+        true, 
+        [proposer.address], 
+        [proposer.address],
+        [getBigNumber(1)], 
+        30, 
+        [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       );
       
       await kali.deployed();
-      await kali.setVoteTypes(0, 0, 0);
       await kali.propose(
         0, "TEST", [proposer.address], [getBigNumber(1000)], [0x00]);
       await kali.vote(0, true);
@@ -38,11 +45,18 @@ async function advanceTime(time) {
 
       const Kali = await ethers.getContractFactory("KaliDAO");
       const kali = await Kali.deploy(
-        "KALI", "KALI", "DOCS", true, [proposer.address], [getBigNumber(1)], 30, 100, 100
+        "KALI", 
+        "KALI", 
+        "DOCS", 
+        true, 
+        [proposer.address], 
+        [proposer.address],
+        [getBigNumber(1)], 
+        30, 
+        [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       );
       
       await kali.deployed();
-      await kali.setVoteTypes(0, 0, 0);
       await kali.propose(
         1, "TEST", [proposer.address], [getBigNumber(1)], [0x00]);
       await kali.vote(0, true);
@@ -56,11 +70,18 @@ async function advanceTime(time) {
 
       const Kali = await ethers.getContractFactory("KaliDAO");
       const kali = await Kali.deploy(
-        "KALI", "KALI", "DOCS", true, [proposer.address], [getBigNumber(1)], 30, 100, 100
+        "KALI", 
+        "KALI", 
+        "DOCS", 
+        true, 
+        [proposer.address], 
+        [proposer.address],
+        [getBigNumber(1)], 
+        30, 
+        [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       );
       
       await kali.deployed();
-      await kali.setVoteTypes(0, 0, 0);
       await kali.propose(
         2, "TEST", [proposer.address], [getBigNumber(1000)], [0x00]);
       await kali.vote(0, true);
@@ -74,11 +95,18 @@ async function advanceTime(time) {
 
       const Kali = await ethers.getContractFactory("KaliDAO");
       const kali = await Kali.deploy(
-        "KALI", "KALI", "DOCS", true, [proposer.address], [getBigNumber(1)], 30, 100, 100
+        "KALI", 
+        "KALI", 
+        "DOCS", 
+        true, 
+        [proposer.address], 
+        [proposer.address],
+        [getBigNumber(1)], 
+        30, 
+        [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       );
       
       await kali.deployed();
-      await kali.setVoteTypes(0, 0, 0);
       await kali.propose(
         3, "TEST", [proposer.address], [1000], [0x00]);
       await kali.vote(0, true);
@@ -92,11 +120,18 @@ async function advanceTime(time) {
 
       const Kali = await ethers.getContractFactory("KaliDAO");
       const kali = await Kali.deploy(
-        "KALI", "KALI", "DOCS", true, [proposer.address], [getBigNumber(1)], 30, 100, 100
+        "KALI", 
+        "KALI", 
+        "DOCS", 
+        true, 
+        [proposer.address], 
+        [proposer.address],
+        [getBigNumber(1)], 
+        30, 
+        [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       );
       
       await kali.deployed();
-      await kali.setVoteTypes(0, 0, 0);
       await kali.propose(
         4, "TEST", [proposer.address], [100], [0x00]);
       await kali.vote(0, true);
@@ -110,11 +145,18 @@ async function advanceTime(time) {
 
       const Kali = await ethers.getContractFactory("KaliDAO");
       const kali = await Kali.deploy(
-        "KALI", "KALI", "DOCS", true, [proposer.address], [getBigNumber(1)], 30, 100, 100
+        "KALI", 
+        "KALI", 
+        "DOCS", 
+        true, 
+        [proposer.address], 
+        [proposer.address],
+        [getBigNumber(1)], 
+        30, 
+        [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       );
       
       await kali.deployed();
-      await kali.setVoteTypes(0, 0, 0);
       await kali.propose(
         5, "TEST", [proposer.address], [100], [0x00]);
       await kali.vote(0, true);
@@ -128,11 +170,18 @@ async function advanceTime(time) {
   
       const Kali = await ethers.getContractFactory("KaliDAO");
       const kali = await Kali.deploy(
-        "KALI", "KALI", "DOCS", false, [sender.address], [getBigNumber(10)], 30, 100, 100
+        "KALI", 
+        "KALI", 
+        "DOCS", 
+        false, 
+        [sender.address], 
+        [sender.address],
+        [getBigNumber(10)], 
+        30, 
+        [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       );
         
       await kali.deployed();
-      await kali.setVoteTypes(0, 0, 0);
         
       await kali.transfer(receiver.address, getBigNumber(5));
     });
@@ -143,11 +192,18 @@ async function advanceTime(time) {
   
       const Kali = await ethers.getContractFactory("KaliDAO");
       const kali = await Kali.deploy(
-        "KALI", "KALI", "DOCS", false, [sender.address], [getBigNumber(10)], 30, 100, 100
+        "KALI", 
+        "KALI", 
+        "DOCS", 
+        false, 
+        [sender.address], 
+        [sender.address],
+        [getBigNumber(10)], 
+        30, 
+        [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       );
         
       await kali.deployed();
-      await kali.setVoteTypes(0, 0, 0);
         
       await kali.transfer(receiver.address, getBigNumber(11)).should.be.reverted;
     });

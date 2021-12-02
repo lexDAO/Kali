@@ -19,7 +19,7 @@ contract KaliDAOfactory {
         uint256[] memory shares_,
         uint32 votingPeriod_,
         uint8 quorum_,
-        uint8 superMajority_,
+        uint8 supermajority_,
         uint8 voteType_
     ) external payable returns (KaliDAO kaliDAO) {
         kaliDAO = new KaliDAO{value: msg.value}(
@@ -32,7 +32,7 @@ contract KaliDAOfactory {
             shares_, 
             votingPeriod_, 
             quorum_, 
-            superMajority_,
+            supermajority_,
             voteType_
         );
 

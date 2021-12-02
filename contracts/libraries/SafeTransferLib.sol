@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity 0.8.10;
+pragma solidity >=0.8.0;
 
 /// @notice Safe ETH and ERC20 transfer library that gracefully handles missing return values.
 /// @author Modified from RariCapital (https://github.com/Rari-Capital/solmate/blob/main/src/utils/SafeTransferLib.sol)
@@ -23,8 +23,34 @@ library SafeTransferLib {
     }
 
     /*///////////////////////////////////////////////////////////////
-                           ERC20 OPERATIONS
+                            ERC20 OPERATIONS
     //////////////////////////////////////////////////////////////*/
+
+    function safeTransfer(
+        address token,
+        address to,
+        uint256 amount
+    ) internal {
+        bool callStatus;
+
+        assembly {
+            // get a pointer to some free memory
+            let freeMemoryPointer := mload(0x40)
+
+            // write the abi-encoded calldata to memory piece by piece:
+            mstore(freeMemoryPointer, 0xa9059cbb00000000000000000000000000000000000000000000000000000000) // begin with the function selector
+            
+            mstore(add(freeMemoryPointer, 4), and(to, 0xffffffffffffffffffffffffffffffffffffffff)) // mask and append the "to" argument
+            
+            mstore(add(freeMemoryPointer, 36), amount) // finally append the "amount" argument - no mask as it's a full 32 byte value
+
+            // call the token and store if it succeeded or not
+            // we use 68 because the calldata length is 4 + 32 * 2
+            callStatus := call(gas(), token, 0, freeMemoryPointer, 68, 0, 0)
+        }
+
+        require(didLastOptionalReturnCallSucceed(callStatus), "TRANSFER_FAILED");
+    }
 
     function safeTransferFrom(
         address token,
@@ -55,34 +81,8 @@ library SafeTransferLib {
         require(didLastOptionalReturnCallSucceed(callStatus), "TRANSFER_FROM_FAILED");
     }
 
-    function safeTransfer(
-        address token,
-        address to,
-        uint256 amount
-    ) internal {
-        bool callStatus;
-
-        assembly {
-            // get a pointer to some free memory
-            let freeMemoryPointer := mload(0x40)
-
-            // write the abi-encoded calldata to memory piece by piece:
-            mstore(freeMemoryPointer, 0xa9059cbb00000000000000000000000000000000000000000000000000000000) // begin with the function selector
-            
-            mstore(add(freeMemoryPointer, 4), and(to, 0xffffffffffffffffffffffffffffffffffffffff)) // mask and append the "to" argument
-            
-            mstore(add(freeMemoryPointer, 36), amount) // finally append the "amount" argument - no mask as it's a full 32 byte value
-
-            // call the token and store if it succeeded or not
-            // we use 68 because the calldata length is 4 + 32 * 2
-            callStatus := call(gas(), token, 0, freeMemoryPointer, 68, 0, 0)
-        }
-
-        require(didLastOptionalReturnCallSucceed(callStatus), "TRANSFER_FAILED");
-    }
-
     /*///////////////////////////////////////////////////////////////
-                         INTERNAL HELPER LOGIC
+                            INTERNAL HELPER LOGIC
     //////////////////////////////////////////////////////////////*/
 
     function didLastOptionalReturnCallSucceed(bool callStatus) internal pure returns (bool success) {

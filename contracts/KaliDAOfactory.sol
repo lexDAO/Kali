@@ -13,28 +13,36 @@ contract KaliDAOfactory {
         string memory symbol_,
         string memory docs_,
         bool paused_,
+        address[] memory extensions_,
+        bytes[] memory extensionsData_,
         address[] memory voters_,
         uint256[] memory shares_,
         uint32 votingPeriod_,
         uint8 quorum_,
-        uint8 supermajority_,
-        uint8 member_,
-        uint8 call_,
-        uint8 gov_
+        uint8 superMajority_,
+        uint8 voteType_
     ) external payable returns (KaliDAO kaliDAO) {
         kaliDAO = new KaliDAO{value: msg.value}(
             name_, 
             symbol_, 
             docs_,
             paused_, 
+            extensions_,
             voters_, 
             shares_, 
             votingPeriod_, 
             quorum_, 
-            supermajority_
+            superMajority_,
+            voteType_
         );
-        
-        kaliDAO.setVoteTypes(member_, call_, gov_);
+
+        // this is reasonably safe from overflow because incrementing `i` loop beyond
+        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        unchecked {
+            for (uint256 i; i < extensions_.length; i++) {
+                IKaliDAOextension(extensions_[i]).setExtension(address(kaliDAO), extensionsData_[i]);
+            }
+        }
         
         emit DAOdeployed(name_, kaliDAO);
     }

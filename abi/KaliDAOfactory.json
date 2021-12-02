@@ -4,6 +4,12 @@
 		"inputs": [
 			{
 				"indexed": true,
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": true,
 				"internalType": "contract KaliDAO",
 				"name": "kaliDAO",
 				"type": "address"
@@ -22,6 +28,11 @@
 			{
 				"internalType": "string",
 				"name": "symbol_",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "docs_",
 				"type": "string"
 			},
 			{
@@ -56,12 +67,7 @@
 			},
 			{
 				"internalType": "uint8",
-				"name": "mint_",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint8",
-				"name": "burn_",
+				"name": "member_",
 				"type": "uint8"
 			},
 			{

@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.0;
 
-/// @notice Modern and gas-optimized ERC20 + EIP-2612 implementation with COMP-style governance and pausing,
+/// @notice Modern and gas-optimized ERC-20 + EIP-2612 implementation with COMP-style governance and pausing,
 /// @author Modified from RariCapital (https://github.com/Rari-Capital/solmate/blob/main/src/erc20/ERC20.sol)
 /// License-Identifier: AGPL-3.0-only
 abstract contract KaliDAOtoken {
@@ -31,7 +31,7 @@ abstract contract KaliDAOtoken {
     uint8 public constant decimals = 18;
 
     /*///////////////////////////////////////////////////////////////
-                            ERC20 STORAGE
+                            ERC-20 STORAGE
     //////////////////////////////////////////////////////////////*/
 
     uint256 public totalSupply;
@@ -56,7 +56,7 @@ abstract contract KaliDAOtoken {
 
     struct Checkpoint {
         uint32 fromTimestamp;
-        uint224 votes;
+        uint96 votes;
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -107,7 +107,7 @@ abstract contract KaliDAOtoken {
     }
 
     /*///////////////////////////////////////////////////////////////
-                            ERC20 LOGIC
+                            ERC-20 LOGIC
     //////////////////////////////////////////////////////////////*/
 
     function approve(address spender, uint256 amount) public virtual returns (bool) {
@@ -279,9 +279,9 @@ abstract contract KaliDAOtoken {
         unchecked {
             // this is safe from underflow because decrement only occurs if `nCheckpoints` is positive
             if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromTimestamp == block.timestamp) {
-                checkpoints[delegatee][nCheckpoints - 1].votes = safeCastTo224(newVotes);
+                checkpoints[delegatee][nCheckpoints - 1].votes = safeCastTo96(newVotes);
             } else {
-                checkpoints[delegatee][nCheckpoints] = Checkpoint(safeCastTo32(block.timestamp), safeCastTo224(newVotes));
+                checkpoints[delegatee][nCheckpoints] = Checkpoint(safeCastTo32(block.timestamp), safeCastTo96(newVotes));
                 // this is reasonably safe from overflow because incrementing `nCheckpoints` beyond
                 // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
                 numCheckpoints[delegatee] = nCheckpoints + 1;
@@ -391,9 +391,9 @@ abstract contract KaliDAOtoken {
         y = uint32(x);
     }
     
-    function safeCastTo224(uint256 x) internal pure virtual returns (uint224 y) {
-        require(x <= type(uint224).max);
+    function safeCastTo96(uint256 x) internal pure virtual returns (uint96 y) {
+        require(x <= type(uint96).max);
 
-        y = uint224(x);
+        y = uint96(x);
     }
 }

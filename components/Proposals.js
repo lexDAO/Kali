@@ -1,86 +1,241 @@
 import React, { Component } from "react";
+import Router, { useRouter } from "next/router";
+import web3 from "../eth/web3.js";
+const abi = require("../abi/KaliDAO.json");
 import {
   chakra,
   Input,
   Button,
   Text,
   Flex,
+  Box,
   Select,
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  Badge
-} from '@chakra-ui/react';
-import web3 from '../eth/web3.js';
+  Badge,
+  Grid,
+  Icon,
+  IconButton,
+  Stack,
+  HStack,
+  VStack,
+  Spacer,
+} from "@chakra-ui/react";
+import FlexOutline from "./FlexOutline";
+
+import {
+  BsHandThumbsUpFill,
+  BsHandThumbsDownFill,
+  BsFillPersonPlusFill,
+  BsFillPersonXFill,
+  BsFillMegaphoneFill,
+} from "react-icons/bs";
 
 class Proposals extends Component {
+  vote = async () => {
+    event.preventDefault();
+
+    this.props.toggleLoading();
+
+    let object = event.target;
+    var array = [];
+    for (let i = 0; i < object.length; i++) {
+      array[object[i].name] = object[i].value;
+    }
+
+    const { dao, id, approval } = array;
+
+    const instance = new web3.eth.Contract(abi, dao);
+
+    const accounts = await web3.eth.getAccounts();
+    // * first, see if they already voted * //
+    const voted = await instance.methods.voted(id, accounts[0]).call();
+    if (voted == true) {
+      alert("You already voted");
+      this.props.toggleLoading();
+    } else {
+      try {
+        let result = await instance.methods
+          .vote(id, parseInt(approval))
+          .send({ from: accounts[0] });
+
+        Router.push({
+          pathname: "/daos/[dao]",
+          query: { dao: dao },
+        });
+      } catch (e) {}
+
+      this.props.toggleLoading();
+    }
+  };
+
+  process = async () => {
+    event.preventDefault();
+    this.props.toggleLoading();
+    let object = event.target;
+    var array = [];
+    for (let i = 0; i < object.length; i++) {
+      array[object[i].name] = object[i].value;
+    }
+
+    const { dao, id } = array;
+
+    const instance = new web3.eth.Contract(abi, dao);
+
+    try {
+      const accounts = await web3.eth.getAccounts();
+      // * first, see if they already voted * //
+      let result = await instance.methods
+        .processProposal(id)
+        .send({ from: accounts[0] });
+
+      Router.push({
+        pathname: "/daos/[dao]",
+        query: { dao: dao },
+      });
+    } catch (e) {
+      alert(e);
+    }
+
+    this.props.toggleLoading();
+  };
 
   render() {
-
-    const { dao, proposals } = this.props;
+    const { dao, proposals, chainInfo } = this.props;
     console.log(proposals);
+    console.log(chainInfo);
 
     return (
-      <React.Fragment>
-
-        <Flex alignItems="center" justifyContent="center">
-          { proposals.length == 0 ?
+      <>
+        {proposals.length == 0 ? (
+          <>
             <Flex>
-              <Text><i>Awaiting Proposals</i></Text>
+              <Text>
+                <i>Awaiting Proposals</i>
+              </Text>
             </Flex>
-             :
-          <Table variant="simple">
+          </>
+        ) : (
+          <Grid templateColumns="repeat(1, 1fr)" gap={1}>
             {proposals.map((p, index) => (
-              <Tr key={index}>
-                <Td><b>{p['type']}</b></Td>
-                <Td><b><i>description:</i></b> {p['description']}<br />
-                  { p['proposalType'] == 0 ?
-                    <Text><b><i>account</i></b>: {p['account'][0]}<br />
-                    <b><i>proposed shares:</i></b> {web3.utils.fromWei(p['amount'][0])}</Text>
-                    : p['proposalType'] == 1 ?
-                    <Text>address: {p['account'][0]}<br />
-                    shares to burn: {p['amount'][0]}</Text>
-                    : p['proposalType'] == 2 ?
-                    <Text>address of contract to call: {p['account'][0]}<br />
-                    proposed payload: {p['payload'][0]}</Text>
-                    : p['proposalType'] == 3 ?
-                    <Text>amount: {p['amount'][0]}</Text>
-                    : ''
-                  }
-                </Td>
-                <Td><Badge colorScheme="green">yes: {web3.utils.fromWei(p['yesVotes'])}</Badge></Td>
-                <Td><Badge colorScheme="red">no: {web3.utils.fromWei(p['noVotes'])}</Badge></Td>
-                <Td>
-                  {p['open'] ?
-                  <form onSubmit={this.props.vote}>
-                    <Input type="hidden" name="dao" value={this.props.dao['address']} />
-                    <Input type="hidden" name="index" value={index} />
-                    <Select name="approval">
-                      <option value={1}>👍</option>
-                      <option value={0}>👎</option>
-                    </Select>
-                    <Button colorScheme="teal" size="sm" variant="outline" type="submit">Vote</Button>
+              <FlexOutline key={proposals}>
+                <Stack spacing={3}>
+                  <HStack>
+                    <VStack
+                      alignItems="left"
+                      //backgroundColor="kali.800"
+                      spacing={1}
+                    >
+                      <Text fontSize="md">
+                        <b>{p["description"]}</b>
+                      </Text>
+                      {p["proposalType"] == 0 ? (
+                        <>
+                          <HStack>
+                            <Icon as={BsFillPersonPlusFill} />
+                            <Text>Mint Shares</Text>
+                          </HStack>
+                          <Text fontSize="sm">Account: {p["account"]}</Text>
+                          <Text fontSize="sm">Shares: {p["amount"]}</Text>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {p["proposalType"] == 1 ? (
+                        <>
+                          <HStack>
+                            <Icon as={BsFillPersonXFill} />
+                            <Text>Burn Shares</Text>
+                          </HStack>
+                          <Text fontSize="sm">Account: {p["account"]}</Text>
+                          <Text fontSize="sm">Shares: {p["amount"]}</Text>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {p["proposalType"] == 2 ? (
+                        <>
+                          <HStack>
+                            <Icon as={BsFillMegaphoneFill} />
+                            <Text>Call Contract</Text>
+                          </HStack>
+                          <Text fontSize="sm">Contract: {p["account"]}</Text>
+                          <Text fontSize="sm">Payload: {p["payload"]}</Text>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      <Text fontSize="sm">
+                        <i>
+                          created: {p["created"]} <br />
+                          by: {p["proposer"]}
+                        </i>
+                      </Text>
+                    </VStack>
 
-                  </form>
-                :
-                  <form onSubmit={this.props.process}>
-                    <Input type="hidden" name="dao" value={this.props.dao['address']} />
-                    <Input type="hidden" name="index" value={index} />
-                    <Button colorScheme="teal" size="sm" variant="outline" type="submit">Process</Button>
-                  </form>
-                }
-                </Td>
-              </Tr>
+                    <Spacer />
+
+                    <VStack>
+                      <Badge colorScheme="green">
+                        yes: {web3.utils.fromWei(p["yesVotes"])}
+                      </Badge>
+                      <Badge colorScheme="red">
+                        no: {web3.utils.fromWei(p["noVotes"])}
+                      </Badge>
+
+                      <Spacer />
+
+                      <HStack>
+                        {p["open"] ? (
+                          <>
+                            <form onSubmit={this.vote}>
+                              <Input
+                                type="hidden"
+                                name="dao"
+                                value={this.props.dao["address"]}
+                              />
+                              <Input type="hidden" name="id" value={p["id"]} />
+                              <Input type="hidden" name="approval" value={1} />
+                              <IconButton
+                                icon={<BsHandThumbsUpFill />}
+                                type="submit"
+                              />
+                            </form>
+
+                            <form onSubmit={this.vote}>
+                              <Input
+                                type="hidden"
+                                name="dao"
+                                value={this.props.dao["address"]}
+                              />
+                              <Input type="hidden" name="id" value={p["id"]} />
+                              <Input type="hidden" name="approval" value={0} />
+                              <IconButton
+                                icon={<BsHandThumbsDownFill />}
+                                type="submit"
+                              />
+                            </form>
+                          </>
+                        ) : (
+                          <>
+                            <form onSubmit={this.process}>
+                              <Input
+                                type="hidden"
+                                name="dao"
+                                value={this.props.dao["address"]}
+                              />
+                              <Input type="hidden" name="id" value={p["id"]} />
+                              <Button type="submit">Process</Button>
+                            </form>
+                          </>
+                        )}
+                      </HStack>
+                    </VStack>
+                  </HStack>
+                </Stack>
+              </FlexOutline>
             ))}
-          </Table>
-          }
-        </Flex>
-
-      </React.Fragment>
+          </Grid>
+        )}
+      </>
     );
   }
 }

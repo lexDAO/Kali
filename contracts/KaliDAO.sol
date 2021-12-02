@@ -13,7 +13,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
                             EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event NewProposal(uint256 indexed proposal);
+    event NewProposal(address indexed proposer, uint256 indexed proposal);
     
     event VoteCast(address indexed voter, uint256 indexed proposal, bool indexed approve);
 
@@ -31,7 +31,11 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
 
     uint8 public supermajority; // 1-100
 
-    bool private initialized;
+    bool internal initialized;
+
+    string public docs;
+    
+    bytes32 public constant VOTE_HASH = keccak256('SignVote(address signer,uint256 proposal,bool approve)');
     
     mapping(address => bool) public extensions;
 
@@ -48,8 +52,10 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         PERIOD,
         QUORUM,
         SUPERMAJORITY,
+        TYPE,
         PAUSE,
-        EXTENSION
+        EXTENSION,
+        DOCS
     }
 
     enum VoteType {
@@ -65,8 +71,8 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         address[] account; // member(s) being added/kicked; account(s) receiving payload
         uint256[] amount; // value(s) to be minted/burned/spent; gov setting [0]
         bytes[] payload; // data for CALL proposals
-        uint224 yesVotes;
-        uint224 noVotes;
+        uint96 yesVotes;
+        uint96 noVotes;
         uint32 creationTime;
     }
 
@@ -77,6 +83,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
     constructor(
         string memory name_,
         string memory symbol_,
+        string memory docs_,
         bool paused_,
         address[] memory voters_,
         uint256[] memory shares_,
@@ -90,6 +97,8 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         
         require(supermajority_ > 51 && supermajority_ <= 100, 'SUPERMAJORITY_BOUNDS');
         
+        docs = docs_;
+        
         votingPeriod = votingPeriod_;
         
         quorum = quorum_;
@@ -98,16 +107,15 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
     }
 
     function setVoteTypes(
-        uint8 mint_,
-        uint8 burn_,
+        uint8 member_,
         uint8 call_,
         uint8 gov_
     ) public virtual {
         require(!initialized, 'INITIALIZED');
 
-        proposalVoteTypes[ProposalType.MINT] = VoteType(mint_);
+        proposalVoteTypes[ProposalType.MINT] = VoteType(member_);
 
-        proposalVoteTypes[ProposalType.BURN] = VoteType(burn_);
+        proposalVoteTypes[ProposalType.BURN] = VoteType(member_);
 
         proposalVoteTypes[ProposalType.CALL] = VoteType(call_);
 
@@ -116,10 +124,14 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         proposalVoteTypes[ProposalType.QUORUM] = VoteType(gov_);
         
         proposalVoteTypes[ProposalType.SUPERMAJORITY] = VoteType(gov_);
+
+        proposalVoteTypes[ProposalType.TYPE] = VoteType(gov_);
         
         proposalVoteTypes[ProposalType.PAUSE] = VoteType(gov_);
         
         proposalVoteTypes[ProposalType.EXTENSION] = VoteType(gov_);
+
+        proposalVoteTypes[ProposalType.DOCS] = VoteType(gov_);
 
         initialized = true;
     }
@@ -160,6 +172,8 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
         
         if (proposalType == ProposalType.SUPERMAJORITY) require(amount[0] > 51 && amount[0] <= 100, 'SUPERMAJORITY_BOUNDS');
 
+        if (proposalType == ProposalType.TYPE) require(amount[0] <= 9 && amount[1] <= 3, 'TYPE_MAX');
+
         uint256 proposal = proposalCount;
 
         proposals[proposal] = Proposal({
@@ -179,11 +193,40 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
             proposalCount++;
         }
 
-        emit NewProposal(proposal);
+        emit NewProposal(msg.sender, proposal);
     }
 
     function vote(uint256 proposal, bool approve) public nonReentrant onlyTokenHolders virtual {
-        require(!voted[proposal][msg.sender], 'ALREADY_VOTED');
+        _vote(msg.sender, proposal, approve);
+    }
+    
+    function voteBySig(address signer, uint256 proposal, bool approve, uint8 v, bytes32 r, bytes32 s) public nonReentrant virtual {
+        // validate signature elements
+        bytes32 digest =
+            keccak256(
+                abi.encodePacked(
+                    "\x19\x01",
+                    DOMAIN_SEPARATOR(),
+                    keccak256(
+                        abi.encode(
+                            VOTE_HASH,
+                            signer,
+                            proposal,
+                            approve
+                        )
+                    )
+                )
+            );
+            
+        address recoveredAddress = ecrecover(digest, v, r, s);
+        
+        require(recoveredAddress == signer, 'INVALID_SIG');
+        
+        _vote(signer, proposal, approve);
+    }
+    
+    function _vote(address signer, uint256 proposal, bool approve) internal virtual {
+        require(!voted[proposal][signer], 'ALREADY_VOTED');
         
         Proposal storage prop = proposals[proposal];
         
@@ -193,7 +236,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
             require(block.timestamp <= prop.creationTime + votingPeriod, 'VOTING_ENDED');
         }
 
-        uint224 weight = uint224(getPriorVotes(msg.sender, prop.creationTime));
+        uint96 weight = uint96(getPriorVotes(signer, prop.creationTime));
         
         // this is safe from overflow because `yesVotes` and `noVotes` are capped by `totalSupply`
         // which is checked for overflow in `KaliDAOtoken` contract
@@ -205,20 +248,15 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
             }
         }
         
-        voted[proposal][msg.sender] = true;
+        voted[proposal][signer] = true;
         
-        emit VoteCast(msg.sender, proposal, approve);
+        emit VoteCast(signer, proposal, approve);
     }
 
     function processProposal(uint256 proposal) public nonReentrant virtual returns (bytes[] memory results) {
-        // we want underflow in this case to allow for first proposal
-        unchecked {
-            require(proposals[proposal - 1].creationTime == 0, "PREV_NOT_PROCESSED");
-        }
-        
         Proposal storage prop = proposals[proposal];
 
-        require(prop.creationTime > 0, "PROCESSED");
+        require(prop.creationTime > 0, 'PROCESSED');
         
         // this is safe from overflow because `votingPeriod` is capped so it will not combine
         // with unix time to exceed 'type(uint256).max'
@@ -230,9 +268,9 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
 
         bool didProposalPass = _countVotes(voteType, prop.yesVotes, prop.noVotes);
         
-        // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
         if (didProposalPass) {
+            // this is reasonably safe from overflow because incrementing `i` loop beyond
+            // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
             unchecked {
                 if (prop.proposalType == ProposalType.MINT) 
                     for (uint256 i; i < prop.account.length; i++) {
@@ -267,11 +305,17 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
                 if (prop.proposalType == ProposalType.SUPERMAJORITY) 
                     if (prop.amount[0] > 0) supermajority = uint8(prop.amount[0]);
                 
+                if (prop.proposalType == ProposalType.TYPE) 
+                    proposalVoteTypes[ProposalType(prop.amount[0])] = VoteType(prop.amount[1]);
+                
                 if (prop.proposalType == ProposalType.PAUSE) 
-                    if (prop.amount[0] > 0) _togglePause();
+                    _togglePause();
                 
                 if (prop.proposalType == ProposalType.EXTENSION) 
-                    if (prop.amount[0] > 0) extensions[prop.account[0]] = !extensions[prop.account[0]];
+                    extensions[prop.account[0]] = !extensions[prop.account[0]];
+                
+                if (prop.proposalType == ProposalType.DOCS) 
+                    docs = prop.description;
             }
         }
 
@@ -318,7 +362,7 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
     receive() external payable virtual {}
     
     function extensionCall(address extension, uint256 amount, bool mint) public payable nonReentrant virtual returns (uint256 amountOut) {
-        require(extensions[extension], "NOT_EXTENSION");
+        require(extensions[extension], 'NOT_EXTENSION');
         
         amountOut = IKaliDAOextension(extension).extensionCall{value: msg.value}(msg.sender, amount);
         

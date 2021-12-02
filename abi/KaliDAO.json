@@ -12,6 +12,11 @@
 				"type": "string"
 			},
 			{
+				"internalType": "string",
+				"name": "docs_",
+				"type": "string"
+			},
+			{
 				"internalType": "bool",
 				"name": "paused_",
 				"type": "bool"
@@ -123,6 +128,12 @@
 	{
 		"anonymous": false,
 		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "proposer",
+				"type": "address"
+			},
 			{
 				"indexed": true,
 				"internalType": "uint256",
@@ -249,6 +260,19 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "VOTE_HASH",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -336,9 +360,9 @@
 				"type": "uint32"
 			},
 			{
-				"internalType": "uint224",
+				"internalType": "uint96",
 				"name": "votes",
-				"type": "uint224"
+				"type": "uint96"
 			}
 		],
 		"stateMutability": "view",
@@ -422,6 +446,19 @@
 				"internalType": "address",
 				"name": "delegatee",
 				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "docs",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -857,14 +894,14 @@
 				"type": "string"
 			},
 			{
-				"internalType": "uint224",
+				"internalType": "uint96",
 				"name": "yesVotes",
-				"type": "uint224"
+				"type": "uint96"
 			},
 			{
-				"internalType": "uint224",
+				"internalType": "uint96",
 				"name": "noVotes",
-				"type": "uint224"
+				"type": "uint96"
 			},
 			{
 				"internalType": "uint32",
@@ -925,12 +962,7 @@
 		"inputs": [
 			{
 				"internalType": "uint8",
-				"name": "mint_",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint8",
-				"name": "burn_",
+				"name": "member_",
 				"type": "uint8"
 			},
 			{
@@ -1055,6 +1087,44 @@
 			}
 		],
 		"name": "vote",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "signer",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "proposal",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "approve",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint8",
+				"name": "v",
+				"type": "uint8"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "r",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "s",
+				"type": "bytes32"
+			}
+		],
+		"name": "voteBySig",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

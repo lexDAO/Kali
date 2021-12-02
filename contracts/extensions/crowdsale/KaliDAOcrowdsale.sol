@@ -12,28 +12,32 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
     struct Crowdsale {
         address purchaseToken;
         uint8 purchaseMultiplier;
-        uint112 purchaseLimit;
-        uint112 amountPurchased;
+        uint96 purchaseLimit;
+        uint96 amountPurchased;
     }
 
-    function setExtension(bytes calldata extensionData_) public nonReentrant virtual {
-        (address dao_, address purchaseToken_, uint8 purchaseMultiplier_, uint112 purchaseLimit_) 
-            = abi.decode(extensionData_, (address, address, uint8, uint112));
+    function setExtension(address dao, bytes calldata extensionData) public nonReentrant virtual {
+        (address purchaseToken, uint8 purchaseMultiplier, uint96 purchaseLimit) 
+            = abi.decode(extensionData, (address, uint8, uint96));
         
-        require(purchaseMultiplier_ > 0, "NULL_MULTIPLIER"); 
+        require(purchaseMultiplier > 0, "NULL_MULTIPLIER"); 
 
-        require(crowdsales[dao_].purchaseMultiplier > 0 || dao_ == msg.sender, 
+        require(crowdsales[dao].purchaseMultiplier > 0 || dao == msg.sender, 
             "INITIALIZED_OR_NOT_DAO"); 
 
-        crowdsales[dao_] = Crowdsale({
-            purchaseToken: purchaseToken_,
-            purchaseMultiplier: purchaseMultiplier_,
-            purchaseLimit: purchaseLimit_,
+        crowdsales[dao] = Crowdsale({
+            purchaseToken: purchaseToken,
+            purchaseMultiplier: purchaseMultiplier,
+            purchaseLimit: purchaseLimit,
             amountPurchased: 0
         });
     }
 
-    function callExtension(address account, uint256 amount) public payable nonReentrant virtual returns (uint256 amountOut) {
+    function callExtension(
+        address account, 
+        uint256 amount, 
+        bytes calldata
+    ) public payable nonReentrant virtual returns (uint256 amountOut) {
         Crowdsale storage sale = crowdsales[msg.sender];
 
         if (sale.purchaseToken == address(0)) {
@@ -41,19 +45,19 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
 
             require(sale.amountPurchased + amountOut <= sale.purchaseLimit, "PURCHASE_LIMIT");
 
-            // send ETH to `dao`
+            // send ETH to DAO
             SafeTransferLib.safeTransferETH(msg.sender, msg.value);
 
-            sale.amountPurchased += uint112(amountOut);
+            sale.amountPurchased += uint96(amountOut);
         } else {
-            // send tokens to `dao`
+            // send tokens to DAO
             SafeTransferLib.safeTransferFrom(sale.purchaseToken, account, msg.sender, amount);
 
             amountOut = amount * sale.purchaseMultiplier;
 
             require(sale.amountPurchased + amountOut <= sale.purchaseLimit, "PURCHASE_LIMIT");
 
-            sale.amountPurchased += uint112(amountOut);
+            sale.amountPurchased += uint96(amountOut);
         }
     }
 }

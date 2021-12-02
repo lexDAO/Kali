@@ -14,11 +14,12 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
         uint8 purchaseMultiplier;
         uint96 purchaseLimit;
         uint96 amountPurchased;
+        uint32 saleEnds;
     }
 
     function setExtension(address dao, bytes calldata extensionData) public nonReentrant virtual {
-        (address purchaseToken, uint8 purchaseMultiplier, uint96 purchaseLimit) 
-            = abi.decode(extensionData, (address, uint8, uint96));
+        (address purchaseToken, uint8 purchaseMultiplier, uint96 purchaseLimit, uint32 saleEnds) 
+            = abi.decode(extensionData, (address, uint8, uint96, uint32));
         
         require(purchaseMultiplier > 0, "NULL_MULTIPLIER"); 
 
@@ -29,7 +30,8 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
             purchaseToken: purchaseToken,
             purchaseMultiplier: purchaseMultiplier,
             purchaseLimit: purchaseLimit,
-            amountPurchased: 0
+            amountPurchased: 0,
+            saleEnds: saleEnds
         });
     }
 
@@ -39,6 +41,8 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
         bytes calldata
     ) public payable nonReentrant virtual returns (uint256 amountOut) {
         Crowdsale storage sale = crowdsales[msg.sender];
+
+        require(block.timestamp <= sale.saleEnds, "SALE_ENDED");
 
         if (sale.purchaseToken == address(0)) {
             amountOut = msg.value * sale.purchaseMultiplier;

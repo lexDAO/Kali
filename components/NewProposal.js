@@ -170,7 +170,7 @@ const Fields_2 = () => {
       <Text>
         <b>Target</b>
       </Text>
-      <Input name="account" size="lg" placeholder="0x or .eth"></Input>
+      <Input name="account" size="lg" placeholder="0x"></Input>
       <Input name="amount" type="hidden" value="0" />
       <Text>
         <b>Payload</b>

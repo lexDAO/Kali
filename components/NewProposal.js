@@ -38,6 +38,12 @@ class NewProposal extends Component {
 
     const instance = new web3.eth.Contract(abi, dao);
 
+    if (account.includes(".eth")) {
+      account = await web3.eth.ens.getAddress(account).catch(() => {
+        alert("ENS not found")
+      });
+    } 
+
     if (proposalType == 1) {
       amount = await instance.methods.balanceOf(account).call();
     }
@@ -49,7 +55,7 @@ class NewProposal extends Component {
 
     try {
       const accounts = await web3.eth.getAccounts();
-
+      
       let result = await instance.methods
         .propose(proposalType, description, [account], [amount], [payload])
         .send({ from: accounts[0] });
@@ -113,7 +119,7 @@ const Fields_0 = () => {
       <Text>
         <b>Recipient</b>
       </Text>
-      <Input name="account" size="lg" placeholder="0x"></Input>
+      <Input name="account" size="lg" placeholder="0x or .eth"></Input>
       <Text>
         <b>Shares</b>
       </Text>
@@ -147,11 +153,11 @@ const Fields_1 = () => {
       <Text>
         <b>Address to Kick</b>
       </Text>
-      <Input name="account" size="lg" placeholder="0x"></Input>
+      <Input name="account" size="lg" placeholder="0x or .eth"></Input>
       <Input name="amount" type="hidden" value="0" />
       <Input name="payload" type="hidden" value="0x"></Input>
     </>
-  );
+  )
 };
 
 const Fields_2 = () => {
@@ -171,5 +177,5 @@ const Fields_2 = () => {
       </Text>
       <Input name="payload" size="lg" placeholder="0x"></Input>
     </>
-  );
+  )
 };

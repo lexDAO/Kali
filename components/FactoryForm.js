@@ -71,6 +71,26 @@ function FactoryForm(props) {
 
     console.log("votingPeriod:", votingPeriod);
 
+    var votersArray = voters.split(',')
+    var _voters = '';
+
+    for (const i = 0; i < votersArray.length; i++) {
+      if (votersArray[i].includes('.eth')) {
+        votersArray[i] = await web3.eth.ens.getAddress(votersArray[i]).catch(() => {
+          alert('ENS not found')
+        })
+        
+      }
+
+      if (i == votersArray.length - 1) {
+        _voters += votersArray[i];
+      } else {
+        _voters += votersArray[i] + ','
+      }
+
+      voters = _voters;
+    }
+
     const accounts = await web3.eth.getAccounts();
     console.log("Account: ", accounts[0]);
 
@@ -184,14 +204,14 @@ function FactoryForm(props) {
               type="text"
               label="Founders"
               name="voters"
-              placeholder="0xabc, 0xdef, 0xghi"
+              placeholder="Enter ETH address or ENS and separate them by a comma like this - 'aaa.eth,bbb.eth'"
             />
             <FormikControl
               control="textarea"
               type="text"
               label="Shares"
               name="shares"
-              placeholder="1, 2, 3"
+              placeholder="1,2,3"
             />
             {/* Add validation for Voting Period and Quoram */}
             <FormikControl

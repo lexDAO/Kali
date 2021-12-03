@@ -27,14 +27,6 @@ const theme = extendTheme({
       900: "#fffefe", // white
     },
   },
-  styles: {
-    global: {
-      body: {
-        bg: "kali.800",
-        color: "kali.900",
-      },
-    },
-  },
 });
 
 function MyApp({ Component, pageProps }) {

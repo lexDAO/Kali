@@ -10,7 +10,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import web3 from "../eth/web3.js";
-
+import DarkModeSwitch from "./DarkModeSwitch.js";
 export default function Nav() {
   const [currentAccount, setCurrentAccount] = useState(null);
   const [chainId, setChainId] = useState(null);
@@ -101,6 +101,7 @@ export default function Nav() {
           <Text>please connect to Rinkeby</Text>
         )}
       </VStack>
+      <DarkModeSwitch />
     </Flex>
   );
 }

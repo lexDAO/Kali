@@ -18,7 +18,7 @@ class Daos extends Component {
           Deployed DAOs
         </Text>
         {eventArray.map((e, index) => (
-          <Button key={index}>
+          <Button key={index} variant="ghost">
             <Link href={`/daos/${e["kaliDAO"]}`}>
               <Text fontSize="sm" isTruncated>
                 {e["name"]} - {e["kaliDAO"]}

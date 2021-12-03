@@ -149,13 +149,13 @@ const Fields_1 = () => {
       <Text>
         <b>Details</b>
       </Text>
-      <Textarea name='description' size='lg' placeholder='. . .' />
+      <Textarea name="description" size="lg" placeholder=". . ." />
       <Text>
         <b>Address to Kick</b>
       </Text>
-      <Input name='account' size='lg' placeholder='0x or .eth'></Input>
-      <Input name='amount' type='hidden' value='0' />
-      <Input name='payload' type='hidden' value='0x'></Input>
+      <Input name="account" size="lg" placeholder="0x or .eth"></Input>
+      <Input name="amount" type="hidden" value="0" />
+      <Input name="payload" type="hidden" value="0x"></Input>
     </>
   )
 };
@@ -166,16 +166,16 @@ const Fields_2 = () => {
       <Text>
         <b>Details</b>
       </Text>
-      <Textarea name='description' size='lg' placeholder='. . .' />
+      <Textarea name="description" size="lg" placeholder=". . ." />
       <Text>
         <b>Target</b>
       </Text>
-      <Input name='account' size='lg' placeholder='0x'></Input>
-      <Input name='amount' type='hidden' value={0} />
+      <Input name="account" size="lg" placeholder="0x or .eth"></Input>
+      <Input name="amount" type="hidden" value="0" />
       <Text>
         <b>Payload</b>
       </Text>
-      <Input name='payload' size='lg' placeholder='0x'></Input>
+      <Input name="payload" type="hidden" value="0x"></Input>
     </>
   )
 };

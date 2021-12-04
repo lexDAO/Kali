@@ -15,9 +15,8 @@ function FactoryForm(props) {
 
   {
     /* ISSUES
-        - quorum, votingPeriod struck at initialValue not updating to value filled in NumberInput 
         - voter-share array soon 
-        - disable summon when submitting
+        - add support for custom gov setting 
     */
   }
 
@@ -25,34 +24,34 @@ function FactoryForm(props) {
     toggleLoading();
     console.log("DAO Form: ", values);
 
+    const govSettings = "0,0,0,0,0,0,0,0,0,0,0";
+    const extensions = "0x0000000000000000000000000000000000000000";
+    const extensionsData = "0x0000000000000000000000000000000000000000";
+
     const {
       name,
       symbol,
       docs,
-      paused,
-      extensions,
-      extensionsData,
       voters,
       shares,
       votingPeriod,
       votingPeriodUnit,
-      govSettings
     } = values;
-  
+
     // convert shares to wei
-    var sharesArray = [];
+    let sharesArray = [];
     for (let i = 0; i < shares.split(",").length; i++) {
       sharesArray.push(web3.utils.toWei(shares.split(",")[i]));
     }
 
-    // convert vote period to appropriate unit
-    if (votePeriodUnit == "minutes") {
+    // convert voting period to appropriate unit
+    if (votingPeriodUnit == "minutes") {
       votingPeriod *= 60;
-    } else if (votePeriodUnit == "hours") {
+    } else if (votingPeriodUnit == "hours") {
       votingPeriod *= 60 * 60;
-    } else if (votePeriodUnit == "days") {
+    } else if (votingPeriodUnit == "days") {
       votingPeriod *= 60 * 60 * 24;
-    } else if (votePeriodUnit == "weeks") {
+    } else if (votingPeriodUnit == "weeks") {
       votingPeriod *= 60 * 60 * 24 * 7;
     }
 
@@ -70,62 +69,67 @@ function FactoryForm(props) {
 
     console.log("votingPeriod:", votingPeriod);
 
-    var votersArray = voters.split(',')
-    var _voters = '';
+    let votersArray = voters.split(",");
+    let _voters = "";
 
-    var extensionsArray = extensions.split(',')
-    var _extensions = '';
+    let extensionsArray = extensions.split(",");
+    let _extensions = "";
 
-    var extensionsDataArray = extensionsData.split(',')
-    var _extensionsData = '';
+    let extensionsDataArray = extensionsData.split(",");
+    let _extensionsData = "";
 
-    var govSettingsArray = govSettings.split(',')
-    var _govSettings = '';
+    let govSettingsArray = govSettings.split(",");
+    let _govSettings = "";
 
-    for (const i = 0; i < votersArray.length; i++) {
-      if (votersArray[i].includes('.eth')) {
-        votersArray[i] = await web3.eth.ens.getAddress(votersArray[i]).catch(() => {
-          alert('ENS not found')
-        })
+    for (let i = 0; i < votersArray.length; i++) {
+      if (votersArray[i].includes(".eth")) {
+        votersArray[i] = await web3.eth.ens
+          .getAddress(votersArray[i])
+          .catch(() => {
+            alert("ENS not found");
+          });
       }
 
       if (i == votersArray.length - 1) {
         _voters += votersArray[i];
       } else {
-        _voters += votersArray[i] + ','
+        _voters += votersArray[i] + ",";
       }
 
       voters = _voters;
     }
 
-    for (const i = 0; i < extensionsArray.length; i++) {
+    for (let i = 0; i < extensionsArray.length; i++) {
       if (i == extensionsArray.length - 1) {
         _extensions += extensionsArray[i];
       } else {
-        _extensions += extensionsArray[i] + ','
+        _extensions += extensionsArray[i] + ",";
       }
 
       extensions = _extensions;
+      console.log("extensions:", extensions);
     }
 
-    for (const i = 0; i < extensionsDataArray.length; i++) {
+    for (let i = 0; i < extensionsDataArray.length; i++) {
       if (i == extensionsDataArray.length - 1) {
         _extensionsData += extensionsDataArray[i];
       } else {
-        _extensionsData += extensionsDataArray[i] + ','
+        _extensionsData += extensionsDataArray[i] + ",";
       }
 
       extensionsData = _extensionsData;
+      console.log("extensionsData:", extensionsData);
     }
 
-    for (const i = 0; i < govSettingsArray.length; i++) {
+    for (let i = 0; i < govSettingsArray.length; i++) {
       if (i == govSettingsArray.length - 1) {
         _govSettings += govSettingsArray[i];
       } else {
-        _govSettings += govSettingsArray[i] + ','
+        _govSettings += govSettingsArray[i] + ",";
       }
 
       govSettings = _govSettings;
+      console.log("govSettings:", govSettings);
     }
 
     const accounts = await web3.eth.getAccounts();
@@ -165,13 +169,10 @@ function FactoryForm(props) {
     name: "",
     symbol: "",
     docs: "",
-    extensions: (0x0000000000000000000000000000000000000000),
-    extensionsData: (0x0000000000000000000000000000000000000000),
     voters: "",
     shares: "",
-    votePeriodUnit: "",
+    votingPeriodUnit: "",
     votingPeriod: 1,
-    govSettings: (0,0,0,0,0,0,0,0,0,0)
   };
 
   const validationSchema = Yup.object({
@@ -180,9 +181,8 @@ function FactoryForm(props) {
     voters: Yup.string().required("Required"),
     shares: Yup.string().required("Required"),
     docs: Yup.string().required("Required"),
-    votePeriodUnit: Yup.string().required("Required"),
-    votingPeriod: Yup.number().required("Required")//,
-    //govSettings: Yup.string().required("Required")
+    votingPeriodUnit: Yup.string().required("Required"),
+    votingPeriod: Yup.number().required("Required"),
   });
 
   const optionsDocs = [
@@ -242,7 +242,6 @@ function FactoryForm(props) {
               name="shares"
               placeholder="1,2,3"
             />
-            {/* Add validation for Voting Period and Quoram */}
             <FormikControl
               control="number-input"
               label="Voting Period"
@@ -252,7 +251,7 @@ function FactoryForm(props) {
             />
             <FormikControl
               control="select"
-              name="votePeriodUnit"
+              name="votingPeriodUnit"
               label="Voting Period Unit"
               options={optionsVotingPeriod}
             />

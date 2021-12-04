@@ -3,6 +3,7 @@
 pragma solidity >=0.8.0;
 
 import './KaliDAO.sol';
+import './IRicardianLLC.sol';
 
 /// @notice Factory to deploy KaliDAO.
 contract KaliDAOfactory {

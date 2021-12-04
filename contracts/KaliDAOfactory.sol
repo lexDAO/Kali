@@ -6,7 +6,13 @@ import './KaliDAO.sol';
 
 /// @notice Factory to deploy KaliDAO.
 contract KaliDAOfactory {
-    event DAOdeployed(string indexed name, KaliDAO indexed kaliDAO);
+    event DAOdeployed(string indexed name, string docs, KaliDAO indexed kaliDAO);
+
+    IRicardianLLC public immutable ricardianLLC;
+
+    constructor(IRicardianLLC ricardianLLC_) {
+        ricardianLLC = ricardianLLC_;
+    }
     
     function deployKaliDAO(
         string memory name_,
@@ -23,7 +29,6 @@ contract KaliDAOfactory {
         kaliDAO = new KaliDAO{value: msg.value}(
             name_, 
             symbol_, 
-            docs_,
             paused_, 
             extensions_,
             voters_, 
@@ -39,7 +44,13 @@ contract KaliDAOfactory {
                 IKaliDAOextension(extensions_[i]).setExtension(address(kaliDAO), extensionsData_[i]);
             }
         }
-        
-        emit DAOdeployed(name_, kaliDAO);
+
+        bytes memory docs = bytes(docs_);
+
+        if (docs.length == 0) {
+            ricardianLLC.mintLLC(address(kaliDAO));
+        }
+
+        emit DAOdeployed(name_, docs_, kaliDAO);
     }
 }

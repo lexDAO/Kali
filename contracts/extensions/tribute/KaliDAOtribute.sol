@@ -50,7 +50,7 @@ contract KaliDAOtribute is ReentrancyGuard {
         });
     }
 
-    function cancelTributeProposal(IKaliDAOTribute dao, uint256 proposal) public virtual {
+    function cancelTributeProposal(IKaliDAOTribute dao, uint256 proposal) public nonReentrant virtual {
         Tribute storage trib = tributes[dao][proposal];
 
         require(msg.sender == trib.proposer, 'NOT_PROPOSER');
@@ -65,7 +65,7 @@ contract KaliDAOtribute is ReentrancyGuard {
         }
     }
 
-    function releaseTributeProposal(IKaliDAOTribute dao, uint256 proposal) public virtual {
+    function releaseTributeProposal(IKaliDAOTribute dao, uint256 proposal) public nonReentrant virtual {
         Tribute storage trib = tributes[dao][proposal];
 
         // release tribute from escrow based on proposal outcome

@@ -14,7 +14,6 @@ import {
   Divider,
   Stack,
 } from "@chakra-ui/react";
-import Factory from "../components/Factory";
 import factory from "../eth/factory.js";
 const abi = require("../abi/KaliDAO.json");
 import Daos from "../components/Daos";
@@ -70,7 +69,9 @@ class Home extends Component {
                 KaliDAO is an optimized DAC framework like you&apos;ve never
                 seen before. Move over, Moloch: the queen has arrived.
               </Text>
-              <Button onClick={this.toggleFactory}>Create KaliDAO</Button>
+              <Button variant="solid" onClick={this.toggleFactory}>
+                Create KaliDAO
+              </Button>
             </Stack>
           </FlexGradient>
           <Divider />

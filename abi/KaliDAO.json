@@ -23,6 +23,11 @@
 			},
 			{
 				"internalType": "address[]",
+				"name": "extensions_",
+				"type": "address[]"
+			},
+			{
+				"internalType": "address[]",
 				"name": "voters_",
 				"type": "address[]"
 			},
@@ -37,14 +42,9 @@
 				"type": "uint32"
 			},
 			{
-				"internalType": "uint8",
-				"name": "quorum_",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint8",
-				"name": "supermajority_",
-				"type": "uint8"
+				"internalType": "uint8[]",
+				"name": "govSettings_",
+				"type": "uint8[]"
 			}
 		],
 		"stateMutability": "payable",
@@ -139,6 +139,12 @@
 				"internalType": "uint256",
 				"name": "proposal",
 				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
 			}
 		],
 		"name": "NewProposal",
@@ -155,6 +161,25 @@
 			}
 		],
 		"name": "ProposalProcessed",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "sponsor",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "proposal",
+				"type": "uint256"
+			}
+		],
+		"name": "ProposalSponsored",
 		"type": "event"
 	},
 	{
@@ -343,6 +368,40 @@
 		"inputs": [
 			{
 				"internalType": "address",
+				"name": "extension",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes",
+				"name": "extensionData",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bool",
+				"name": "mint",
+				"type": "bool"
+			}
+		],
+		"name": "callExtension",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "amountOut",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
 				"name": "",
 				"type": "address"
 			},
@@ -468,35 +527,6 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "extension",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bool",
-				"name": "mint",
-				"type": "bool"
-			}
-		],
-		"name": "extensionCall",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "amountOut",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "",
 				"type": "address"
 			}
@@ -567,17 +597,17 @@
 		"outputs": [
 			{
 				"internalType": "address[]",
-				"name": "account",
+				"name": "accounts",
 				"type": "address[]"
 			},
 			{
 				"internalType": "uint256[]",
-				"name": "amount",
+				"name": "amounts",
 				"type": "uint256[]"
 			},
 			{
 				"internalType": "bytes[]",
-				"name": "payload",
+				"name": "payloads",
 				"type": "bytes[]"
 			}
 		],
@@ -926,22 +956,28 @@
 			},
 			{
 				"internalType": "address[]",
-				"name": "account",
+				"name": "accounts",
 				"type": "address[]"
 			},
 			{
 				"internalType": "uint256[]",
-				"name": "amount",
+				"name": "amounts",
 				"type": "uint256[]"
 			},
 			{
 				"internalType": "bytes[]",
-				"name": "payload",
+				"name": "payloads",
 				"type": "bytes[]"
 			}
 		],
 		"name": "propose",
-		"outputs": [],
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "proposal",
+				"type": "uint256"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -961,22 +997,12 @@
 	{
 		"inputs": [
 			{
-				"internalType": "uint8",
-				"name": "member_",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint8",
-				"name": "call_",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint8",
-				"name": "gov_",
-				"type": "uint8"
+				"internalType": "uint256",
+				"name": "proposal",
+				"type": "uint256"
 			}
 		],
-		"name": "setVoteTypes",
+		"name": "sponsorProposal",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

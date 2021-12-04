@@ -13,7 +13,9 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
                             EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event NewProposal(address indexed proposer, uint256 indexed proposal);
+    event NewProposal(address indexed proposer, uint256 indexed proposal, string description);
+
+    event ProposalSponsored(address indexed sponsor, uint256 indexed proposal);
     
     event VoteCast(address indexed voter, uint256 indexed proposal, bool indexed approve);
 
@@ -30,8 +32,6 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
     uint8 public quorum; // 1-100
 
     uint8 public supermajority; // 1-100
-
-    bool internal initialized;
 
     string public docs;
     
@@ -68,9 +68,9 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
     struct Proposal {
         ProposalType proposalType;
         string description;
-        address[] account; // member(s) being added/kicked; account(s) receiving payload
-        uint256[] amount; // value(s) to be minted/burned/spent; gov setting [0]
-        bytes[] payload; // data for CALL proposals
+        address[] accounts; // member(s) being added/kicked; account(s) receiving payload
+        uint256[] amounts; // value(s) to be minted/burned/spent; gov setting [0]
+        bytes[] payloads; // data for CALL proposals
         uint96 yesVotes;
         uint96 noVotes;
         uint32 creationTime;
@@ -145,45 +145,50 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
     }
     
     function getProposalArrays(uint256 proposal) public view virtual returns (
-        address[] memory account, 
-        uint256[] memory amount, 
-        bytes[] memory payload
+        address[] memory accounts, 
+        uint256[] memory amounts, 
+        bytes[] memory payloads
     ) {
         Proposal storage prop = proposals[proposal];
         
-        (account, amount, payload) = (prop.account, prop.amount, prop.payload);
+        (accounts, amounts, payloads) = (prop.accounts, prop.amounts, prop.payloads);
     }
 
     function propose(
         ProposalType proposalType,
         string calldata description,
-        address[] calldata account,
-        uint256[] calldata amount,
-        bytes[] calldata payload
-    ) public onlyTokenHolders virtual {
-        require(account.length == amount.length && amount.length == payload.length, 'NO_ARRAY_PARITY');
+        address[] calldata accounts,
+        uint256[] calldata amounts,
+        bytes[] calldata payloads
+    ) public virtual returns (uint256 proposal) {
+        require(accounts.length == amounts.length && amounts.length == payloads.length, 'NO_ARRAY_PARITY');
         
-        require(account.length <= 10, 'ARRAY_MAX');
-        
-        if (proposalType == ProposalType.PERIOD) require(amount[0] <= 365 days, 'VOTING_PERIOD_MAX');
-        
-        if (proposalType == ProposalType.QUORUM) require(amount[0] <= 100, 'QUORUM_MAX');
-        
-        if (proposalType == ProposalType.SUPERMAJORITY) require(amount[0] > 51 && amount[0] <= 100, 'SUPERMAJORITY_BOUNDS');
+        require(accounts.length <= 10, 'ARRAY_MAX');
 
-        if (proposalType == ProposalType.TYPE) require(amount[0] <= 9 && amount[1] <= 3, 'TYPE_MAX');
+        bool selfSponsor;
 
-        uint256 proposal = proposalCount;
+        // if member is making proposal, include sponsorship
+        if (balanceOf[msg.sender] > 0) selfSponsor = true;
+        
+        if (proposalType == ProposalType.PERIOD) require(amounts[0] <= 365 days, 'VOTING_PERIOD_MAX');
+        
+        if (proposalType == ProposalType.QUORUM) require(amounts[0] <= 100, 'QUORUM_MAX');
+        
+        if (proposalType == ProposalType.SUPERMAJORITY) require(amounts[0] > 51 && amounts[0] <= 100, 'SUPERMAJORITY_BOUNDS');
+
+        if (proposalType == ProposalType.TYPE) require(amounts[0] <= 9 && amounts[1] <= 3, 'TYPE_MAX');
+
+        proposal = proposalCount;
 
         proposals[proposal] = Proposal({
             proposalType: proposalType,
             description: description,
-            account: account,
-            amount: amount,
-            payload: payload,
+            accounts: accounts,
+            amounts: amounts,
+            payloads: payloads,
             yesVotes: 0,
             noVotes: 0,
-            creationTime: safeCastTo32(block.timestamp)
+            creationTime: selfSponsor ? safeCastTo32(block.timestamp) : 0
         });
         
         // this is reasonably safe from overflow because incrementing `proposalCount` beyond
@@ -192,7 +197,21 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
             proposalCount++;
         }
 
-        emit NewProposal(msg.sender, proposal);
+        emit NewProposal(msg.sender, proposal, description);
+    }
+
+    function sponsorProposal(uint256 proposal) public nonReentrant onlyTokenHolders virtual {
+        Proposal storage prop = proposals[proposal];
+
+        require(prop.creationTime == 0, 'SPONSORED');
+
+        bytes memory descr = bytes(prop.description);
+
+        require(descr.length > 0, 'NOT_PROPOSAL');
+
+        prop.creationTime = safeCastTo32(block.timestamp);
+
+        emit ProposalSponsored(msg.sender, proposal);
     }
 
     function vote(uint256 proposal, bool approve) public nonReentrant onlyTokenHolders virtual {
@@ -283,46 +302,46 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
             // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
             unchecked {
                 if (prop.proposalType == ProposalType.MINT) 
-                    for (uint256 i; i < prop.account.length; i++) {
-                        _mint(prop.account[i], prop.amount[i]);
+                    for (uint256 i; i < prop.accounts.length; i++) {
+                        _mint(prop.accounts[i], prop.amounts[i]);
                         
-                        _moveDelegates(address(0), delegates(prop.account[i]), prop.amount[i]);
+                        _moveDelegates(address(0), delegates(prop.accounts[i]), prop.amounts[i]);
                     }
                     
                 if (prop.proposalType == ProposalType.BURN) 
-                    for (uint256 i; i < prop.account.length; i++) {
-                        _burn(prop.account[i], prop.amount[i]);
+                    for (uint256 i; i < prop.accounts.length; i++) {
+                        _burn(prop.accounts[i], prop.amounts[i]);
                         
-                        _moveDelegates(delegates(prop.account[i]), address(0), prop.amount[i]);
+                        _moveDelegates(delegates(prop.accounts[i]), address(0), prop.amounts[i]);
                     }
                     
                 if (prop.proposalType == ProposalType.CALL) 
-                    for (uint256 i; i < prop.account.length; i++) {
-                        results = new bytes[](prop.account.length);
+                    for (uint256 i; i < prop.accounts.length; i++) {
+                        results = new bytes[](prop.accounts.length);
                         
-                        (, bytes memory result) = prop.account[i].call{value: prop.amount[i]}(prop.payload[i]);
+                        (, bytes memory result) = prop.accounts[i].call{value: prop.amounts[i]}(prop.payloads[i]);
                         
                         results[i] = result;
                     }
                     
                 // governance settings
                 if (prop.proposalType == ProposalType.PERIOD) 
-                    if (prop.amount[0] > 0) votingPeriod = uint32(prop.amount[0]);
+                    if (prop.amounts[0] > 0) votingPeriod = uint32(prop.amounts[0]);
                 
                 if (prop.proposalType == ProposalType.QUORUM) 
-                    if (prop.amount[0] > 0) quorum = uint8(prop.amount[0]);
+                    if (prop.amounts[0] > 0) quorum = uint8(prop.amounts[0]);
                 
                 if (prop.proposalType == ProposalType.SUPERMAJORITY) 
-                    if (prop.amount[0] > 0) supermajority = uint8(prop.amount[0]);
+                    if (prop.amounts[0] > 0) supermajority = uint8(prop.amounts[0]);
                 
                 if (prop.proposalType == ProposalType.TYPE) 
-                    proposalVoteTypes[ProposalType(prop.amount[0])] = VoteType(prop.amount[1]);
+                    proposalVoteTypes[ProposalType(prop.amounts[0])] = VoteType(prop.amounts[1]);
                 
                 if (prop.proposalType == ProposalType.PAUSE) 
                     _togglePause();
                 
                 if (prop.proposalType == ProposalType.EXTENSION) 
-                    extensions[prop.account[0]] = !extensions[prop.account[0]];
+                    extensions[prop.accounts[0]] = !extensions[prop.accounts[0]];
                 
                 if (prop.proposalType == ProposalType.DOCS) 
                     docs = prop.description;

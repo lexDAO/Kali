@@ -10,6 +10,7 @@ import {
   Text,
   Container,
   Spacer,
+  HStack,
   VStack,
   Divider,
   Stack,
@@ -21,35 +22,48 @@ import Daos from "../components/Daos";
 import LoadingIndicator from "../components/LoadingIndicator";
 import FlexGradient from "../components/FlexGradient";
 import FactoryForm from "../components/FactoryForm.js";
+import TokenCreationForm from "../components/TokenCreationForm.js"
+import NftCreationForm from '../components/NftCreationForm.js'
+
 
 class Home extends Component {
   state = {
     loading: false,
     factoryVisible: false,
-  };
+    tokenCreationVisible: false,
+    nftCreationVisible: false,
+  }
 
   toggleLoading = () => {
-    this.setState({ loading: !this.state.loading });
-  };
+    this.setState({ loading: !this.state.loading })
+  }
 
   toggleFactory = () => {
-    this.setState({ factoryVisible: !this.state.factoryVisible });
-  };
+    this.setState({ factoryVisible: !this.state.factoryVisible })
+  }
+
+  toggleTokenCreation = () => {
+    this.setState({ tokenCreationVisible: !this.state.tokenCreationVisible })
+  }
+
+  toggleNftCreation = () => {
+    this.setState({ nftCreationVisible: !this.state.nftCreationVisible })
+  }
 
   static async getInitialProps() {
-    const events = await factory.getPastEvents("DAOdeployed", {
+    const events = await factory.getPastEvents('DAOdeployed', {
       fromBlock: 0,
-      toBlock: "latest",
-    });
-    const eventArray = [];
+      toBlock: 'latest',
+    })
+    const eventArray = []
     for (let i = 0; i < events.length; i++) {
-      const address = events[i]["returnValues"]["kaliDAO"];
-      const instance = await new web3.eth.Contract(abi, address);
-      const name = await instance.methods.name().call();
-      const dao = { kaliDAO: address, name: name };
-      eventArray.push(dao);
+      const address = events[i]['returnValues']['kaliDAO']
+      const instance = await new web3.eth.Contract(abi, address)
+      const name = await instance.methods.name().call()
+      const dao = { kaliDAO: address, name: name }
+      eventArray.push(dao)
     }
-    return { eventArray };
+    return { eventArray }
   }
 
   render() {
@@ -57,20 +71,24 @@ class Home extends Component {
       <Layout loading={this.state.loading}>
         <Stack spacing={5}>
           <FlexGradient>
-            <Stack spacing={5} p={5} alignItems="center">
+            <Stack spacing={5} p={5} alignItems='center'>
               <Text
-                fontSize="4xl"
-                color="kali.700"
-                fontWeight="bold"
-                letterSpacing="wide"
+                fontSize='4xl'
+                color='kali.700'
+                fontWeight='bold'
+                letterSpacing='wide'
               >
                 KaliDAO
               </Text>
-              <Text fontSize="xl">
+              <Text fontSize='xl'>
                 KaliDAO is an optimized DAC framework like you&apos;ve never
                 seen before. Move over, Moloch: the queen has arrived.
               </Text>
-              <Button onClick={this.toggleFactory}>Create KaliDAO</Button>
+              <HStack spacing='25px'>
+                <Button onClick={this.toggleFactory}>Create KaliDAO</Button>
+                <Button onClick={this.toggleTokenCreation}>Create ERC20</Button>
+                <Button onClick={this.toggleNftCreation}>Create ERC721</Button>
+              </HStack>
             </Stack>
           </FlexGradient>
           <Divider />
@@ -81,13 +99,33 @@ class Home extends Component {
                 <Divider />
               </>
             ) : (
-              ""
+              ''
+            )}
+          </>
+          <>
+            {this.state.tokenCreationVisible == true ? (
+              <>
+                <TokenCreationForm toggleLoading={this.toggleLoading} />
+                <Divider />
+              </>
+            ) : (
+              ''
+            )}
+          </>
+          <>
+            {this.state.nftCreationVisible == true ? (
+              <>
+                <NftCreationForm toggleLoading={this.toggleLoading} />
+                <Divider />
+              </>
+            ) : (
+              ''
             )}
           </>
           <Daos {...this.props} />
         </Stack>
       </Layout>
-    );
+    )
   }
 }
 

@@ -15,7 +15,7 @@ function FactoryForm(props) {
 
   {
     /* ISSUES
-        - quoram, votingPeriod struck at initialValue not updating to value filled in NumberInput 
+        - quorum, votingPeriod struck at initialValue not updating to value filled in NumberInput 
         - voter-share array soon 
         - disable summon when submitting
     */
@@ -26,20 +26,19 @@ function FactoryForm(props) {
     console.log("DAO Form: ", values);
 
     const {
-      docs,
       name,
-      quorum,
-      shares,
       symbol,
-      votePeriodUnit,
+      docs,
+      paused,
+      extensions,
+      extensionsData,
       voters,
+      shares,
       votingPeriod,
-      supermajority,
-      mint,
-      call,
-      gov,
+      votingPeriodUnit,
+      govSettings
     } = values;
-
+  
     // convert shares to wei
     var sharesArray = [];
     for (let i = 0; i < shares.split(",").length; i++) {
@@ -74,12 +73,20 @@ function FactoryForm(props) {
     var votersArray = voters.split(',')
     var _voters = '';
 
+    var extensionsArray = extensions.split(',')
+    var _extensions = '';
+
+    var extensionsDataArray = extensionsData.split(',')
+    var _extensionsData = '';
+
+    var govSettingsArray = govSettings.split(',')
+    var _govSettings = '';
+
     for (const i = 0; i < votersArray.length; i++) {
       if (votersArray[i].includes('.eth')) {
         votersArray[i] = await web3.eth.ens.getAddress(votersArray[i]).catch(() => {
           alert('ENS not found')
         })
-        
       }
 
       if (i == votersArray.length - 1) {
@@ -89,6 +96,36 @@ function FactoryForm(props) {
       }
 
       voters = _voters;
+    }
+
+    for (const i = 0; i < extensionsArray.length; i++) {
+      if (i == extensionsArray.length - 1) {
+        _extensions += extensionsArray[i];
+      } else {
+        _extensions += extensionsArray[i] + ','
+      }
+
+      extensions = _extensions;
+    }
+
+    for (const i = 0; i < extensionsDataArray.length; i++) {
+      if (i == extensionsDataArray.length - 1) {
+        _extensionsData += extensionsDataArray[i];
+      } else {
+        _extensionsData += extensionsDataArray[i] + ','
+      }
+
+      extensionsData = _extensionsData;
+    }
+
+    for (const i = 0; i < govSettingsArray.length; i++) {
+      if (i == govSettingsArray.length - 1) {
+        _govSettings += govSettingsArray[i];
+      } else {
+        _govSettings += govSettingsArray[i] + ','
+      }
+
+      govSettings = _govSettings;
     }
 
     const accounts = await web3.eth.getAccounts();
@@ -101,14 +138,12 @@ function FactoryForm(props) {
           symbol,
           docs,
           true,
+          extensions.split(","),
+          extensionsData.split(","),
           voters.split(","),
           sharesArray,
           votingPeriod,
-          quorum,
-          supermajority,
-          mint,
-          call,
-          gov
+          govSettings.split(",")
         )
         .send({ from: accounts[0] });
 
@@ -129,16 +164,14 @@ function FactoryForm(props) {
   const initialValues = {
     name: "",
     symbol: "",
+    docs: "",
+    extensions: (0x0000000000000000000000000000000000000000),
+    extensionsData: (0x0000000000000000000000000000000000000000),
     voters: "",
     shares: "",
-    docs: "",
     votePeriodUnit: "",
     votingPeriod: 1,
-    quorum: 1,
-    supermajority: 60,
-    mint: 1,
-    call: 1,
-    gov: 3,
+    govSettings: (0,0,0,0,0,0,0,0,0,0)
   };
 
   const validationSchema = Yup.object({
@@ -148,12 +181,8 @@ function FactoryForm(props) {
     shares: Yup.string().required("Required"),
     docs: Yup.string().required("Required"),
     votePeriodUnit: Yup.string().required("Required"),
-    votingPeriod: Yup.number().required("Required"),
-    quorum: Yup.number().required("Required"),
-    supermajority: Yup.number().required("Required"),
-    mint: Yup.number().required("Required"),
-    call: Yup.number().required("Required"),
-    gov: Yup.number().required("Required"),
+    votingPeriod: Yup.number().required("Required")//,
+    //govSettings: Yup.string().required("Required")
   });
 
   const optionsDocs = [
@@ -227,34 +256,6 @@ function FactoryForm(props) {
               label="Voting Period Unit"
               options={optionsVotingPeriod}
             />
-            <FormikControl
-              control="number-input"
-              name="quorum"
-              defaultValue={10}
-              min={0}
-              max={100}
-              label="Quorum %"
-            />
-            {/*Hidden Inputs*/}
-            <FormikControl
-              control="input"
-              type="hidden"
-              name="supermajority"
-              value={60}
-            />
-            <FormikControl
-              control="input"
-              type="hidden"
-              name="mint"
-              value={1}
-            />
-            <FormikControl
-              control="input"
-              type="hidden"
-              name="call"
-              value={1}
-            />
-            <FormikControl control="input" type="hidden" name="gov" value={3} />
             <br />
             <Button type="submit">Summon</Button>
           </Form>

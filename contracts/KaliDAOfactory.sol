@@ -3,10 +3,17 @@
 pragma solidity >=0.8.0;
 
 import './KaliDAO.sol';
+import './IRicardianLLC.sol';
 
 /// @notice Factory to deploy KaliDAO.
 contract KaliDAOfactory {
     event DAOdeployed(string indexed name, KaliDAO indexed kaliDAO);
+
+    IRicardianLLC public immutable ricardianLLC;
+
+    constructor(IRicardianLLC ricardianLLC_) {
+        ricardianLLC = ricardianLLC_;
+    }
     
     function deployKaliDAO(
         string memory name_,
@@ -39,7 +46,13 @@ contract KaliDAOfactory {
                 IKaliDAOextension(extensions_[i]).setExtension(address(kaliDAO), extensionsData_[i]);
             }
         }
-        
+
+        bytes memory docs = bytes(docs_);
+
+        if (docs.length == 0) {
+            ricardianLLC.mintLLC(address(kaliDAO));
+        }
+
         emit DAOdeployed(name_, kaliDAO);
     }
 }

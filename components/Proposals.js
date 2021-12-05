@@ -26,56 +26,59 @@ export default function Proposals() {
   var proposalArray = [];
 
   // get dao info
-  useEffect(async() => {
-    if(!address) {
-      return;
-    } else {
-      const instance = new web3.eth.Contract(abi, address);
-      const proposalCount = parseInt(
-        await instance.methods.proposalCount().call()
-      );
-      const votingPeriod = parseInt(await instance.methods.votingPeriod().call());
-      const quorum = parseInt(await instance.methods.quorum().call());
-      const supermajority = parseInt(
-        await instance.methods.supermajority().call()
-      );
+  useEffect(() => {
+    async function fetchData() {
+      if(!address) {
+        return;
+      } else {
+        const instance = new web3.eth.Contract(abi, address);
+        const proposalCount = parseInt(
+          await instance.methods.proposalCount().call()
+        );
+        const votingPeriod = parseInt(await instance.methods.votingPeriod().call());
+        const quorum = parseInt(await instance.methods.quorum().call());
+        const supermajority = parseInt(
+          await instance.methods.supermajority().call()
+        );
 
-      const cutoff = Date.now() / 1000 - parseInt(votingPeriod);
-      for (var i = 0; i < proposalCount; i++) {
-          var proposal = await instance.methods.proposals(i).call();
-          var proposalArrays = await instance.methods.getProposalArrays(i).call();
-          if(parseInt(proposal["creationTime"]) != 0) {
-            // add solidity contract id to array
-            proposal["id"] = i;
-            // format date for display
-            let created = new Date(parseInt(proposal["creationTime"]) * 1000);
-            proposal["created"] = created.toLocaleString();
-            //expiration
-            let expires = new Date(
-              (parseInt(proposal["creationTime"]) + parseInt(votingPeriod)) * 1000
-            );
-            let timer = (expires / 1000) - (Date.now() / 1000);
-            proposal["timer"] = parseInt(timer);
-            proposal["expires"] = expires.toLocaleString();
-            // * check if voting still open * //
-            if (parseInt(proposal["creationTime"]) > cutoff) {
-              proposal["open"] = true;
-              // time remaining
-              proposal["timeRemaining"] = cutoff - Date.now() / 1000;
-            } else {
-              proposal["open"] = false;
-              proposal["timeRemaining"] = 0;
-            }
-            // integrate data from array getter function
-            let amount = proposalArrays["amounts"][0];
-            proposal["amount"] = web3.utils.fromWei(amount, "ether");
-            proposal["account"] = proposalArrays["accounts"][0];
-            proposal["payload"] = proposalArrays["payload"];
-            proposalArray.push(proposal);
-          } // end live proposals
-        } // end for loop
-        setProposals(proposalArray);
+        const cutoff = Date.now() / 1000 - parseInt(votingPeriod);
+        for (var i = 0; i < proposalCount; i++) {
+            var proposal = await instance.methods.proposals(i).call();
+            var proposalArrays = await instance.methods.getProposalArrays(i).call();
+            if(parseInt(proposal["creationTime"]) != 0) {
+              // add solidity contract id to array
+              proposal["id"] = i;
+              // format date for display
+              let created = new Date(parseInt(proposal["creationTime"]) * 1000);
+              proposal["created"] = created.toLocaleString();
+              //expiration
+              let expires = new Date(
+                (parseInt(proposal["creationTime"]) + parseInt(votingPeriod)) * 1000
+              );
+              let timer = (expires / 1000) - (Date.now() / 1000);
+              proposal["timer"] = parseInt(timer);
+              proposal["expires"] = expires.toLocaleString();
+              // * check if voting still open * //
+              if (parseInt(proposal["creationTime"]) > cutoff) {
+                proposal["open"] = true;
+                // time remaining
+                proposal["timeRemaining"] = cutoff - Date.now() / 1000;
+              } else {
+                proposal["open"] = false;
+                proposal["timeRemaining"] = 0;
+              }
+              // integrate data from array getter function
+              let amount = proposalArrays["amounts"][0];
+              proposal["amount"] = web3.utils.fromWei(amount, "ether");
+              proposal["account"] = proposalArrays["accounts"][0];
+              proposal["payload"] = proposalArrays["payload"];
+              proposalArray.push(proposal);
+            } // end live proposals
+          } // end for loop
+          setProposals(proposalArray);
+        }
       }
+      fetchData();
   });
 
   const vote = async () => {

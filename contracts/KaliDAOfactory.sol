@@ -27,6 +27,8 @@ contract KaliDAOfactory {
         uint32 votingPeriod_,
         uint8[] memory govSettings_
     ) external payable returns (KaliDAO kaliDAO) {
+        require(extensions_.length == extensionsData_.length, 'NO_ARRAY_PARITY');
+        
         kaliDAO = new KaliDAO{value: msg.value}(
             name_, 
             symbol_, 
@@ -39,11 +41,13 @@ contract KaliDAOfactory {
             govSettings_
         );
 
-        // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
-        unchecked {
-            for (uint256 i; i < extensions_.length; i++) {
-                IKaliDAOextension(extensions_[i]).setExtension(address(kaliDAO), extensionsData_[i]);
+        if (extensions_.length > 0) {
+            // this is reasonably safe from overflow because incrementing `i` loop beyond
+            // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+            unchecked {
+                for (uint256 i; i < extensions_.length; i++) {
+                    IKaliDAOextension(extensions_[i]).setExtension(address(kaliDAO), extensionsData_[i]);
+                }
             }
         }
 

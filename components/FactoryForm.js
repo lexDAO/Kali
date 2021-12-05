@@ -15,9 +15,8 @@ function FactoryForm(props) {
 
   {
     /* ISSUES
-        - quoram, votingPeriod struck at initialValue not updating to value filled in NumberInput 
         - voter-share array soon 
-        - disable summon when submitting
+        - add support for custom gov setting 
     */
   }
 
@@ -25,35 +24,34 @@ function FactoryForm(props) {
     toggleLoading();
     console.log("DAO Form: ", values);
 
+    const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0";
+    const extensions = new Array(0);
+    const extensionsData = new Array(0);
+
     const {
-      docs,
       name,
-      quorum,
-      shares,
       symbol,
-      votePeriodUnit,
+      docs,
       voters,
+      shares,
       votingPeriod,
-      supermajority,
-      mint,
-      call,
-      gov,
+      votingPeriodUnit,
     } = values;
 
     // convert shares to wei
-    var sharesArray = [];
+    let sharesArray = [];
     for (let i = 0; i < shares.split(",").length; i++) {
       sharesArray.push(web3.utils.toWei(shares.split(",")[i]));
     }
 
-    // convert vote period to appropriate unit
-    if (votePeriodUnit == "minutes") {
+    // convert voting period to appropriate unit
+    if (votingPeriodUnit == "minutes") {
       votingPeriod *= 60;
-    } else if (votePeriodUnit == "hours") {
+    } else if (votingPeriodUnit == "hours") {
       votingPeriod *= 60 * 60;
-    } else if (votePeriodUnit == "days") {
+    } else if (votingPeriodUnit == "days") {
       votingPeriod *= 60 * 60 * 24;
-    } else if (votePeriodUnit == "weeks") {
+    } else if (votingPeriodUnit == "weeks") {
       votingPeriod *= 60 * 60 * 24 * 7;
     }
 
@@ -71,24 +69,26 @@ function FactoryForm(props) {
 
     console.log("votingPeriod:", votingPeriod);
 
-    var votersArray = voters.split(',')
-    var _voters = '';
+    let votersArray = voters.split(",");
+    let _voters = "";
 
-    for (const i = 0; i < votersArray.length; i++) {
-      if (votersArray[i].includes('.eth')) {
-        votersArray[i] = await web3.eth.ens.getAddress(votersArray[i]).catch(() => {
-          alert('ENS not found')
-        })
-        
+    for (let i = 0; i < votersArray.length; i++) {
+      if (votersArray[i].includes(".eth")) {
+        votersArray[i] = await web3.eth.ens
+          .getAddress(votersArray[i])
+          .catch(() => {
+            alert("ENS not found");
+          });
       }
 
       if (i == votersArray.length - 1) {
         _voters += votersArray[i];
       } else {
-        _voters += votersArray[i] + ','
+        _voters += votersArray[i] + ",";
       }
 
       voters = _voters;
+      console.log("Voters:", voters);
     }
 
     const accounts = await web3.eth.getAccounts();
@@ -101,14 +101,12 @@ function FactoryForm(props) {
           symbol,
           docs,
           true,
+          extensions,
+          extensionsData,
           voters.split(","),
           sharesArray,
           votingPeriod,
-          quorum,
-          supermajority,
-          mint,
-          call,
-          gov
+          govSettings.split(",")
         )
         .send({ from: accounts[0] });
 
@@ -129,16 +127,11 @@ function FactoryForm(props) {
   const initialValues = {
     name: "",
     symbol: "",
+    docs: "",
     voters: "",
     shares: "",
-    docs: "",
-    votePeriodUnit: "",
+    votingPeriodUnit: "",
     votingPeriod: 1,
-    quorum: 1,
-    supermajority: 60,
-    mint: 1,
-    call: 1,
-    gov: 3,
   };
 
   const validationSchema = Yup.object({
@@ -147,13 +140,8 @@ function FactoryForm(props) {
     voters: Yup.string().required("Required"),
     shares: Yup.string().required("Required"),
     docs: Yup.string().required("Required"),
-    votePeriodUnit: Yup.string().required("Required"),
+    votingPeriodUnit: Yup.string().required("Required"),
     votingPeriod: Yup.number().required("Required"),
-    quorum: Yup.number().required("Required"),
-    supermajority: Yup.number().required("Required"),
-    mint: Yup.number().required("Required"),
-    call: Yup.number().required("Required"),
-    gov: Yup.number().required("Required"),
   });
 
   const optionsDocs = [
@@ -213,7 +201,6 @@ function FactoryForm(props) {
               name="shares"
               placeholder="1,2,3"
             />
-            {/* Add validation for Voting Period and Quoram */}
             <FormikControl
               control="number-input"
               label="Voting Period"
@@ -223,38 +210,10 @@ function FactoryForm(props) {
             />
             <FormikControl
               control="select"
-              name="votePeriodUnit"
+              name="votingPeriodUnit"
               label="Voting Period Unit"
               options={optionsVotingPeriod}
             />
-            <FormikControl
-              control="number-input"
-              name="quorum"
-              defaultValue={10}
-              min={0}
-              max={100}
-              label="Quorum %"
-            />
-            {/*Hidden Inputs*/}
-            <FormikControl
-              control="input"
-              type="hidden"
-              name="supermajority"
-              value={60}
-            />
-            <FormikControl
-              control="input"
-              type="hidden"
-              name="mint"
-              value={1}
-            />
-            <FormikControl
-              control="input"
-              type="hidden"
-              name="call"
-              value={1}
-            />
-            <FormikControl control="input" type="hidden" name="gov" value={3} />
             <br />
             <Button type="submit">Summon</Button>
           </Form>

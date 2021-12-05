@@ -1,20 +1,19 @@
-import React from "react";
+import React, { useState, useContext } from "react";
+import AppContext from '../context/AppContext';
 import {
-  Container,
-  ChakraProvider,
-  Flex,
-  Spinner,
-  Center,
+  Container
 } from "@chakra-ui/react";
 import Head from "next/head";
 import Nav from "./Nav";
-import LoadingIndicator from "./LoadingIndicator";
+import LoadingIndicator from "./Loading";
 import Footer from "./Footer";
 
-const Layout = (props) => {
-  return (
+export default function Layout(props) {
+  const value = useContext(AppContext);
+  const { loading } = value.state;
+  return(
     <>
-      {props.loading == true ? <LoadingIndicator /> : ""}
+      {loading == true ? <LoadingIndicator /> : ""}
       <Head>
         <title>KaliDAO</title>
         <meta
@@ -23,8 +22,7 @@ const Layout = (props) => {
           key="title"
         />
       </Head>
-
-      <Nav {...props} />
+      <Nav />
       <Container
         minheight="100vh"
         maxW="container.md"
@@ -35,6 +33,5 @@ const Layout = (props) => {
       </Container>
       <Footer />
     </>
-  );
-};
-export default Layout;
+  )
+}

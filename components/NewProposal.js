@@ -1,9 +1,6 @@
-/* eslint-disable react/no-children-prop */
-import React, { Component } from "react";
+import { useState, useContext, useEffect } from 'react';
 import Router, { useRouter } from "next/router";
-import web3 from "../eth/web3.js";
-const abi = require("../abi/KaliDAO.json");
-
+import AppContext from '../context/AppContext';
 import {
   Input,
   Button,
@@ -18,15 +15,21 @@ import {
 } from "@chakra-ui/react";
 import FlexOutline from "./FlexOutline";
 import FlexGradient from "./FlexGradient";
+import Layout from './Layout';
+const abi = require("../abi/KaliDAO.json");
 
-class NewProposal extends Component {
-  state = {
-    proposalType: 999, // arbitrary number where no proposal type is selected. if changed, must change below, too.
-  };
+export default function NewProposal() {
+  const [visibleView, setVisibleView] = useState(1);
+  const [proposalType, setProposalType] = useState(999); // arbitrary number where no proposal type is selected. if changed, must change below, too
 
-  submitProposal = async (event) => {
+  const value = useContext(AppContext);
+  const { web3, loading } = value.state;
+  const router = useRouter();
+  const address = router.query.dao;
+
+  const submitProposal = async (event) => {
     event.preventDefault();
-    this.props.toggleLoading();
+    value.setLoading(true);
 
     let object = event.target;
     var array = [];
@@ -42,7 +45,7 @@ class NewProposal extends Component {
       account = await web3.eth.ens.getAddress(account).catch(() => {
         alert("ENS not found")
       });
-    } 
+    }
 
     if (proposalType == 1) {
       amount = await instance.methods.balanceOf(account).call();
@@ -55,7 +58,7 @@ class NewProposal extends Component {
 
     try {
       const accounts = await web3.eth.getAccounts();
-      
+
       let result = await instance.methods
         .propose(proposalType, description, [account], [amount], [payload])
         .send({ from: accounts[0] });
@@ -65,49 +68,45 @@ class NewProposal extends Component {
       alert(e);
     }
 
-    this.props.toggleLoading();
+    value.setLoading(false);
   };
 
-  updateProposalType = (e) => {
+  const updateProposalType = (e) => {
     let proposalType = e.target.value;
-    this.setState({ proposalType });
+    setProposalType(proposalType);
   };
 
-  render() {
-    return (
-      <React.Fragment>
-        <form onSubmit={this.submitProposal}>
-          <FlexOutline>
-            <Input type="hidden" name="dao" value={this.props.dao["address"]} />
-            <Select
-              name="proposalType"
-              onChange={this.updateProposalType}
-              color="kali.800"
-              bg="kali.900"
-              opacity="0.9"
-            >
-              <option value="999">Select a proposal type</option>
-              <option value="0">Mint</option>
-              <option value="1">Burn</option>
-              <option value="2">Call</option>
-            </Select>
+  return(
+    <>
+      <form onSubmit={submitProposal}>
+        <FlexOutline>
+          <Input type="hidden" name="dao" value={address} />
+          <Select
+            name="proposalType"
+            onChange={updateProposalType}
+            color="kali.800"
+            bg="kali.900"
+            opacity="0.9"
+          >
+            <option value="999">Select a proposal type</option>
+            <option value="0">Mint</option>
+            <option value="1">Burn</option>
+            <option value="2">Call</option>
+          </Select>
 
-            {this.state.proposalType == 0 ? <Fields_0 /> : ""}
-            {this.state.proposalType == 1 ? <Fields_1 /> : ""}
-            {this.state.proposalType == 2 ? <Fields_2 /> : ""}
-            {this.state.proposalType != 999 ? (
-              <Button type="submit">Submit Proposal</Button>
-            ) : (
-              ""
-            )}
-          </FlexOutline>
-        </form>
-      </React.Fragment>
-    );
-  }
+          {proposalType == 0 ? <Fields_0 /> : ""}
+          {proposalType == 1 ? <Fields_1 /> : ""}
+          {proposalType == 2 ? <Fields_2 /> : ""}
+          {proposalType != 999 ? (
+            <Button type="submit">Submit Proposal</Button>
+          ) : (
+            ""
+          )}
+        </FlexOutline>
+      </form>
+    </>
+  )
 }
-
-export default NewProposal;
 
 const Fields_0 = () => {
   return (

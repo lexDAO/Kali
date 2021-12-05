@@ -6,14 +6,15 @@ const FlexOutline = (props) => {
     <Flex
       display="flex"
       flexDirection="column"
-      backgroundColor="black"
+      //backgroundColor="black"
       border="1px"
-      borderColor="white"
+      //borderColor="white"
       p={5}
-      color="white"
+      //color="white"
       boxShadow="xs"
       rounded="xl"
       mb={5}
+      //maxW="90vw"
     >
       {props.children}
     </Flex>

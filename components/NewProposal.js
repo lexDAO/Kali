@@ -19,7 +19,6 @@ import Layout from './Layout';
 const abi = require("../abi/KaliDAO.json");
 
 export default function NewProposal() {
-  const [visibleView, setVisibleView] = useState(1);
   const [proposalType, setProposalType] = useState(999); // arbitrary number where no proposal type is selected. if changed, must change below, too
 
   const value = useContext(AppContext);

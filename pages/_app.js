@@ -11,8 +11,18 @@ function MyApp({ Component, pageProps }) {
   const [chainId, setChainId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(async() => {
-    connect();
+  useEffect(() => {
+
+    async function fetchData() {
+      if(!web3) {
+        return;
+      } else {
+          let accounts = await web3.eth.getAccounts();
+          setAccount(accounts[0]);
+          setChainId(await web3.eth.getChainId());
+      }
+    }
+    fetchData();
 
     ethereum.on("accountsChanged", function (accounts) {
       changeAccount();

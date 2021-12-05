@@ -42,6 +42,16 @@
 			},
 			{
 				"internalType": "address[]",
+				"name": "extensions_",
+				"type": "address[]"
+			},
+			{
+				"internalType": "bytes[]",
+				"name": "extensionsData_",
+				"type": "bytes[]"
+			},
+			{
+				"internalType": "address[]",
 				"name": "voters_",
 				"type": "address[]"
 			},
@@ -56,29 +66,9 @@
 				"type": "uint32"
 			},
 			{
-				"internalType": "uint8",
-				"name": "quorum_",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint8",
-				"name": "supermajority_",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint8",
-				"name": "member_",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint8",
-				"name": "call_",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint8",
-				"name": "gov_",
-				"type": "uint8"
+				"internalType": "uint8[]",
+				"name": "govSettings_",
+				"type": "uint8[]"
 			}
 		],
 		"name": "deployKaliDAO",

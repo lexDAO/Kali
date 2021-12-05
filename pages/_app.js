@@ -11,7 +11,7 @@ function MyApp({ Component, pageProps }) {
   const [chainId, setChainId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  useEffect(async() => {
 
     connect();
 

@@ -24,9 +24,9 @@ function FactoryForm(props) {
     toggleLoading();
     console.log("DAO Form: ", values);
 
-    const govSettings = "0,60,0,0,0,0,0,0,0,0,0";
-    const extensions = [];
-    const extensionsData = [];
+    const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0";
+    const extensions = new Array(0);
+    const extensionsData = new Array(0);
 
     const {
       name,

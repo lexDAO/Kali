@@ -24,9 +24,9 @@ function FactoryForm(props) {
     toggleLoading();
     console.log("DAO Form: ", values);
 
-    const govSettings = "0,0,0,0,0,0,0,0,0,0,0";
-    const extensions = "0x0000000000000000000000000000000000000000";
-    const extensionsData = "0x0000000000000000000000000000000000000000";
+    const govSettings = "0,60,0,0,0,0,0,0,0,0,0";
+    const extensions = [];
+    const extensionsData = [];
 
     const {
       name,
@@ -72,15 +72,6 @@ function FactoryForm(props) {
     let votersArray = voters.split(",");
     let _voters = "";
 
-    let extensionsArray = extensions.split(",");
-    let _extensions = "";
-
-    let extensionsDataArray = extensionsData.split(",");
-    let _extensionsData = "";
-
-    let govSettingsArray = govSettings.split(",");
-    let _govSettings = "";
-
     for (let i = 0; i < votersArray.length; i++) {
       if (votersArray[i].includes(".eth")) {
         votersArray[i] = await web3.eth.ens
@@ -97,39 +88,7 @@ function FactoryForm(props) {
       }
 
       voters = _voters;
-    }
-
-    for (let i = 0; i < extensionsArray.length; i++) {
-      if (i == extensionsArray.length - 1) {
-        _extensions += extensionsArray[i];
-      } else {
-        _extensions += extensionsArray[i] + ",";
-      }
-
-      extensions = _extensions;
-      console.log("extensions:", extensions);
-    }
-
-    for (let i = 0; i < extensionsDataArray.length; i++) {
-      if (i == extensionsDataArray.length - 1) {
-        _extensionsData += extensionsDataArray[i];
-      } else {
-        _extensionsData += extensionsDataArray[i] + ",";
-      }
-
-      extensionsData = _extensionsData;
-      console.log("extensionsData:", extensionsData);
-    }
-
-    for (let i = 0; i < govSettingsArray.length; i++) {
-      if (i == govSettingsArray.length - 1) {
-        _govSettings += govSettingsArray[i];
-      } else {
-        _govSettings += govSettingsArray[i] + ",";
-      }
-
-      govSettings = _govSettings;
-      console.log("govSettings:", govSettings);
+      console.log("Voters:", voters);
     }
 
     const accounts = await web3.eth.getAccounts();
@@ -142,8 +101,8 @@ function FactoryForm(props) {
           symbol,
           docs,
           true,
-          extensions.split(","),
-          extensionsData.split(","),
+          extensions,
+          extensionsData,
           voters.split(","),
           sharesArray,
           votingPeriod,

@@ -25,7 +25,7 @@ function NftForm(props) {
     toggleLoading()
     console.log("Token creation Form: ", values)
 
-    const { owner, name, symbol, decimals, supply } = values
+    const { owner, name, symbol, supply } = values
 
     const accounts = await web3.eth.getAccounts()
 
@@ -36,9 +36,9 @@ function NftForm(props) {
         .deployFixedERC20(
           name, 
           symbol, 
-          decimals, 
+          18, 
           owner, 
-          supply
+          web3.utils.toWei(supply)
           )
         .send({ from: accounts[0] })
 
@@ -61,7 +61,6 @@ function NftForm(props) {
     owner: "",
     name: "",
     symbol: "",
-    decimals: 0,
     supply: 0
   }
 
@@ -69,11 +68,10 @@ function NftForm(props) {
     owner: Yup.string().required("Required"),
     name: Yup.string().required("Required"),
     symbol: Yup.string().required("Required"),
-    decimals: Yup.number().required("Required"),
     supply: Yup.number().required("Required"),
   })
 
-  const optionsDocs = [
+  const optionsDAOs = [
     { key: "Select a DAO", value: "" },
     { key: "Code of Conduct", value: "COC" },
     { key: "UNA", value: "UNA" },
@@ -93,7 +91,7 @@ function NftForm(props) {
               control="select"
               label="DAO"
               name="dao"
-              options={optionsDocs}
+              options={optionsDAOs}
             />
             <FormikControl
               control="input"
@@ -115,12 +113,6 @@ function NftForm(props) {
               label="Symbol"
               name="symbol"
               placeholder="Symbol of token"
-            />
-            <FormikControl
-              control="number-input"
-              label="Decimals"
-              name="decimals"
-              defaultValue={0}
             />
             <FormikControl
               control="number-input"

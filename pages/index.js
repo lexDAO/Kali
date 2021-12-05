@@ -22,16 +22,16 @@ import Daos from "../components/Daos";
 import LoadingIndicator from "../components/LoadingIndicator";
 import FlexGradient from "../components/FlexGradient";
 import FactoryForm from "../components/FactoryForm.js";
-import TokenCreationForm from "../components/TokenCreationForm.js"
-import NftCreationForm from '../components/NftCreationForm.js'
+import TokenForm from "../components/TokenForm.js"
+import NftForm from '../components/NftForm.js'
 
 
 class Home extends Component {
   state = {
     loading: false,
     factoryVisible: false,
-    tokenCreationVisible: false,
-    nftCreationVisible: false,
+    tokenVisible: false,
+    nftVisible: false,
   }
 
   toggleLoading = () => {
@@ -43,11 +43,11 @@ class Home extends Component {
   }
 
   toggleTokenCreation = () => {
-    this.setState({ tokenCreationVisible: !this.state.tokenCreationVisible })
+    this.setState({ tokenVisible: !this.state.tokenVisible })
   }
 
   toggleNftCreation = () => {
-    this.setState({ nftCreationVisible: !this.state.nftCreationVisible })
+    this.setState({ nftVisible: !this.state.nftVisible })
   }
 
   static async getInitialProps() {
@@ -103,9 +103,9 @@ class Home extends Component {
             )}
           </>
           <>
-            {this.state.tokenCreationVisible == true ? (
+            {this.state.tokenVisible == true ? (
               <>
-                <TokenCreationForm toggleLoading={this.toggleLoading} />
+                <TokenForm toggleLoading={this.toggleLoading} />
                 <Divider />
               </>
             ) : (
@@ -113,9 +113,9 @@ class Home extends Component {
             )}
           </>
           <>
-            {this.state.nftCreationVisible == true ? (
+            {this.state.nftVisible == true ? (
               <>
-                <NftCreationForm toggleLoading={this.toggleLoading} />
+                <NftForm toggleLoading={this.toggleLoading} />
                 <Divider />
               </>
             ) : (

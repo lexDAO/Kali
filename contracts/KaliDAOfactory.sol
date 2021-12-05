@@ -7,7 +7,7 @@ import './IRicardianLLC.sol';
 
 /// @notice Factory to deploy KaliDAO.
 contract KaliDAOfactory {
-    event DAOdeployed(string indexed name, KaliDAO indexed kaliDAO);
+    event DAOdeployed(KaliDAO indexed kaliDAO, string indexed name, string docs);
 
     IRicardianLLC public immutable ricardianLLC;
 
@@ -56,6 +56,6 @@ contract KaliDAOfactory {
             ricardianLLC.mintLLC(address(kaliDAO));
         }
 
-        emit DAOdeployed(name_, kaliDAO);
+        emit DAOdeployed(kaliDAO, name_, docs_);
     }
 }

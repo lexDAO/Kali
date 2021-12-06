@@ -11,9 +11,7 @@ function MyApp({ Component, pageProps }) {
   const [chainId, setChainId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(async() => {
-
-    connect();
+  useEffect(() => {
 
     ethereum.on("accountsChanged", function (accounts) {
       changeAccount();
@@ -80,7 +78,8 @@ function MyApp({ Component, pageProps }) {
           setWeb3: setWeb3,
           setAccount: setAccount,
           setChainId: setChainId,
-          setLoading: setLoading
+          setLoading: setLoading,
+          connect: connect
         }}
       >
         <Component {...pageProps} />

@@ -13,6 +13,8 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
 
+    // adding comment to trick vercel that there's new content
+
     ethereum.on("accountsChanged", function (accounts) {
       changeAccount();
     });

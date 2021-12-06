@@ -8,6 +8,18 @@ import './interfaces/IKaliDAOTribute.sol';
 
 /// @notice Tribute contract that escrows ETH or tokens for DAO proposals.
 contract KaliDAOtribute is ReentrancyGuard {
+    event NewTributeProposal(
+        IKaliDAOTribute indexed dao,
+        address indexed proposer, 
+        uint256 indexed proposal, 
+        address asset, 
+        uint256 assetAmount
+    );
+
+    event TributeProposalCancelled(IKaliDAOTribute indexed dao, uint256 indexed proposal);
+
+    event TributeProposalReleased(IKaliDAOTribute indexed dao, uint256 indexed proposal);
+
     mapping(IKaliDAOTribute => mapping(uint256 => Tribute)) public tributes;
 
     struct Tribute {
@@ -48,6 +60,8 @@ contract KaliDAOtribute is ReentrancyGuard {
             asset: asset,
             amount: assetAmount
         });
+
+        emit NewTributeProposal(dao, msg.sender, proposal, asset, assetAmount);
     }
 
     function cancelTributeProposal(IKaliDAOTribute dao, uint256 proposal) public nonReentrant virtual {
@@ -63,6 +77,8 @@ contract KaliDAOtribute is ReentrancyGuard {
         } else {
             SafeTransferLib.safeTransfer(trib.asset, trib.proposer, trib.amount);
         }
+
+        emit TributeProposalCancelled(dao, proposal);
     }
 
     function releaseTributeProposal(IKaliDAOTribute dao, uint256 proposal) public nonReentrant virtual {
@@ -82,5 +98,7 @@ contract KaliDAOtribute is ReentrancyGuard {
                 SafeTransferLib.safeTransfer(trib.asset, trib.proposer, trib.amount);
             }
         }
+
+        emit TributeProposalReleased(dao, proposal);
     }
 }

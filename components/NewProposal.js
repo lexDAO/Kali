@@ -1,6 +1,6 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect } from "react";
 import Router, { useRouter } from "next/router";
-import AppContext from '../context/AppContext';
+import AppContext from "../context/AppContext";
 import {
   Input,
   Button,
@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import FlexOutline from "./FlexOutline";
 import FlexGradient from "./FlexGradient";
-import Layout from './Layout';
+import Layout from "./Layout";
 const abi = require("../abi/KaliDAO.json");
 
 export default function NewProposal() {
@@ -42,7 +42,7 @@ export default function NewProposal() {
 
     if (account.includes(".eth")) {
       account = await web3.eth.ens.getAddress(account).catch(() => {
-        alert("ENS not found")
+        alert("ENS not found");
       });
     }
 
@@ -75,18 +75,12 @@ export default function NewProposal() {
     setProposalType(proposalType);
   };
 
-  return(
+  return (
     <>
       <form onSubmit={submitProposal}>
         <FlexOutline>
           <Input type="hidden" name="dao" value={address} />
-          <Select
-            name="proposalType"
-            onChange={updateProposalType}
-            color="kali.800"
-            bg="kali.900"
-            opacity="0.9"
-          >
+          <Select name="proposalType" onChange={updateProposalType}>
             <option value="999">Select a proposal type</option>
             <option value="0">Mint</option>
             <option value="1">Burn</option>
@@ -104,7 +98,7 @@ export default function NewProposal() {
         </FlexOutline>
       </form>
     </>
-  )
+  );
 }
 
 const Fields_0 = () => {
@@ -155,7 +149,7 @@ const Fields_1 = () => {
       <Input name="amount" type="hidden" value="0" />
       <Input name="payload" type="hidden" value="0x"></Input>
     </>
-  )
+  );
 };
 
 const Fields_2 = () => {
@@ -175,5 +169,5 @@ const Fields_2 = () => {
       </Text>
       <Input name="payload" size="lg" placeholder="0x"></Input>
     </>
-  )
+  );
 };

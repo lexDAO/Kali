@@ -17,14 +17,7 @@ function CustomSelect(props) {
         return (
           <FormControl isInvalid={form.errors[name] && form.touched[name]}>
             <FormLabel htmlFor={name}>{label}</FormLabel>
-            <Select
-              name={name}
-              {...rest}
-              {...field}
-              color="kali.800"
-              bg="kali.900"
-              opacity="0.90"
-            >
+            <Select name={name} {...rest} {...field}>
               {options.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.key}

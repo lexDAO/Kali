@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.0;
 
-/// @notice Interface for KaliDAO tribute escrow.
+/// @notice KaliDAO tribute escrow interface.
 interface IKaliDAOTribute {
     enum ProposalType {
         MINT, 

@@ -7,6 +7,16 @@ import '../../ReentrancyGuard.sol';
 
 /// @notice Crowdsale contract that receives ETH or tokens to mint registered DAO tokens.
 contract KaliDAOcrowdsale is ReentrancyGuard {
+    event ExtensionSet(
+        address indexed dao,
+        address indexed purchaseToken, 
+        uint8 indexed purchaseMultiplier, 
+        uint96 purchaseLimit, 
+        uint32 saleEnds
+    );
+    
+    event ExtensionCalled(address indexed account, uint256 indexed amount);
+    
     mapping(address => Crowdsale) public crowdsales;
 
     struct Crowdsale {
@@ -33,6 +43,8 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
             amountPurchased: 0,
             saleEnds: saleEnds
         });
+        
+        emit ExtensionSet(dao, purchaseToken, purchaseMultiplier, purchaseLimit, saleEnds);
     }
 
     function callExtension(
@@ -63,5 +75,7 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
 
             sale.amountPurchased += uint96(amountOut);
         }
+        
+        emit ExtensionCalled(account, amount);
     }
 }

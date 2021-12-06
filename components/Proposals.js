@@ -6,14 +6,15 @@ import {
   HStack,
   Center,
   Text,
-  Grid,
-  Badge
+  Container,
+  Badge,
+  Grid
 } from "@chakra-ui/react";
 import Layout from './Layout';
 const abi = require("../abi/KaliDAO.json");
 import ProposalRow from "./ProposalRow"
 import Message from "./Message"
-const proposalTypes = require("../utils/proposalTypes");
+import { proposalTypes, voteTypes } from "../utils/appParams";
 
 export default function Proposals() {
   const [visibleView, setVisibleView] = useState(1);
@@ -24,6 +25,7 @@ export default function Proposals() {
   const router = useRouter();
   const address = router.query.dao;
   var proposalArray = [];
+  const proposalVoteTypes = [];
 
   // get dao info
   useEffect(() => {
@@ -35,11 +37,17 @@ export default function Proposals() {
         const proposalCount = parseInt(
           await instance.methods.proposalCount().call()
         );
+        const totalSupply = parseInt(await instance.methods.totalSupply().call());
         const votingPeriod = parseInt(await instance.methods.votingPeriod().call());
         const quorum = parseInt(await instance.methods.quorum().call());
         const supermajority = parseInt(
           await instance.methods.supermajority().call()
         );
+
+        for(var i = 0; i < proposalTypes.length; i++) {
+          const voteType = await instance.methods.proposalVoteTypes(i).call();
+          proposalVoteTypes.push(voteType);
+        }
 
         const cutoff = Date.now() / 1000 - parseInt(votingPeriod);
         for (var i = 0; i < proposalCount; i++) {
@@ -55,9 +63,7 @@ export default function Proposals() {
               let expires = new Date(
                 (parseInt(proposal["creationTime"]) + parseInt(votingPeriod)) * 1000
               );
-              let timer = (expires / 1000) - (Date.now() / 1000);
-              proposal["timer"] = parseInt(timer);
-              proposal["expires"] = expires.toLocaleString();
+              proposal["expires"] = expires;
               // * check if voting still open * //
               if (parseInt(proposal["creationTime"]) > cutoff) {
                 proposal["open"] = true;
@@ -67,11 +73,46 @@ export default function Proposals() {
                 proposal["open"] = false;
                 proposal["timeRemaining"] = 0;
               }
+              // calculate progress bar and passing/failing
+              let passing;
+              let proposalType = proposal["proposalType"];
+              let yesVotes = parseInt(proposal["yesVotes"]);
+              let noVotes = parseInt(proposal["noVotes"]);
+              let voteType = proposalVoteTypes[proposalType];
+
+              if(voteType==0) { // simple majority
+                if(yesVotes > noVotes) {
+                  passing = true;
+                }
+              }
+
+              if (voteType==2) { // supermajority
+                let minYes = ((yesVotes + noVotes) * supermajority) / 100;
+                if(yesVotes > minYes) {
+                  passing = true;
+                }
+              }
+              // rule out any failed quorums
+              if(voteType==1 || voteType==3) {
+                let minVotes = (totalSupply * quorum) / 100;
+                let votes = yesVotes + noVotes;
+                if(votes < minVotes) {
+                  passing = false;
+                }
+              }
+              proposal["passing"] = passing;
+              if(yesVotes==0) {
+                proposal["progress"] = 0;
+              } else {
+                proposal["progress"] = (yesVotes * 100) / (yesVotes + noVotes);
+              }
               // integrate data from array getter function
               let amount = proposalArrays["amounts"][0];
               proposal["amount"] = web3.utils.fromWei(amount, "ether");
               proposal["account"] = proposalArrays["accounts"][0];
-              proposal["payload"] = proposalArrays["payload"];
+              let payload = proposalArrays["payloads"][0];
+              proposal["payloadArray"] = payload.match(/.{0,40}/g);
+              proposal["payload"] = payload;
               proposalArray.push(proposal);
             } // end live proposals
           } // end for loop
@@ -158,11 +199,9 @@ export default function Proposals() {
       {proposals.length == 0 ? (
         <Message>Awaiting proposals</Message>
         ) : (
-        <Grid templateColumns="repeat(1, 1fr)" gap={1}>
+        <Grid templateColumns={{sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(2, 1fr)'}}>
           {proposals.map((p, index) => (
-            <ProposalRow key={index} p={p} address={address} vote={vote} process={process}>
-              <Text fontSize="md">{p['description']}</Text>
-            </ProposalRow>
+            <ProposalRow key={index} p={p} address={address} vote={vote} process={process} />
           ))}
         </Grid>
         )

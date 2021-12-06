@@ -9,23 +9,16 @@ import * as Yup from "yup"
 import FormikControl from "./form/FormikControl.js"
 import { Input } from "@chakra-ui/react"
 
-function NftForm(props) {
-  const { toggleLoading } = props
+function TokenForm(props) {
+  const { toggleLoading, dao } = props
   const [account, setAccount] = useState(null)
-
-  {
-    /* ISSUES
-        - quoram, votingPeriod struck at initialValue not updating to value filled in NumberInput 
-        - voter-share array soon 
-        - disable summon when submitting
-    */
-  }
 
   const handleNftSubmit = async (values) => {
     toggleLoading()
     console.log("Token creation Form: ", values)
+    console.log("DAO Address: ", dao)
 
-    const { owner, name, symbol, supply } = values
+    const { name, symbol, supply } = values
 
     const accounts = await web3.eth.getAccounts()
 
@@ -37,7 +30,7 @@ function NftForm(props) {
           name, 
           symbol, 
           18, 
-          owner, 
+          dao, 
           web3.utils.toWei(supply)
           )
         .send({ from: accounts[0] })
@@ -58,25 +51,16 @@ function NftForm(props) {
   }
 
   const initialValues = {
-    owner: "",
     name: "",
     symbol: "",
     supply: 0
   }
 
   const validationSchema = Yup.object({
-    owner: Yup.string().required("Required"),
     name: Yup.string().required("Required"),
     symbol: Yup.string().required("Required"),
     supply: Yup.number().required("Required"),
   })
-
-  const optionsDAOs = [
-    { key: "Select a DAO", value: "" },
-    { key: "Code of Conduct", value: "COC" },
-    { key: "UNA", value: "UNA" },
-    { key: "LLC", value: "LLC" },
-  ]
 
   return (
     <FlexGradient>
@@ -87,19 +71,6 @@ function NftForm(props) {
       >
         {() => (
           <Form>
-            <FormikControl
-              control="select"
-              label="DAO"
-              name="dao"
-              options={optionsDAOs}
-            />
-            <FormikControl
-              control="input"
-              type="text"
-              label="Owner"
-              name="owner"
-              placeholder="Owner of token"
-            />
             <FormikControl
               control="input"
               type="text"
@@ -129,4 +100,4 @@ function NftForm(props) {
   )
 }
 
-export default NftForm
+export default TokenForm

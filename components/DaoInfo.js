@@ -6,22 +6,47 @@ const abi = require("../abi/KaliDAO.json");
 import web3 from "../eth/web3.js";
 import Link from "next/link";
 import {
+  Button,
   Flex,
   Heading,
   Text,
   Icon,
   HStack,
+  VStack,
+  Divider,
   UnorderedList,
   ListItem,
 } from "@chakra-ui/react";
 import FlexGradient from "./FlexGradient.js";
+import TokenForm from "./TokenForm.js"
+import NftForm from './NftForm.js'
 
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs";
 
 class DaoInfo extends Component {
+  state = {
+    loading: false,
+    tokenVisible: false,
+    nftVisible: false,
+  }
+
+  toggleLoading = () => {
+    this.setState({ loading: !this.state.loading })
+  }
+
+  toggleTokenCreation = () => {
+    this.setState({ tokenVisible: !this.state.tokenVisible })
+    console.log("Toggle ERC20 Form: ", this.state.tokenVisible)
+  }
+
+  toggleNftCreation = () => {
+    this.setState({ nftVisible: !this.state.nftVisible })
+    console.log("Toggle ERC721 Form: ", this.state.tokenVisible)
+  }
+
   render() {
-    const { dao, chainInfo, holdersArray } = this.props;
-    console.log(holdersArray);
+    const { dao, chainInfo, holdersArray } = this.props
+
     return (
       <FlexGradient>
         <Text>Name: {dao["name"]}</Text>
@@ -55,8 +80,41 @@ class DaoInfo extends Component {
             </ListItem>
           ))}
         </UnorderedList>
+        <br />
+        <Divider />
+        <br />
+        <HStack>
+          <Button onClick={this.toggleTokenCreation}>Create ERC20</Button>
+          <Button onClick={this.toggleNftCreation}>Create ERC721</Button>
+        </HStack>
+        <>
+          {this.state.tokenVisible == true ? (
+            <>
+              <TokenForm
+                toggleLoading={this.toggleLoading}
+                dao={dao["address"]}
+              />
+              <Divider />
+            </>
+          ) : (
+            ""
+          )}
+        </>
+        <>
+          {this.state.nftVisible == true ? (
+            <>
+              <NftForm
+                toggleLoading={this.toggleLoading}
+                dao={dao["address"]}
+              />
+              <Divider />
+            </>
+          ) : (
+            ""
+          )}
+        </>
       </FlexGradient>
-    );
+    )
   }
 }
 

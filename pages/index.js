@@ -10,7 +10,6 @@ import {
   Text,
   Container,
   Spacer,
-  HStack,
   VStack,
   Divider,
   Stack,
@@ -22,16 +21,12 @@ import Daos from "../components/Daos";
 import LoadingIndicator from "../components/LoadingIndicator";
 import FlexGradient from "../components/FlexGradient";
 import FactoryForm from "../components/FactoryForm.js";
-import TokenForm from "../components/TokenForm.js"
-import NftForm from '../components/NftForm.js'
 
 
 class Home extends Component {
   state = {
     loading: false,
     factoryVisible: false,
-    tokenVisible: false,
-    nftVisible: false,
   }
 
   toggleLoading = () => {
@@ -40,14 +35,6 @@ class Home extends Component {
 
   toggleFactory = () => {
     this.setState({ factoryVisible: !this.state.factoryVisible })
-  }
-
-  toggleTokenCreation = () => {
-    this.setState({ tokenVisible: !this.state.tokenVisible })
-  }
-
-  toggleNftCreation = () => {
-    this.setState({ nftVisible: !this.state.nftVisible })
   }
 
   static async getInitialProps() {
@@ -84,11 +71,7 @@ class Home extends Component {
                 KaliDAO is an optimized DAC framework like you&apos;ve never
                 seen before. Move over, Moloch: the queen has arrived.
               </Text>
-              <HStack spacing='25px'>
-                <Button onClick={this.toggleFactory}>Create KaliDAO</Button>
-                <Button onClick={this.toggleTokenCreation}>Create ERC20</Button>
-                <Button onClick={this.toggleNftCreation}>Create ERC721</Button>
-              </HStack>
+              <Button onClick={this.toggleFactory}>Create KaliDAO</Button>
             </Stack>
           </FlexGradient>
           <Divider />
@@ -96,26 +79,6 @@ class Home extends Component {
             {this.state.factoryVisible == true ? (
               <>
                 <FactoryForm toggleLoading={this.toggleLoading} />
-                <Divider />
-              </>
-            ) : (
-              ''
-            )}
-          </>
-          <>
-            {this.state.tokenVisible == true ? (
-              <>
-                <TokenForm toggleLoading={this.toggleLoading} />
-                <Divider />
-              </>
-            ) : (
-              ''
-            )}
-          </>
-          <>
-            {this.state.nftVisible == true ? (
-              <>
-                <NftForm toggleLoading={this.toggleLoading} />
                 <Divider />
               </>
             ) : (

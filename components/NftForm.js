@@ -10,23 +10,17 @@ import FormikControl from "./form/FormikControl.js";
 import { Input } from "@chakra-ui/react";
 
 function NftForm(props) {
-  const { toggleLoading } = props;
+  const { toggleLoading, dao } = props;
   const [account, setAccount] = useState(null);
 
-  {
-    /* ISSUES
-        - quoram, votingPeriod struck at initialValue not updating to value filled in NumberInput 
-        - voter-share array soon 
-        - disable summon when submitting
-    */
-  }
+console.log("DAO Address: ", dao)
 
   const handleNftSubmit = async (values) => {
     toggleLoading();
     console.log("NFT creation Form: ", values);
+    console.log("DAO Address: ", dao);
 
     const {
-      owner,
       title,
       desc,
       image
@@ -48,7 +42,7 @@ function NftForm(props) {
     try {
       let result = await kaliNFT.methods
         .mint(
-          owner,
+          dao,
           tokenId, // tokenId,
           desc, // tokenURI
         )
@@ -71,14 +65,12 @@ function NftForm(props) {
   };
 
   const initialValues = {
-    owner: "",
     title: "",
     desc: "",
     image: ""
   };
 
   const validationSchema = Yup.object({
-    owner: Yup.string().required("Required"),
     title: Yup.string().required("Required"),
     desc: Yup.string().required("Required"),
     image: Yup.string().required("Required"),
@@ -100,19 +92,6 @@ function NftForm(props) {
       >
         {() => (
           <Form>
-            <FormikControl
-              control="select"
-              label="DAO"
-              name="dao"
-              options={optionsDocs}
-            />
-            <FormikControl
-              control="input"
-              type="text"
-              label="Owner"
-              name="owner"
-              placeholder="Owner of NFT"
-            />
             <FormikControl
               control="input"
               type="text"

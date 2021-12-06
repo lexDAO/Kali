@@ -8,6 +8,12 @@ import '../../ReentrancyGuard.sol';
 
 /// @notice Redemption contract that transfers registered tokens from DAO in proportion to burnt DAO tokens.
 contract KaliDAOredemption is ReentrancyGuard {
+    event ExtensionSet(address indexed dao, address[] tokens);
+    
+    event ExtensionCalled(address indexed account, uint256 indexed amount);
+    
+    event TokenAdded(address indexed token);
+
     mapping(address => IERC20Minimal[]) public redeemables;
 
     function setExtension(address dao, bytes calldata extensionData) public nonReentrant virtual {
@@ -24,6 +30,8 @@ contract KaliDAOredemption is ReentrancyGuard {
                 redeemables[dao].push(tokens[i]);
             }
         }
+        
+        emit ExtensionSet(dao, tokens);
     }
 
     function callExtension(
@@ -49,6 +57,8 @@ contract KaliDAOredemption is ReentrancyGuard {
 
         // placeholder value to conform to interface
         amountOut = amount;
+        
+        emit ExtensionCalled(account, amount);
     }
 
     function addTokens(IERC20Minimal[] memory tokens) public nonReentrant virtual {
@@ -57,6 +67,8 @@ contract KaliDAOredemption is ReentrancyGuard {
         unchecked {
             for (uint256 i; i < tokens.length; i++) {
                 redeemables[msg.sender].push(tokens[i]);
+                
+                emit TokenAdded(tokens[i]);
             }
         }
     }

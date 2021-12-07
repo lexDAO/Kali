@@ -134,11 +134,12 @@ export default function Proposals(props) {
           counter++;
         }
       }
+    
       fetchData();
 
   }, [counter]);
 }
-      }
+
       fetchData();
   });
 

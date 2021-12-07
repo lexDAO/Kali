@@ -221,7 +221,6 @@ export default function Proposals(props) {
 
   return(
     <>
-
     {proposals==null ? <>Loading...</> :
       <>
       {proposals.length == 0 ? (
@@ -241,7 +240,6 @@ export default function Proposals(props) {
         </Grid>
         </>
     }
-
     </>
   )
 }

@@ -3,8 +3,8 @@
 pragma solidity >=0.8.0;
 
 import './KaliDAOtoken.sol';
-import './NFThelper.sol';
-import './ReentrancyGuard.sol';
+import './utils/NFThelper.sol';
+import './utils/ReentrancyGuard.sol';
 import './IKaliDAOextension.sol';
 
 /// @notice Simple gas-optimized DAO core module.

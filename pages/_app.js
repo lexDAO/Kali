@@ -5,11 +5,11 @@ import Web3Modal from "web3modal";
 import Web3 from 'web3';
 import { useState, useEffect } from 'react';
 import theme from '../styles/theme';
-import infura from '../utils/infura';
+import web3m from '../utils/web3modal';
 
 function MyApp({ Component, pageProps }) {
 
-  const [web3, setWeb3] = useState(infura);
+  const [web3, setWeb3] = useState(web3m);
   const [account, setAccount] = useState(null);
   const [chainId, setChainId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -36,6 +36,11 @@ function MyApp({ Component, pageProps }) {
     });
   }, []);
 
+  const connect = async() => {
+    let accounts = await web3.eth.getAccounts();
+    setAccount(accounts[0]);
+    setChainId(await web3.eth.getChainId());
+  }
 
   const changeAccount = async () => {
     if (window.ethereum) {

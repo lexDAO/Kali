@@ -5,6 +5,7 @@ pragma solidity >=0.8.0;
 import './KaliDAOtoken.sol';
 import './utils/NFThelper.sol';
 import './utils/ReentrancyGuard.sol';
+import './utils/Multicall.sol';
 import './IKaliDAOextension.sol';
 
 /// @notice Simple gas-optimized DAO core module.
@@ -417,29 +418,6 @@ contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
             if (amountOut > 0) _mint(msg.sender, amountOut); 
         } else {
             if (amountOut > 0) _burn(msg.sender, amount);
-        }
-    }
-    
-    function multicall(bytes[] calldata data) public virtual returns (bytes[] memory results) {
-        results = new bytes[](data.length);
-        
-        // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
-        unchecked {
-            for (uint256 i = 0; i < data.length; i++) {
-                (bool success, bytes memory result) = address(this).delegatecall(data[i]);
-
-                if (!success) {
-                    if (result.length < 68) revert();
-                    
-                    assembly {
-                        result := add(result, 0x04)
-                    }
-                    
-                    revert(abi.decode(result, (string)));
-                }
-                results[i] = result;
-            }
         }
     }
 }

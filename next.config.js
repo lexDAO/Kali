@@ -2,7 +2,7 @@ module.exports = {
 
   webpack: function (config, options) {
     config.experiments = {
-      //topLevelAwait: true
+      topLevelAwait: true
     };
     return config;
   },

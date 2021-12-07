@@ -36,7 +36,9 @@ function MyApp({ Component, pageProps }) {
     });
   }, []);
 
-  
+  const connect = async() => {
+
+  }
 
   const changeAccount = async () => {
     if (window.ethereum) {

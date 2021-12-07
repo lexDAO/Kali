@@ -1,8 +1,13 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import AppContext from '../context/AppContext';
+
+//import Web3 from 'web3';
+import Web3 from 'web3';
 import { useState, useEffect } from 'react';
-import web3m from '../utils/web3modal';
 import theme from '../styles/theme';
+import web3m from '../utils/web3modal';
+
+//import infura from '../utils/infura';
 
 function MyApp({ Component, pageProps }) {
 
@@ -26,16 +31,30 @@ function MyApp({ Component, pageProps }) {
 
     ethereum.on("disconnect", () => {
       console.log("disconnected");
-      setWeb3(null)
-      setAccount(null)
-      setChainId(null)
+
+      setWeb3(infura);
+      setAccount(null);
+      setChainId(null);
+
     });
   }, []);
 
-  const connect = async() => {
-    let accounts = await web3.eth.getAccounts();
-    setAccount(accounts[0]);
-    setChainId(await web3.eth.getChainId());
+  const connect = async () => {
+
+    if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
+      // We are in the browser and metamask is running.
+      window.ethereum.request({ method: "eth_requestAccounts" });
+      let web3module = new Web3(window.ethereum);
+      let accounts = await web3module.eth.getAccounts();
+      let chain = await web3module.eth.getChainId();
+      setWeb3(web3module);
+      setAccount(accounts[0]);
+      setChainId(chain);
+
+    } else {
+      // We are on the server *OR* the user is not running metamask
+      alert("please connect Metamask")
+    }
   }
 
   const changeAccount = async () => {

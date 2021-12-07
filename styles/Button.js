@@ -14,15 +14,15 @@ const Button = {
   },
   variants: {
     outline: (props) => ({
-      bg: props.colorMode === "dark" ? "kali.700" : "kali.600",
+      bg: props.colorMode === "dark" ? "kali.700" : "kali.900",
       color: props.colorMode === "dark" ? "kali.900" : "kali.800",
     }),
     ghost: (props) => ({
-      bg: props.colorMode === "dark" ? "kali.700" : "kali.600",
+      bg: props.colorMode === "dark" ? "kali.700" : "kali.900",
       color: props.colorMode === "dark" ? "kali.900" : "kali.800",
     }),
     solid: (props) => ({
-      bg: props.colorMode === "dark" ? "kali.700" : "kali.600",
+      bg: props.colorMode === "dark" ? "kali.700" : "kali.900",
       color: props.colorMode === "dark" ? "kali.900" : "kali.800",
     }),
   },

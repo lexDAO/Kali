@@ -25,7 +25,7 @@ export default function Layout(props) {
       <Nav />
       <Container
         minheight="100vh"
-        maxW="container.md"
+        maxW="container.lg"
         alignItems="center"
         justifyContent="center"
       >

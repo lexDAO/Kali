@@ -1,29 +1,36 @@
 import { useState, useContext, useEffect } from 'react';
 import Router, { useRouter } from "next/router";
 import AppContext from '../context/AppContext';
+
+import ProposalDetails from './ProposalDetails';
 import {
   chakra,
-  HStack,
   Center,
   Text,
-  Grid,
-  Badge
+  Grid
 } from "@chakra-ui/react";
 import Layout from './Layout';
 const abi = require("../abi/KaliDAO.json");
 import ProposalRow from "./ProposalRow"
 import Message from "./Message"
-const proposalTypes = require("../utils/proposalTypes");
 
-export default function Proposals() {
+import { proposalTypes, voteTypes } from "../utils/appParams";
+
+export default function Proposals(props) {
   const [visibleView, setVisibleView] = useState(1);
   const [proposals, setProposals] = useState(null);
+  const [activeProposal, setActiveProposal] = useState(null);
+  const proposalTypes = require("../utils/proposalTypes");
 
   const value = useContext(AppContext);
   const { web3, loading } = value.state;
   const router = useRouter();
   const address = router.query.dao;
   var proposalArray = [];
+  const proposalVoteTypes = [];
+  var counter = 0;
+
+
 
   // get dao info
   useEffect(() => {
@@ -35,11 +42,17 @@ export default function Proposals() {
         const proposalCount = parseInt(
           await instance.methods.proposalCount().call()
         );
+        const totalSupply = parseInt(await instance.methods.totalSupply().call());
         const votingPeriod = parseInt(await instance.methods.votingPeriod().call());
         const quorum = parseInt(await instance.methods.quorum().call());
         const supermajority = parseInt(
           await instance.methods.supermajority().call()
         );
+        
+        for(var i = 0; i < proposalTypes.length; i++) {
+          const voteType = await instance.methods.proposalVoteTypes(i).call();
+          proposalVoteTypes.push(voteType);
+        }
 
         const cutoff = Date.now() / 1000 - parseInt(votingPeriod);
         for (var i = 0; i < proposalCount; i++) {
@@ -55,9 +68,11 @@ export default function Proposals() {
               let expires = new Date(
                 (parseInt(proposal["creationTime"]) + parseInt(votingPeriod)) * 1000
               );
+
+              proposal["expires"] = expires;
               let timer = (expires / 1000) - (Date.now() / 1000);
               proposal["timer"] = parseInt(timer);
-              proposal["expires"] = expires.toLocaleString();
+       
               // * check if voting still open * //
               if (parseInt(proposal["creationTime"]) > cutoff) {
                 proposal["open"] = true;
@@ -67,19 +82,66 @@ export default function Proposals() {
                 proposal["open"] = false;
                 proposal["timeRemaining"] = 0;
               }
+
+              // calculate progress bar and passing/failing
+              let passing;
+              let proposalType = proposal["proposalType"];
+              let yesVotes = parseInt(proposal["yesVotes"]);
+              let noVotes = parseInt(proposal["noVotes"]);
+              let voteType = proposalVoteTypes[proposalType];
+
+              if(voteType==0) { // simple majority
+                if(yesVotes > noVotes) {
+                  passing = true;
+                }
+              }
+
+              if (voteType==2) { // supermajority
+                let minYes = ((yesVotes + noVotes) * supermajority) / 100;
+                if(yesVotes > minYes) {
+                  passing = true;
+                }
+              }
+              // rule out any failed quorums
+              if(voteType==1 || voteType==3) {
+                let minVotes = (totalSupply * quorum) / 100;
+                let votes = yesVotes + noVotes;
+                if(votes < minVotes) {
+                  passing = false;
+                }
+              }
+              proposal["passing"] = passing;
+              if(yesVotes==0) {
+                proposal["progress"] = 0;
+              } else {
+                proposal["progress"] = (yesVotes * 100) / (yesVotes + noVotes);
+              }
+
               // integrate data from array getter function
               let amount = proposalArrays["amounts"][0];
               proposal["amount"] = web3.utils.fromWei(amount, "ether");
               proposal["account"] = proposalArrays["accounts"][0];
-              proposal["payload"] = proposalArrays["payload"];
+
+              let payload = proposalArrays["payloads"][0];
+              proposal["payloadArray"] = payload.match(/.{0,40}/g);
+              proposal["payload"] = payload;
+
               proposalArray.push(proposal);
             } // end live proposals
           } // end for loop
           setProposals(proposalArray);
+
+          counter++;
         }
       }
       fetchData();
+
+  }, [counter]);
+}
+      }
+      fetchData();
   });
+
 
   const vote = async () => {
       event.preventDefault();
@@ -96,59 +158,67 @@ export default function Proposals() {
 
       const instance = new web3.eth.Contract(abi, dao);
 
-      const accounts = await web3.eth.getAccounts();
-      // * first, see if they already voted * //
-      const voted = await instance.methods.voted(id, accounts[0]).call();
-      if (voted == true) {
-        alert("You already voted");
-      } else {
-        try {
-          let result = await instance.methods
-            .vote(id, parseInt(approval))
-            .send({ from: accounts[0] });
-
-          Router.push({
-            pathname: "/daos/[dao]",
-            query: { dao: dao },
-          });
-
-        } catch (e) {}
-
-      }
-      value.setLoading(false);
-    };
-
-    const process = async () => {
-      event.preventDefault();
-      value.setLoading(true);
-      let object = event.target;
-      var array = [];
-      for (let i = 0; i < object.length; i++) {
-        array[object[i].name] = object[i].value;
-      }
-
-      const { dao, id } = array;
-      console.log(id)
-
-      const instance = new web3.eth.Contract(abi, dao);
-
       try {
         const accounts = await web3.eth.getAccounts();
+        // * first, see if they already voted * //
+        const voted = await instance.methods.voted(id, accounts[0]).call();
+        if (voted == true) {
+          alert("You already voted");
+        } else {
+          try {
+            let result = await instance.methods
+              .vote(id, parseInt(approval))
+              .send({ from: accounts[0] });
 
-        let result = await instance.methods
-          .processProposal(id)
-          .send({ from: accounts[0] });
+            Router.push({
+              pathname: "/daos/[dao]",
+              query: { dao: dao },
+            });
 
-        Router.push({
-          pathname: "/daos/[dao]",
-          query: { dao: dao },
-        });
+          } catch (e) {}
+
+        }
+
       } catch (e) {
-        alert(e);
+
       }
 
       value.setLoading(false);
     };
+
+  const process = async () => {
+    event.preventDefault();
+    value.setLoading(true);
+    let object = event.target;
+    var array = [];
+    for (let i = 0; i < object.length; i++) {
+      array[object[i].name] = object[i].value;
+    }
+    console.log("object")
+    console.log(object)
+
+    const { dao, id } = array;
+    console.log(id)
+
+    const instance = new web3.eth.Contract(abi, dao);
+
+    try {
+      const accounts = await web3.eth.getAccounts();
+
+      let result = await instance.methods
+        .processProposal(id)
+        .send({ from: accounts[0] });
+
+      Router.push({
+        pathname: "/daos/[dao]",
+        query: { dao: dao },
+      });
+    } catch (e) {
+      alert(e);
+    }
+
+    value.setLoading(false);
+  };
 
   return(
     <>
@@ -158,16 +228,19 @@ export default function Proposals() {
       {proposals.length == 0 ? (
         <Message>Awaiting proposals</Message>
         ) : (
-        <Grid templateColumns="repeat(1, 1fr)" gap={1}>
+          <>
+        <Grid templateColumns={{sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)'}}>
           {proposals.map((p, index) => (
-            <ProposalRow key={index} p={p} address={address} vote={vote} process={process}>
-              <Text fontSize="md">{p['description']}</Text>
-            </ProposalRow>
+            <ProposalRow
+              key={index} p={p}
+              address={address}
+              vote={vote}
+              process={process}
+              setActiveProposal={setActiveProposal}
+            />
           ))}
         </Grid>
-        )
-        }
-      </>
+        </>
     }
 
     </>

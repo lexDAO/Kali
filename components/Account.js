@@ -12,12 +12,12 @@ export default function Account() {
     <Button
       flexShrink={0}
       bgGradient="linear(to-br, kali.600, kali.700)"
-      size="md"
+      display={{sm: "none", md: "block", lg: "block", xl: "block"}}
       variant="ghost"
       color="white"
       mr={2}
       border={0}
-
+      onClick={value.connect}
     >
       <Text isTruncated maxW="sm">{account == null ? "Connect Wallet" : account}</Text>
     </Button>

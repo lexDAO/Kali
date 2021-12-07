@@ -4,13 +4,12 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3Modal from "web3modal";
 import Web3 from 'web3';
 import { useState, useEffect } from 'react';
-//import web3m from '../utils/web3modal';
-import web3Infura from '../utils/infura';
 import theme from '../styles/theme';
+import infura from '../utils/infura';
 
 function MyApp({ Component, pageProps }) {
 
-  const [web3, setWeb3] = useState(web3Infura);
+  const [web3, setWeb3] = useState(infura);
   const [account, setAccount] = useState(null);
   const [chainId, setChainId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -30,9 +29,10 @@ function MyApp({ Component, pageProps }) {
 
     ethereum.on("disconnect", () => {
       console.log("disconnected");
-      setWeb3(null)
-      setAccount(null)
-      setChainId(null)
+      setWeb3(infura);
+      setAccount(null);
+      setChainId(null);
+
     });
   }, []);
 
@@ -49,14 +49,13 @@ function MyApp({ Component, pageProps }) {
     const web3Modal = new Web3Modal({
       providerOptions
     });
-
     const provider = await web3Modal.connect();
-
-    setWeb3(new Web3(provider));
-    console.log("pressed")
+    const web3 = new Web3(provider);
     let accounts = await web3.eth.getAccounts();
+    let chainId = await web3.eth.getChainId();
+    setWeb3(web3);
     setAccount(accounts[0]);
-    setChainId(await web3.eth.getChainId());
+    setChainId(chainId);
   }
 
   const changeAccount = async () => {

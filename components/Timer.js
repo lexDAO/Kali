@@ -46,13 +46,13 @@ export default function Timer(props) {
 
   return(
     <>
-    <HStack spacing="0">
+    <HStack spacing="1">
       <TimerBox>{days}</TimerBox>
       <TimerBox>{hours}</TimerBox>
       <TimerBox>{minutes}</TimerBox>
       <TimerBox>{seconds}</TimerBox>
     </HStack>
-    <HStack spacing="0">
+    <HStack spacing="1">
       <TimerBoxLabel>d</TimerBoxLabel>
       <TimerBoxLabel>h</TimerBoxLabel>
       <TimerBoxLabel>m</TimerBoxLabel>

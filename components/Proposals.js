@@ -1,14 +1,19 @@
 import { useState, useContext, useEffect } from 'react';
 import Router, { useRouter } from "next/router";
 import AppContext from '../context/AppContext';
+import ProposalDetails from './ProposalDetails';
 import {
   chakra,
-  HStack,
   Center,
   Text,
-  Container,
-  Badge,
-  Grid
+  Grid,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton
 } from "@chakra-ui/react";
 import Layout from './Layout';
 const abi = require("../abi/KaliDAO.json");
@@ -16,9 +21,10 @@ import ProposalRow from "./ProposalRow"
 import Message from "./Message"
 import { proposalTypes, voteTypes } from "../utils/appParams";
 
-export default function Proposals() {
+export default function Proposals(props) {
   const [visibleView, setVisibleView] = useState(1);
   const [proposals, setProposals] = useState(null);
+  const [activeProposal, setActiveProposal] = useState(null);
 
   const value = useContext(AppContext);
   const { web3, loading } = value.state;
@@ -26,6 +32,7 @@ export default function Proposals() {
   const address = router.query.dao;
   var proposalArray = [];
   const proposalVoteTypes = [];
+  var counter = 0;
 
   // get dao info
   useEffect(() => {
@@ -117,10 +124,12 @@ export default function Proposals() {
             } // end live proposals
           } // end for loop
           setProposals(proposalArray);
+          counter++;
         }
       }
       fetchData();
-  });
+
+  }, [counter]);
 
   const vote = async () => {
       event.preventDefault();
@@ -164,37 +173,41 @@ export default function Proposals() {
       value.setLoading(false);
     };
 
-    const process = async () => {
-      event.preventDefault();
-      value.setLoading(true);
-      let object = event.target;
-      var array = [];
-      for (let i = 0; i < object.length; i++) {
-        array[object[i].name] = object[i].value;
-      }
+  const process = async () => {
+    event.preventDefault();
+    value.setLoading(true);
+    let object = event.target;
+    var array = [];
+    for (let i = 0; i < object.length; i++) {
+      array[object[i].name] = object[i].value;
+    }
 
-      const { dao, id } = array;
-      console.log(id)
+    const { dao, id } = array;
+    console.log(id)
 
-      const instance = new web3.eth.Contract(abi, dao);
+    const instance = new web3.eth.Contract(abi, dao);
 
-      try {
-        const accounts = await web3.eth.getAccounts();
+    try {
+      const accounts = await web3.eth.getAccounts();
 
-        let result = await instance.methods
-          .processProposal(id)
-          .send({ from: accounts[0] });
+      let result = await instance.methods
+        .processProposal(id)
+        .send({ from: accounts[0] });
 
-        Router.push({
-          pathname: "/daos/[dao]",
-          query: { dao: dao },
-        });
-      } catch (e) {
-        alert(e);
-      }
+      Router.push({
+        pathname: "/daos/[dao]",
+        query: { dao: dao },
+      });
+    } catch (e) {
+      alert(e);
+    }
 
-      value.setLoading(false);
-    };
+    value.setLoading(false);
+  };
+
+  function details(id) {
+    console.log(id)
+  }
 
   return(
     <>
@@ -204,11 +217,38 @@ export default function Proposals() {
       {proposals.length == 0 ? (
         <Message>Awaiting proposals</Message>
         ) : (
-        <Grid templateColumns={{sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(2, 1fr)'}}>
+          <>
+          {activeProposal != null ?
+            <Modal isOpen="true" onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Modal Title</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Lorem count={2} />
+              </ModalBody>
+
+              <ModalFooter>
+                <Button colorScheme='blue' mr={3} onClick={onClose}>
+                  Close
+                </Button>
+                <Button variant='ghost'>Secondary Action</Button>
+              </ModalFooter>
+            </ModalContent>
+            </Modal>
+          : null}
+        <Grid templateColumns={{sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)'}}>
           {proposals.map((p, index) => (
-            <ProposalRow key={index} p={p} address={address} vote={vote} process={process} />
+            <ProposalRow
+              key={index} p={p}
+              address={address}
+              vote={vote}
+              process={process}
+              setActiveProposal={setActiveProposal}
+            />
           ))}
         </Grid>
+        </>
         )
         }
       </>

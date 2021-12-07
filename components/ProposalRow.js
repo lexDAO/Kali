@@ -1,5 +1,6 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import AppContext from '../context/AppContext';
+import ProposalDetails from './ProposalDetails';
 import {
   chakra,
   Input,
@@ -19,15 +20,26 @@ import {
   Center,
   Divider,
   Progress,
-  Textarea,
+  Textarea
 } from "@chakra-ui/react";
+import {
+  AiOutlinePlusCircle
+} from "react-icons/ai";
 import {
   BsHandThumbsUpFill,
   BsHandThumbsDownFill,
   BsFillPersonPlusFill,
   BsFillPersonXFill,
   BsFillMegaphoneFill,
+  BsPlusCircle,
+  BsXCircle
 } from "react-icons/bs";
+import {
+  BiLoaderCircle
+} from "react-icons/bi";
+import {
+  GrIntegration
+} from "react-icons/gr";
 import {
   IoIosAddCircleOutline
 } from "react-icons/io";
@@ -68,18 +80,20 @@ const ProposalBlock = (props) => {
     <VStack
       width="100%"
       spacing={0}
+      p={3}
     >
       {props.children}
     </VStack>
   )
 }
 
-const iconSize = 6;
+const iconSize = 8;
 
 export default function ProposalRow(props) {
   const value = useContext(AppContext);
   const { web3, loading } = value.state;
   const p = props['p'];
+  const [open, setOpen] = useState(false);
 
   return(
 
@@ -88,28 +102,38 @@ export default function ProposalRow(props) {
 
       {p['proposalType']==0 ?
       <>
-      <Icon as={BsFillPersonPlusFill} boxSize={iconSize} />
+      <Icon as={BsPlusCircle} boxSize={iconSize} />
       </>
       : null}
 
       {p['proposalType']==1 ?
       <>
-      <Icon as={BsFillPersonXFill} boxSize={iconSize} />
+      <Icon as={BsXCircle} boxSize={iconSize} />
       </>
       : null}
 
       {p['proposalType']==2 ?
       <>
-      <Icon as={BsFillMegaphoneFill} boxSize={iconSize} />
+      <Icon as={BiLoaderCircle} boxSize={iconSize} />
       </>
       : null}
 
         <Text casing="uppercase">{proposalDescriptions[p['proposalType']]}</Text>
         <Timer expires={p['expires']} open={p['open']} />
         <Progress width="100%" colorScheme='green' backgroundColor='pink' value={p['progress']} />
-        <Text>{p['passing']==true ? 'PASSING' : 'FAILING' }</Text>
+
+        <Text casing="uppercase">
+        {p['passing']==true && p['open']==true ? 'passing'
+        :p['passing']==true && p['false']==true ? 'passed'
+        :p['passing']==false && p['open']==false ? 'failing'
+        : 'failed'
+        }
+        </Text>
+
         <Divider w="80%" align="center" />
 
+        {open==true ?
+          <>
         <ProposalBlock>
           <ProposalLabel>description</ProposalLabel>
           <Text>{p['description']}</Text>
@@ -205,6 +229,12 @@ export default function ProposalRow(props) {
               </>
             )}
           </HStack>
+          </>
+          :
+          <>
+            <Button key={p['id']} onClick={() => props.setActiveProposal(p['id'])}>Review</Button>
+          </>
+        }
 
       </VStack>
     </Box>

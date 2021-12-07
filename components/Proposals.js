@@ -140,8 +140,6 @@ export default function Proposals(props) {
   }, [counter]);
 }
 
-      fetchData();
-  });
 
 
   const vote = async () => {

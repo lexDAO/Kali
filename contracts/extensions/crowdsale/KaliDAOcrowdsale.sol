@@ -3,7 +3,7 @@
 pragma solidity >=0.8.0;
 
 import '../../libraries/SafeTransferLib.sol';
-import '../../ReentrancyGuard.sol';
+import '../../utils/ReentrancyGuard.sol';
 import '../../access/interfaces/IKaliWhiteListManager.sol';
 
 /// @notice Crowdsale contract that receives ETH or tokens to mint registered DAO tokens, including merkle whitelisting.

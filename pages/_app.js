@@ -37,25 +37,27 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   const connect = async() => {
-    const providerOptions = {
-      walletconnect: {
-        package: WalletConnectProvider, // required
-        options: {
-          infuraId: "26e178ea568e492983f2431ad6a31e74" // required
+    if(window.ethereum) {
+      const providerOptions = {
+        walletconnect: {
+          package: WalletConnectProvider, // required
+          options: {
+            infuraId: "26e178ea568e492983f2431ad6a31e74" // required
+          }
         }
-      }
-    };
-    // We are in the browser and metamask is running.
-    const web3Modal = new Web3Modal({
-      providerOptions
-    });
-    const provider = await web3Modal.connect();
-    const web3 = new Web3(provider);
-    let accounts = await web3.eth.getAccounts();
-    let chainId = await web3.eth.getChainId();
-    setWeb3(web3);
-    setAccount(accounts[0]);
-    setChainId(chainId);
+      };
+      // We are in the browser and metamask is running.
+      const web3Modal = new Web3Modal({
+        providerOptions
+      });
+      const provider = await web3Modal.connect();
+      const web3 = new Web3(provider);
+      let accounts = await web3.eth.getAccounts();
+      let chainId = await web3.eth.getChainId();
+      setWeb3(web3);
+      setAccount(accounts[0]);
+      setChainId(chainId);
+    }
   }
 
   const changeAccount = async () => {

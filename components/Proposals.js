@@ -6,14 +6,7 @@ import {
   chakra,
   Center,
   Text,
-  Grid,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton
+  Grid
 } from "@chakra-ui/react";
 import Layout from './Layout';
 const abi = require("../abi/KaliDAO.json");
@@ -181,6 +174,8 @@ export default function Proposals(props) {
     for (let i = 0; i < object.length; i++) {
       array[object[i].name] = object[i].value;
     }
+    console.log("object")
+    console.log(object)
 
     const { dao, id } = array;
     console.log(id)
@@ -205,10 +200,6 @@ export default function Proposals(props) {
     value.setLoading(false);
   };
 
-  function details(id) {
-    console.log(id)
-  }
-
   return(
     <>
 
@@ -218,25 +209,7 @@ export default function Proposals(props) {
         <Message>Awaiting proposals</Message>
         ) : (
           <>
-          {activeProposal != null ?
-            <Modal isOpen="true" onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Modal Title</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Lorem count={2} />
-              </ModalBody>
 
-              <ModalFooter>
-                <Button colorScheme='blue' mr={3} onClick={onClose}>
-                  Close
-                </Button>
-                <Button variant='ghost'>Secondary Action</Button>
-              </ModalFooter>
-            </ModalContent>
-            </Modal>
-          : null}
         <Grid templateColumns={{sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)'}}>
           {proposals.map((p, index) => (
             <ProposalRow

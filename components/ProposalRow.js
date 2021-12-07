@@ -20,8 +20,16 @@ import {
   Center,
   Divider,
   Progress,
-  Textarea
+  Textarea,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton
 } from "@chakra-ui/react";
+import { useDisclosure } from '@chakra-ui/react';
 import {
   AiOutlinePlusCircle
 } from "react-icons/ai";
@@ -64,38 +72,121 @@ const ProposalInput = (props) => {
   )
 }
 
-const ProposalDetail = (props) => {
-  return(
-    <Box
-      border="1px solid"
-      padding="10px"
-    >
-      {props.children}
-    </Box>
-  )
-}
-
-const ProposalBlock = (props) => {
-  return(
-    <VStack
-      width="100%"
-      spacing={0}
-      p={3}
-    >
-      {props.children}
-    </VStack>
-  )
-}
-
 const iconSize = 8;
 
 export default function ProposalRow(props) {
   const value = useContext(AppContext);
   const { web3, loading } = value.state;
   const p = props['p'];
-  const [open, setOpen] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return(
+    <>
+      <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>{p['description']}</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+
+        <ProposalLabel>description</ProposalLabel>
+        <Text>{p['description']}</Text>
+        <Divider />
+
+        {p['open']==true ?
+        <>
+          {p['proposalType']==0 ?
+          <>
+
+            <ProposalLabel>shares</ProposalLabel>
+            <ProposalInput value={p['amount']} />
+            <ProposalLabel>account</ProposalLabel>
+            <ProposalInput value={p['account']} />
+            <Divider />
+          </>
+          : null}
+
+          {p['proposalType']==1 ?
+          <>
+            <ProposalLabel>shares</ProposalLabel>
+            <ProposalInput value={p['amount']} />
+            <ProposalLabel>account</ProposalLabel>
+            <ProposalInput value={p['account']} />
+            <Divider />
+          </>
+          : null}
+
+          {p['proposalType']==2 ?
+          <>
+            <ProposalLabel>txn value</ProposalLabel>
+            <ProposalInput value={p['amount']} />
+            <ProposalLabel>contract</ProposalLabel>
+            <ProposalInput value={p['account']} />
+            <ProposalLabel>payload</ProposalLabel>
+            <Textarea>{p['payload']}</Textarea>
+            <Divider />
+          </>
+          :
+          <form onSubmit={props.process}>
+            <Input
+              type="hidden"
+              name="dao"
+              value={props['address']}
+            />
+            <Input type="hidden" name="id" value={p["id"]} />
+            <Button type="submit">Process</Button>
+          </form>
+          }
+          <HStack>
+          <form onSubmit={props.vote}>
+            <Input
+              type="hidden"
+              name="dao"
+              value={props['address']}
+            />
+            <Input type="hidden" name="id" value={p["id"]} />
+            <Input type="hidden" name="approval" value={1} />
+            <IconButton
+              icon={<BsHandThumbsUpFill />}
+              type="submit"
+            />
+          </form>
+
+          <form onSubmit={props.vote}>
+            <Input
+              type="hidden"
+              name="dao"
+              value={props['address']}
+            />
+            <Input type="hidden" name="id" value={p["id"]} />
+            <Input type="hidden" name="approval" value={0} />
+            <IconButton
+              icon={<BsHandThumbsDownFill />}
+              type="submit"
+            />
+          </form>
+          </HStack>
+        </>
+        :
+          <form onSubmit={props.process}>
+            <Input
+              type="hidden"
+              name="dao"
+              value={props['address']}
+            />
+            <Input type="hidden" name="id" value={p["id"]} />
+            <Button type="submit">Process</Button>
+          </form>
+        }
+        </ModalBody>
+
+        <ModalFooter>
+          <Button colorScheme='blue' mr={3} onClick={onClose}>
+            Close
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+      </Modal>
 
     <Box border="1px solid" rounded="xl" borderColor="black" padding="25px" margin="5px">
       <VStack>
@@ -132,111 +223,10 @@ export default function ProposalRow(props) {
 
         <Divider w="80%" align="center" />
 
-        {open==true ?
-          <>
-        <ProposalBlock>
-          <ProposalLabel>description</ProposalLabel>
-          <Text>{p['description']}</Text>
-        </ProposalBlock>
-
-        {p['proposalType']==0 ?
-        <>
-        <ProposalBlock>
-          <ProposalLabel>shares</ProposalLabel>
-          <ProposalInput value={p['amount']} />
-        </ProposalBlock>
-        <ProposalBlock>
-          <ProposalLabel>account</ProposalLabel>
-          <ProposalInput value={p['account']} />
-        </ProposalBlock>
-        </>
-        : null}
-
-        {p['proposalType']==1 ?
-        <>
-        <ProposalBlock>
-          <ProposalLabel>shares</ProposalLabel>
-          <ProposalInput value={p['amount']} />
-        </ProposalBlock>
-        <ProposalBlock>
-          <ProposalLabel>account</ProposalLabel>
-          <ProposalInput value={p['account']} />
-        </ProposalBlock>
-        </>
-        : null}
-
-        {p['proposalType']==2 ?
-        <>
-        <ProposalBlock>
-          <ProposalLabel>txn value</ProposalLabel>
-          <ProposalInput value={p['amount']} />
-        </ProposalBlock>
-        <ProposalBlock>
-          <ProposalLabel>contract</ProposalLabel>
-          <ProposalInput value={p['account']} />
-        </ProposalBlock>
-        <ProposalBlock>
-          <ProposalLabel>payload</ProposalLabel>
-          <Textarea>{p['payload']}</Textarea>
-        </ProposalBlock>
-        </>
-        : null}
-
-        <Divider w="80%" align="center" />
-        {p["open"] ? <Text>VOTE:</Text> : null}
-        <HStack>
-            {p["open"] ? (
-              <>
-                <form onSubmit={props.vote}>
-                  <Input
-                    type="hidden"
-                    name="dao"
-                    value={props['address']}
-                  />
-                  <Input type="hidden" name="id" value={p["id"]} />
-                  <Input type="hidden" name="approval" value={1} />
-                  <IconButton
-                    icon={<BsHandThumbsUpFill />}
-                    type="submit"
-                  />
-                </form>
-
-                <form onSubmit={props.vote}>
-                  <Input
-                    type="hidden"
-                    name="dao"
-                    value={props['address']}
-                  />
-                  <Input type="hidden" name="id" value={p["id"]} />
-                  <Input type="hidden" name="approval" value={0} />
-                  <IconButton
-                    icon={<BsHandThumbsDownFill />}
-                    type="submit"
-                  />
-                </form>
-              </>
-            ) : (
-              <>
-                <form onSubmit={props.process}>
-                  <Input
-                    type="hidden"
-                    name="dao"
-                    value={props['address']}
-                  />
-                  <Input type="hidden" name="id" value={p["id"]} />
-                  <Button type="submit">Process</Button>
-                </form>
-              </>
-            )}
-          </HStack>
-          </>
-          :
-          <>
-            <Button key={p['id']} onClick={() => props.setActiveProposal(p['id'])}>Review</Button>
-          </>
-        }
+        <Button key={p['id']} onClick={onOpen}>Review</Button>
 
       </VStack>
     </Box>
+    </>
   )
 }

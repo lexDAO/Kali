@@ -1,15 +1,17 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import AppContext from '../context/AppContext';
-import WalletConnectProvider from "@walletconnect/web3-provider";
-import Web3Modal from "web3modal";
+//import Web3 from 'web3';
 import Web3 from 'web3';
 import { useState, useEffect } from 'react';
 import theme from '../styles/theme';
-import infura from '../utils/infura';
+//import infura from '../utils/infura';
 
 function MyApp({ Component, pageProps }) {
 
-  const [web3, setWeb3] = useState(infura);
+  const initialWeb3 = new Web3(new Web3.providers.HttpProvider(
+    "https://rinkeby.infura.io/v3/f0d8e56e0aeb4a8594192dc550f05a2d"
+  ));
+  const [web3, setWeb3] = useState(initialWeb3);
   const [account, setAccount] = useState(null);
   const [chainId, setChainId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -36,27 +38,21 @@ function MyApp({ Component, pageProps }) {
     });
   }, []);
 
-  const connect = async() => {
-    if(window.ethereum) {
-      const providerOptions = {
-        walletconnect: {
-          package: WalletConnectProvider, // required
-          options: {
-            infuraId: "26e178ea568e492983f2431ad6a31e74" // required
-          }
-        }
-      };
+  const connect = async () => {
+
+    if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
       // We are in the browser and metamask is running.
-      const web3Modal = new Web3Modal({
-        providerOptions
-      });
-      const provider = await web3Modal.connect();
-      const web3 = new Web3(provider);
-      let accounts = await web3.eth.getAccounts();
-      let chainId = await web3.eth.getChainId();
-      setWeb3(web3);
+      window.ethereum.request({ method: "eth_requestAccounts" });
+      let web3module = new Web3(window.ethereum);
+      let accounts = await web3module.eth.getAccounts();
+      let chain = await web3module.eth.getChainId();
+      setWeb3(web3module);
       setAccount(accounts[0]);
-      setChainId(chainId);
+      setChainId(chain);
+
+    } else {
+      // We are on the server *OR* the user is not running metamask
+      alert("please connect Metamask")
     }
   }
 

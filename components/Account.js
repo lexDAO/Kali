@@ -18,7 +18,6 @@ export default function Account() {
       mr={2}
       border={0}
       onClick={value.connect}
-
     >
       <Text isTruncated maxW="sm">{account == null ? "Connect Wallet" : account}</Text>
     </Button>

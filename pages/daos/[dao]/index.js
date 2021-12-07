@@ -14,6 +14,8 @@ import Proposals from "../../../components/Proposals"
 import NewProposal from "../../../components/NewProposal"
 import ActionMenu from "../../../components/ActionMenu"
 
+const proposalTypes = require("../../../utils/proposalTypes");
+
 export default function Dao() {
 
   const [visible, setVisible] = useState(1);

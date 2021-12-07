@@ -1,17 +1,17 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import AppContext from '../context/AppContext';
+
 //import Web3 from 'web3';
 import Web3 from 'web3';
 import { useState, useEffect } from 'react';
 import theme from '../styles/theme';
+import web3m from '../utils/web3modal';
+
 //import infura from '../utils/infura';
 
 function MyApp({ Component, pageProps }) {
 
-  const initialWeb3 = new Web3(new Web3.providers.HttpProvider(
-    "https://rinkeby.infura.io/v3/f0d8e56e0aeb4a8594192dc550f05a2d"
-  ));
-  const [web3, setWeb3] = useState(initialWeb3);
+  const [web3, setWeb3] = useState(web3m);
   const [account, setAccount] = useState(null);
   const [chainId, setChainId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -31,6 +31,7 @@ function MyApp({ Component, pageProps }) {
 
     ethereum.on("disconnect", () => {
       console.log("disconnected");
+
       setWeb3(infura);
       setAccount(null);
       setChainId(null);

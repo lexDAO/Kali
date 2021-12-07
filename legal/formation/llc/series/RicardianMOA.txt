@@ -1,0 +1,306 @@
+Ricardian LLC
+               .                                            
+     *   .        -          .      *        .        .   *          .
+  .         .                     .       .           .      .        .
+        o            *                 .                   .
+_____________________________________________________
+  
+Delaware Limited Liability Company Agreement
+0x43B644a01d87025c9046F12eE4cdeC7E04258eBf
+
+THIS LIMITED LIABILITY COMPANY AGREEMENT (this “Agreement”) of Ricardian LLC, a Delaware limited liability company (the “Company”), is effective as of February 1, 2021 (the “Effective Date”), by LexDAO LLC, Ricardian Series, a Delaware limited liability company (referred to herein as “LexDAO” or the “Member”) as the initial member of the Company.
+
+RECITALS
+
+The Company has been organized as a Delaware limited liability company by the filing of a certificate of formation on the Effective Date (the “Certificate”), a form of which is attached hereto as Schedule A, by the Member in accordance with the Delaware Limited Liability Company Act, 6 Del. C. Section 18-101, et seq. (as amended from time to time, the “Act”).
+
+The Certificate includes a notice of limitation of liabilities of series limited liability company interests in accordance with Section 18-215(b) of the Act.
+
+The Company is authorized to establish, pursuant to this Agreement, separate members and limited liability company interests with separate and distinct rights, powers, duties, obligations, businesses and objectives (each a “Series”).
+
+Each Series formed under the Company will functionally operate as a separate limited liability company and each Series shall be marked by a RicardianId (defined below) and governed by a separately executed limited liability company operating agreement, which shall at first be executed upon a Ricardian Mint (defined below) on the form of agreement attached hereto as Schedule C.
+
+The Company is hereby formed as the “master” limited liability company (the “Master LLC”) and shall not maintain any ownership interest in any Series or assets held on behalf of any Series.
+
+LexDAO, as the initial Member of the Master LLC, desires to enter into a written limited liability company agreement as to the affairs of the Master LLC.
+
+NOW, THEREFORE, in consideration of the agreements and obligations set forth herein and for other good and valuable consideration, the receipt and sufficiency of which are hereby acknowledged, the Member hereby agrees as follows:
+
+DEFINITIONS
+
+“Address” means a public key address on Ethereum.
+
+“Confirmed Transaction” means a transaction that has been recorded on Ethereum (as defined below) in accordance with the Consensus Rules (as defined below) in a valid block whose hashed header is referenced by a commercially reasonable number of subsequent valid blocks on Ethereum. The initial number of such blocks shall be 12.
+
+“Consensus Rules” means the rules for transaction validity, block validity and determination of the canonical blockchain that are embodied in Ethereum.
+
+“Ethereum” means the Ethereum mainnet and the consensus blockchain for such mainnet (networkID:1, chainID:1) as recognized by the official Go Ethereum Client implemented at https://github.com/ethereum/go-ethereum on the Effective Date.
+
+“RicardianId” means the value of the `tokenId` field stored in the mapping type `ownerOf` in the contract type `RicardianLLC` deployed to the Address 0x43B644a01d87025c9046F12eE4cdeC7E04258eBf on Ethereum. The bytecode stored at such Address shall be referred to as the “Ricardian Smart Contract”. 
+
+“Ricardian Mint” means a Confirmed Transaction with the `receive()`, `mintLLC()`, or `mintLLCbatch()` functions of the Ricardian Smart Contract that results in the creation of a RicardianId which is mapped to the Address of the person or persons who called such functions.
+
+“Ricardian Revocation” means a Confirmed Transaction with the `govTransferFrom()` or `govTransferFromBatch()` functions of the Ricardian Smart Contract by LexDAO or other similarly authorized parties that removes a RicardianId to the Address indicated on `dao.ricardianllc.eth`.
+
+ARTICLE 1 ORGANIZATIONAL MATTERS
+
+Smart Contract. This Agreement is entered into through a Ricardian Mint and is otherwise documented in the masterOperatingAgreement() function of the Ricardian Smart Contract and on IPFS at ricardianllc.eth. Any amendments to this Agreement shall only be valid if made on Ethereum and under the conditions of this Agreement. Any signature or execution made through the use of private keys on Ethereum for any matters relating to the Master LLC or a Series, including, but not limited to, a Ricardian Mint or Ricardian Revocation, shall be valid, as if signed in writing.
+
+Name. The name of the Company shall be “Ricardian LLC.” The business of the Company may be conducted under that name or, upon compliance with applicable laws, any other name that the Member deems appropriate or advisable. The Member shall file or cause to be filed any fictitious name certificates and similar filings, and any amendments thereto, that the Member considers appropriate or advisable.
+
+Term. The “Term” of the Company shall be perpetual. Except as specifically provided in Section 6.1, the Company shall not be dissolved prior to the end of its Term.
+
+Registered Office and Agent. The Company shall continuously maintain a Delaware registered office and a registered agent for service of process as required by the Act. The initial registered office and agent of the Company shall be as stated in the Certificate. If the registered agent ceases to act as such for any reason, or the registered office shall change, then the Member shall promptly designate a replacement registered agent or file or cause to be filed a notice of change of address, as the case may be.
+
+Offices. The Company will maintain its principal business office at such places of business as the Members may deem advisable for the conduct of the Company’s business. The Company may have such other offices and in such locations as the Member may determine from time to time, or the business of the Company may require.
+
+Purpose. The Company shall not engage in any business, purpose or activity apart from serving as the “master” limited liability company for separately formed Series, including, but not limited to, maintaining compliance with applicable law and this Agreement through the use of Ricardian Revocations and related Ethereum transactions. Each Series shall have a separate purpose and may engage in any business, purpose or activity in which a limited liability company may engage under applicable law (including, without limitation, the Act) and as permitted under this Agreement.
+
+Additional Documents. The Member shall cause to be executed, filed, recorded, published, or amended in the name of the Company any documents or Ethereum transactions as the Member in their sole and absolute discretion determines to be necessary or advisable, (a) in connection with the conversion or the formation, operation, dissolution, winding up, or termination of the Company or any Series pursuant to applicable law, or (b) to otherwise give effect to the terms of this Agreement or any Separate Series Operating Agreement. The terms and provisions of each document described in the preceding sentence shall be initially established and shall be amended from time to time as necessary to cause such terms and provisions to be consistent with applicable law, the terms and provisions of this Agreement, or any Separate Series Operating Agreement.
+
+Taxation Status. At all times that the Company has only one Member (who owns 100% of the limited liability company interests in the Company), it is the intention of the Member that the Company be disregarded for federal, state, local and foreign income tax purposes. Each Series shall be, to the extent permissible by applicable law, treated as a separate partnership for federal and applicable State tax purposes.
+
+ARTICLE 2
+SEPARATE SERIES AND CAPITALIZATION
+
+Separate Series.
+
+The Company is authorized to establish, pursuant to this Agreement, separate members and limited liability company interests with separate and distinct rights, powers, duties, obligations, businesses and objectives described herein as a “Series”. To the maximum extent permitted by the Act (including, without limitation, Section 18-215(b)), the assets, income, gains, losses, expenses, deductions, credits, distributions, debts, obligations and liabilities of any Series shall be associated with and limited to such Series, and not against the Company generally or any other Series. 
+
+To the maximum extent permitted by the Act, each Series shall constitute and be treated as a designated separate “series” of the Company, and the debts, liabilities, obligations and expenses associated with an individual Series shall not be asserted against income, gains or assets of any other Series or the Company.
+
+The specific provisions, rights, powers, obligations, and privileges with respect to each Series shall be initially set forth in a writing referred to herein as a “Separate Series Operating Agreement” in the form attached hereto as Schedule C that will be separately executed by the members of that Series by means of each Ricardian Mint or similar confirmatory transaction on Ethereum. The respective capital contributions and limited liability company interests of the members participating in each Series shall be set forth in the Separate Series Operating Agreement for such Series.
+
+A member participating in one Series shall have no rights or interest with respect to any other Series, other than through such member’s interest in such Series independently acquired by such member.
+
+The members of each Series shall take such reasonable steps as are necessary to implement the foregoing provisions of this Section 2.1. Without limitation on the preceding sentence, the members of each Series shall maintain separate and distinct records for each Series, shall separately hold and account for the assets of each such Series, and shall otherwise comply with the requirements of Section 18-215 of the Act.
+
+A Series shall be dissolved and its affairs wound up pursuant to the provisions of the Separate Series Operating Agreement for such Series or otherwise pursuant to the terms herein. The dissolution and termination of a Series shall not, in and of itself, cause or result in the dissolution or termination of the Company or any other Series.
+
+All Series and any members participating in a Series agree to the disclaimers set forth under Schedule B hereto.
+
+Capital Contributions. At the time of, and in connection with, the admission of a member to a particular Series, each member shall contribute to the capital of such Series the amount set forth in the Separate Series Operating Agreement for such Series.
+ARTICLE 3 
+MEMBERS
+
+Admission of LexDAO. LexDAO is hereby admitted as a Member of the Master LLC.
+
+Limited Liability. No Member shall be personally liable for any debt, obligation, or liability of the Company or a Series, whether that liability or obligation arises in contract, tort, or otherwise, solely by reason of being a Member of the Company or a Series.
+
+Nature of Interest. A Member’s interest in the Master LLC or any Series constitutes personal property. No Member has any interest in any specific asset or property of the Company or any Series.
+
+ARTICLE 4
+MANAGEMENT AND CONTROL OF THE COMPANY
+
+Management of the Company by Members. The business, property, and affairs of the Company shall be managed exclusively by or under the direction of the Member. Except for situations in which the approval of the members of a particular Series is expressly required by the Act, the Certificate, or this Agreement, the Member shall have full, complete, and exclusive authority, power, and discretion to manage and control the business, property, and affairs of the Company, to make all decisions regarding those matters, and to perform any and all other acts or activities customary or incident to the management of the Company’s business, property, and affairs.
+
+Management of each Series by Members. The provisions under this Agreement relating to the Company’s Member shall be reasonably applied to each Series’ members, unless otherwise provided in the Separate Series Operating Agreement for such Series.
+
+Performance of Duties.
+
+Notwithstanding anything herein or in any Separate Series Operating Agreement to the contrary, the Member does not, shall not and will not owe any fiduciary duties of any kind whatsoever to the Master LLC, any Series, or to any of the members of any Series, by virtue of its role as the Member, including, but not limited to, the duties of due care and loyalty, whether such duties were established as of the date of this Agreement or any time hereafter, and whether established under common law, at equity or legislatively defined. It is the intention of the parties hereto that any such fiduciary duties be affirmatively eliminated as permitted by Delaware law and under the Act, and the Member hereby waives any rights with respect to such fiduciary duties.
+
+Notwithstanding any other provision of this Agreement, any Separate Series Operating Agreement or otherwise applicable provision of law or equity, whenever in this Agreement, the Member is permitted or required to make a decision (i) in its “sole discretion” or “discretion” or under a grant of similar authority or latitude, the Member shall be entitled to consider only such interests and factors as it desires, including its own interests, and shall, to the fullest extent permitted by applicable law, have no duty or obligation to give any consideration to any interest of or factors affecting the Master LLC, any Series or any of the members thereto, or
+(ii) in its “good faith” or under another expressed standard, the Member shall act under such express standard and shall not be subject to any other or different standards. Unless otherwise expressly stated, for purposes of this Section 4.3(b), the Member shall be deemed to be permitted or required to make all decisions hereunder in its sole discretion.
+
+ARTICLE 5
+RECORDS
+
+Books and Records. The books and records of the Company shall be kept, and the financial position and the results of its operations recorded, in accordance with any appropriate accounting method selected by the Member in their sole discretion and consistently applied.
+
+ARTICLE 6 DISSOLUTION AND WINDING UP
+
+Dissolution. The Company shall be Dissolved, its affairs wound up and its assets disposed of upon the termination of the last remaining Series (with such dissolution being in accordance with such Separate Series Operating Agreement), the termination of the legal existence of the last remaining member of the last remaining Series or the occurrence of any other event which terminates the continued membership of the last remaining member of the last remaining Series, unless the Company is continued in a manner permitted by this Agreement or the Act. The termination and winding up of a Series will not, in and of itself, cause a dissolution of the Company or the termination of any other Series. The termination of a Series will not affect the limitation on liabilities of the Series or any other Series provided by this Agreement, a Separate Series Operating Agreement, the Certificate or the Act. The Company shall undertake reasonable efforts, to the extent legally allowed to do so, to notify each Series of any issues that may result in the dissolution of the Company.
+
+Continuation Following Certain Dissolution Events. If at any time there is no Member, the Company or any Series shall not dissolve but the “personal representative” (as such term is defined in the Section 18-101(15) of the Act) of the last remaining Member (the “Last Member”) shall, within ninety (90) days of the event that terminated the continued membership of the Last Member, agree in writing to continue the Company or any Series and to the admission of such personal representative or its nominee or designee as a Member, effective as of the occurrence of the event that terminated the continued membership of the Last Member.
+
+ARTICLE 7
+MISCELLANEOUS
+
+Complete Agreement. This Agreement, any applicable Separate Series Operating Agreement and the Certificate constitute the complete and exclusive statement of agreement among the members participating in such Series, the Company and any Series with respect to the subject matter herein and therein and replace and supersede all prior written and oral agreements or statements by and among the members, the Company and any Series, or any of them. No representation, statement, condition, or warranty not contained in or otherwise incorporated into this Agreement, a Separate Series Operating Agreement or the Certificate will be binding on the Member, the Company, or any Series or related members. To the extent that any provision of the Certificate conflicts with any provision of this Agreement or a Separate Series Operating Agreement, the Certificate shall control. To the extent that any provision of a Separate Series Operating Agreement conflicts with any provision of this Agreement, this Agreement shall control.
+
+Governing Law. The interpretation and enforceability of this Agreement or a Separate Series Operating Agreement and the rights and liabilities of the members as such shall be governed by the laws of the State of Delaware, without giving effect to its conflict of laws principles to the extent those principles or rules would require or permit the application of the laws of another jurisdiction. To the extent permitted by the Act and other applicable laws, the provisions of this Agreement or a Separate Series Operating Agreement shall supersede any contrary provisions of the Act or other applicable laws.
+
+Arbitration. Disputes related to this Agreement shall be first submitted to mediation. The terms and procedure for mediation shall be arranged by the parties to the dispute. If good-faith mediation of a dispute proves impossible or if an agreed-upon mediation outcome cannot be obtained by the parties, the dispute may be submitted to arbitration in accordance with the rules of the American Arbitration Association. All parties shall initially share the cost of arbitration, but the prevailing party or parties may be awarded attorney fees, costs and other expenses of arbitration. All arbitration decisions shall be final, binding and conclusive on all the parties to arbitration, and legal judgment may be entered based upon such decision in accordance with applicable law in any court having jurisdiction to do so.
+
+Severability. In the event any provision of this Agreement or a Separate Series Operating Agreement is determined to be invalid or unenforceable, such provision shall be deemed severed from the remainder of this Agreement or such Separate Series Operating Agreement and replaced with a valid and enforceable provision as similar in intent as reasonably possible to the provision so severed and shall not cause the invalidity or unenforceability of the remainder of this Agreement or such Separate Series Operating Agreement.
+
+Amendment and Waiver.
+
+Subject to Section 1.1 above and Section 7.5(b) below, this Agreement   may be amended with the written consent of only the Member in its sole discretion; provided, however, that each Separate Series Operating Agreement may only be amended with the consent of its members or as required under such Separate Series Operating Agreement.
+
+No amendment of this Agreement may modify the method of making allocations or distributions under a Separate Series Operating Agreement, modify the method of determining the interest or ownership percentage for any Series or any member of such Series under a Separate Series Operating Agreement, reduce the capital account of any member of a Series under a Separate Series Operating Agreement, or modify any provision of this Agreement or a Separate Series Operating Agreement pertaining to limitations on liability of the members of a Series, unless such amendment is authorized and approved by the members of the applicable Series as required under such Separate Series Operating Agreement.
+
+The Member’s noncompliance with any provision hereof in any single transaction or event that would otherwise require the consent of the members of a Series under the applicable Separate Series Operating Agreement of such Series may be waived prospectively or retroactively in writing by the same percentage of the members of such Series that would be required to amend such provision pursuant to such applicable Separate Series Operating Agreement. No waiver shall be deemed a waiver of any subsequent event of noncompliance except to the extent expressly provided in such waiver.
+[SIGNATURE PAGE FOLLOWS]
+
+
+IN WITNESS WHEREOF, the undersigned has executed this Limited Liability Company Agreement of the Company as of the date first written above.
+
+LexDAO LLC, Ricardian Series
+
+SCHEDULE A
+CERTIFICATE
+QmNhBsLXHb32uo88PrZazaC2Z7LrkNDsnRgrD6QTTD4DVH
+
+STATE OF DELAWARE
+CERTIFICATE OF FORMATION
+OF LIMITED LIABILITY COMPANY
+
+The undersigned authorized person, desiring to form a limited liability company pursuant to the Limited Liability Company Act of the State of Delaware, hereby certifies as follows: 
+
+1. Name. The name of the limited liability company is Ricardian LLC (the “Company”).
+
+2. Registered Office and Registered Agent. The Registered Office of the Company in the State of Delaware is located at 8 The Green, Dover, DE 19901, USA. The name of the Registered Agent at such address upon whom process against the Company may be served is A Registered Agent, Inc. 
+
+3. Notice of Limitation of Liabilities of Series. Notice is hereby given that pursuant to §18-215(b) of the Limited Liability Company Act, the debts, liabilities, and obligations incurred, contracted for, or otherwise existing with respect to a particular series of the Company shall be enforceable against the assets of such series only and not against the assets of the Company generally or any other series thereof and, unless otherwise provided in the limited liability company agreement of the Company, none of the debts, liabilities, obligations, and expenses incurred, contracted for, or otherwise existing with respect to the Company generally or any other series thereof shall be enforceable against the assets of such series.
+
+By: /s/ Ross Campbell
+
+Authorized Person
+
+Name: Ross Campbell
+
+Date: February 1, 2021
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SCHEDULE B
+DISCLAIMERS
+
+Each Series, its members and managers hereby acknowledge and agree to, and shall include, the following disclaimers in its Separate Series Operating Agreement:
+
+The use of a “Series”, “Protected”, “Registered” or similar LLC is a recent legal advent and is subject to various legal uncertainties regarding its validity and use cases, including, without limitation, uncertainties relating to:
+the non-recognition of such type of legal entity and structure by other U.S. States, such as California, New York and Massachusetts;
+the novelty and lack of established precedent regarding Series LLCs and any liability “spill-over” risks between a Series LLC and the Company;
+the lack of regulatory clarity regarding the taxation of a Series LLC; and
+the lack of regulatory clarity regarding bankruptcy proceedings of a Series LLC under federal law.
+
+Notwithstanding anything to the contrary in the Master LLC Agreement, the Member shall be entitled to dissolve the Company at any time, in the event where there is any risk or threatened risk of liability to the Company, LexDAO or the Member in relation to the Company’s or any Series’ affairs.
+
+Each Series, its members and managers may be required by the Company, at any time, to provide basic Know Your Customer (KYC) information, such as a copy of national ID, name, proof of address, among others, in the event where: i) such Series desires to obtain a bank account; ii) the Company, LexDAO or the Member are legally required to provide such information; or iii) such Series desires to become a “registered” series in the State of Delaware. 
+
+The Series, its members and managers shall indemnify and hold harmless the Company, LexDAO and the Member (the “Indemnified Parties”) against any claims, liabilities, legal fees, judgements, or other losses incurred by the Indemnified Parties that relate to the disclaimers set forth herein or that may arise from i) a Series’ non-compliance with the provisions of the Master LLC Agreement; ii) any business or action undertaken of the Series, its members or managers; or iii) the use of Ethereum.
+
+THE CODE, SOFTWARE AND DOCUMENTATION FOR THE IMPLEMENTATION OF A SERIES ARE PROVIDED “AS IS” AND THE COMPANY, LEXDAO AND THE MEMBER HEREBY DISCLAIM ALL WARRANTIES, WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT, AND ALL WARRANTIES ARISING FROM COURSE OF DEALING, USAGE, OR TRADE PRACTICE. 
+
+ALL CLAIMS ARISING OUT OF OR RELATING TO THIS AGREEMENT OR THE RICARDIAN LLC PROTOCOL SHALL BE SETTLED IN BINDING ARBITRATION IN ACCORDANCE WITH THE ARBITRATION CLAUSE CONTAINED HEREIN.
+
+
+
+
+SCHEDULE C
+SEPARATE SERIES OPERATING AGREEMENT
+
+Ricardian LLC,
+[RicardianId] Series 
+               .                                            
+     *   .        -          .      *        .        .   *          .
+  .         .                     .       .           .      .        .
+        o            *                 .                   .
+_____________________________________________________
+  
+Delaware Limited Liability Company Agreement
+0x43B644a01d87025c9046F12eE4cdeC7E04258eBf
+
+THIS LIMITED LIABILITY COMPANY AGREEMENT (this “Agreement”) of Ricardian LLC, [RicardianId] Series, a Delaware limited liability company (the “Company”), is effective among the party or parties controlling the private key of the Series Ethereum Address (as defined below) (such party or parties, the “Members”). The acceptance and formation of this Ricardian LLC Series shall be evidenced by a Ricardian Mint. All capitalized or highlighted terms not otherwise defined herein shall have the meanings ascribed in the Limited Liability Company Agreement of Ricardian LLC (the “Master LLC Agreement”).
+
+RECITALS
+
+The Company has been organized as a separate Series of the Master LLC in accordance with the Delaware Limited Liability Company Act, 6 Del. C. Section 18-101, et seq. (as amended from time to time, the “Act”).
+
+The Master LLC Certificate of Formation includes a notice of limitation of liabilities of series limited liability company interests in accordance with Section 18-215(b) of the Act.
+
+LexDAO, the sole member of the Master LLC, desires to facilitate the convenient formation of limited liability accounts on Ethereum, and to this end, invites the Company to establish a Series subject to the terms of the Master LLC Agreement.
+
+NOW, THEREFORE, in consideration of the agreements and obligations set forth herein and for other good and valuable consideration, the receipt and sufficiency of which are hereby acknowledged, the Members agree as follows:
+
+ARTICLE 1 ORGANIZATIONAL MATTERS
+
+Smart Contract. This Agreement is entered into through a Ricardian Mint and is otherwise documented on IPFS at ricardianllc.eth. Any amendments to this Agreement shall only be valid if made with a Confirmed Transaction with the `updateTokenDetails()` function of the Ricardian Smart Contract and as otherwise permitted under this Agreement and the Master LLC Agreement. Any signature or execution made through the use of private keys on Ethereum for any matters relating to the Master LLC or a Series LLC, including, but not limited to, a Ricardian Mint or Ricardian Revocation, shall be valid, as if signed in writing.
+
+Name. The name of the Company shall be “Ricardian LLC, [RicardianId]”. For the avoidance of doubt, “[RicardianId]” reflects the RicardianId generated through a Ricardian Mint to the Address that created this Agreement under Section 1.1 (such Address, the “Series Ethereum Address”). The business of the Company may be conducted under that name or, upon compliance with applicable laws, any other name that the Members deems appropriate or advisable. The Members shall file or cause to be filed any fictitious name certificates and similar filings, and any amendments thereto, that the Members consider appropriate or advisable.
+
+Term. The “Term” of the Company shall be perpetual. Except as specifically provided in Section 6.1, the Company shall not be dissolved prior to the end of its Term.
+
+Registered Office and Agent. The initial registered office and agent of the Company shall be as stated in the Master LLC Certificate of Formation. 
+
+Offices. The Company will maintain its principal business office at such places of business as the Members may deem advisable for the conduct of the Company’s business. The Company may have such other offices and in such locations as the Members may determine from time to time, or the business of the Company may require.
+
+Purpose. The Company has been created to engage in any and all lawful activities and transactions as may be necessary or advisable to complete the Company’s business as determined by the Members. 
+
+Additional Documents. The Members shall cause to be executed, filed, recorded, published, or amended in the name of the Company any documents or Ethereum transactions as the Members in their sole and absolute discretion determine to be necessary or advisable, (a) in connection with the conversion or the formation, operation, dissolution, winding up, or termination of the Company pursuant to applicable law, or (b) to otherwise give effect to the terms of this Agreement. The terms and provisions of each document described in the preceding sentence shall be initially established and shall be amended from time to time as necessary to cause such terms and provisions to be consistent with applicable law, the terms and provisions of this Agreement, or the Master LLC Agreement.
+
+Taxation Status. At all times that the Company has only one Member (who owns 100% of the limited liability company interests in the Company), it is the intention of the Members that the Company be disregarded for federal, state, local and foreign income tax purposes. Otherwise, this Company shall be, to the extent permissible by applicable law, treated as a “partnership” for federal and applicable State tax purposes.
+
+ARTICLE 2
+SEPARATE SERIES AND CAPITALIZATION
+Establishment of Series. Pursuant to Section 18-215(b) of the Act and the Master LLC, the Master LLC is authorized to establish separate members and limited liability company interests with separate and distinct rights, powers, duties, obligations, businesses and objectives. Notice is hereby given that the Company is hereby established as a Series under the Master LLC Agreement. 
+Separate Existence. The Series created hereby, and the rights and obligations of the Members will be governed by this Agreement. The debts, liabilities, obligations and expenses incurred, with respect to the Company will be enforceable against the assets of the Company only and not against the assets of the Master LLC generally or any other Series of the Master, and, unless otherwise provided in this Agreement, none of the debts, liabilities, obligations and expenses incurred, contracted for or otherwise existing with respect to the Master LLC generally or any other Series of the Master LLC will be enforceable against the assets of the Company. A member participating in one Series will have no rights or interest with respect to any other Series, other than through that Member’s interest in that Series independently acquired by that Member. This Agreement and all provisions herein will be interpreted in a manner to give full effect to the separateness of each Series. The Master LLC shall take reasonable steps as are necessary to implement the provisions of this Section. The Company will be dissolved and its affairs wound up pursuant to the provisions of this Agreement. The dissolution and termination of the Company will not, in and of itself, cause or result in the dissolution or termination of the Master LLC or any other Series.
+Maintenance. The Company will do all things necessary to maintain its limited liability company existence separate. In furtherance of the foregoing, the Company must (i) maintain, or cause to be maintained by an agent under the Company’s control, possession of all its books and records (including, as applicable, storage of electronic records online or in “cloud” services), (ii) account for and manage all of its liabilities separately from those of any other person, and (iii) identify separately all its assets from those of any other person.
+
+Disclaimers. The Members agree to the disclaimers set forth under Schedule B of the Master LLC Agreement and shall at all times hold the Master LLC and its representatives harmless of any losses or claims relating to the content of such Schedule B.
+
+Capital Contributions. The Members may make such capital contributions in such amounts and at such times as the Members shall determine.
+
+ARTICLE 3 
+MEMBERS
+
+Limited Liability. No Member shall be personally liable for any debt, obligation, or liability of the Company or a Series, whether that liability or obligation arises in contract, tort, or otherwise, solely by reason of being a Member of the Company or a Series.
+
+Nature of Interest. A Member’s interest constitutes personal property. No Member has any interest in any specific asset or property of the Company.
+
+ARTICLE 4
+MANAGEMENT AND CONTROL OF THE COMPANY
+
+Management of the Company by Members. The business, property, and affairs of the Company shall be managed exclusively by or under the direction of the Members. Except for situations in which the approval of the Master LLC is expressly required by the Act or this Agreement, the Members shall have full, complete, and exclusive authority, power, and discretion to manage and control the business, property, and affairs of the Company, to make all decisions regarding those matters, and to perform any and all other acts or activities customary or incident to the management of the Company’s business, property, and affairs.
+Obligations between Members. Except as otherwise expressly provided, nothing contained in this Agreement will be deemed to constitute any Member, in that Member’s capacity as a Member, an agent or legal representative of any other Member or to create any fiduciary relationship between Members for any purpose whatsoever, apart from obligations between the members of a limited liability company as may be created by the Act. Except as otherwise expressly provided in this Agreement, a Member has no authority to act for, or to assume any obligation or responsibility on behalf of, any other Member or the Company.
+
+Indemnification. The Company shall indemnify any person who was or is a party defendant or is threatened to be made a party defendant, pending or completed action, suit or proceeding, whether civil, criminal, administrative, or investigative (other than an action by or in the right of the Company) by reason of the fact that they are or were a Member of the Company, manager, employee, or agent of the Company, or are or were serving at the request of the Company, against expenses (including attorney’s fees), judgments, fines, and amounts paid in settlement actually and reasonably incurred in connection with such action, suit or proceeding if the Members determine that they acted in good faith and in a manner they reasonably believed to be in or not opposed to the best interest of the Company, and with respect to any criminal action proceeding, have no reasonable cause to believe their conduct was unlawful. The termination of any action, suit, or proceeding by judgment, order, settlement, conviction, or upon a plea of “nolo Contendere” or its equivalent, shall not in itself create a presumption that the person did or did not act in good faith and in a manner which they reasonably believed to be in the best interest of the Company, and, with respect to any criminal action or proceeding, had reasonable cause to believe that their conduct was lawful.
+
+ARTICLE 5
+RECORDS
+
+Books and Records. The books and records of the Company shall be kept, and the financial position and the results of its operations recorded, in accordance with any appropriate accounting method selected by the Members in their sole discretion and consistently applied.
+
+ARTICLE 6 DISSOLUTION AND WINDING UP
+
+Dissolution. The Company will be dissolved on the happening of any of the following events:
+Sale, transfer, or other disposition of all or substantially all of the property of the Company;
+The agreement of all of the Members;
+Ricardian Revocation executed by the Master LLC; or
+By operation of law.
+
+ARTICLE 7
+MISCELLANEOUS
+
+Complete Agreement. This Agreement constitutes the complete and exclusive statement of agreement among the Members with respect to the subject matter herein and replaces and supersedes all prior written and oral agreements or statements by and among the Members. No representation, statement, condition, or warranty not contained in or otherwise incorporated into this Agreement will be binding on the Members. To the extent that any provision of this Agreement conflicts with any provision of the Master LLC Agreement, the Master LLC Agreement shall control.
+
+Governing Law. The interpretation and enforceability of this Agreement and the rights and liabilities of the members as such shall be governed by the laws of the State of Delaware, without giving effect to its conflict of laws principles to the extent those principles or rules would require or permit the application of the laws of another jurisdiction. To the extent permitted by the Act and other applicable laws, the provisions of this Agreement shall supersede any contrary provisions of the Act or other applicable laws.
+
+Arbitration. Disputes among the Members related to this Agreement or the Master LLC Agreement shall be first submitted to mediation. The terms and procedure for mediation shall be arranged by the parties to the dispute. If good-faith mediation of a dispute proves impossible or if an agreed-upon mediation outcome cannot be obtained by the parties, the dispute may be submitted to arbitration in accordance with the rules of the American Arbitration Association. All parties shall initially share the cost of arbitration, but the prevailing party or parties may be awarded attorney fees, costs and other expenses of arbitration. All arbitration decisions shall be final, binding and conclusive on all the parties to arbitration, and legal judgment may be entered based upon such decision in accordance with applicable law in any court having jurisdiction to do so.
+
+Severability. In the event any provision of this Agreement is determined to be invalid or unenforceable, such provision shall be deemed severed from the remainder of this Agreement and replaced with a valid and enforceable provision as similar in intent as reasonably possible to the provision so severed and shall not cause the invalidity or unenforceability of the remainder of this Agreement.
+
+Amendments. Amendments to this Agreement may be proposed by any Member and adopted upon the written consent of the Members under the method described in Section 1.1. 
+Ministerial and Administrative Amendments. Notwithstanding the limitations above, ministerial or administrative amendments as may in the discretion of the Master LLC be deemed necessary or appropriate and those amendments as may be required by law, may be made from time to time without the consent of any of the Members; provided, however, that no such amendment will be adopted pursuant to this Section unless that amendment would not alter, or result in the alteration of, the limited liability of the Members, capital accounts, the status of the Company as a “partnership” for federal income tax purposes, or methods of making allocations, distributions or determining the interest or ownership percentage of the Members.
+
+                               ___________________________________________________
+               .                                            
+     *   .        -          .      *        .        .   *          .
+  .         .                     .       .           .      .        .
+        o            *                 .                   .
+___________________________________________________

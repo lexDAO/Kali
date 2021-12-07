@@ -9,7 +9,7 @@ export default function Home() {
   return(
     <Layout>
       <HomeTile />
-      <Factory />
+      
     </Layout>
   )
 }

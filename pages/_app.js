@@ -37,7 +37,7 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   const connect = async() => {
-    /*if(window.ethereum) {
+    if(window.ethereum) {
       const providerOptions = {
         walletconnect: {
           package: WalletConnectProvider, // required
@@ -57,7 +57,7 @@ function MyApp({ Component, pageProps }) {
       setWeb3(web3);
       setAccount(accounts[0]);
       setChainId(chainId);
-    }*/
+    }
   }
 
   const changeAccount = async () => {

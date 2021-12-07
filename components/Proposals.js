@@ -136,26 +136,31 @@ export default function Proposals() {
       const { dao, id, approval } = array;
 
       const instance = new web3.eth.Contract(abi, dao);
+      try {
+        const accounts = await web3.eth.getAccounts();
+        // * first, see if they already voted * //
+        const voted = await instance.methods.voted(id, accounts[0]).call();
+        if (voted == true) {
+          alert("You already voted");
+        } else {
+          try {
+            let result = await instance.methods
+              .vote(id, parseInt(approval))
+              .send({ from: accounts[0] });
 
-      const accounts = await web3.eth.getAccounts();
-      // * first, see if they already voted * //
-      const voted = await instance.methods.voted(id, accounts[0]).call();
-      if (voted == true) {
-        alert("You already voted");
-      } else {
-        try {
-          let result = await instance.methods
-            .vote(id, parseInt(approval))
-            .send({ from: accounts[0] });
+            Router.push({
+              pathname: "/daos/[dao]",
+              query: { dao: dao },
+            });
 
-          Router.push({
-            pathname: "/daos/[dao]",
-            query: { dao: dao },
-          });
+          } catch (e) {}
 
-        } catch (e) {}
+        }
+
+      } catch (e) {
 
       }
+
       value.setLoading(false);
     };
 

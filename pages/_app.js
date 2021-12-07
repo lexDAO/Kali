@@ -2,18 +2,17 @@ import { ChakraProvider } from "@chakra-ui/react";
 import AppContext from '../context/AppContext';
 import { useState, useEffect } from 'react';
 import web3m from '../utils/web3modal';
+import web3Infura from '../utils/infura';
 import theme from '../styles/theme';
 
 function MyApp({ Component, pageProps }) {
 
-  const [web3, setWeb3] = useState(web3m);
+  const [web3, setWeb3] = useState(web3Infura);
   const [account, setAccount] = useState(null);
   const [chainId, setChainId] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-
-    // adding comment to trick vercel that there's new content
 
     ethereum.on("accountsChanged", function (accounts) {
       changeAccount();
@@ -35,6 +34,8 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   const connect = async() => {
+    console.log("pressed")
+    setWeb3(web3m);
     let accounts = await web3.eth.getAccounts();
     setAccount(accounts[0]);
     setChainId(await web3.eth.getChainId());

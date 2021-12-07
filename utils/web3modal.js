@@ -4,7 +4,7 @@ import Web3 from 'web3';
 
 let web3m;
 
-if (typeof window !== "undefined") {
+if (typeof window !== "undefined" && typeof window.ethereum !== undefined) {
   const providerOptions = {
     walletconnect: {
       package: WalletConnectProvider, // required
@@ -20,13 +20,6 @@ if (typeof window !== "undefined") {
 
   const provider = await web3Modal.connect();
 
-  web3m = new Web3(provider);
-
-} else {
-  // We are on the server *OR* the user is not running metamask
-  const provider = new Web3.providers.HttpProvider(
-    "https://rinkeby.infura.io/v3/26e178ea568e492983f2431ad6a31e74"
-  );
   web3m = new Web3(provider);
 }
 

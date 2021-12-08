@@ -94,7 +94,7 @@ contract KaliWhiteListManager {
         // - also, ecrecover returns address(0) on failure - so we check this, even if modifier should prevent it:
         require(operator != address(0), 'OPERATOR_NULL');
 
-        require(deadline >= block.timestamp && deadline <= (block.timestamp + 1 weeks), 'EXPIRED');
+        require(block.timestamp <= block.timestamp), 'EXPIRED');
 
         bytes32 digest = keccak256(
             abi.encodePacked(

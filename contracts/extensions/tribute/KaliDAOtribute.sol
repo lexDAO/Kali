@@ -3,8 +3,8 @@
 pragma solidity >=0.8.0;
 
 import '../../libraries/SafeTransferLib.sol';
-import '../../utils/ReentrancyGuard.sol';
 import './interfaces/IKaliDAOTribute.sol';
+import '../../utils/ReentrancyGuard.sol';
 
 /// @notice Tribute contract that escrows ETH or tokens for DAO proposals.
 contract KaliDAOtribute is ReentrancyGuard {

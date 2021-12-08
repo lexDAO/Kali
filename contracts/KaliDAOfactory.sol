@@ -9,9 +9,13 @@ import './interfaces/IRicardianLLC.sol';
 contract KaliDAOfactory {
     event DAOdeployed(KaliDAO indexed kaliDAO, string indexed name, string docs);
 
+    address payable public immutable kaliMaster;
+
     IRicardianLLC public immutable ricardianLLC;
 
-    constructor(IRicardianLLC ricardianLLC_) {
+    constructor(address payable kaliMaster_, IRicardianLLC ricardianLLC_) {
+        kaliMaster = kaliMaster_;
+
         ricardianLLC = ricardianLLC_;
     }
     
@@ -28,8 +32,10 @@ contract KaliDAOfactory {
         uint8[] memory govSettings_
     ) external payable returns (KaliDAO kaliDAO) {
         require(extensions_.length == extensionsData_.length, 'NO_ARRAY_PARITY');
+
+        kaliDAO = KaliDAO(_cloneAsMinimalProxy(kaliMaster));
         
-        kaliDAO = new KaliDAO{value: msg.value}(
+        kaliDAO.init{value: msg.value}(
             name_, 
             symbol_, 
             paused_, 
@@ -57,5 +63,27 @@ contract KaliDAOfactory {
         }
 
         emit DAOdeployed(kaliDAO, name_, docs_);
+    }
+
+    /// @dev modified from Aelin (https://github.com/AelinXYZ/aelin/blob/main/contracts/MinimalProxyFactory.sol)
+    function _cloneAsMinimalProxy(address payable base) internal returns (address payable clone) {
+        bytes memory createData = abi.encodePacked(
+            // constructor
+            bytes10(0x3d602d80600a3d3981f3),
+            // proxy code
+            bytes10(0x363d3d373d3d3d363d73),
+            base,
+            bytes15(0x5af43d82803e903d91602b57fd5bf3)
+        );
+
+        assembly {
+            clone := create(
+                0, // no value
+                add(createData, 0x20), // data
+                55 // data is always 55 bytes (10 constructor + 45 code)
+            )
+        }
+        // if CREATE fails for some reason, address(0) is returned
+        require(clone != address(0), 'NULL_DEPLOY');
     }
 }

@@ -1,7 +1,29 @@
 [
 	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "kaliMaster_",
+				"type": "address"
+			},
+			{
+				"internalType": "contract IRicardianLLC",
+				"name": "ricardianLLC_",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "contract KaliDAO",
+				"name": "kaliDAO",
+				"type": "address"
+			},
 			{
 				"indexed": true,
 				"internalType": "string",
@@ -9,10 +31,10 @@
 				"type": "string"
 			},
 			{
-				"indexed": true,
-				"internalType": "contract KaliDAO",
-				"name": "kaliDAO",
-				"type": "address"
+				"indexed": false,
+				"internalType": "string",
+				"name": "docs",
+				"type": "string"
 			}
 		],
 		"name": "DAOdeployed",
@@ -80,6 +102,32 @@
 			}
 		],
 		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "kaliMaster",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "ricardianLLC",
+		"outputs": [
+			{
+				"internalType": "contract IRicardianLLC",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	}
 ]

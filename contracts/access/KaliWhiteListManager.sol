@@ -4,7 +4,7 @@ pragma solidity >=0.8.0;
 
 /// @notice Kali DAO whitelist manager.
 /// @author Modified from SushiSwap (https://github.com/sushiswap/trident/blob/master/contracts/pool/franchised/WhiteListManager.sol)
-contract KaliWhiteListManager {
+contract KaliWhitelistManager {
     /*///////////////////////////////////////////////////////////////
                             EVENTS
     //////////////////////////////////////////////////////////////*/
@@ -13,18 +13,18 @@ contract KaliWhiteListManager {
     
     event MerkleRootSet(address indexed operator, bytes32 merkleRoot);
     
-    event MerkleRootJoined(address indexed operator, uint256 indexed index, address indexed account);
+    event WhitelistJoined(address indexed operator, uint256 indexed index, address indexed account);
 
     /*///////////////////////////////////////////////////////////////
                             EIP-712 STORAGE
     //////////////////////////////////////////////////////////////*/
 
-    bytes32 internal constant APPROVAL_SIGNATURE_HASH = 
-        keccak256('SetWhitelist(address account,bool approved,uint256 deadline)');
-    
     uint256 internal immutable INITIAL_CHAIN_ID;
 
     bytes32 internal immutable INITIAL_DOMAIN_SEPARATOR;
+
+    bytes32 internal constant WHITELIST_TYPEHASH = 
+        keccak256('Whitelist(address account,bool approved,uint256 deadline)');
 
     /*///////////////////////////////////////////////////////////////
                             WHITELIST STORAGE
@@ -54,7 +54,7 @@ contract KaliWhiteListManager {
         domainSeparator = keccak256(
             abi.encode(
                 keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
-                keccak256(bytes('KaliWhiteListManager')),
+                keccak256(bytes('KaliWhitelistManager')),
                 keccak256(bytes('1')),
                 block.chainid,
                 address(this)
@@ -77,26 +77,22 @@ contract KaliWhiteListManager {
 
         uint256 claimedWord = whitelistedBitmap[operator][whitelistedWordIndex];
 
-        uint256 mask = (1 << whitelistedBitIndex);
+        uint256 mask = 1 << whitelistedBitIndex;
 
         success = claimedWord & mask == mask;
     }
 
-    function whitelistAccount(address user, bool approved) public virtual {
-        _whitelistAccount(msg.sender, user, approved);
+    function whitelistAccounts(address[] calldata accounts, bool[] calldata approvals) public virtual {
+        // this is reasonably safe from overflow because incrementing `i` loop beyond
+        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        unchecked {
+            for (uint256 i; i < accounts.length; i++) {
+                _whitelistAccount(msg.sender, accounts[i], approvals[i]);
+            }
+        }
     }
 
-    function _whitelistAccount(
-        address operator,
-        address account,
-        bool approved
-    ) private {
-        whitelistedAccounts[operator][account] = approved;
-
-        emit AccountWhitelisted(operator, account, approved);
-    }
-
-    function setWhitelisting(
+    function whitelistAccountBySig(
         address operator,
         address account,
         bool approved,
@@ -104,27 +100,42 @@ contract KaliWhiteListManager {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external {
-        // checks:
-        require(account != address(0), 'ACCOUNT_NOT_SET');
-        // - also, ecrecover returns address(0) on failure - so we check this, even if modifier should prevent it:
-        require(operator != address(0), 'OPERATOR_NULL');
-
-        require(block.timestamp <= block.timestamp), 'EXPIRED');
+    ) public virtual {
+        require(block.timestamp <= deadline, 'WHITELIST_DEADLINE_EXPIRED');
 
         bytes32 digest = keccak256(
             abi.encodePacked(
                 '\x19\x01',
                 DOMAIN_SEPARATOR(),
-                keccak256(abi.encode(APPROVAL_SIGNATURE_HASH, account, approved, deadline))
+                keccak256(abi.encode(WHITELIST_TYPEHASH, account, approved, deadline))
             )
         );
 
         address recoveredAddress = ecrecover(digest, v, r, s);
 
-        require(recoveredAddress == operator, 'INVALID_SIGNATURE');
+        require(recoveredAddress == operator, 'INVALID_WHITELIST_SIGNATURE');
 
         _whitelistAccount(operator, account, approved);
+    }
+
+    function _whitelistAccount(
+        address operator,
+        address account,
+        bool approved
+    ) internal virtual {
+        whitelistedAccounts[operator][account] = approved;
+
+        emit AccountWhitelisted(operator, account, approved);
+    }
+
+    /*///////////////////////////////////////////////////////////////
+                            MERKLE LOGIC
+    //////////////////////////////////////////////////////////////*/
+
+    function setMerkleRoot(bytes32 merkleRoot_) public virtual {
+        merkleRoot[msg.sender] = merkleRoot_;
+
+        emit MerkleRootSet(msg.sender, merkleRoot_);
     }
 
     function joinWhitelist(
@@ -132,8 +143,8 @@ contract KaliWhiteListManager {
         uint256 index,
         address account,
         bytes32[] calldata merkleProof
-    ) external {
-        require(!isWhitelisted(operator, index), 'CLAIMED');
+    ) public virtual {
+        require(!isWhitelisted(operator, index), 'WHITELIST_CLAIMED');
 
         bytes32 node = keccak256(abi.encodePacked(index, account));
 
@@ -162,12 +173,6 @@ contract KaliWhiteListManager {
 
         _whitelistAccount(operator, account, true);
 
-        emit MerkleRootJoined(operator, index, account);
-    }
-
-    function setMerkleRoot(bytes32 _merkleRoot) external {
-        merkleRoot[msg.sender] = _merkleRoot;
-
-        emit MerkleRootSet(msg.sender, _merkleRoot);
+        emit WhitelistJoined(operator, index, account);
     }
 }

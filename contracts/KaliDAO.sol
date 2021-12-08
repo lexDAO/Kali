@@ -3,13 +3,13 @@
 pragma solidity >=0.8.0;
 
 import './KaliDAOtoken.sol';
+import './utils/Multicall.sol';
 import './utils/NFThelper.sol';
 import './utils/ReentrancyGuard.sol';
-import './utils/Multicall.sol';
 import './IKaliDAOextension.sol';
 
 /// @notice Simple gas-optimized DAO core module.
-contract KaliDAO is KaliDAOtoken, NFThelper, ReentrancyGuard {
+contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     /*///////////////////////////////////////////////////////////////
                             EVENTS
     //////////////////////////////////////////////////////////////*/

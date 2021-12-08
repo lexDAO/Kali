@@ -3,12 +3,12 @@
 pragma solidity >=0.8.0;
 
 import '../../libraries/SafeTransferLib.sol';
-import '../../access/interfaces/IKaliWhiteListManager.sol';
+import '../../access/interfaces/IKaliWhitelistManager.sol';
 import '../../utils/ReentrancyGuard.sol';
 
 /// @notice Crowdsale contract that receives ETH or tokens to mint registered DAO tokens, including merkle whitelisting.
 contract KaliDAOcrowdsale is ReentrancyGuard {
-    IKaliWhiteListManager public immutable whitelistManager;
+    IKaliWhitelistManager public immutable whitelistManager;
 
     mapping(address => Crowdsale) public crowdsales;
 
@@ -21,7 +21,7 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
         uint32 saleEnds;
     }
 
-    constructor(IKaliWhiteListManager whitelistManager_) {
+    constructor(IKaliWhitelistManager whitelistManager_) {
         whitelistManager = whitelistManager_;
     }
 

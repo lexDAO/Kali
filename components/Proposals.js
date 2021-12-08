@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import Router, { useRouter } from "next/router";
 import AppContext from '../context/AppContext';
-
 import ProposalDetails from './ProposalDetails';
 import {
   chakra,
@@ -13,14 +12,12 @@ import Layout from './Layout';
 const abi = require("../abi/KaliDAO.json");
 import ProposalRow from "./ProposalRow"
 import Message from "./Message"
-
 import { proposalTypes, voteTypes } from "../utils/appParams";
 
 export default function Proposals(props) {
   const [visibleView, setVisibleView] = useState(1);
   const [proposals, setProposals] = useState(null);
   const [activeProposal, setActiveProposal] = useState(null);
-  const proposalTypes = require("../utils/proposalTypes");
 
   const value = useContext(AppContext);
   const { web3, loading } = value.state;
@@ -29,8 +26,6 @@ export default function Proposals(props) {
   var proposalArray = [];
   const proposalVoteTypes = [];
   var counter = 0;
-
-
 
   // get dao info
   useEffect(() => {
@@ -68,11 +63,7 @@ export default function Proposals(props) {
               let expires = new Date(
                 (parseInt(proposal["creationTime"]) + parseInt(votingPeriod)) * 1000
               );
-
               proposal["expires"] = expires;
-              let timer = (expires / 1000) - (Date.now() / 1000);
-              proposal["timer"] = parseInt(timer);
-
               // * check if voting still open * //
               if (parseInt(proposal["creationTime"]) > cutoff) {
                 proposal["open"] = true;
@@ -82,7 +73,6 @@ export default function Proposals(props) {
                 proposal["open"] = false;
                 proposal["timeRemaining"] = 0;
               }
-
               // calculate progress bar and passing/failing
               let passing;
               let proposalType = proposal["proposalType"];
@@ -116,31 +106,23 @@ export default function Proposals(props) {
               } else {
                 proposal["progress"] = (yesVotes * 100) / (yesVotes + noVotes);
               }
-
               // integrate data from array getter function
               let amount = proposalArrays["amounts"][0];
               proposal["amount"] = web3.utils.fromWei(amount, "ether");
               proposal["account"] = proposalArrays["accounts"][0];
-
               let payload = proposalArrays["payloads"][0];
               proposal["payloadArray"] = payload.match(/.{0,40}/g);
               proposal["payload"] = payload;
-
               proposalArray.push(proposal);
             } // end live proposals
           } // end for loop
           setProposals(proposalArray);
-
           counter++;
         }
       }
-
       fetchData();
 
   }, [counter]);
-}
-
-
 
   const vote = async () => {
       event.preventDefault();
@@ -156,7 +138,6 @@ export default function Proposals(props) {
       const { dao, id, approval } = array;
 
       const instance = new web3.eth.Contract(abi, dao);
-
       try {
         const accounts = await web3.eth.getAccounts();
         // * first, see if they already voted * //
@@ -220,12 +201,15 @@ export default function Proposals(props) {
   };
 
   return(
+    <>
 
     {proposals==null ? <>Loading...</> :
       <>
       {proposals.length == 0 ? (
         <Message>Awaiting proposals</Message>
-        ) :
+        ) : (
+          <>
+
         <Grid templateColumns={{sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)'}}>
           {proposals.map((p, index) => (
             <ProposalRow
@@ -237,9 +221,12 @@ export default function Proposals(props) {
             />
           ))}
         </Grid>
-      }
-
         </>
+        )
+        }
+      </>
     }
+
+    </>
   )
 }

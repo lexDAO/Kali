@@ -48,7 +48,7 @@ export default function Proposals(props) {
         const supermajority = parseInt(
           await instance.methods.supermajority().call()
         );
-        
+
         for(var i = 0; i < proposalTypes.length; i++) {
           const voteType = await instance.methods.proposalVoteTypes(i).call();
           proposalVoteTypes.push(voteType);
@@ -72,7 +72,7 @@ export default function Proposals(props) {
               proposal["expires"] = expires;
               let timer = (expires / 1000) - (Date.now() / 1000);
               proposal["timer"] = parseInt(timer);
-       
+
               // * check if voting still open * //
               if (parseInt(proposal["creationTime"]) > cutoff) {
                 proposal["open"] = true;
@@ -134,7 +134,7 @@ export default function Proposals(props) {
           counter++;
         }
       }
-    
+
       fetchData();
 
   }, [counter]);
@@ -220,13 +220,12 @@ export default function Proposals(props) {
   };
 
   return(
-    <>
+
     {proposals==null ? <>Loading...</> :
       <>
       {proposals.length == 0 ? (
         <Message>Awaiting proposals</Message>
-        ) : (
-          <>
+        ) :
         <Grid templateColumns={{sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)'}}>
           {proposals.map((p, index) => (
             <ProposalRow
@@ -238,8 +237,9 @@ export default function Proposals(props) {
             />
           ))}
         </Grid>
+      }
+
         </>
     }
-    </>
   )
 }

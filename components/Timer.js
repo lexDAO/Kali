@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   Text,
   Box,
@@ -6,17 +7,24 @@ import {
 } from "@chakra-ui/react";
 
 export default function Timer(props) {
-
+  const [time, setTime] = useState(0);
   var countDownDate = props['expires'];
-
   var now = new Date().getTime();
-
   var distance = countDownDate - now;
-
   var days = Math.floor(distance / (1000 * 60 * 60 * 24));
   var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  useEffect(() => {
+
+    const timer = setInterval(() => {
+      setTime((distance) => distance - 1);
+    }, 1000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
 
   if(props['open']==false) {
     days = 0;

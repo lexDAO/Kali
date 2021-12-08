@@ -42,7 +42,8 @@ export default function NewProposal() {
 
     if (account.includes(".eth")) {
       account = await web3.eth.ens.getAddress(account).catch(() => {
-        alert("ENS not found")
+        alert("ENS not found");
+        value.setLoading(false);
       });
     }
 

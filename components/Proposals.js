@@ -74,7 +74,7 @@ export default function Proposals(props) {
                 proposal["timeRemaining"] = 0;
               }
               // calculate progress bar and passing/failing
-              let passing;
+              var passing = false;
               let proposalType = proposal["proposalType"];
               let yesVotes = parseInt(proposal["yesVotes"]);
               let noVotes = parseInt(proposal["noVotes"]);

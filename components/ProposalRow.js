@@ -55,6 +55,7 @@ import FlexOutline from './FlexOutline';
 import Timer from './Timer';
 import { proposalDescriptions } from '../utils/appParams';
 import { useClipboard } from '@chakra-ui/react'
+import VotingModule from './VotingModule';
 
 const ProposalLabel = (props) => {
   return(
@@ -72,6 +73,12 @@ const ProposalInput = (props) => {
   )
 }
 
+const ProposalDivider = (props) => {
+  return(
+    <Divider mb={5} />
+  )
+}
+
 const iconSize = 8;
 
 export default function ProposalRow(props) {
@@ -85,24 +92,47 @@ export default function ProposalRow(props) {
       <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{p['description']}</ModalHeader>
+        <ModalHeader>
+          <HStack>
+            {p['proposalType']==0 ?
+            <>
+            <Icon as={BsPlusCircle} boxSize={iconSize} />
+            </>
+            : null}
+
+            {p['proposalType']==1 ?
+            <>
+            <Icon as={BsXCircle} boxSize={iconSize} />
+            </>
+            : null}
+
+            {p['proposalType']==2 ?
+            <>
+            <Icon as={BiLoaderCircle} boxSize={iconSize} />
+            </>
+            : null}
+            <Text casing="uppercase">{proposalDescriptions[p['proposalType']]}</Text>
+          </HStack>
+        </ModalHeader>
+        <Divider />
+
         <ModalCloseButton />
-        <ModalBody>
+        <ModalBody m={5}>
 
         <ProposalLabel>description</ProposalLabel>
         <Text>{p['description']}</Text>
-        <Divider />
+        <ProposalDivider />
 
         {p['open']==true ?
         <>
           {p['proposalType']==0 ?
           <>
-
             <ProposalLabel>shares</ProposalLabel>
             <ProposalInput value={p['amount']} />
+            <ProposalDivider />
             <ProposalLabel>account</ProposalLabel>
             <ProposalInput value={p['account']} />
-            <Divider />
+            <ProposalDivider />
           </>
           : null}
 
@@ -110,9 +140,10 @@ export default function ProposalRow(props) {
           <>
             <ProposalLabel>shares</ProposalLabel>
             <ProposalInput value={p['amount']} />
+            <ProposalDivider />
             <ProposalLabel>account</ProposalLabel>
             <ProposalInput value={p['account']} />
-            <Divider />
+            <ProposalDivider />
           </>
           : null}
 
@@ -120,53 +151,20 @@ export default function ProposalRow(props) {
           <>
             <ProposalLabel>txn value</ProposalLabel>
             <ProposalInput value={p['amount']} />
+            <ProposalDivider />
             <ProposalLabel>contract</ProposalLabel>
             <ProposalInput value={p['account']} />
+            <ProposalDivider />
             <ProposalLabel>payload</ProposalLabel>
             <Textarea>{p['payload']}</Textarea>
-            <Divider />
+            <ProposalDivider />
           </>
-          :
-          <form onSubmit={props.process}>
-            <Input
-              type="hidden"
-              name="dao"
-              value={props['address']}
-            />
-            <Input type="hidden" name="id" value={p["id"]} />
-            <Button type="submit">Process</Button>
-          </form>
-          }
-          <HStack>
-          <form onSubmit={props.vote}>
-            <Input
-              type="hidden"
-              name="dao"
-              value={props['address']}
-            />
-            <Input type="hidden" name="id" value={p["id"]} />
-            <Input type="hidden" name="approval" value={1} />
-            <IconButton
-              icon={<BsHandThumbsUpFill />}
-              type="submit"
-            />
-          </form>
-
-          <form onSubmit={props.vote}>
-            <Input
-              type="hidden"
-              name="dao"
-              value={props['address']}
-            />
-            <Input type="hidden" name="id" value={p["id"]} />
-            <Input type="hidden" name="approval" value={0} />
-            <IconButton
-              icon={<BsHandThumbsDownFill />}
-              type="submit"
-            />
-          </form>
-          </HStack>
+          : null}
         </>
+        : null}
+        <Center>
+          {p['open']==true ?
+          <VotingModule id={p['id']} address={props.address} vote={props.vote} />
         :
           <form onSubmit={props.process}>
             <Input
@@ -178,13 +176,9 @@ export default function ProposalRow(props) {
             <Button type="submit">Process</Button>
           </form>
         }
+        </Center>
         </ModalBody>
 
-        <ModalFooter>
-          <Button colorScheme='blue' mr={3} onClick={onClose}>
-            Close
-          </Button>
-        </ModalFooter>
       </ModalContent>
       </Modal>
 
@@ -212,11 +206,11 @@ export default function ProposalRow(props) {
         <Text casing="uppercase">{proposalDescriptions[p['proposalType']]}</Text>
         <Timer expires={p['expires']} open={p['open']} />
         <Progress width="100%" colorScheme='green' backgroundColor='pink' value={p['progress']} />
-
+        
         <Text casing="uppercase">
         {p['passing']==true && p['open']==true ? 'passing'
         :p['passing']==true && p['false']==true ? 'passed'
-        :p['passing']==false && p['open']==false ? 'failing'
+        :p['passing']==false && p['open']==true ? 'failing'
         : 'failed'
         }
         </Text>

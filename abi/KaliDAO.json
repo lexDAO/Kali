@@ -1,5 +1,56 @@
 [
 	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "name_",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "symbol_",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "docs_",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "paused_",
+				"type": "bool"
+			},
+			{
+				"internalType": "address[]",
+				"name": "extensions_",
+				"type": "address[]"
+			},
+			{
+				"internalType": "address[]",
+				"name": "voters_",
+				"type": "address[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "shares_",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint32",
+				"name": "votingPeriod_",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint8[]",
+				"name": "govSettings_",
+				"type": "uint8[]"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "constructor"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -97,25 +148,6 @@
 			}
 		],
 		"name": "NewProposal",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "proposer",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "proposal",
-				"type": "uint256"
-			}
-		],
-		"name": "ProposalCancelled",
 		"type": "event"
 	},
 	{
@@ -369,19 +401,6 @@
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "proposal",
-				"type": "uint256"
-			}
-		],
-		"name": "cancelProposal",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "address",
 				"name": "",
 				"type": "address"
@@ -492,6 +511,19 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "docs",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -580,87 +612,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "name_",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "symbol_",
-				"type": "string"
-			},
-			{
-				"internalType": "bool",
-				"name": "paused_",
-				"type": "bool"
-			},
-			{
-				"internalType": "address[]",
-				"name": "voters_",
-				"type": "address[]"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "shares_",
-				"type": "uint256[]"
-			}
-		],
-		"name": "init",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "name_",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "symbol_",
-				"type": "string"
-			},
-			{
-				"internalType": "bool",
-				"name": "paused_",
-				"type": "bool"
-			},
-			{
-				"internalType": "address[]",
-				"name": "extensions_",
-				"type": "address[]"
-			},
-			{
-				"internalType": "address[]",
-				"name": "voters_",
-				"type": "address[]"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "shares_",
-				"type": "uint256[]"
-			},
-			{
-				"internalType": "uint32",
-				"name": "votingPeriod_",
-				"type": "uint32"
-			},
-			{
-				"internalType": "uint8[]",
-				"name": "govSettings_",
-				"type": "uint8[]"
-			}
-		],
-		"name": "init",
-		"outputs": [],
-		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -846,25 +797,6 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "passed",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "paused",
 		"outputs": [
@@ -1005,11 +937,6 @@
 				"internalType": "uint32",
 				"name": "creationTime",
 				"type": "uint32"
-			},
-			{
-				"internalType": "address",
-				"name": "proposer",
-				"type": "address"
 			}
 		],
 		"stateMutability": "view",

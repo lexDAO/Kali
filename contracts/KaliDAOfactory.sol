@@ -66,7 +66,7 @@ contract KaliDAOfactory {
     }
 
     /// @dev modified from Aelin (https://github.com/AelinXYZ/aelin/blob/main/contracts/MinimalProxyFactory.sol)
-    function _cloneAsMinimalProxy(address payable base) internal returns (address payable clone) {
+    function _cloneAsMinimalProxy(address payable base) internal virtual returns (address payable clone) {
         bytes memory createData = abi.encodePacked(
             // constructor
             bytes10(0x3d602d80600a3d3981f3),

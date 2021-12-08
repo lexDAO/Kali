@@ -46,7 +46,8 @@ abstract contract KaliDAOtoken {
 
     bool public paused;
 
-    bytes32 public constant DELEGATION_TYPEHASH = keccak256('Delegation(address delegatee,uint256 nonce,uint256 expiry)');
+    bytes32 public constant DELEGATION_TYPEHASH = 
+        keccak256('Delegation(address delegatee,uint256 nonce,uint256 expiry)');
 
     mapping(address => address) private _delegates;
 

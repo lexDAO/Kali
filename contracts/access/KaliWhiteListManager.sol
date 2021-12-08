@@ -46,6 +46,10 @@ contract KaliWhiteListManager {
         INITIAL_DOMAIN_SEPARATOR = _computeDomainSeparator();
     }
     
+    /*///////////////////////////////////////////////////////////////
+                            EIP-712 LOGIC
+    //////////////////////////////////////////////////////////////*/
+
     function _computeDomainSeparator() internal view virtual returns (bytes32 domainSeparator) {
         domainSeparator = keccak256(
             abi.encode(
@@ -65,6 +69,18 @@ contract KaliWhiteListManager {
     /*///////////////////////////////////////////////////////////////
                             WHITELIST LOGIC
     //////////////////////////////////////////////////////////////*/
+    
+    function isWhitelisted(address operator, uint256 index) public view virtual returns (bool success) {
+        uint256 whitelistedWordIndex = index / 256;
+
+        uint256 whitelistedBitIndex = index % 256;
+
+        uint256 claimedWord = whitelistedBitmap[operator][whitelistedWordIndex];
+
+        uint256 mask = (1 << whitelistedBitIndex);
+
+        success = claimedWord & mask == mask;
+    }
 
     function whitelistAccount(address user, bool approved) public virtual {
         _whitelistAccount(msg.sender, user, approved);
@@ -109,18 +125,6 @@ contract KaliWhiteListManager {
         require(recoveredAddress == operator, 'INVALID_SIGNATURE');
 
         _whitelistAccount(operator, account, approved);
-    }
-
-    function isWhitelisted(address operator, uint256 index) public view virtual returns (bool success) {
-        uint256 whitelistedWordIndex = index / 256;
-
-        uint256 whitelistedBitIndex = index % 256;
-
-        uint256 claimedWord = whitelistedBitmap[operator][whitelistedWordIndex];
-
-        uint256 mask = (1 << whitelistedBitIndex);
-
-        success = claimedWord & mask == mask;
     }
 
     function joinWhitelist(

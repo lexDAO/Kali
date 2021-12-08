@@ -167,7 +167,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         // if member is making proposal, include sponsorship
         if (balanceOf[msg.sender] > 0) selfSponsor = true;
         
-        if (proposalType == ProposalType.PERIOD) require(amounts[0] <= 365 days, 'VOTING_PERIOD_MAX');
+        if (proposalType == ProposalType.PERIOD) require(amounts[0] <= 365 days, 'VOTING_PERIOD_BOUNDS');
         
         if (proposalType == ProposalType.QUORUM) require(amounts[0] <= 100, 'QUORUM_MAX');
         

@@ -83,7 +83,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                             CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(
+    function init(
         string memory name_,
         string memory symbol_,
         bool paused_,
@@ -92,12 +92,16 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint256[] memory shares_,
         uint32 votingPeriod_,
         uint8[] memory govSettings_
-    ) payable KaliDAOtoken(name_, symbol_, paused_, voters_, shares_) {
+    ) public payable virtual {
+        require(govSettings_[1] == 0, 'INITIALIZED');
+
         require(votingPeriod_ <= 365 days, 'VOTING_PERIOD_MAX');
         
         require(govSettings_[0] <= 100, 'QUORUM_MAX');
         
         require(govSettings_[1] > 51 && govSettings_[1] <= 100, 'SUPERMAJORITY_BOUNDS');
+
+        KaliDAOtoken.init(name_, symbol_, paused_, voters_, shares_);
 
         // this is reasonably safe from overflow because incrementing `i` loop beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits

@@ -1,10 +1,11 @@
 import React from "react";
-import { Field, ErrorMessage } from "formik";
+import { Field } from "formik";
 import {
   Textarea,
   FormControl,
   FormLabel,
   FormErrorMessage,
+  Icon
 } from "@chakra-ui/react";
 import { BsFillExclamationCircleFill } from "react-icons/bs";
 
@@ -20,7 +21,8 @@ function CustomTextarea(props) {
             <Textarea id={name} name={name} {...rest} {...field} />
             {/*TODO: Add Icon to ErrorMessage*/}
             <FormErrorMessage>
-              {<BsFillExclamationCircleFill />} {form.errors[name]}
+              <Icon as={BsFillExclamationCircleFill} w={4} h={4} mr={1} />
+               {form.errors[name]}
             </FormErrorMessage>
           </FormControl>
         );

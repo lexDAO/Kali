@@ -5,6 +5,7 @@ import {
   FormControl,
   FormLabel,
   FormErrorMessage,
+  Icon,
 } from "@chakra-ui/react";
 import { BsFillExclamationCircleFill } from "react-icons/bs";
 
@@ -17,9 +18,9 @@ function CustomInput(props) {
           <FormControl isInvalid={form.errors[name] && form.touched[name]}>
             <FormLabel htmlFor={name}>{label}</FormLabel>
             <Input id={name} name={name} {...rest} {...field} />
-            {/*TODO: Add Icon to ErrorMessage*/}
             <FormErrorMessage>
-              {<BsFillExclamationCircleFill />} {form.errors[name]}
+              <Icon as={BsFillExclamationCircleFill} w={4} h={4} mr={1} />
+		{form.errors[name]}
             </FormErrorMessage>
           </FormControl>
         );

@@ -1,11 +1,11 @@
 import React from "react";
 import { Field } from "formik";
 import {
-  Input,
   Select,
   FormControl,
   FormLabel,
   FormErrorMessage,
+  Icon
 } from "@chakra-ui/react";
 import { BsFillExclamationCircleFill } from "react-icons/bs";
 
@@ -32,7 +32,9 @@ function CustomSelect(props) {
               ))}
             </Select>
             <FormErrorMessage>
-              {<BsFillExclamationCircleFill />} {form.errors[name]}
+  
+	<Icon as={BsFillExclamationCircleFill} w={4} h={4} mr={1}/> 
+	      {form.errors[name]}
             </FormErrorMessage>
           </FormControl>
         );

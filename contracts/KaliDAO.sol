@@ -90,16 +90,15 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         address[] memory extensions_,
         address[] memory voters_,
         uint256[] memory shares_,
-        uint32 votingPeriod_,
         uint8[] memory govSettings_
     ) public payable virtual {
-        require(govSettings_[1] == 0, 'INITIALIZED');
+        require(govSettings_[0] == 0, 'INITIALIZED');
 
-        require(votingPeriod_ <= 365 days, 'VOTING_PERIOD_MAX');
+        require(govSettings_[0] > 0 && govSettings_[0] <= 365 days, 'VOTING_PERIOD_MAX');
         
-        require(govSettings_[0] <= 100, 'QUORUM_MAX');
+        require(govSettings_[1] <= 100, 'QUORUM_MAX');
         
-        require(govSettings_[1] > 51 && govSettings_[1] <= 100, 'SUPERMAJORITY_BOUNDS');
+        require(govSettings_[2] > 51 && govSettings_[2] <= 100, 'SUPERMAJORITY_BOUNDS');
 
         KaliDAOtoken.init(name_, symbol_, paused_, voters_, shares_);
 
@@ -111,30 +110,30 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             }
         }
         
-        votingPeriod = votingPeriod_;
+        votingPeriod = safeCastTo32(govSettings_[0]);
         
-        quorum = govSettings_[0];
+        quorum = govSettings_[1];
         
-        supermajority = govSettings_[1];
+        supermajority = govSettings_[2];
 
         // set initial vote types
-        proposalVoteTypes[ProposalType.MINT] = VoteType(govSettings_[2]);
+        proposalVoteTypes[ProposalType.MINT] = VoteType(govSettings_[3]);
 
-        proposalVoteTypes[ProposalType.BURN] = VoteType(govSettings_[3]);
+        proposalVoteTypes[ProposalType.BURN] = VoteType(govSettings_[4]);
 
-        proposalVoteTypes[ProposalType.CALL] = VoteType(govSettings_[4]);
+        proposalVoteTypes[ProposalType.CALL] = VoteType(govSettings_[5]);
 
-        proposalVoteTypes[ProposalType.PERIOD] = VoteType(govSettings_[5]);
+        proposalVoteTypes[ProposalType.PERIOD] = VoteType(govSettings_[6]);
         
-        proposalVoteTypes[ProposalType.QUORUM] = VoteType(govSettings_[6]);
+        proposalVoteTypes[ProposalType.QUORUM] = VoteType(govSettings_[7]);
         
-        proposalVoteTypes[ProposalType.SUPERMAJORITY] = VoteType(govSettings_[7]);
+        proposalVoteTypes[ProposalType.SUPERMAJORITY] = VoteType(govSettings_[8]);
 
-        proposalVoteTypes[ProposalType.TYPE] = VoteType(govSettings_[8]);
+        proposalVoteTypes[ProposalType.TYPE] = VoteType(govSettings_[9]);
         
-        proposalVoteTypes[ProposalType.PAUSE] = VoteType(govSettings_[9]);
+        proposalVoteTypes[ProposalType.PAUSE] = VoteType(govSettings_[10]);
         
-        proposalVoteTypes[ProposalType.EXTENSION] = VoteType(govSettings_[10]);
+        proposalVoteTypes[ProposalType.EXTENSION] = VoteType(govSettings_[11]);
     }
 
     /*///////////////////////////////////////////////////////////////

@@ -81,7 +81,7 @@ Currently, the following extensions are supported on deployment (by factory call
 
 ### [Crowdsale](./contracts/extensions/crowdsale)
 
-A DAO can set a price for its membership in ETH or a designated token, as well as a time limit for purchases. This allows for more immediate access and weighting of membership based on predictable contributions. Further, a DAO can update a crowdsale in the event terms need to be amended.
+A DAO can set a price for its membership in ETH or a designated token, a time limit for purchases, as well as limit purchases among a whitelist. Whitelisting is managed through an external access control contract, [`KaliWhitelistManager`](https://github.com/lexDAO/Kali/blob/main/contracts/access/KaliWhiteListManager.sol), which allows multiple DAOs to use the same merkle root to offer membership. Altogether, this allows for more immediate access and weighting of membership based on predictable contributions. Further, a DAO can update a crowdsale in the event terms need to be amended.
 
 ### [Redemption](./contracts/extensions/redemption)
 

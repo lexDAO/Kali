@@ -4,7 +4,7 @@ pragma solidity >=0.8.0;
 
 import '../../libraries/SafeTransferLib.sol';
 import './interfaces/IERC20Minimal.sol';
-import '../../ReentrancyGuard.sol';
+import '../../utils/ReentrancyGuard.sol';
 
 /// @notice Redemption contract that transfers registered tokens from DAO in proportion to burnt DAO tokens.
 contract KaliDAOredemption is ReentrancyGuard {
@@ -48,7 +48,7 @@ contract KaliDAOredemption is ReentrancyGuard {
         }
 
         // placeholder value to conform to interface
-        amountOut = amount;
+        amountOut = 0;
     }
 
     function addTokens(IERC20Minimal[] memory tokens) public nonReentrant virtual {

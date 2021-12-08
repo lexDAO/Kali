@@ -3,13 +3,17 @@
 pragma solidity >=0.8.0;
 
 import '../../libraries/SafeTransferLib.sol';
-import '../../ReentrancyGuard.sol';
+import '../../access/interfaces/IKaliWhitelistManager.sol';
+import '../../utils/ReentrancyGuard.sol';
 
-/// @notice Crowdsale contract that receives ETH or tokens to mint registered DAO tokens.
+/// @notice Crowdsale contract that receives ETH or tokens to mint registered DAO tokens, including merkle whitelisting.
 contract KaliDAOcrowdsale is ReentrancyGuard {
+    IKaliWhitelistManager public immutable whitelistManager;
+
     mapping(address => Crowdsale) public crowdsales;
 
     struct Crowdsale {
+        address operator;
         address purchaseToken;
         uint8 purchaseMultiplier;
         uint96 purchaseLimit;
@@ -17,16 +21,21 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
         uint32 saleEnds;
     }
 
+    constructor(IKaliWhitelistManager whitelistManager_) {
+        whitelistManager = whitelistManager_;
+    }
+
     function setExtension(address dao, bytes calldata extensionData) public nonReentrant virtual {
-        (address purchaseToken, uint8 purchaseMultiplier, uint96 purchaseLimit, uint32 saleEnds) 
-            = abi.decode(extensionData, (address, uint8, uint96, uint32));
+        (address operator, address purchaseToken, uint8 purchaseMultiplier, uint96 purchaseLimit, uint32 saleEnds) 
+            = abi.decode(extensionData, (address, address, uint8, uint96, uint32));
         
-        require(purchaseMultiplier > 0, "NULL_MULTIPLIER"); 
+        require(purchaseMultiplier > 0, 'NULL_MULTIPLIER'); 
 
         require(crowdsales[dao].purchaseMultiplier > 0 || dao == msg.sender, 
-            "INITIALIZED_OR_NOT_DAO"); 
+            'INITIALIZED_OR_NOT_DAO'); 
 
         crowdsales[dao] = Crowdsale({
+            operator: operator,
             purchaseToken: purchaseToken,
             purchaseMultiplier: purchaseMultiplier,
             purchaseLimit: purchaseLimit,
@@ -42,12 +51,15 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
     ) public payable nonReentrant virtual returns (uint256 amountOut) {
         Crowdsale storage sale = crowdsales[msg.sender];
 
-        require(block.timestamp <= sale.saleEnds, "SALE_ENDED");
+        require(block.timestamp <= sale.saleEnds, 'SALE_ENDED');
+
+        if (sale.operator != address(0)) require(whitelistManager.whitelistedAccounts(sale.operator, account), 
+            'NOT_WHITELISTED');
 
         if (sale.purchaseToken == address(0)) {
             amountOut = msg.value * sale.purchaseMultiplier;
 
-            require(sale.amountPurchased + amountOut <= sale.purchaseLimit, "PURCHASE_LIMIT");
+            require(sale.amountPurchased + amountOut <= sale.purchaseLimit, 'PURCHASE_LIMIT');
 
             // send ETH to DAO
             SafeTransferLib.safeTransferETH(msg.sender, msg.value);
@@ -59,7 +71,7 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
 
             amountOut = amount * sale.purchaseMultiplier;
 
-            require(sale.amountPurchased + amountOut <= sale.purchaseLimit, "PURCHASE_LIMIT");
+            require(sale.amountPurchased + amountOut <= sale.purchaseLimit, 'PURCHASE_LIMIT');
 
             sale.amountPurchased += uint96(amountOut);
         }

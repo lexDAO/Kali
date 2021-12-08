@@ -66,9 +66,9 @@ abstract contract KaliDAOtoken {
     bytes32 public constant PERMIT_TYPEHASH =
         keccak256('Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)');
 
-    uint256 internal immutable INITIAL_CHAIN_ID;
+    uint256 internal INITIAL_CHAIN_ID;
 
-    bytes32 internal immutable INITIAL_DOMAIN_SEPARATOR;
+    bytes32 internal INITIAL_DOMAIN_SEPARATOR;
 
     mapping(address => uint256) public nonces;
 
@@ -76,13 +76,15 @@ abstract contract KaliDAOtoken {
                             CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(
+    function init(
         string memory name_,
         string memory symbol_,
         bool paused_,
         address[] memory voters_,
         uint256[] memory shares_
-    ) {
+    ) public virtual {
+        require(INITIAL_CHAIN_ID == 0, 'INITIALIZED');
+
         require(voters_.length == shares_.length, 'NO_ARRAY_PARITY');
 
         name = name_;

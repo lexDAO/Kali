@@ -110,11 +110,13 @@ contract SignableRegistry {
 
     function grantAdmin(address admin) public onlySuperAdmin virtual {
         admins[admin] = true;
+        
         emit GrantAdmin(admin);
     }
 
     function revokeAdmin(address admin) public onlySuperAdmin virtual {
         admins[admin] = false;
+        
         emit RevokeAdmin(admin);
     }
 

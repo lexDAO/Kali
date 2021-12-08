@@ -95,7 +95,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     ) public payable virtual {
         require(govSettings_[1] == 0, 'INITIALIZED');
 
-        require(votingPeriod_ <= 365 days, 'VOTING_PERIOD_MAX');
+        require(votingPeriod_ > 0 && votingPeriod_ <= 365 days, 'VOTING_PERIOD_MAX');
         
         require(govSettings_[0] <= 100, 'QUORUM_MAX');
         

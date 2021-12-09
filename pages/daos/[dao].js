@@ -28,7 +28,7 @@ export default function Dao() {
 
   const proposalList = () => {
     proposals.map((p, index) => (
-      <>p['description']<br /></>
+      <>p["description"]<br /></>
     ));
   }
 

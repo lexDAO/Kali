@@ -36,7 +36,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
     uint8 public supermajority; // 1-100
     
-    bytes32 public constant VOTE_HASH = keccak256('SignVote(address signer,uint256 proposal,bool approve)');
+    bytes32 public constant VOTE_HASH = 
+        keccak256('SignVote(address signer,uint256 proposal,bool approve)');
     
     mapping(address => bool) public extensions;
 

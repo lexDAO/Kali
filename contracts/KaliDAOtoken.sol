@@ -165,7 +165,7 @@ abstract contract KaliDAOtoken {
 
     modifier notPaused() {
         require(!paused, 'PAUSED');
-        
+
         _;
     }
     
@@ -188,7 +188,14 @@ abstract contract KaliDAOtoken {
         _delegate(msg.sender, delegatee);
     }
 
-    function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s) public virtual {
+    function delegateBySig(
+        address delegatee, 
+        uint256 nonce, 
+        uint256 expiry, 
+        uint8 v, 
+        bytes32 r, 
+        bytes32 s
+    ) public virtual {
         bytes32 structHash = keccak256(abi.encode(DELEGATION_TYPEHASH, delegatee, nonce, expiry));
 
         bytes32 digest = keccak256(abi.encodePacked('\x19\x01', DOMAIN_SEPARATOR(), structHash));
@@ -258,7 +265,11 @@ abstract contract KaliDAOtoken {
         emit DelegateChanged(delegator, currentDelegate, delegatee);
     }
 
-    function _moveDelegates(address srcRep, address dstRep, uint256 amount) internal virtual {
+    function _moveDelegates(
+        address srcRep, 
+        address dstRep, 
+        uint256 amount
+    ) internal virtual {
         if (srcRep != dstRep && amount > 0) 
             if (srcRep != address(0)) {
                 uint256 srcRepNum = numCheckpoints[srcRep];
@@ -281,7 +292,12 @@ abstract contract KaliDAOtoken {
             }
     }
 
-    function _writeCheckpoint(address delegatee, uint256 nCheckpoints, uint256 oldVotes, uint256 newVotes) internal virtual {
+    function _writeCheckpoint(
+        address delegatee, 
+        uint256 nCheckpoints, 
+        uint256 oldVotes, 
+        uint256 newVotes
+    ) internal virtual {
         unchecked {
             // this is safe from underflow because decrement only occurs if `nCheckpoints` is positive
             if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromTimestamp == block.timestamp) {

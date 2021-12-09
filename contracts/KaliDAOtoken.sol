@@ -165,6 +165,7 @@ abstract contract KaliDAOtoken {
 
     modifier notPaused() {
         require(!paused, 'PAUSED');
+        
         _;
     }
     

@@ -10,6 +10,7 @@ Optimized DAC Protocol
 │  │ ├─IKaliDAOextension — "Interface for DAO to mint and burn shares as outputs of interactions with whitelisted external contracts, providing simple modularity"
 │  │ ├─ReentrancyGuard — "Security module that provides reentrancy checks on core DAO functions"
 │  │ ├─NFThelper — "Utility for DAO to receive `safeTransfer()` of NFTs under ERC-721 & ERC-1155 standards"
+│  │ ├─Multicall — "Utility for DAO to batch transactions to itself"
 │  │ ├─KaliDAOtoken — "Pausable Comp-style voting token with metaTX support"
 ```
 

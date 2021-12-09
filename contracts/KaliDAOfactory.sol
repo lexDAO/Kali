@@ -7,7 +7,7 @@ import './interfaces/IRicardianLLC.sol';
 
 /// @notice Factory to deploy KaliDAO.
 contract KaliDAOfactory {
-    event DAOdeployed(KaliDAO indexed kaliDAO, string indexed name, string docs);
+    event DAOdeployed(KaliDAO indexed kaliDAO, string name, string docs);
 
     address payable public immutable kaliMaster;
 

@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.0;
 
-/// @notice Modern and gas-optimized ERC-20 + EIP-2612 implementation with COMP-style governance and pausing,
+/// @notice Modern and gas-optimized ERC-20 + EIP-2612 implementation with COMP-style governance and pausing.
 /// @author Modified from RariCapital (https://github.com/Rari-Capital/solmate/blob/main/src/erc20/ERC20.sol)
 /// License-Identifier: AGPL-3.0-only
 abstract contract KaliDAOtoken {
@@ -18,7 +18,7 @@ abstract contract KaliDAOtoken {
 
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
 
-    event TogglePause(bool indexed paused);
+    event PauseToggled(bool indexed paused);
 
     /*///////////////////////////////////////////////////////////////
                             METADATA STORAGE
@@ -49,7 +49,7 @@ abstract contract KaliDAOtoken {
     bytes32 public constant DELEGATION_TYPEHASH = 
         keccak256('Delegation(address delegatee,uint256 nonce,uint256 expiry)');
 
-    mapping(address => address) private _delegates;
+    mapping(address => address) internal _delegates;
 
     mapping(address => mapping(uint256 => Checkpoint)) public checkpoints;
 
@@ -165,6 +165,7 @@ abstract contract KaliDAOtoken {
 
     modifier notPaused() {
         require(!paused, 'PAUSED');
+
         _;
     }
     
@@ -187,7 +188,14 @@ abstract contract KaliDAOtoken {
         _delegate(msg.sender, delegatee);
     }
 
-    function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s) public virtual {
+    function delegateBySig(
+        address delegatee, 
+        uint256 nonce, 
+        uint256 expiry, 
+        uint8 v, 
+        bytes32 r, 
+        bytes32 s
+    ) public virtual {
         bytes32 structHash = keccak256(abi.encode(DELEGATION_TYPEHASH, delegatee, nonce, expiry));
 
         bytes32 digest = keccak256(abi.encodePacked('\x19\x01', DOMAIN_SEPARATOR(), structHash));
@@ -207,7 +215,7 @@ abstract contract KaliDAOtoken {
         _delegate(signatory, delegatee);
     }
 
-    function getPriorVotes(address account, uint256 timestamp) public view virtual returns (uint256 votes) {
+    function getPriorVotes(address account, uint256 timestamp) public view virtual returns (uint96 votes) {
         require(block.timestamp > timestamp, 'NOT_YET_DETERMINED');
 
         uint256 nCheckpoints = numCheckpoints[account];
@@ -217,11 +225,13 @@ abstract contract KaliDAOtoken {
         // this is safe from underflow because decrement only occurs if `nCheckpoints` is positive
         unchecked {
             if (checkpoints[account][nCheckpoints - 1].fromTimestamp <= timestamp)
+                
                 return checkpoints[account][nCheckpoints - 1].votes;
 
             if (checkpoints[account][0].fromTimestamp > timestamp) return 0;
 
             uint256 lower;
+            
             // this is safe from underflow because decrement only occurs if `nCheckpoints` is positive
             uint256 upper = nCheckpoints - 1;
 
@@ -255,7 +265,11 @@ abstract contract KaliDAOtoken {
         emit DelegateChanged(delegator, currentDelegate, delegatee);
     }
 
-    function _moveDelegates(address srcRep, address dstRep, uint256 amount) internal virtual {
+    function _moveDelegates(
+        address srcRep, 
+        address dstRep, 
+        uint256 amount
+    ) internal virtual {
         if (srcRep != dstRep && amount > 0) 
             if (srcRep != address(0)) {
                 uint256 srcRepNum = numCheckpoints[srcRep];
@@ -278,13 +292,19 @@ abstract contract KaliDAOtoken {
             }
     }
 
-    function _writeCheckpoint(address delegatee, uint256 nCheckpoints, uint256 oldVotes, uint256 newVotes) internal virtual {
+    function _writeCheckpoint(
+        address delegatee, 
+        uint256 nCheckpoints, 
+        uint256 oldVotes, 
+        uint256 newVotes
+    ) internal virtual {
         unchecked {
             // this is safe from underflow because decrement only occurs if `nCheckpoints` is positive
             if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromTimestamp == block.timestamp) {
                 checkpoints[delegatee][nCheckpoints - 1].votes = safeCastTo96(newVotes);
             } else {
                 checkpoints[delegatee][nCheckpoints] = Checkpoint(safeCastTo32(block.timestamp), safeCastTo96(newVotes));
+                
                 // this is reasonably safe from overflow because incrementing `nCheckpoints` beyond
                 // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
                 numCheckpoints[delegatee] = nCheckpoints + 1;
@@ -381,7 +401,7 @@ abstract contract KaliDAOtoken {
     function _togglePause() internal virtual {
         paused = !paused;
 
-        emit TogglePause(paused);
+        emit PauseToggled(paused);
     }
     
     /*///////////////////////////////////////////////////////////////

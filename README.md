@@ -7,9 +7,10 @@
 Optimized DAC Protocol
 ├─ KaliDAOfactory — "Deploys new Kali DAO with event and return of address"
 │  ├─ KaliDAO — "DAO core module with Comp-style token voting and adjustment of membership, low-level calls on quorum/supermajority"
-│  │ ├─IKaliDAOextension — "Interface for DAO to mint and burn shares as outputs of interactions with whitelisted external contracts, providing simple modularity"
+│  │ ├─IKaliDAOextension — "Interface for DAO to mint and burn shares as outputs of interactions with whitelisted external contracts"
 │  │ ├─ReentrancyGuard — "Security module that provides reentrancy checks on core DAO functions"
 │  │ ├─NFThelper — "Utility for DAO to receive `safeTransfer()` of NFTs under ERC-721 & ERC-1155 standards"
+│  │ ├─Multicall — "Utility for DAO to batch transactions to itself"
 │  │ ├─KaliDAOtoken — "Pausable Comp-style voting token with metaTX support"
 ```
 

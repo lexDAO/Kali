@@ -230,7 +230,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         emit ProposalSponsored(msg.sender, proposal);
     } 
 
-    function vote(uint256 proposal, bool approve) public virtual {
+    function vote(uint256 proposal, bool approve) public nonReentrant virtual {
         _vote(msg.sender, proposal, approve);
     }
     

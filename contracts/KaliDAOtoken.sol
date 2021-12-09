@@ -215,7 +215,7 @@ abstract contract KaliDAOtoken {
         _delegate(signatory, delegatee);
     }
 
-    function getPriorVotes(address account, uint256 timestamp) public view virtual returns (uint256 votes) {
+    function getPriorVotes(address account, uint256 timestamp) public view virtual returns (uint96 votes) {
         require(block.timestamp > timestamp, 'NOT_YET_DETERMINED');
 
         uint256 nCheckpoints = numCheckpoints[account];

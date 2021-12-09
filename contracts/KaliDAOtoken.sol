@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.0;
 
-/// @notice Modern and gas-optimized ERC-20 + EIP-2612 implementation with COMP-style governance and pausing,
+/// @notice Modern and gas-optimized ERC-20 + EIP-2612 implementation with COMP-style governance and pausing.
 /// @author Modified from RariCapital (https://github.com/Rari-Capital/solmate/blob/main/src/erc20/ERC20.sol)
 /// License-Identifier: AGPL-3.0-only
 abstract contract KaliDAOtoken {
@@ -18,7 +18,7 @@ abstract contract KaliDAOtoken {
 
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
 
-    event TogglePause(bool indexed paused);
+    event PauseToggled(bool indexed paused);
 
     /*///////////////////////////////////////////////////////////////
                             METADATA STORAGE
@@ -49,7 +49,7 @@ abstract contract KaliDAOtoken {
     bytes32 public constant DELEGATION_TYPEHASH = 
         keccak256('Delegation(address delegatee,uint256 nonce,uint256 expiry)');
 
-    mapping(address => address) private _delegates;
+    mapping(address => address) internal _delegates;
 
     mapping(address => mapping(uint256 => Checkpoint)) public checkpoints;
 
@@ -217,6 +217,7 @@ abstract contract KaliDAOtoken {
         // this is safe from underflow because decrement only occurs if `nCheckpoints` is positive
         unchecked {
             if (checkpoints[account][nCheckpoints - 1].fromTimestamp <= timestamp)
+                
                 return checkpoints[account][nCheckpoints - 1].votes;
 
             if (checkpoints[account][0].fromTimestamp > timestamp) return 0;
@@ -381,7 +382,7 @@ abstract contract KaliDAOtoken {
     function _togglePause() internal virtual {
         paused = !paused;
 
-        emit TogglePause(paused);
+        emit PauseToggled(paused);
     }
     
     /*///////////////////////////////////////////////////////////////

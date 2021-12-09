@@ -301,6 +301,11 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     }
 
     function processProposal(uint256 proposal) public nonReentrant virtual returns (bytes[] memory results) {
+        // we want underflow in this case to allow for first proposal
+        unchecked {
+            require(proposals[proposal].creationTime - 1 > 0, 'PREV_NOT_PROCESSED');
+        }
+        
         Proposal storage prop = proposals[proposal];
 
         require(prop.creationTime > 0, 'PROCESSED');

@@ -26,12 +26,6 @@ export default function Dao() {
   const router = useRouter();
   const address = router.query.dao;
 
-  const proposalList = () => {
-    proposals.map((p, index) => (
-      <>p["description"]<br /></>
-    ));
-  }
-
   // only fetch dao info once address from query has resolved
   useEffect(() => {
     fetchData();

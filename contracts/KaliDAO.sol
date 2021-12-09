@@ -92,8 +92,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint256[] memory shares_,
         uint32 votingPeriod_,
         uint8[] memory govSettings_
-    ) public payable virtual {
-        require(govSettings_[1] == 0, 'INITIALIZED');
+    ) public payable nonReentrant virtual {
+        require(votingPeriod_ == 0, 'INITIALIZED');
 
         require(votingPeriod_ > 0 && votingPeriod_ <= 365 days, 'VOTING_PERIOD_BOUNDS');
         
@@ -157,7 +157,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         address[] calldata accounts,
         uint256[] calldata amounts,
         bytes[] calldata payloads
-    ) public virtual returns (uint256 proposal) {
+    ) public nonReentrant virtual returns (uint256 proposal) {
         require(accounts.length == amounts.length && amounts.length == payloads.length, 'NO_ARRAY_PARITY');
         
         require(accounts.length <= 10, 'ARRAY_MAX');
@@ -198,7 +198,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         emit NewProposal(msg.sender, proposal, description);
     }
 
-    function cancelProposal(uint256 proposal) public virtual {
+    function cancelProposal(uint256 proposal) public nonReentrant virtual {
         Proposal storage prop = proposals[proposal];
 
         require(msg.sender == prop.proposer, 'NOT_PROPOSER');
@@ -214,7 +214,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         emit ProposalCancelled(msg.sender, proposal);
     }
 
-    function sponsorProposal(uint256 proposal) public virtual {
+    function sponsorProposal(uint256 proposal) public nonReentrant virtual {
         Proposal storage prop = proposals[proposal];
 
         require(balanceOf[msg.sender] > 0, 'NOT_MEMBER');
@@ -241,7 +241,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint8 v, 
         bytes32 r, 
         bytes32 s
-    ) public virtual {
+    ) public nonReentrant virtual {
         // validate signature elements
         bytes32 digest =
             keccak256(
@@ -271,7 +271,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint256 proposal, 
         bool approve
     ) internal virtual {
-        require(balanceOf[msg.sender] > 0, 'NOT_MEMBER');
+        require(balanceOf[signer] > 0, 'NOT_MEMBER');
 
         require(!voted[proposal][signer], 'ALREADY_VOTED');
         
@@ -283,7 +283,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             require(block.timestamp <= prop.creationTime + votingPeriod, 'VOTING_ENDED');
         }
 
-        uint96 weight = uint96(getPriorVotes(signer, prop.creationTime));
+        uint96 weight = getPriorVotes(signer, prop.creationTime);
         
         // this is safe from overflow because `yesVotes` and `noVotes` are capped by `totalSupply`
         // which is checked for overflow in `KaliDAOtoken` contract
@@ -339,7 +339,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                     for (uint256 i; i < prop.accounts.length; i++) {
                         results = new bytes[](prop.accounts.length);
                         
-                        (, bytes memory result) = prop.accounts[i].call{value: prop.amounts[i]}(prop.payloads[i]);
+                        (, bytes memory result) = prop.accounts[i].call{value: prop.amounts[i]}
+                            (prop.payloads[i]);
                         
                         results[i] = result;
                     }

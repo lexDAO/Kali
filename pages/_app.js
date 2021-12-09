@@ -1,20 +1,19 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import AppContext from '../context/AppContext';
-
-//import Web3 from 'web3';
+import infura from '../utils/infura';
 import Web3 from 'web3';
 import { useState, useEffect } from 'react';
 import theme from '../styles/theme';
-import web3m from '../utils/web3modal';
-
-//import infura from '../utils/infura';
+const abi = require("../abi/KaliDAO.json");
 
 function MyApp({ Component, pageProps }) {
 
-  const [web3, setWeb3] = useState(web3m);
+  const [web3, setWeb3] = useState(infura);
   const [account, setAccount] = useState(null);
   const [chainId, setChainId] = useState(null);
+  const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [reload, setReload] = useState(0);
 
   useEffect(() => {
 
@@ -31,29 +30,21 @@ function MyApp({ Component, pageProps }) {
 
     ethereum.on("disconnect", () => {
       console.log("disconnected");
-
-      setWeb3(infura);
-      setAccount(null);
-      setChainId(null);
-
     });
   }, []);
 
   const connect = async () => {
-
+    console.log("connect");
     if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
-      // We are in the browser and metamask is running.
-      window.ethereum.request({ method: "eth_requestAccounts" });
-      let web3module = new Web3(window.ethereum);
-      let accounts = await web3module.eth.getAccounts();
-      let chain = await web3module.eth.getChainId();
-      setWeb3(web3module);
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      let metamask = new Web3(window.ethereum);
+      setWeb3(metamask);
       setAccount(accounts[0]);
-      setChainId(chain);
-
+      console.log(accounts[0])
     } else {
-      // We are on the server *OR* the user is not running metamask
-      alert("please connect Metamask")
+      alert("please connect to wallet")
     }
   }
 
@@ -78,7 +69,7 @@ function MyApp({ Component, pageProps }) {
     } else {
       console.log("Make sure you have MetaMask!");
     }
-  };
+  }
 
   const changeChain = async () => {
     window.location.reload();
@@ -92,13 +83,18 @@ function MyApp({ Component, pageProps }) {
             web3: web3,
             account: account,
             chainId: chainId,
-            loading: loading
+            loading: loading,
+            address: address,
+            abi: abi,
+            reload: reload
           },
           setWeb3: setWeb3,
           setAccount: setAccount,
           setChainId: setChainId,
           setLoading: setLoading,
-          connect: connect
+          setAddress: setAddress,
+          connect: connect,
+          setReload: setReload
         }}
       >
         <Component {...pageProps} />

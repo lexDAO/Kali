@@ -1,5 +1,5 @@
 import React, { Component, useContext } from "react";
-import AppContext from '../context/AppContext';
+import AppContext from '../../context/AppContext';
 import Router, { useRouter } from "next/router";
 import {
   Flex,
@@ -14,12 +14,12 @@ import {
   NumberDecrementStepper,
   Select,
 } from "@chakra-ui/react";
-import FlexGradient from "./FlexGradient";
+import FlexGradient from "../elements/FlexGradient";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import FormikControl from "./form/FormikControl.js";
-const abi = require('../abi/KaliDAOfactory.json');
-import { factory_rinkeby } from "../utils/addresses"
+const abi = require('../../abi/KaliDAOfactory.json');
+import { factory_rinkeby } from "../../utils/addresses"
 
 export default function Factory(props) {
   const value = useContext(AppContext);
@@ -74,8 +74,6 @@ export default function Factory(props) {
         docs =
           "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/operating/DelawareOperatingAgreement.md";
       }
-
-      console.log("votingPeriod:", votingPeriod);
 
       let votersArray = voters.split(",");
       let _voters = "";

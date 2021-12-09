@@ -26,13 +26,6 @@ export default function Timer(props) {
     };
   }, []);
 
-  if(props['open']==false) {
-    days = 0;
-    hours = 0;
-    minutes = 0;
-    seconds = 0;
-  }
-
   const TimerBox = (props) => {
     return(
       <Box
@@ -42,7 +35,7 @@ export default function Timer(props) {
         padding="10px"
         rounded="md"
       >
-        {props.children}
+        {props.children > 0 ? props.children : 0}
       </Box>
     )
   }

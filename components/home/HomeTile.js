@@ -3,7 +3,8 @@ import {
   Text,
   Stack,
 } from "@chakra-ui/react";
-import FlexGradient from './FlexGradient';
+import FlexGradient from '../elements/FlexGradient';
+
 export default function HomeTile() {
   return(
     <FlexGradient>

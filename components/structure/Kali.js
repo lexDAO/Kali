@@ -2,8 +2,13 @@ import {
   Box,
   Link
 } from "@chakra-ui/react";
+import { routeHome } from '../../utils/router';
 
 export default function Kali() {
+  const home = () => {
+    routeHome();
+    console.log("click")
+  }
   return(
     <Box
       display={{ sm: "none", md: "block", lg: "block", xl: "block" }}
@@ -16,7 +21,7 @@ export default function Kali() {
       textShadow="2.4px 0.4px kali.900"
       ml={2}
     >
-      <Link href="/">KaliDAO</Link>
+      <Link onClick={home}>KaliDAO</Link>
     </Box>
   )
 }

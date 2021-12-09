@@ -12,6 +12,7 @@ export default function ActionMenu(props) {
       <HStack p={5}>
         <Button onClick={() => props.setVisible(1)}>Proposals</Button>
         <Button onClick={() => props.setVisible(2)}>New Proposal</Button>
+        <Button onClick={() => props.setVisible(3)}>DAO Info</Button>
       </HStack>
     </Center>
   )

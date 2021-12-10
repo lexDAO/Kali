@@ -12,11 +12,13 @@ import {
   BsHandThumbsDownFill,
 } from "react-icons/bs";
 import { routeAfterSubmission } from '../../utils/router';
+import { useDisclosure } from '@chakra-ui/react';
 
 export default function VotingModule(props) {
   const value = useContext(AppContext);
   const { web3, loading, account, address, abi } = value.state;
   const p = props['p'];
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const vote = async () => {
     event.preventDefault();

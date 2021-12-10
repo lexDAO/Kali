@@ -24,10 +24,8 @@ import {
 } from "react-icons/bs";
 import Timer from './Timer';
 import { proposalDescriptions } from '../../utils/appParams';
-import { useDisclosure } from '@chakra-ui/react';
 import ProposalIcon from './ProposalIcon';
 import VotingModule from './VotingModule';
-import ProcessModule from './ProcessModule';
 import ProposalDetails from './ProposalDetails';
 
 const ProposalLabel = (props) => {
@@ -58,7 +56,7 @@ export default function ProposalModal(props) {
   const value = useContext(AppContext);
   const { web3, loading } = value.state;
   const p = props['p'];
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const i = props['i'];
 
   return(
     <>
@@ -80,16 +78,14 @@ export default function ProposalModal(props) {
         <Text>{p['description']}</Text>
         <ProposalDivider />
 
-        {p['open']==true ?
-        <>
-          <ProposalDetails p={p} />
-        </>
-        : null}
+        <ProposalDetails p={p} i={i} />
+
         <Center>
           {p['open']==true ?
           <VotingModule p={p} />
         :
-          <ProcessModule p={p} />
+
+          <i>voting has closed</i>
         }
         </Center>
         </ModalBody>

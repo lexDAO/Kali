@@ -3,7 +3,8 @@ import {
   Text,
   Box,
   HStack,
-  Flex
+  Flex,
+  VStack
 } from "@chakra-ui/react";
 
 export default function Timer(props) {
@@ -46,7 +47,8 @@ export default function Timer(props) {
   }
 
   return(
-    <>
+    <VStack>
+    <Text>time remaining:</Text>
     <HStack spacing="1">
       <TimerBox>{days}</TimerBox>
       <TimerBox>{hours}</TimerBox>
@@ -59,6 +61,6 @@ export default function Timer(props) {
       <TimerBoxLabel>m</TimerBoxLabel>
       <TimerBoxLabel>s</TimerBoxLabel>
     </HStack>
-    </>
+    </VStack>
   )
 }

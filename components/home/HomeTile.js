@@ -15,10 +15,10 @@ export default function HomeTile() {
           fontWeight="bold"
           letterSpacing="wide"
         >
-          KaliDAO
+          KaliCo
         </Text>
         <Text fontSize="xl">
-          Form a KaliCo, raise funds, run legal ops, and completely automate your business with DAO magick.
+          Launch and automate your business with DAO magick.
         </Text>
       </Stack>
     </FlexGradient>

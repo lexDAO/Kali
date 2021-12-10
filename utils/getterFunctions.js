@@ -14,7 +14,7 @@ export async function fetchAll(instance) {
   const supermajority = parseInt(
     await instance.methods.supermajority().call()
   );
-  const docs = await instance.methods.docs().call();
+  //const docs = await instance.methods.docs().call();
   const address = instance.options.address;
 
   const dao_ = {
@@ -28,7 +28,7 @@ export async function fetchAll(instance) {
     votingPeriod,
     quorum,
     supermajority,
-    docs,
+    //docs,
   };
 
   // get historical token holders

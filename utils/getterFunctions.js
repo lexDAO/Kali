@@ -21,7 +21,7 @@ export async function fetchAll(instance, factory) {
       fromBlock: 0,
       toBlock: "latest",
     });
-  const docs = events[2]["returnValues"]["docs"];
+  const docs = events[0]["returnValues"]["docs"];
   const address = instance.options.address;
 
   const dao_ = {
@@ -69,10 +69,15 @@ export async function fetchAll(instance, factory) {
 
   const proposals_ = [];
   const cutoff = Date.now() / 1000 - parseInt(votingPeriod);
-  for (var i = 0; i < proposalCount; i++) {
+  var foundZero = false;
+  for (var i = proposalCount - 1; i >=0; i--) {
+    if(foundZero == false) {
       var proposal = await instance.methods.proposals(i).call();
-      var proposalArrays = await instance.methods.getProposalArrays(i).call();
-      if(parseInt(proposal["creationTime"]) != 0) {
+      let creationTime = parseInt(proposal["creationTime"]);
+      if(creationTime == 0) {
+        foundZero = true;
+      } else {
+        var proposalArrays = await instance.methods.getProposalArrays(i).call();
         // add solidity contract id to array
         proposal["id"] = i;
         // format date for display
@@ -106,12 +111,13 @@ export async function fetchAll(instance, factory) {
         proposal["amount"] = amount;
         proposal["account"] = proposalArrays["accounts"][0];
         let payload = proposalArrays["payloads"][0];
-        proposal["payloadArray"] = payload.match(/.{0,40}/g);
+        //proposal["payloadArray"] = payload.match(/.{0,40}/g);
         proposal["payload"] = payload;
         proposals_.push(proposal);
       } // end live proposals
     } // end for loop
-
+  }
+  proposals_.reverse();
   return { dao_, holdersArray_, proposalVoteTypes_, proposals_ };
 }
 

@@ -300,8 +300,10 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         unchecked {
             require(proposals[proposal - 1].creationTime == 0, 'PREV_NOT_PROCESSED');
         }
-        
+
         Proposal storage prop = proposals[proposal];
+
+        delete proposals[proposal];
 
         require(prop.creationTime > 0, 'PROCESSED');
         
@@ -365,8 +367,6 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                     extensions[prop.accounts[0]] = !extensions[prop.accounts[0]];
             }
         }
-
-        delete proposals[proposal];
 
         emit ProposalProcessed(proposal);
     }

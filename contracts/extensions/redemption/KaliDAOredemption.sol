@@ -48,7 +48,7 @@ contract KaliDAOredemption is ReentrancyGuard {
         }
 
         // placeholder value to conform to interface
-        amountOut = 0;
+        amountOut = amount;
     }
 
     function addTokens(IERC20Minimal[] memory tokens) public nonReentrant virtual {

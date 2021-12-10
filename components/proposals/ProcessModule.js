@@ -10,6 +10,9 @@ export default function ProcessModule(props) {
   const value = useContext(AppContext);
   const { web3, loading, account, abi, address } = value.state;
   const p = props['p'];
+  const i = props['i'];
+  var disabled = true;
+  if(i==0) {disabled = false;}
 
   const process = async (event) => {
     event.preventDefault();
@@ -52,7 +55,11 @@ export default function ProcessModule(props) {
         name="dao"
       />
       <Input type="hidden" name="id" value={p["id"]} />
+      {i == 0 ?
       <Button type="submit">Process</Button>
+      :
+      <Button type="submit" disabled>In Queue</Button>
+      }
     </form>
   )
 }

@@ -18,8 +18,7 @@ export default function HomeTile() {
           KaliDAO
         </Text>
         <Text fontSize="xl">
-          KaliDAO is an optimized DAC framework like you&apos;ve never
-          seen before. Move over, Moloch: the queen has arrived.
+          Form a KaliCo, raise funds, run legal ops, and automate your business with DAO magick.
         </Text>
       </Stack>
     </FlexGradient>

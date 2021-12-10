@@ -89,9 +89,9 @@ export default function NewProposal() {
             opacity="0.9"
           >
             <option value="999">Select a proposal type</option>
-            <option value="0">Mint</option>
-            <option value="1">Burn</option>
-            <option value="2">Call</option>
+            <option value="0">Send Shares</option>
+            <option value="1">Remove Member</option>
+            <option value="2">Call Contract</option>
           </Select>
 
           {proposalType == 0 ? <FieldsAddMember /> : ""}

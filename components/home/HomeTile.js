@@ -18,7 +18,7 @@ export default function HomeTile() {
           KaliDAO
         </Text>
         <Text fontSize="xl">
-          Form a KaliCo, raise funds, run legal ops, and automate your business with DAO magick.
+          Form a KaliCo, raise funds, run legal ops, and completely automate your business with DAO magick.
         </Text>
       </Stack>
     </FlexGradient>

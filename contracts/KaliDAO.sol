@@ -92,7 +92,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         address[] memory voters_,
         uint256[] memory shares_,
         uint32 votingPeriod_,
-        uint8[] memory govSettings_
+        uint8[11] memory govSettings_
     ) public payable nonReentrant virtual {
         require(votingPeriod == 0, 'INITIALIZED');
 

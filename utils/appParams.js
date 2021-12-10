@@ -7,6 +7,7 @@ export const proposalTypes = [
   "PERIOD",
   "QUORUM",
   "SUPERMAJORITY",
+  "TYPE",
   "PAUSE",
   "EXTENSION"
 ];

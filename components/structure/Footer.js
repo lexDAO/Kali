@@ -20,7 +20,7 @@ export default function Footer() {
       align={{ base: "center", md: "center" }}
     >
       <Text fontSize="xs">
-        Brought to you by{" "}
+        Summoned with{" "}
         <a href="https://twitter.com/lex_DAO" target="_blank" rel="noreferrer">
           <i>LexDAO</i>
         </a>

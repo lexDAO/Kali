@@ -17,20 +17,22 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
 
-    ethereum.on("accountsChanged", function (accounts) {
-      changeAccount();
-    });
+    if(typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
+      ethereum.on("accountsChanged", function (accounts) {
+        changeAccount();
+      });
 
-    ethereum.on("chainChanged", () => {
-      changeChain();
-    });
+      ethereum.on("chainChanged", () => {
+        changeChain();
+      });
 
-    ethereum.on("connect", () => {
-    });
+      ethereum.on("connect", () => {
+      });
 
-    ethereum.on("disconnect", () => {
-      console.log("disconnected");
-    });
+      ethereum.on("disconnect", () => {
+        console.log("disconnected");
+      });
+    }
   }, []);
 
   const connect = async () => {

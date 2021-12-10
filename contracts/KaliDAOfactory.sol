@@ -29,7 +29,7 @@ contract KaliDAOfactory {
         address[] calldata voters_,
         uint256[] calldata shares_,
         uint32 votingPeriod_,
-        uint8[] memory govSettings_
+        uint8[11] memory govSettings_
     ) external payable returns (KaliDAO kaliDAO) {
         require(extensions_.length == extensionsData_.length, 'NO_ARRAY_PARITY');
 

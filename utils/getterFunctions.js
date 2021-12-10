@@ -1,6 +1,9 @@
 import { proposalTypes } from './appParams';
+import { factory_rinkeby } from "./addresses";
+import { factoryInstance } from "../eth/factory";
 
-export async function fetchAll(instance) {
+
+export async function fetchAll(instance, factory) {
   const proposalCount = parseInt(
     await instance.methods.proposalCount().call()
   );
@@ -14,7 +17,11 @@ export async function fetchAll(instance) {
   const supermajority = parseInt(
     await instance.methods.supermajority().call()
   );
-  //const docs = await instance.methods.docs().call();
+  const events = await factory.getPastEvents("DAOdeployed", {
+      fromBlock: 0,
+      toBlock: "latest",
+    });
+  const docs = events[2]["returnValues"]["docs"];
   const address = instance.options.address;
 
   const dao_ = {
@@ -28,7 +35,7 @@ export async function fetchAll(instance) {
     votingPeriod,
     quorum,
     supermajority,
-    //docs,
+    docs,
   };
 
   // get historical token holders

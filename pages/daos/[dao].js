@@ -13,6 +13,8 @@ import ActionMenu from "../../components/structure/ActionMenu"
 
 const proposalTypes = require("../../utils/appParams");
 import { fetchAll } from '../../utils/getterFunctions';
+import { factory_rinkeby } from '../../utils/addresses';
+import { factoryInstance } from '../../eth/factory';
 
 export default function Dao() {
   const value = useContext(AppContext);
@@ -43,7 +45,8 @@ export default function Dao() {
       value.setLoading(true);
       value.setAddress(address);
       const instance = new web3.eth.Contract(abi, address);
-      const {dao_, holdersArray_, proposalVoteTypes_, proposals_} = await fetchAll(instance);
+      const factory = factoryInstance(factory_rinkeby, web3);
+      const {dao_, holdersArray_, proposalVoteTypes_, proposals_} = await fetchAll(instance, factory);
       setDao(dao_);
       setHoldersArray(holdersArray_);
       setProposalVoteTypes(proposalVoteTypes_);

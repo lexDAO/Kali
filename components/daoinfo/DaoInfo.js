@@ -20,7 +20,7 @@ export default function DaoInfo(props) {
   const { web3, loading } = value.state;
   const router = useRouter();
   const { dao, address, holdersArray } = props;
-
+  console.log(dao)
   return (
     <FlexGradient>
       <Text>Name: {dao["name"]}</Text>
@@ -49,7 +49,7 @@ export default function DaoInfo(props) {
       <Text>Members:</Text>
       <UnorderedList>
         {holdersArray.map((h, index) => (
-          <ListItem key={holdersArray.index}>
+          <ListItem key={index}>
             {h[0]} ({web3.utils.fromWei(h[1])} shares)
           </ListItem>
         ))}

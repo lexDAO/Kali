@@ -18,20 +18,17 @@ import FlexGradient from "../elements/FlexGradient";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import FormikControl from "./form/FormikControl.js";
-const abi = require('../../abi/KaliDAOfactory.json');
-import { factory_rinkeby } from "../../utils/addresses"
+//const abi = require('../../abi/KaliDAOfactory.json');
+import { factory_rinkeby } from "../../utils/addresses";
+import { factoryInstance } from "../../eth/factory";
 
 export default function Factory(props) {
   const value = useContext(AppContext);
   const { web3, account, chainId, loading } = value.state;
-  const factory = new web3.eth.Contract(
-    abi,
-    factory_rinkeby
-  );
 
   const handleFactorySubmit = async (values) => {
       value.setLoading(true);
-
+      const factory = factoryInstance(factory_rinkeby, web3);
       const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0";
       const extensions = new Array(0);
       const extensionsData = new Array(0);
@@ -113,6 +110,8 @@ export default function Factory(props) {
           .send({ from: account });
 
         let dao = result["events"]["DAOdeployed"]["returnValues"]["kaliDAO"];
+        console.log(dao)
+        console.log(result)
 
         Router.push({
           pathname: "/daos/[dao]",

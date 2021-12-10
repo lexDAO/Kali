@@ -10,7 +10,7 @@ export default function HomeTile() {
     <FlexGradient>
       <Stack spacing={5} p={5} alignItems="center">
         <Text fontSize="xl">
-          Launch and automate your business with DAO magick.
+          Launch and automate your business with real DAO magick
         </Text>
       </Stack>
     </FlexGradient>

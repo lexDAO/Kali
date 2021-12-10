@@ -206,10 +206,6 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
         require(prop.creationTime == 0, 'SPONSORED');
 
-        bytes memory descr = bytes(prop.description);
-
-        require(descr.length > 0, 'NOT_PROPOSAL');
-
         delete proposals[proposal];
 
         emit ProposalCancelled(msg.sender, proposal);
@@ -220,11 +216,9 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
         require(balanceOf[msg.sender] > 0, 'NOT_MEMBER');
 
+        require(prop.proposer != address(0), 'NOT_PROPOSAL');
+
         require(prop.creationTime == 0, 'SPONSORED');
-
-        bytes memory descr = bytes(prop.description);
-
-        require(descr.length > 0, 'NOT_PROPOSAL');
 
         prop.creationTime = safeCastTo32(block.timestamp);
 

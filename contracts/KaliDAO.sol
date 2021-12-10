@@ -94,7 +94,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint32 votingPeriod_,
         uint8[] memory govSettings_
     ) public payable nonReentrant virtual {
-        require(votingPeriod_ == 0, 'INITIALIZED');
+        require(votingPeriod == 0, 'INITIALIZED');
 
         require(votingPeriod_ > 0 && votingPeriod_ <= 365 days, 'VOTING_PERIOD_BOUNDS');
         
@@ -102,7 +102,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         
         require(govSettings_[1] > 51 && govSettings_[1] <= 100, 'SUPERMAJORITY_BOUNDS');
 
-        KaliDAOtoken.init(name_, symbol_, paused_, voters_, shares_);
+        KaliDAOtoken._init(name_, symbol_, paused_, voters_, shares_);
 
         // this is reasonably safe from overflow because incrementing `i` loop beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
@@ -304,7 +304,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     function processProposal(uint256 proposal) public nonReentrant virtual returns (bytes[] memory results) {
         // we want underflow in this case to allow for first proposal
         unchecked {
-            require(proposals[proposal].creationTime - 1 > 0, 'PREV_NOT_PROCESSED');
+            require(proposals[proposal - 1].creationTime == 0, 'PREV_NOT_PROCESSED');
         }
         
         Proposal storage prop = proposals[proposal];

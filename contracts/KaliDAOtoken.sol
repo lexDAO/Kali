@@ -77,15 +77,13 @@ abstract contract KaliDAOtoken {
                             CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    function init(
+    function _init(
         string memory name_,
         string memory symbol_,
         bool paused_,
         address[] memory voters_,
         uint256[] memory shares_
-    ) public virtual {
-        require(INITIAL_CHAIN_ID == 0, 'INITIALIZED');
-
+    ) internal virtual {
         require(voters_.length == shares_.length, 'NO_ARRAY_PARITY');
 
         name = name_;

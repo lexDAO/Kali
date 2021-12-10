@@ -215,39 +215,6 @@
 			},
 			{
 				"internalType": "address[]",
-				"name": "voters_",
-				"type": "address[]"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "shares_",
-				"type": "uint256[]"
-			}
-		],
-		"name": "init",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "name_",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "symbol_",
-				"type": "string"
-			},
-			{
-				"internalType": "bool",
-				"name": "paused_",
-				"type": "bool"
-			},
-			{
-				"internalType": "address[]",
 				"name": "extensions_",
 				"type": "address[]"
 			},

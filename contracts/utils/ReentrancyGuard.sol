@@ -3,18 +3,23 @@
 pragma solidity >=0.8.0;
 
 /// @notice Gas-optimized reentrancy protection.
-/// @author Modified from RariCapital (https://github.com/Rari-Capital/solmate/blob/main/src/utils/ReentrancyGuard.sol)
-/// License-Identifier: AGPL-3.0-only
+/// @author Modified from OpenZeppelin 
+/// (https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol)
+/// License-Identifier: MIT
 abstract contract ReentrancyGuard {
-    uint256 internal reentrancyStatus = 1;
+    uint256 private constant NOT_ENTERED = 1;
+
+    uint256 private constant ENTERED = 2;
+
+    uint256 private status = NOT_ENTERED;
 
     modifier nonReentrant() {
-        require(reentrancyStatus == 1, 'REENTRANCY');
+        require(status != ENTERED, 'REENTRANCY');
 
-        reentrancyStatus = 2;
+        status = ENTERED;
 
         _;
 
-        reentrancyStatus = 1;
+        status = NOT_ENTERED;
     }
 }

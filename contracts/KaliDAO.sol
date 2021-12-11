@@ -18,7 +18,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
     event ProposalCancelled(address indexed proposer, uint256 indexed proposal);
 
-    event ProposalSponsored(address indexed sponsor, uint256 indexed proposal);
+    event ProposalSponsored(address indexed sponsor, uint256 indexed proposal, uint256 indexed sponsoredProposal);
     
     event VoteCast(address indexed voter, uint256 indexed proposal, bool indexed approve);
 
@@ -211,8 +211,10 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         emit ProposalCancelled(msg.sender, proposal);
     }
 
-    function sponsorProposal(uint256 proposal) public nonReentrant virtual {
-        Proposal storage prop = proposals[proposal];
+    function sponsorProposal(uint256 proposal) public nonReentrant virtual returns (uint256 sponsoredProposal) {
+        Proposal memory prop = proposals[proposal];
+
+        delete proposals[proposal];
 
         require(balanceOf[msg.sender] > 0, 'NOT_MEMBER');
 
@@ -220,9 +222,27 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
         require(prop.creationTime == 0, 'SPONSORED');
 
-        prop.creationTime = safeCastTo32(block.timestamp);
+        sponsoredProposal = proposalCount;
 
-        emit ProposalSponsored(msg.sender, proposal);
+        proposals[sponsoredProposal] = Proposal({
+            proposalType: prop.proposalType,
+            description: prop.description,
+            accounts: prop.accounts,
+            amounts: prop.amounts,
+            payloads: prop.payloads,
+            yesVotes: 0,
+            noVotes: 0,
+            creationTime: safeCastTo32(block.timestamp),
+            proposer: prop.proposer
+        }); 
+
+        // this is reasonably safe from overflow because incrementing `proposalCount` beyond
+        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        unchecked {
+            proposalCount++;
+        }
+
+        emit ProposalSponsored(msg.sender, proposal, sponsoredProposal);
     } 
 
     function vote(uint256 proposal, bool approve) public nonReentrant virtual {
@@ -301,7 +321,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             require(proposals[proposal - 1].creationTime == 0, 'PREV_NOT_PROCESSED');
         }
 
-        Proposal storage prop = proposals[proposal];
+        Proposal memory prop = proposals[proposal];
 
         delete proposals[proposal];
 

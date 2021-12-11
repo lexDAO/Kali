@@ -15,14 +15,14 @@ export default function Nav() {
   const value = useContext(AppContext);
   const { account, chainId } = value.state;
   return(
-    <Flex padding={5} width="100%">
-      <Kali />
-      <Spacer />
-      <HStack>
+
+      <HStack p={5}>
+        <Kali />
+        <Spacer />
         <Account />
         <DarkModeSwitch />
         <Hamburger />
       </HStack>
-    </Flex>
+
   )
 }

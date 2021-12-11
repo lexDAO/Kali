@@ -1,3 +1,4 @@
+import {BrowserView, MobileView} from 'react-device-detect';
 import {
   Box,
   Link
@@ -19,8 +20,9 @@ export default function Kali() {
       bgClip="text"
       textShadow="2.4px 0.4px kali.900"
       ml={2}
+      minW={10}
     >
-      <Link onClick={home}>KaliDAO</Link>
+      <BrowserView><Link onClick={home}>KaliDAO</Link></BrowserView>
     </Box>
   )
 }

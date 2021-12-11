@@ -88,9 +88,9 @@
 				"type": "uint32"
 			},
 			{
-				"internalType": "uint8[]",
+				"internalType": "uint8[12]",
 				"name": "govSettings_",
-				"type": "uint8[]"
+				"type": "uint8[12]"
 			}
 		],
 		"name": "deployKaliDAO",

@@ -1,5 +1,5 @@
 import React, { Component, useState, useContext, useEffect } from "react";
-import {BrowserView, MobileView} from 'react-device-detect';
+import {BrowserView, MobileView, isBrowser} from 'react-device-detect';
 import AppContext from '../../context/AppContext';
 import Link from "next/link";
 import {
@@ -10,6 +10,7 @@ import {
 import DarkModeSwitch from "./DarkModeSwitch";
 import Hamburger from "./Hamburger";
 import Kali from "./Kali";
+import KaliMobile from "./KaliMobile";
 import Account from "./Account";
 
 export default function Nav() {
@@ -18,7 +19,8 @@ export default function Nav() {
   return(
 
       <HStack p={5}>
-        <BrowserView><Kali /></BrowserView>
+        {isBrowser==true ?
+        <Kali /> : null}
         <Spacer />
         <Account />
         <DarkModeSwitch />

@@ -4,7 +4,6 @@ import {
   Input,
   Button
 } from "@chakra-ui/react";
-import { routeAfterSubmission } from '../../utils/router';
 
 export default function ProcessModule(props) {
   const value = useContext(AppContext);

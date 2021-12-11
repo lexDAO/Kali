@@ -24,10 +24,10 @@ export default function Dao() {
   const [holdersArray, setHoldersArray] = useState([]);
   const [proposalVoteTypes, setProposalVoteTypes] = useState([]);
   const [proposals, setProposals] = useState(null);
+  const [balances, setBalances] = useState(null);
   // * get DAO address from route * //
   const router = useRouter();
   const address = router.query.dao;
-
   // only fetch dao info once address from query has resolved
   useEffect(() => {
     fetchData();
@@ -35,7 +35,6 @@ export default function Dao() {
 
   useEffect(() => {
     fetchData();
-    setVisible(1);
   }, [reload]);
 
   async function fetchData() {
@@ -46,11 +45,13 @@ export default function Dao() {
       value.setAddress(address);
       const instance = new web3.eth.Contract(abi, address);
       const factory = factoryInstance(factory_rinkeby, web3);
-      const {dao_, holdersArray_, proposalVoteTypes_, proposals_} = await fetchAll(instance, factory);
+      const {dao_, holdersArray_, proposalVoteTypes_, proposals_, balances_} = await fetchAll(instance, factory, address, web3);
       setDao(dao_);
       setHoldersArray(holdersArray_);
       setProposalVoteTypes(proposalVoteTypes_);
       setProposals(proposals_);
+      setBalances(balances_);
+      console.log(balances_)
       value.setLoading(false);
     }
   }
@@ -61,7 +62,7 @@ export default function Dao() {
     <>
     <ActionMenu setVisible={setVisible} />
       {visible==1 ? <Proposals proposals={proposals} address={address} />
-        : visible==2 ? <NewProposal />
+        : visible==2 ? <NewProposal balances={balances} setVisible={setVisible} />
         : visible==3 ? <DaoInfo dao={dao} address={address} holdersArray={holdersArray} />
         : null }
     </>

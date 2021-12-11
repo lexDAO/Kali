@@ -51,3 +51,10 @@ export const proposalLabel2 = [
   null,
   null
 ];
+
+export const proposalTypeMappings = [
+  0,
+  1,
+  2,
+  2
+]; //how dropdown options map up to solidity proposal types - it is NOT 1-to-1

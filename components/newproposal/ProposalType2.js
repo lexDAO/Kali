@@ -14,20 +14,17 @@ import {
   NumberDecrementStepper,
 } from "@chakra-ui/react";
 
-export default function FieldsKickMember() {
+export default function ProposalType2() {
 
   return (
     <>
-      <Text>
-        <b>Details</b>
-      </Text>
+      <Text><b>Details</b></Text>
       <Textarea name="description" size="lg" placeholder=". . ." />
-      <Text>
-        <b>Address to Kick</b>
-      </Text>
-      <Input name="account" size="lg" placeholder="0x or .eth"></Input>
-      <Input name="amount" type="hidden" value="0" />
-      <Input name="payload" type="hidden" value="0x"></Input>
+      <Text><b>Target</b></Text>
+      <Input name="account_" size="lg" placeholder="0x"></Input>
+      <Input name="amount" type="hidden" value={0} />
+      <Text><b>Payload</b></Text>
+      <Input name="payload" size="lg" placeholder="0x"></Input>
     </>
   );
 }

@@ -77,6 +77,10 @@ function MyApp({ Component, pageProps }) {
     window.location.reload();
   };
 
+  const reloadButton = () => {
+    setReload(reload+1);
+  }
+
   return (
     <ChakraProvider theme={theme}>
       <AppContext.Provider
@@ -96,7 +100,8 @@ function MyApp({ Component, pageProps }) {
           setLoading: setLoading,
           setAddress: setAddress,
           connect: connect,
-          setReload: setReload
+          setReload: setReload,
+          reloadButton: reloadButton
         }}
       >
         <Component {...pageProps} />

@@ -1,9 +1,9 @@
 import { proposalTypes } from './appParams';
 import { factory_rinkeby } from "./addresses";
 import { factoryInstance } from "../eth/factory";
+import { tokenBalances } from "./tokens";
 
-
-export async function fetchAll(instance, factory) {
+export async function fetchAll(instance, factory, address, web3) {
   const proposalCount = parseInt(
     await instance.methods.proposalCount().call()
   );
@@ -22,7 +22,6 @@ export async function fetchAll(instance, factory) {
       toBlock: "latest",
     });
   const docs = events[0]["returnValues"]["docs"];
-  const address = instance.options.address;
 
   const dao_ = {
     address,
@@ -118,7 +117,10 @@ export async function fetchAll(instance, factory) {
     } // end for loop
   }
   proposals_.reverse();
-  return { dao_, holdersArray_, proposalVoteTypes_, proposals_ };
+
+  const balances_ = await getBalances(address, web3);
+
+  return { dao_, holdersArray_, proposalVoteTypes_, proposals_, balances_ };
 }
 
 export function getPassing(voteType, yesVotes, noVotes, totalSupply, quorum, supermajority, open) {
@@ -173,4 +175,18 @@ export function getProgress(yesVotes, noVotes) {
     progress = (yesVotes * 100) / (yesVotes + noVotes);
   }
   return progress;
+}
+
+
+export async function getBalances(address, web3) {
+  const abi = require('../abi/ERC20.json');
+  const tokens = require('./tokens.json');
+  const tokenBalances = [];
+  for(var i=0; i < tokens.length; i++) {
+    let token = tokens[i];
+    const contract = new web3.eth.Contract(abi, token['address']);
+    const balance = await contract.methods.balanceOf(address).call();
+    tokenBalances.push({'token': token['token'], 'address': token['address'], 'balance': balance})
+  }
+  return tokenBalances;
 }

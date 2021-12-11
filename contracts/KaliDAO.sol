@@ -58,7 +58,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         SUPERMAJORITY, // set `supermajority`
         TYPE, // set `VoteType` to `ProposalType`
         PAUSE, // flip membership transferability
-        EXTENSION // flip `extensions` whitelisting
+        EXTENSION, // flip `extensions` whitelisting
+        ESCAPE // delete pending proposal in case of revert
     }
 
     enum VoteType {
@@ -92,7 +93,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         address[] memory voters_,
         uint256[] memory shares_,
         uint32 votingPeriod_,
-        uint8[11] memory govSettings_
+        uint8[12] memory govSettings_
     ) public payable nonReentrant virtual {
         require(votingPeriod == 0, 'INITIALIZED');
 
@@ -136,6 +137,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         proposalVoteTypes[ProposalType.PAUSE] = VoteType(govSettings_[9]);
         
         proposalVoteTypes[ProposalType.EXTENSION] = VoteType(govSettings_[10]);
+
+        proposalVoteTypes[ProposalType.ESCAPE] = VoteType(govSettings_[11]);
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -212,9 +215,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     }
 
     function sponsorProposal(uint256 proposal) public nonReentrant virtual returns (uint256 sponsoredProposal) {
-        Proposal memory prop = proposals[proposal];
-
-        delete proposals[proposal];
+        Proposal storage prop = proposals[proposal];
 
         require(balanceOf[msg.sender] > 0, 'NOT_MEMBER');
 
@@ -241,6 +242,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         unchecked {
             proposalCount++;
         }
+
+        delete proposals[proposal];
 
         emit ProposalSponsored(msg.sender, proposal, sponsoredProposal);
     } 
@@ -316,14 +319,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     }
 
     function processProposal(uint256 proposal) public nonReentrant virtual returns (bytes[] memory results) {
-        // we want underflow in this case to allow for first proposal
-        unchecked {
-            require(proposals[proposal - 1].creationTime == 0, 'PREV_NOT_PROCESSED');
-        }
-
-        Proposal memory prop = proposals[proposal];
-
-        delete proposals[proposal];
+        Proposal storage prop = proposals[proposal];
 
         require(prop.creationTime > 0, 'PROCESSED');
         
@@ -334,6 +330,14 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         }
 
         VoteType voteType = proposalVoteTypes[prop.proposalType];
+
+        // skip previous proposal processing requirement in case of escape hatch
+        if (prop.proposalType != ProposalType.ESCAPE) {
+            // allow underflow in this case to permit first proposal
+            unchecked {
+                require(proposals[proposal - 1].creationTime == 0, 'PREV_NOT_PROCESSED');
+            }
+        }
 
         bool didProposalPass = _countVotes(voteType, prop.yesVotes, prop.noVotes);
         
@@ -385,8 +389,13 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                 
                 if (prop.proposalType == ProposalType.EXTENSION) 
                     extensions[prop.accounts[0]] = !extensions[prop.accounts[0]];
+                
+                if (prop.proposalType == ProposalType.ESCAPE)
+                    delete proposals[prop.amounts[0]];
             }
         }
+
+        delete proposals[proposal];
 
         emit ProposalProcessed(proposal);
     }

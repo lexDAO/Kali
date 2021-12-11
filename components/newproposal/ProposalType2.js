@@ -32,7 +32,7 @@ export default function ProposalType2() {
       const functions_ = [];
       for(var i=0; i < array.length; i++) {
         let item = array[i];
-        if(item['constant']==false) {
+        if(item['type']=="function") {
           functions_.push(item);
         }
       }
@@ -41,6 +41,7 @@ export default function ProposalType2() {
     } catch(error) {
       alert("Please enter valid JSON")
     }
+
   }
 
   const onFunctionSelect = (e) => {

@@ -3,7 +3,7 @@
 pragma solidity >=0.8.0;
 
 /// @notice KaliDAO tribute escrow interface.
-interface IKaliDAOTribute {
+interface IKaliDAOtribute {
     enum ProposalType {
         MINT, 
         BURN, 
@@ -13,7 +13,8 @@ interface IKaliDAOTribute {
         SUPERMAJORITY, 
         TYPE, 
         PAUSE, 
-        EXTENSION
+        EXTENSION,
+        ESCAPE
     }
 
     function passed(uint256 proposal) external returns (bool);

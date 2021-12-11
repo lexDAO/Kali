@@ -2,7 +2,8 @@ import {BrowserView, MobileView, isBrowser} from 'react-device-detect';
 import {
   Box,
   Link,
-  IconButton
+  IconButton,
+  Text
 } from "@chakra-ui/react";
 import {
   AiFillHome
@@ -16,7 +17,6 @@ export default function Kali() {
   }
   return(
     <>
-    {isBrowser==true ?
     <Box
       as="h1"
       letterSpacing="wide"
@@ -27,13 +27,12 @@ export default function Kali() {
       textShadow="2.4px 0.4px kali.900"
       ml={2}
     >
+    {isBrowser==true ?
       <Link onClick={home}>KaliDAO</Link>
-    </Box>
-    :
-      <Box>
-        <IconButton aria-label='home' icon={<AiFillHome />} onClick={home} />
-      </Box>
+      : null
     }
+    </Box>
+    <Text>test</Text>
     </>
   )
 }

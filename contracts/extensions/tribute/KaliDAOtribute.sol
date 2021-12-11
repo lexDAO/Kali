@@ -3,35 +3,35 @@
 pragma solidity >=0.8.0;
 
 import '../../libraries/SafeTransferLib.sol';
-import './interfaces/IKaliDAOTribute.sol';
+import './interfaces/IKaliDAOtribute.sol';
 import '../../utils/ReentrancyGuard.sol';
 
 /// @notice Tribute contract that escrows ETH or tokens for DAO proposals.
 contract KaliDAOtribute is ReentrancyGuard {
     event NewTributeProposal(
-        IKaliDAOTribute indexed dao,
+        IKaliDAOtribute indexed dao,
         address indexed proposer, 
         uint256 indexed proposal, 
         address asset, 
         uint256 assetAmount
     );
 
-    event TributeProposalCancelled(IKaliDAOTribute indexed dao, uint256 indexed proposal);
+    event TributeProposalCancelled(IKaliDAOtribute indexed dao, uint256 indexed proposal);
 
-    event TributeProposalReleased(IKaliDAOTribute indexed dao, uint256 indexed proposal);
+    event TributeProposalReleased(IKaliDAOtribute indexed dao, uint256 indexed proposal);
 
-    mapping(IKaliDAOTribute => mapping(uint256 => Tribute)) public tributes;
+    mapping(IKaliDAOtribute => mapping(uint256 => Tribute)) public tributes;
 
     struct Tribute {
-        IKaliDAOTribute dao;
+        IKaliDAOtribute dao;
         address proposer;
         address asset;
         uint256 amount;
     }
 
     function submitTributeProposal(
-        IKaliDAOTribute dao,
-        IKaliDAOTribute.ProposalType proposalType, 
+        IKaliDAOtribute dao,
+        IKaliDAOtribute.ProposalType proposalType, 
         string calldata description,
         address[] calldata accounts,
         uint256[] calldata amounts,
@@ -40,7 +40,8 @@ contract KaliDAOtribute is ReentrancyGuard {
         uint256 assetAmount
     ) public payable nonReentrant virtual {
         // escrow tribute
-        if (asset == address(0)) {
+        if (msg.value > 0) {
+            asset = address(0);
             assetAmount = msg.value;
         } else {
             SafeTransferLib.safeTransferFrom(asset, msg.sender, address(this), assetAmount);
@@ -64,7 +65,7 @@ contract KaliDAOtribute is ReentrancyGuard {
         emit NewTributeProposal(dao, msg.sender, proposal, asset, assetAmount);
     }
 
-    function cancelTributeProposal(IKaliDAOTribute dao, uint256 proposal) public nonReentrant virtual {
+    function cancelTributeProposal(IKaliDAOtribute dao, uint256 proposal) public nonReentrant virtual {
         Tribute storage trib = tributes[dao][proposal];
 
         require(msg.sender == trib.proposer, 'NOT_PROPOSER');
@@ -78,11 +79,15 @@ contract KaliDAOtribute is ReentrancyGuard {
             SafeTransferLib.safeTransfer(trib.asset, trib.proposer, trib.amount);
         }
 
+        delete tributes[dao][proposal];
+
         emit TributeProposalCancelled(dao, proposal);
     }
 
-    function releaseTributeProposal(IKaliDAOTribute dao, uint256 proposal) public nonReentrant virtual {
+    function releaseTributeProposal(IKaliDAOtribute dao, uint256 proposal) public nonReentrant virtual {
         Tribute storage trib = tributes[dao][proposal];
+        // TO DO - confirm proposal has processed
+        require(address(trib.dao) != address(0), 'NOT_PROPOSAL');
 
         // release tribute from escrow based on proposal outcome
         if (dao.passed(proposal)) {
@@ -98,6 +103,8 @@ contract KaliDAOtribute is ReentrancyGuard {
                 SafeTransferLib.safeTransfer(trib.asset, trib.proposer, trib.amount);
             }
         }
+
+        delete tributes[dao][proposal];
 
         emit TributeProposalReleased(dao, proposal);
     }

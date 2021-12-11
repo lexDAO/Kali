@@ -31,8 +31,8 @@ export default function Kali() {
     </Box>
     </BrowserView>
     <MobileView>
-      <Box>
-        <IconButton aria-label='refresh' icon={<AiFillHome />} onClick={home} />
+      <Box minW={20}>
+        <IconButton aria-label='home' icon={<AiFillHome />} onClick={home} />
       </Box>
     </MobileView>
     </>

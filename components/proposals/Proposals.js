@@ -15,9 +15,7 @@ import { proposalTypes, voteTypes } from "../../utils/appParams";
 
 export default function Proposals(props) {
   const value = useContext(AppContext);
-  const { web3, loading } = value.state;
-  const proposals = props.proposals;
-  const address = props.address;
+  const { web3, loading, proposals, address } = value.state;
 
   return(
     <>

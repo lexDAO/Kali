@@ -14,6 +14,12 @@ function MyApp({ Component, pageProps }) {
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(0);
+  const [visibleView, setVisibleView] = useState(1);
+  const [dao, setDao] = useState({});
+  const [proposals, setProposals] = useState(null);
+  const [balances, setBalances] = useState(null);
+  const [holdersArray, setHoldersArray] = useState([]);
+  const [proposalVoteTypes, setProposalVoteTypes] = useState([]);
 
   useEffect(() => {
 
@@ -92,7 +98,13 @@ function MyApp({ Component, pageProps }) {
             loading: loading,
             address: address,
             abi: abi,
-            reload: reload
+            reload: reload,
+            visibleView: visibleView,
+            dao: dao,
+            proposals: proposals,
+            balances: balances,
+            holdersArray: holdersArray,
+            proposalVoteTypes: proposalVoteTypes
           },
           setWeb3: setWeb3,
           setAccount: setAccount,
@@ -101,7 +113,13 @@ function MyApp({ Component, pageProps }) {
           setAddress: setAddress,
           connect: connect,
           setReload: setReload,
-          reloadButton: reloadButton
+          reloadButton: reloadButton,
+          setVisibleView: setVisibleView,
+          setDao: setDao,
+          setProposals: setProposals,
+          setBalances: setBalances,
+          setHoldersArray: setHoldersArray,
+          setProposalVoteTypes: setProposalVoteTypes
         }}
       >
         <Component {...pageProps} />

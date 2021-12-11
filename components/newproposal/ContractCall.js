@@ -6,15 +6,12 @@ import {
   Button,
   Select,
   Text,
-  Textarea,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
+  Textarea
 } from "@chakra-ui/react";
 
-export default function ProposalType2() {
+export default function ContractCall() {
+  const value = useContext(AppContext);
+  const { web3, loading, account, abi, address } = value.state;
 
   const [abi_, setAbi_] = useState(null);
   const [functions, setFunctions] = useState(null);
@@ -71,21 +68,90 @@ export default function ProposalType2() {
     setInputParams(JSON.stringify(array));
   }
 
+  const submitProposal = async (event) => {
+    event.preventDefault();
+    value.setLoading(true);
+
+    if(account===null) {
+      alert("Please connect to wallet");
+    } else {
+      try {
+        let object = event.target;
+        var array = [];
+        for (let i = 0; i < object.length; i++) {
+          array[object[i].name] = object[i].value;
+        }
+
+        var {
+          proposalType_,
+          description_,
+          account_,
+          amount_,
+          abi_,
+          functionName,
+          inputParams,
+          inputs
+        } = array; // this must contain any inputs from custom forms
+
+        console.log(array);
+
+        abi_ = JSON.parse(abi_);
+
+        inputs = JSON.parse(inputs);
+        inputParams = JSON.parse(inputParams);
+        console.log(abi_);
+        console.log(inputs);
+        console.log(inputParams);
+
+        var payload_ = web3.eth.abi.encodeFunctionCall({
+          name: functionName,
+          type: 'function',
+          inputs: inputs
+          }, inputParams
+        );
+        console.log(payload_)
+        const instance = new web3.eth.Contract(abi, address);
+
+        try {
+          let result = await instance.methods
+            .propose(proposalType_, description_, [account_], [amount_], [payload_])
+            .send({ from: account });
+            value.setReload(value.state.reload+1);
+            value.setVisibleView(1);
+        } catch (e) {
+          alert(e);
+          value.setLoading(false);
+        }
+      } catch(e) {
+        alert(e);
+        value.setLoading(false);
+      }
+    }
+
+    value.setLoading(false);
+  };
+
+
   return (
-    <>
+    <form onSubmit={submitProposal}>
+
       <Text><b>Details</b></Text>
-      <Textarea name="description" size="lg" placeholder=". . ." />
+      <Textarea name="description_" size="lg" placeholder=". . ." />
+
       <Text><b>Target</b></Text>
       <Input name="account_" size="lg" placeholder="0x"></Input>
-      <Input name="amount" type="hidden" value={0} />
+
+      <Input name="amount_" type="hidden" value={0} />
+
       <Text><b>ABI</b></Text>
       <Textarea size="lg" placeholder=". . ." onChange={updateABI} />
       <Input type="hidden" name="abi_" value={abi_} />
       <Input type="hidden" name="inputs" value={JSON.stringify(inputs)} />
+
       <Button onClick={parseABI}>Parse ABI</Button>
       {functions == null ? null :
         <>
-        <Select name="parsedFunction" onChange={onFunctionSelect}>
+        <Select onChange={onFunctionSelect}>
             <option value="999">Select a function</option>
           {functions.map((f, index) =>(
             <option key={index} value={index}>{f['name']}</option>
@@ -107,7 +173,10 @@ export default function ProposalType2() {
         </div>
         </>
       }
+      <Input type="hidden" name="proposalType_" value="2" />
+      
+      <Button type="submit">Submit Proposal</Button>
 
-    </>
+    </form>
   );
 }

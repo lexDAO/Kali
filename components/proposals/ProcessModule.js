@@ -37,7 +37,7 @@ export default function ProcessModule(props) {
           .send({ from: account });
 
           value.setReload(value.state.reload+1);
-          routeAfterSubmission(address);
+          
       } catch (e) {
         alert(e);
         value.setLoading(false);

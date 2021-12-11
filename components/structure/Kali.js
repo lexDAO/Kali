@@ -1,8 +1,12 @@
 import {BrowserView, MobileView} from 'react-device-detect';
 import {
   Box,
-  Link
+  Link,
+  IconButton
 } from "@chakra-ui/react";
+import {
+  AiFillHome
+} from "react-icons/ai";
 import { routeHome } from '../../utils/router';
 
 export default function Kali() {
@@ -11,6 +15,8 @@ export default function Kali() {
     console.log("click")
   }
   return(
+    <>
+    <BrowserView>
     <Box
       as="h1"
       letterSpacing="wide"
@@ -22,7 +28,12 @@ export default function Kali() {
       ml={2}
       minW={10}
     >
-      <BrowserView><Link onClick={home}>KaliDAO</Link></BrowserView>
+      <Link onClick={home}>KaliDAO</Link>
     </Box>
+    </BrowserView>
+    <MobileView>
+      <IconButton aria-label='refresh' icon={<AiFillHome />} onClick={home} />
+    </MobileView>
+    </>
   )
 }

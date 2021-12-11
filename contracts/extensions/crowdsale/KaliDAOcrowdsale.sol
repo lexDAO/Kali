@@ -29,9 +29,9 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
         (address operator, address purchaseToken, uint8 purchaseMultiplier, uint96 purchaseLimit, uint32 saleEnds) 
             = abi.decode(extensionData, (address, address, uint8, uint96, uint32));
         
-        require(purchaseMultiplier > 0, 'NULL_MULTIPLIER'); 
+        require(purchaseMultiplier != 0, 'NULL_MULTIPLIER'); 
 
-        require(crowdsales[dao].purchaseMultiplier > 0 || dao == msg.sender, 
+        require(crowdsales[dao].purchaseMultiplier != 0 || dao == msg.sender, 
             'INITIALIZED_OR_NOT_DAO'); 
 
         crowdsales[dao] = Crowdsale({

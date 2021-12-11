@@ -89,6 +89,8 @@ contract KaliDAOtribute is ReentrancyGuard {
         // TO DO - confirm proposal has processed
         require(address(trib.dao) != address(0), 'NOT_PROPOSAL');
 
+        if (dao.linked(proposal) > 0) proposal = dao.linked(proposal);
+
         // release tribute from escrow based on proposal outcome
         if (dao.passed(proposal)) {
             if (trib.asset == address(0)) {

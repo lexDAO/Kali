@@ -22,7 +22,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     
     event VoteCast(address indexed voter, uint256 indexed proposal, bool indexed approve);
 
-    event ProposalProcessed(uint256 indexed proposal);
+    event ProposalProcessed(uint256 indexed proposal, bool indexed didProposalPass);
 
     /*///////////////////////////////////////////////////////////////
                             DAO STORAGE
@@ -46,6 +46,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     mapping(ProposalType => VoteType) public proposalVoteTypes;
     
     mapping(uint256 => mapping(address => bool)) public voted;
+
+    mapping(uint256 => uint256) public linked;
 
     mapping(uint256 => bool) public passed;
 
@@ -237,6 +239,9 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             proposer: prop.proposer
         }); 
 
+        // can help external contracts track proposal # changes
+        linked[proposal] = sponsoredProposal;
+
         // this is reasonably safe from overflow because incrementing `proposalCount` beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
         unchecked {
@@ -318,7 +323,9 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         emit VoteCast(signer, proposal, approve);
     }
 
-    function processProposal(uint256 proposal) public nonReentrant virtual returns (bytes[] memory results) {
+    function processProposal(uint256 proposal) public nonReentrant virtual returns (
+        bool didProposalPass, bytes[] memory results
+    ) {
         Proposal storage prop = proposals[proposal];
 
         require(prop.creationTime > 0, 'PROCESSED');
@@ -339,7 +346,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             }
         }
 
-        bool didProposalPass = _countVotes(voteType, prop.yesVotes, prop.noVotes);
+        didProposalPass = _countVotes(voteType, prop.yesVotes, prop.noVotes);
         
         if (didProposalPass) {
             passed[proposal] = true;
@@ -397,7 +404,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
         delete proposals[proposal];
 
-        emit ProposalProcessed(proposal);
+        emit ProposalProcessed(proposal, didProposalPass);
     }
 
     function _countVotes(

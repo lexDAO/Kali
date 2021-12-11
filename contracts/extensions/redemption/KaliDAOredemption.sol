@@ -13,7 +13,7 @@ contract KaliDAOredemption is ReentrancyGuard {
     function setExtension(address dao, bytes calldata extensionData) public nonReentrant virtual {
         (IERC20Minimal[] memory tokens) = abi.decode(extensionData, (IERC20Minimal[]));
 
-        require(tokens.length > 0, "NULL_TOKENS");
+        require(tokens.length != 0, "NULL_TOKENS");
         
         require(redeemables[dao].length == 0, "INITIALIZED");
         
@@ -37,7 +37,7 @@ contract KaliDAOredemption is ReentrancyGuard {
                 IERC20Minimal(msg.sender).totalSupply();
             
             // `transferFrom` DAO to redeemer
-            if (amountToRedeem > 0) {
+            if (amountToRedeem != 0) {
                 SafeTransferLib.safeTransferFrom(
                     address(redeemables[msg.sender][i]), 
                     msg.sender, 

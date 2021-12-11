@@ -140,7 +140,8 @@ abstract contract KaliDAOtoken {
         address to,
         uint256 amount
     ) public notPaused virtual returns (bool) {
-        if (allowance[from][msg.sender] != type(uint256).max) allowance[from][msg.sender] -= amount;
+        if (allowance[from][msg.sender] != type(uint256).max) 
+            allowance[from][msg.sender] -= amount;
 
         balanceOf[from] -= amount;
 
@@ -178,7 +179,7 @@ abstract contract KaliDAOtoken {
         unchecked {
             uint256 nCheckpoints = numCheckpoints[account];
 
-            votes = nCheckpoints > 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
+            votes = nCheckpoints != 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
         }
     }
 
@@ -268,11 +269,11 @@ abstract contract KaliDAOtoken {
         address dstRep, 
         uint256 amount
     ) internal virtual {
-        if (srcRep != dstRep && amount > 0) 
+        if (srcRep != dstRep && amount != 0) 
             if (srcRep != address(0)) {
                 uint256 srcRepNum = numCheckpoints[srcRep];
                 
-                uint256 srcRepOld = srcRepNum > 0 ? checkpoints[srcRep][srcRepNum - 1].votes : 0;
+                uint256 srcRepOld = srcRepNum != 0 ? checkpoints[srcRep][srcRepNum - 1].votes : 0;
 
                 uint256 srcRepNew = srcRepOld - amount;
 
@@ -282,7 +283,7 @@ abstract contract KaliDAOtoken {
             if (dstRep != address(0)) {
                 uint256 dstRepNum = numCheckpoints[dstRep];
 
-                uint256 dstRepOld = dstRepNum > 0 ? checkpoints[dstRep][dstRepNum - 1].votes : 0;
+                uint256 dstRepOld = dstRepNum != 0 ? checkpoints[dstRep][dstRepNum - 1].votes : 0;
 
                 uint256 dstRepNew = dstRepOld + amount;
 
@@ -298,7 +299,7 @@ abstract contract KaliDAOtoken {
     ) internal virtual {
         unchecked {
             // this is safe from underflow because decrement only occurs if `nCheckpoints` is positive
-            if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromTimestamp == block.timestamp) {
+            if (nCheckpoints != 0 && checkpoints[delegatee][nCheckpoints - 1].fromTimestamp == block.timestamp) {
                 checkpoints[delegatee][nCheckpoints - 1].votes = safeCastTo96(newVotes);
             } else {
                 checkpoints[delegatee][nCheckpoints] = Checkpoint(safeCastTo32(block.timestamp), safeCastTo96(newVotes));

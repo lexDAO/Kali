@@ -41,7 +41,7 @@ contract KaliDAOtribute is ReentrancyGuard {
         uint256 assetAmount
     ) public payable nonReentrant virtual {
         // escrow tribute
-        if (msg.value > 0) {
+        if (msg.value != 0) {
             asset = address(0);
             assetAmount = msg.value;
         } else {
@@ -92,7 +92,7 @@ contract KaliDAOtribute is ReentrancyGuard {
         
         delete tributes[dao][proposal];
 
-        if (dao.linked(proposal) > 0) proposal = dao.linked(proposal);
+        if (dao.linked(proposal) != 0) proposal = dao.linked(proposal);
 
         // release tribute from escrow based on proposal outcome
         if (dao.passed(proposal)) {

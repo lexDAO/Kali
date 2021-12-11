@@ -46,7 +46,7 @@ contract KaliDAOfactory {
             govSettings_
         );
 
-        if (extensions_.length > 0) {
+        if (extensions_.length != 0) {
             // this is reasonably safe from overflow because incrementing `i` loop beyond
             // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
             unchecked {

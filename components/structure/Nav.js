@@ -16,7 +16,7 @@ export default function Nav() {
   const { account, chainId } = value.state;
   return(
 
-      <HStack p={5}>
+      <HStack p={5} width="90vw">
         <Kali />
         <Spacer />
         <Account />

@@ -20,7 +20,7 @@ export default function Kali() {
       as="h1"
       letterSpacing="wide"
       fontWeight="extrabold"
-      fontSize="4xl"
+      fontSize="md"
       bgGradient="linear(to-br, kali.900, kali.600)"
       bgClip="text"
       textShadow="2.4px 0.4px kali.900"

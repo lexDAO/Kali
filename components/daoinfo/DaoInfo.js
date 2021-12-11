@@ -15,12 +15,11 @@ import FlexGradient from "../elements/FlexGradient.js";
 
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs";
 
-export default function DaoInfo(props) {
+export default function DaoInfo() {
   const value = useContext(AppContext);
-  const { web3, loading } = value.state;
+  const { web3, loading, dao, address, holdersArray } = value.state;
   const router = useRouter();
-  const { dao, address, holdersArray } = props;
-  console.log(dao)
+
   return (
     <FlexGradient>
       <Text>Name: {dao["name"]}</Text>

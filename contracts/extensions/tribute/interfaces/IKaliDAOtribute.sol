@@ -17,6 +17,8 @@ interface IKaliDAOtribute {
         ESCAPE
     }
 
+    function linked(uint256 proposal) external returns (uint256);
+
     function passed(uint256 proposal) external returns (bool);
 
     function propose(

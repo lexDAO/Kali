@@ -1,4 +1,5 @@
 import React, { Component, useState, useContext, useEffect } from "react";
+import {BrowserView, MobileView} from 'react-device-detect';
 import AppContext from '../../context/AppContext';
 import Link from "next/link";
 import {
@@ -16,8 +17,8 @@ export default function Nav() {
   const { account, chainId } = value.state;
   return(
 
-      <HStack p={5} width="90vw">
-        <Kali />
+      <HStack p={5}>
+        <BrowserView><Kali /></BrowserView>
         <Spacer />
         <Account />
         <DarkModeSwitch />

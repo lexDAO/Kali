@@ -5,5 +5,5 @@ export const factory_rinkeby = "0x38c0bFD8bba8588087c1325575cA82Bb09FDd013";
 
 // extension addresses
 // - tribute
-export const tribute_rinkeby = "0x4225d2e50ce41C1aA9363EE494E1d463475cf97A";
+export const tribute_rinkeby = "0x8B652867304859ad994437408F505237007966B5";
 

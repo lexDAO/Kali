@@ -234,9 +234,9 @@
 				"type": "uint32"
 			},
 			{
-				"internalType": "uint8[]",
+				"internalType": "uint8[12]",
 				"name": "govSettings_",
-				"type": "uint8[]"
+				"type": "uint8[12]"
 			}
 		],
 		"name": "init",
@@ -409,6 +409,12 @@
 				"internalType": "uint256",
 				"name": "proposal",
 				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "sponsoredProposal",
+				"type": "uint256"
 			}
 		],
 		"name": "ProposalSponsored",
@@ -462,7 +468,13 @@
 			}
 		],
 		"name": "sponsorProposal",
-		"outputs": [],
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "sponsoredProposal",
+				"type": "uint256"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},

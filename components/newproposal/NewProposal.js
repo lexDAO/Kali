@@ -40,7 +40,7 @@ export default function NewProposal(props) {
         array[object[i].name] = object[i].value;
       }
 
-      var { menuItem, proposalType, description, account_, amount, payload, recipient, tokenAmount } = array;
+      var { menuItem, proposalType, description, account_, amount, payload, recipient, tokenAmount, signature, params } = array;
       console.log(array);
 
       const instance = new web3.eth.Contract(abi, address);
@@ -70,6 +70,12 @@ export default function NewProposal(props) {
       }
       console.log(payload)
 
+      if(menuItem == 2) {
+        let encodeSig = web3.eth.abi.encodeFunctionSignature(signature);
+        let encodeParams = web3.eth.abi.encodeParameters(params);
+        payload = encodeSig + encodeParams;
+        console.log(payload)
+      }
       try {
 
         let result = await instance.methods

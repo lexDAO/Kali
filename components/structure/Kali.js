@@ -11,7 +11,7 @@ export default function Kali() {
   }
   return(
     <Box
-      display={{ sm: "none", md: "block", lg: "block", xl: "block" }}
+      flexShrink={0}
       as="h1"
       letterSpacing="wide"
       fontWeight="extrabold"

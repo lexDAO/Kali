@@ -23,8 +23,10 @@ export default function ProposalType2() {
       <Text><b>Target</b></Text>
       <Input name="account_" size="lg" placeholder="0x"></Input>
       <Input name="amount" type="hidden" value={0} />
-      <Text><b>Payload</b></Text>
-      <Input name="payload" size="lg" placeholder="0x"></Input>
+      <Text><b>Function Signature</b></Text>
+      <Input name="signature" size="lg" placeholder="myFunction(uint256,string)" />
+      <Text><b>Function Parameters</b></Text>
+      <Input name="params" size="lg" placeholder="['12345', 'Hello World']"></Input>
     </>
   );
 }

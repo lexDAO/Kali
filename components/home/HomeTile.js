@@ -12,7 +12,7 @@ export default function HomeTile() {
       <Stack spacing={5} p={5} alignItems="center">
         <Text fontSize="xl">
           <BrowserView>
-          Launch and automate your business with real DAO magick BrowserView
+          Launch and automate your business with real DAO magick
           </BrowserView>
           <MobileView>
           MobileView

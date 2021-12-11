@@ -99,7 +99,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     ) public payable nonReentrant virtual {
         require(votingPeriod == 0, 'INITIALIZED');
 
-        require(votingPeriod_ > 0 && votingPeriod_ <= 365 days, 'VOTING_PERIOD_BOUNDS');
+        require(votingPeriod_ != 0 && votingPeriod_ <= 365 days, 'VOTING_PERIOD_BOUNDS');
         
         require(govSettings_[0] <= 100, 'QUORUM_MAX');
         
@@ -171,7 +171,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         bool selfSponsor;
 
         // if member is making proposal, include sponsorship
-        if (balanceOf[msg.sender] > 0) selfSponsor = true;
+        if (balanceOf[msg.sender] != 0) selfSponsor = true;
         
         if (proposalType == ProposalType.PERIOD) require(amounts[0] <= 365 days, 'VOTING_PERIOD_BOUNDS');
         
@@ -219,7 +219,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     function sponsorProposal(uint256 proposal) public nonReentrant virtual returns (uint256 sponsoredProposal) {
         Proposal storage prop = proposals[proposal];
 
-        require(balanceOf[msg.sender] > 0, 'NOT_MEMBER');
+        require(balanceOf[msg.sender] != 0, 'NOT_MEMBER');
 
         require(prop.proposer != address(0), 'NOT_PROPOSAL');
 
@@ -294,7 +294,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint256 proposal, 
         bool approve
     ) internal virtual {
-        require(balanceOf[signer] > 0, 'NOT_MEMBER');
+        require(balanceOf[signer] != 0, 'NOT_MEMBER');
 
         require(!voted[proposal][signer], 'ALREADY_VOTED');
         
@@ -328,7 +328,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     ) {
         Proposal storage prop = proposals[proposal];
 
-        require(prop.creationTime > 0, 'PROCESSED');
+        require(prop.creationTime != 0, 'PROCESSED');
         
         // this is safe from overflow because `votingPeriod` is capped so it will not combine
         // with unix time to exceed 'type(uint256).max'
@@ -380,13 +380,13 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                     
                 // governance settings
                 if (prop.proposalType == ProposalType.PERIOD) 
-                    if (prop.amounts[0] > 0) votingPeriod = uint32(prop.amounts[0]);
+                    if (prop.amounts[0] != 0) votingPeriod = uint32(prop.amounts[0]);
                 
                 if (prop.proposalType == ProposalType.QUORUM) 
-                    if (prop.amounts[0] > 0) quorum = uint8(prop.amounts[0]);
+                    if (prop.amounts[0] != 0) quorum = uint8(prop.amounts[0]);
                 
                 if (prop.proposalType == ProposalType.SUPERMAJORITY) 
-                    if (prop.amounts[0] > 0) supermajority = uint8(prop.amounts[0]);
+                    if (prop.amounts[0] != 0) supermajority = uint8(prop.amounts[0]);
                 
                 if (prop.proposalType == ProposalType.TYPE) 
                     proposalVoteTypes[ProposalType(prop.amounts[0])] = VoteType(prop.amounts[1]);
@@ -396,7 +396,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                 
                  if (prop.proposalType == ProposalType.EXTENSION) 
                     extensions[prop.accounts[0]] = !extensions[prop.accounts[0]];
-                    if (prop.payloads[0].length > 0) IKaliDAOextension(prop.accounts[0])
+                    
+                    if (prop.payloads[0].length != 0) IKaliDAOextension(prop.accounts[0])
                         .setExtension(address(this), prop.payloads[0]);
                 
                 if (prop.proposalType == ProposalType.ESCAPE)
@@ -458,9 +459,9 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             (msg.sender, amount, extensionData);
         
         if (mint) {
-            if (amountOut > 0) _mint(msg.sender, amountOut); 
+            if (amountOut != 0) _mint(msg.sender, amountOut); 
         } else {
-            if (amountOut > 0) _burn(msg.sender, amount);
+            if (amountOut != 0) _burn(msg.sender, amount);
         }
     }
 }

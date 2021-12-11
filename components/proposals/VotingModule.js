@@ -11,7 +11,6 @@ import {
   BsHandThumbsUpFill,
   BsHandThumbsDownFill,
 } from "react-icons/bs";
-import { routeAfterSubmission } from '../../utils/router';
 import { useDisclosure } from '@chakra-ui/react';
 
 export default function VotingModule(props) {
@@ -45,7 +44,6 @@ export default function VotingModule(props) {
             .send({ from: account });
 
             value.setReload(value.state.reload+1);
-            routeAfterSubmission(address);
 
         } catch (e) {}
         value.setLoading(false);

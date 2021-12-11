@@ -19,7 +19,6 @@ import ProposalType2 from './ProposalType2';
 import ProposalType3 from './ProposalType3';
 import { getBalances } from '../../utils/getterFunctions';
 import { proposalTypeMappings } from '../../utils/appParams';
-import { routeAfterSubmission } from '../../utils/router';
 
 export default function NewProposal(props) {
   const [menuItem, setMenuItem] = useState(999); // arbitrary number where no proposal type is selected. if changed, must change below, too

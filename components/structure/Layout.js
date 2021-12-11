@@ -22,18 +22,14 @@ export default function Layout(props) {
           key="title"
         />
       </Head>
-      <Container
-        maxW="container.xl"
-      >
       <Nav />
       <Container
         minheight="100vh"
-        maxW="container.md"
+        maxW="container.lg"
         alignItems="center"
         justifyContent="center"
       >
         {props.children}
-      </Container>
       </Container>
       <Footer />
     </>

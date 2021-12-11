@@ -11,8 +11,8 @@ export default function Kali() {
   }
   return(
     <Box
-      flexShrink={0}
       as="h1"
+      w={[0, 150, 150, 150]}
       letterSpacing="wide"
       fontWeight="extrabold"
       fontSize="4xl"

@@ -49,6 +49,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     
     mapping(uint256 => mapping(address => bool)) public voted;
 
+    mapping(address => uint256) public lastYesVote;
+
     enum ProposalType {
         MINT, // add membership
         BURN, // revoke membership
@@ -317,6 +319,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         unchecked { 
             if (approve) {
                 prop.yesVotes += weight;
+                
+                lastYesVote[signer] = proposal;
             } else {
                 prop.noVotes += weight;
             }

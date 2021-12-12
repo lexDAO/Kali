@@ -87,15 +87,19 @@ contract KaliDAOtribute is ReentrancyGuard {
 
     function releaseTributeProposal(IKaliDAOtribute dao, uint256 proposal) public nonReentrant virtual {
         Tribute memory trib = tributes[dao][proposal];
-        // TO DO - confirm proposal has processed (store voting period?)
+
+        IKaliDAOtribute.ProposalState memory prop = dao.proposalStates(proposal);
+
         require(address(trib.dao) != address(0), 'NOT_PROPOSAL');
+
+        require(prop.processed, 'NOT_PROCESSED');
         
         delete tributes[dao][proposal];
 
-        if (dao.linked(proposal) != 0) proposal = dao.linked(proposal);
+        if (prop.sponsoredProposal != 0) proposal = prop.sponsoredProposal;
 
         // release tribute from escrow based on proposal outcome
-        if (dao.passed(proposal)) {
+        if (prop.passed) {
             if (trib.asset == address(0)) {
                 SafeTransferLib.safeTransferETH(address(trib.dao), trib.amount);
             } else {

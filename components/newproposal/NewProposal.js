@@ -57,7 +57,7 @@ export default function NewProposal(props) {
               <option value="999">Select a proposal type</option>
               {
                 proposalHelper.map((p, index) => (
-                  <option value={index}>{p[0]}</option>
+                  <option key={index} value={index}>{p[0]}</option>
                 ))
               }
             </Select>
@@ -70,7 +70,7 @@ export default function NewProposal(props) {
 
         {
           proposalHelper.map((p, index) => (
-            <ProposalTile id={index} title={p[0]} description={p[1]} />
+            <ProposalTile key={index} id={index} title={p[0]} description={p[1]} />
           ))
         }
 

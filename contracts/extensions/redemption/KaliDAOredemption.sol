@@ -32,9 +32,13 @@ contract KaliDAOredemption is ReentrancyGuard {
         bytes calldata
     ) public nonReentrant virtual returns (uint256 amountOut) {
         for (uint256 i; i < redeemables[msg.sender].length; i++) {
+            uint256 totalSupply = IERC20Minimal(msg.sender).totalSupply();
+
+            require(totalSupply != 0, 'NULL_DAO');
+
             // calculate fair share of given token for redemption
             uint256 amountToRedeem = amount * redeemables[msg.sender][i].balanceOf(msg.sender) / 
-                IERC20Minimal(msg.sender).totalSupply();
+                totalSupply;
             
             // `transferFrom` DAO to redeemer
             if (amountToRedeem != 0) {

@@ -17,9 +17,13 @@ interface IKaliDAOtribute {
         ESCAPE
     }
 
-    function linked(uint256 proposal) external returns (uint256);
+    struct ProposalState {
+        uint256 sponsoredProposal;
+        bool passed;
+        bool processed;
+    }
 
-    function passed(uint256 proposal) external returns (bool);
+    function proposalStates(uint256 proposal) external returns (ProposalState memory);
 
     function propose(
         ProposalType proposalType,

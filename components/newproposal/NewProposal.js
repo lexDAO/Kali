@@ -8,14 +8,11 @@ import {
   Button
 } from "@chakra-ui/react";
 import FlexOutline from "../elements/FlexOutline";
-import SendShares from "./SendShares";
-import RemoveMember from "./RemoveMember";
-import SendToken from "./SendToken";
-import ContractCall from "./ContractCall";
-import {BrowserView, MobileView} from 'react-device-detect';
+import { BrowserView, MobileView } from 'react-device-detect';
+import { proposalHelper } from '../../utils/proposalHelper';
 
 export default function NewProposal(props) {
-  const [menuItem, setMenuItem] = useState(0); // arbitrary number where no proposal type is selected. if changed, must change below, too
+  const [menuItem, setMenuItem] = useState(999); // arbitrary number where no proposal type is selected. if changed, must change below, too
   const value = useContext(AppContext);
   const { web3, loading, account, abi, address } = value.state;
   const balances = props.balances;
@@ -34,8 +31,6 @@ export default function NewProposal(props) {
     setMenuItem(newValue);
   };
 
-  const proposalTypes = ["Send Shares", "Send a Token", "Call a Contract", "Remove Member"];
-
   return(
     <>
       <MobileView>
@@ -50,8 +45,8 @@ export default function NewProposal(props) {
             >
               <option value="999">Select a proposal type</option>
               {
-                proposalTypes.map((p, index) => (
-                  <option value={index}>{p}</option>
+                proposalHelper.map((p, index) => (
+                  <option value={index}>{p[0]}</option>
                 ))
               }
             </Select>
@@ -63,17 +58,17 @@ export default function NewProposal(props) {
       <Grid templateColumns={{sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)'}}>
 
         {
-          proposalTypes.map((p, index) => (
-            <ProposalTile id={index} text={p} />
+          proposalHelper.map((p, index) => (
+            <ProposalTile id={index} text={p[0]} />
           ))
         }
 
       </Grid>
       </BrowserView>
-      {menuItem==0 ? <SendShares /> : null }
-      {menuItem==1 ? <SendToken /> : null }
-      {menuItem==2 ? <ContractCall /> : null }
-      {menuItem==3 ? <RemoveMember /> : null }
+
+      {proposalHelper.map((row, index) => (
+        menuItem==index ? row[2] : null
+      ))}
 
     </>
   )

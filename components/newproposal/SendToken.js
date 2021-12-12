@@ -6,7 +6,8 @@ import {
   Button,
   Select,
   Text,
-  Textarea
+  Textarea,
+  Stack
 } from "@chakra-ui/react";
 import { tokenBalances } from '../../utils/tokens';
 import NumInputField from "../elements/NumInputField";
@@ -71,6 +72,7 @@ export default function SendToken() {
 
   return (
     <form onSubmit={submitProposal}>
+    <Stack>
       <Text><b>Details</b></Text>
       <Textarea name="description_" size="lg" placeholder=". . ." />
       <Text><b>Recipient</b></Text>
@@ -98,7 +100,7 @@ export default function SendToken() {
       <Input type="hidden" name="amount_" value="0" />
 
       <Button type="submit">Submit Proposal</Button>
-
+    </Stack>
     </form>
   );
 }

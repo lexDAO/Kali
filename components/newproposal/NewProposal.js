@@ -5,6 +5,9 @@ import {
   Text,
   Box,
   Grid,
+  LinkBox,
+  LinkOverlay,
+  Heading,
   Button
 } from "@chakra-ui/react";
 import FlexOutline from "../elements/FlexOutline";
@@ -19,10 +22,12 @@ export default function NewProposal(props) {
 
   const ProposalTile = (props) => {
     return(
-        <Box backgroundColor="lightgrey" p={5} m={5}>
-          {props.children}
-          <Button onClick={() => setMenuItem(props.id)}>{props.text}</Button>
-        </Box>
+        <LinkBox backgroundColor="lightgrey" p={5} m={5} rounded="lg">
+          <LinkOverlay href="#" onClick={() => setMenuItem(props.id)}>
+          <Heading size="md"><b>{props.title}</b></Heading>
+          </LinkOverlay>
+          <Text>{props.description}</Text>
+        </LinkBox>
       )
     }
 
@@ -30,6 +35,12 @@ export default function NewProposal(props) {
     let newValue = e.target.value;
     setMenuItem(newValue);
   };
+
+  const BackButton = () => {
+    return(
+      <Button size="sm" onClick={() => setMenuItem(999)} marginBottom={5}>« Back</Button>
+    )
+  }
 
   return(
     <>
@@ -53,19 +64,19 @@ export default function NewProposal(props) {
           </FlexOutline>
         </form>
       </MobileView>
-
+      {menuItem < 999 ? <BackButton /> :
       <BrowserView>
       <Grid templateColumns={{sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)'}}>
 
         {
           proposalHelper.map((p, index) => (
-            <ProposalTile id={index} text={p[0]} />
+            <ProposalTile id={index} title={p[0]} description={p[1]} />
           ))
         }
 
       </Grid>
       </BrowserView>
-
+      }
       {proposalHelper.map((row, index) => (
         menuItem==index ? row[2] : null
       ))}

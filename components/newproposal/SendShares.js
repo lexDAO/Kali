@@ -6,7 +6,8 @@ import {
   Button,
   Select,
   Text,
-  Textarea
+  Textarea,
+  Stack
 } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
 
@@ -62,6 +63,7 @@ export default function SendShares() {
 
   return (
     <form onSubmit={submitProposal}>
+    <Stack>
       <Text><b>Details</b></Text>
 
       <Textarea name="description_" size="lg" placeholder=". . ." />
@@ -75,7 +77,7 @@ export default function SendShares() {
       <Input type="hidden" name="proposalType_" value="0" />
 
       <Button type="submit">Submit Proposal</Button>
-
+    </Stack>
     </form>
   );
 }

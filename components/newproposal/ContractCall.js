@@ -6,7 +6,8 @@ import {
   Button,
   Select,
   Text,
-  Textarea
+  Textarea,
+  Stack
 } from "@chakra-ui/react";
 
 export default function ContractCall() {
@@ -134,7 +135,7 @@ export default function ContractCall() {
 
   return (
     <form onSubmit={submitProposal}>
-
+    <Stack>
       <Text><b>Details</b></Text>
       <Textarea name="description_" size="lg" placeholder=". . ." />
 
@@ -174,9 +175,9 @@ export default function ContractCall() {
         </>
       }
       <Input type="hidden" name="proposalType_" value="2" />
-      
-      <Button type="submit">Submit Proposal</Button>
 
+      <Button type="submit">Submit Proposal</Button>
+    </Stack>
     </form>
   );
 }

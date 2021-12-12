@@ -1,6 +1,7 @@
 {
   "extends": "next/core-web-vitals",
   "rules": {
-    "react/no-children-prop": "off"
+    "react/no-children-prop": "off",
+    "react/jsx-no-duplicate-props": "off"
   }
 }

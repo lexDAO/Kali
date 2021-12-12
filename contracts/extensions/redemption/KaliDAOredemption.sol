@@ -10,8 +10,10 @@ import '../../utils/ReentrancyGuard.sol';
 contract KaliDAOredemption is ReentrancyGuard {
     mapping(address => address[]) public redeemables;
 
+    mapping(address => uint256) public redemptionStarts;
+
     function setExtension(address dao, bytes calldata extensionData) public nonReentrant virtual {
-        (address[] memory tokens) = abi.decode(extensionData, (address[]));
+        (address[] memory tokens, uint256 redemptionStart) = abi.decode(extensionData, (address[], uint256));
 
         require(tokens.length != 0, "NULL_TOKENS");
         
@@ -24,6 +26,8 @@ contract KaliDAOredemption is ReentrancyGuard {
                 redeemables[dao].push(tokens[i]);
             }
         }
+
+        redemptionStarts[msg.sender] = redemptionStart;
     }
 
     function callExtension(
@@ -31,6 +35,8 @@ contract KaliDAOredemption is ReentrancyGuard {
         uint256 amount, 
         bytes calldata
     ) public nonReentrant virtual returns (uint256 amountOut) {
+        require(block.timestamp >= redemptionStarts[msg.sender], 'NOT_STARTED');
+
         for (uint256 i; i < redeemables[msg.sender].length; i++) {
             // calculate fair share of given token for redemption
             uint256 amountToRedeem = amount * IERC20minimal(redeemables[msg.sender][i]).balanceOf(msg.sender) / 

@@ -48,3 +48,15 @@ export const proposalDescriptions = [
   "extension integration",
   "escape"
 ];
+
+export const proposalDetails = [ // descriptions for: amount, account, payload
+  ["shares", "account", null],
+  ["shares", "account", null],
+  ["transaction value", "contract", "payload"],
+  ["proposed voting period", null, null],
+  ["proposed quorum threshold", null, null],
+  ["proposed supermajority threshold", null, null],
+  ["proposed proposal/vote type", null, null],
+  [null, null, null],
+  ["proposal number", null, null]
+]

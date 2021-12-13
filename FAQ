@@ -32,6 +32,17 @@ Is there a minimum number of votes required in order to make the proposal offici
 4b. UNA
 4c. LLC
 //Won't complete until we finalize list and discuss as team.
+5. What operations can my DAO run?
+Kali can run the following operations:
+<b>MINT</b>: create more membership tokens.
+<b>BURN</b>: burn membership tokens, similar to Moloch DAO ragekick().
+<b>CALL</b>: make external calls to other smart contracts, similar to Moloch DAO Minion.
+<b>PERIOD</b>: adjust voting period.
+<b>QUORUM</b>: adjust voting quorum requirement, that is, the % of membership tokens that must vote for proposals to pass.
+<b>SUPERMAJORITY</b>: adjust super-majority requirement, that is, the % of member approvals required for proposals to pass.
+<b>TYPE</b>: set ProposalType to a VoteType.
+<b>PAUSE</b>: toggle member token transferability.
+<b>EXTENSION</b>: toggle approval for certain contract external calls via extensionCall().
 5. Where can I use Kali?
 Kali is currently deployed to the following networks:
 -Ethereum Mainnet

@@ -31,7 +31,7 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
         
         require(purchaseMultiplier != 0, 'NULL_MULTIPLIER'); 
 
-        require(crowdsales[dao].purchaseMultiplier != 0 || dao == msg.sender, 
+        require(crowdsales[dao].purchaseMultiplier == 0 || dao == msg.sender, 
             'INITIALIZED_OR_NOT_DAO'); 
 
         crowdsales[dao] = Crowdsale({

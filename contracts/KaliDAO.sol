@@ -43,13 +43,13 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
     mapping(uint256 => Proposal) public proposals;
 
+    mapping(uint256 => ProposalState) public proposalStates;
+
     mapping(ProposalType => VoteType) public proposalVoteTypes;
     
     mapping(uint256 => mapping(address => bool)) public voted;
 
-    mapping(uint256 => uint256) public linked;
-
-    mapping(uint256 => bool) public passed;
+    mapping(address => uint256) public lastYesVote;
 
     enum ProposalType {
         MINT, // add membership
@@ -81,6 +81,12 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint96 noVotes;
         uint32 creationTime;
         address proposer;
+    }
+
+    struct ProposalState {
+        uint256 sponsoredProposal;
+        bool passed;
+        bool processed;
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -240,7 +246,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         }); 
 
         // can help external contracts track proposal # changes
-        linked[proposal] = sponsoredProposal;
+        proposalStates[proposal].sponsoredProposal = sponsoredProposal;
 
         // this is reasonably safe from overflow because incrementing `proposalCount` beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
@@ -313,6 +319,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         unchecked { 
             if (approve) {
                 prop.yesVotes += weight;
+                
+                lastYesVote[signer] = proposal;
             } else {
                 prop.noVotes += weight;
             }
@@ -349,7 +357,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         didProposalPass = _countVotes(voteType, prop.yesVotes, prop.noVotes);
         
         if (didProposalPass) {
-            passed[proposal] = true;
+            proposalStates[proposal].passed = true;
 
             // this is reasonably safe from overflow because incrementing `i` loop beyond
             // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
@@ -406,6 +414,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         }
 
         delete proposals[proposal];
+
+        proposalStates[proposal].processed = true;
 
         emit ProposalProcessed(proposal, didProposalPass);
     }

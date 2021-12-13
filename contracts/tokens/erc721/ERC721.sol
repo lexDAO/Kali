@@ -92,7 +92,7 @@ abstract contract ERC721 {
         emit ApprovalForAll(msg.sender, operator, approved);
     }
     
-    function transfer(address to, uint256 tokenId) public virtual {
+    function transfer(address to, uint256 tokenId) public virtual returns (bool success) {
         require(msg.sender == ownerOf[tokenId], 'NOT_OWNER');
         
         // this is safe because ownership is checked
@@ -109,6 +109,8 @@ abstract contract ERC721 {
         ownerOf[tokenId] = to;
         
         emit Transfer(msg.sender, to, tokenId); 
+        
+        success = true;
     }
 
     function transferFrom(

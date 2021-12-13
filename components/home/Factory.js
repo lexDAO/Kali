@@ -29,7 +29,7 @@ export default function Factory(props) {
   const handleFactorySubmit = async (values) => {
       value.setLoading(true);
       const factory = factoryInstance(factory_rinkeby, web3);
-      const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0";
+      const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0,0";
       const extensions = new Array(0);
       const extensionsData = new Array(0);
 

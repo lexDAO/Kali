@@ -3,15 +3,9 @@ import AppContext from '../../context/AppContext';
 import {
   Icon
 } from "@chakra-ui/react";
-import {
-  BsPlusCircle,
-  BsXCircle
-} from "react-icons/bs";
-import {
-  BiLoaderCircle
-} from "react-icons/bi";
 
 const iconSize = 8;
+import { proposalIcons } from "../../utils/viewProposalsHelper";
 
 export default function ProposalRow(props) {
   const value = useContext(AppContext);
@@ -20,23 +14,7 @@ export default function ProposalRow(props) {
 
   return(
     <>
-      {p['proposalType']==0 ?
-      <>
-      <Icon as={BsPlusCircle} boxSize={iconSize} />
-      </>
-      : null}
-
-      {p['proposalType']==1 ?
-      <>
-      <Icon as={BsXCircle} boxSize={iconSize} />
-      </>
-      : null}
-
-      {p['proposalType']==2 ?
-      <>
-      <Icon as={BiLoaderCircle} boxSize={iconSize} />
-      </>
-      : null}
+      <Icon as={proposalIcons[p['proposalType']]} boxSize={iconSize} />
     </>
   )
 }

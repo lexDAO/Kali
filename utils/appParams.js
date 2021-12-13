@@ -20,42 +20,4 @@ export const voteTypes = [
   "SUPERMAJORITY_QUORUM_REQUIRED"
 ];
 
-export const proposalDescriptions = [
-  "send shares",
-  "remove member",
-  "contract integration",
-  "modify voting period",
-  "modify quorum threshold",
-  "modify supermajority threshold",
-  "pause/unpause transfer",
-  "extension integration"
-];
-
-export const proposalLabel1 = [
-  "shares",
-  "shares",
-  "value",
-  "proposed voting period",
-  "proposed quorum",
-  "proposed supermajority",
-  "pause/unpause",
-  "extension"
-];
-
-export const proposalLabel2 = [
-  "account",
-  "account",
-  "contract",
-  null,
-  null,
-  null,
-  null,
-  null
-];
-
-export const proposalTypeMappings = [
-  0,
-  1,
-  2,
-  2
-]; //how dropdown options map up to solidity proposal types - it is NOT 1-to-1
+export const votingPeriodUnits = ["minutes", "hours", "days"];

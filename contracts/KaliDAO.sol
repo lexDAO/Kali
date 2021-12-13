@@ -28,6 +28,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                             DAO STORAGE
     //////////////////////////////////////////////////////////////*/
 
+    string public docs;
+    
     uint256 public proposalCount;
 
     uint32 public votingPeriod;
@@ -61,7 +63,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         TYPE, // set `VoteType` to `ProposalType`
         PAUSE, // flip membership transferability
         EXTENSION, // flip `extensions` whitelisting
-        ESCAPE // delete pending proposal in case of revert
+        ESCAPE, // delete pending proposal in case of revert
+        DOCS // amend org docs
     }
 
     enum VoteType {
@@ -96,12 +99,13 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     function init(
         string memory name_,
         string memory symbol_,
+        string memory docs_,
         bool paused_,
         address[] memory extensions_,
         address[] memory voters_,
         uint256[] memory shares_,
         uint32 votingPeriod_,
-        uint8[12] memory govSettings_
+        uint8[13] memory govSettings_
     ) public payable nonReentrant virtual {
         require(votingPeriod == 0, 'INITIALIZED');
 
@@ -120,6 +124,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                 extensions[extensions_[i]] = true;
             }
         }
+
+        docs = docs_;
         
         votingPeriod = votingPeriod_;
         
@@ -147,6 +153,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         proposalVoteTypes[ProposalType.EXTENSION] = VoteType(govSettings_[10]);
 
         proposalVoteTypes[ProposalType.ESCAPE] = VoteType(govSettings_[11]);
+
+        proposalVoteTypes[ProposalType.DOCS] = VoteType(govSettings_[12]);
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -319,7 +327,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         unchecked { 
             if (approve) {
                 prop.yesVotes += weight;
-                
+
                 lastYesVote[signer] = proposal;
             } else {
                 prop.noVotes += weight;
@@ -410,6 +418,9 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                 
                 if (prop.proposalType == ProposalType.ESCAPE)
                     delete proposals[prop.amounts[0]];
+
+                if (prop.proposalType == ProposalType.DOCS)
+                    docs = prop.description;
             }
         }
 

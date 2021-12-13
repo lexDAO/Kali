@@ -10,7 +10,8 @@ export const proposalTypes = [
   "TYPE",
   "PAUSE",
   "EXTENSION",
-  "ESCAPE"
+  "ESCAPE",
+  "DOCS"
 ];
 
 export const voteTypes = [

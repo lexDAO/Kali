@@ -92,7 +92,7 @@ export default function GovernanceSettings() {
       <Select name="proposalType_" onChange={updatePropType}>
         <option value="999">Select</option>
         {govSettingsHelper.map((g, index) => (
-          <option value={g[0]}>{g[1]}</option>
+          <option key={index} value={g[0]}>{g[1]}</option>
         ))}
       </Select>
 

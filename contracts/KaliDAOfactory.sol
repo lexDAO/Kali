@@ -7,7 +7,7 @@ import './interfaces/IRicardianLLC.sol';
 
 /// @notice Factory to deploy KaliDAO.
 contract KaliDAOfactory {
-    event DAOdeployed(KaliDAO indexed kaliDAO, string name, string docs);
+    event DAOdeployed(KaliDAO indexed kaliDAO, string name);
 
     address payable public immutable kaliMaster;
 
@@ -29,7 +29,7 @@ contract KaliDAOfactory {
         address[] calldata voters_,
         uint256[] calldata shares_,
         uint32 votingPeriod_,
-        uint8[12] memory govSettings_
+        uint8[13] memory govSettings_
     ) external payable returns (KaliDAO kaliDAO) {
         require(extensions_.length == extensionsData_.length, 'NO_ARRAY_PARITY');
 
@@ -38,6 +38,7 @@ contract KaliDAOfactory {
         kaliDAO.init{value: msg.value}(
             name_, 
             symbol_, 
+            docs_,
             paused_, 
             extensions_,
             voters_, 
@@ -62,7 +63,7 @@ contract KaliDAOfactory {
             ricardianLLC.mintLLC(address(kaliDAO));
         }
 
-        emit DAOdeployed(kaliDAO, name_, docs_);
+        emit DAOdeployed(kaliDAO, name_);
     }
 
     /// @dev modified from Aelin (https://github.com/AelinXYZ/aelin/blob/main/contracts/MinimalProxyFactory.sol)

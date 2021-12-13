@@ -1,5 +1,5 @@
 import { proposalTypes } from './appParams';
-import { factory_rinkeby } from "./addresses";
+import { factory_rinkeby, tribute_rinkeby } from "./addresses";
 import { factoryInstance } from "../eth/factory";
 import { tokenBalances } from "./tokens";
 
@@ -119,6 +119,8 @@ export async function fetchAll(instance, factory, address, web3) {
   proposals_.reverse();
 
   const balances_ = await getBalances(address, web3);
+
+  dao_['tribute'] = await instance.methods.extensions(tribute_rinkeby).call();
 
   return { dao_, holdersArray_, proposalVoteTypes_, proposals_, balances_ };
 }

@@ -80,7 +80,9 @@ contract KaliWhitelistManager {
         address[] calldata accounts,
         bytes32 merkleRoot
     ) public virtual {
-        require(operatorOf[listId] == address(0), 'EXISTS');
+        require(listId != 0, 'NULL_ID');
+        
+        require(operatorOf[listId] == address(0), 'ID_EXISTS');
 
         operatorOf[listId] == msg.sender;
 

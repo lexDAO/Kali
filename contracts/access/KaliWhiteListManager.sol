@@ -3,17 +3,20 @@
 pragma solidity >=0.8.0;
 
 /// @notice Kali DAO whitelist manager.
-/// @author Modified from SushiSwap (https://github.com/sushiswap/trident/blob/master/contracts/pool/franchised/WhiteListManager.sol)
+/// @author Modified from SushiSwap 
+/// (https://github.com/sushiswap/trident/blob/master/contracts/pool/franchised/WhiteListManager.sol)
 contract KaliWhitelistManager {
     /*///////////////////////////////////////////////////////////////
                             EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event AccountWhitelisted(address indexed operator, address indexed account, bool approved);
+    event WhitelistCreated(uint256 indexed listId, address indexed operator);
+
+    event AccountWhitelisted(uint256 indexed listId, address indexed account, bool approved);
     
-    event MerkleRootSet(address indexed operator, bytes32 merkleRoot);
+    event MerkleRootSet(uint256 indexed listId, bytes32 merkleRoot);
     
-    event WhitelistJoined(address indexed operator, uint256 indexed index, address indexed account);
+    event WhitelistJoined(uint256 indexed listId, uint256 indexed index, address indexed account);
 
     /*///////////////////////////////////////////////////////////////
                             EIP-712 STORAGE
@@ -30,11 +33,13 @@ contract KaliWhitelistManager {
                             WHITELIST STORAGE
     //////////////////////////////////////////////////////////////*/
 
-    mapping(address => bytes32) public merkleRoot;
+    mapping(uint256 => address) public operatorOf;
+    
+    mapping(uint256 => bytes32) public merkleRoots;
 
-    mapping(address => mapping(address => bool)) public whitelistedAccounts;
+    mapping(uint256 => mapping(address => bool)) public whitelistedAccounts;
 
-    mapping(address => mapping(uint256 => uint256)) internal whitelistedBitmap;
+    mapping(uint256 => mapping(uint256 => uint256)) internal whitelistedBitmaps;
 
     /*///////////////////////////////////////////////////////////////
                             CONSTRUCTOR
@@ -45,10 +50,14 @@ contract KaliWhitelistManager {
         
         INITIAL_DOMAIN_SEPARATOR = _computeDomainSeparator();
     }
-    
+
     /*///////////////////////////////////////////////////////////////
                             EIP-712 LOGIC
     //////////////////////////////////////////////////////////////*/
+
+    function DOMAIN_SEPARATOR() public view virtual returns (bytes32 domainSeparator) {
+        domainSeparator = block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
+    }
 
     function _computeDomainSeparator() internal view virtual returns (bytes32 domainSeparator) {
         domainSeparator = keccak256(
@@ -61,39 +70,70 @@ contract KaliWhitelistManager {
             )
         );
     }
-
-    function DOMAIN_SEPARATOR() public view virtual returns (bytes32 domainSeparator) {
-        domainSeparator = block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
-    }
-
+ 
     /*///////////////////////////////////////////////////////////////
                             WHITELIST LOGIC
     //////////////////////////////////////////////////////////////*/
+
+    function createWhitelist(
+        uint256 listId, 
+        address[] calldata accounts,
+        bytes32 merkleRoot
+    ) public virtual {
+        require(listId != 0, 'NULL_ID');
+        
+        require(operatorOf[listId] == address(0), 'ID_EXISTS');
+
+        operatorOf[listId] == msg.sender;
+
+        if (accounts.length != 0) {
+            // this is reasonably safe from overflow because incrementing `i` loop beyond
+            // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+            unchecked {
+                for (uint256 i; i < accounts.length; i++) {
+                    _whitelistAccount(listId, accounts[i], true);
+                }
+            }
+
+            emit WhitelistCreated(listId, msg.sender);
+        }
+
+        if (merkleRoot != "")
+            merkleRoots[listId] = merkleRoot;
+
+            emit MerkleRootSet(listId, merkleRoot);
+    }
     
-    function isWhitelisted(address operator, uint256 index) public view virtual returns (bool success) {
+    function isWhitelisted(uint256 listId, uint256 index) public view virtual returns (bool success) {
         uint256 whitelistedWordIndex = index / 256;
 
         uint256 whitelistedBitIndex = index % 256;
 
-        uint256 claimedWord = whitelistedBitmap[operator][whitelistedWordIndex];
+        uint256 claimedWord = whitelistedBitmaps[listId][whitelistedWordIndex];
 
         uint256 mask = 1 << whitelistedBitIndex;
 
         success = claimedWord & mask == mask;
     }
 
-    function whitelistAccounts(address[] calldata accounts, bool[] calldata approvals) public virtual {
+    function whitelistAccounts(
+        uint256 listId, 
+        address[] calldata accounts, 
+        bool[] calldata approvals
+    ) public virtual {
+        require(msg.sender == operatorOf[listId], 'NOT_OWNER');
+
         // this is reasonably safe from overflow because incrementing `i` loop beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
         unchecked {
             for (uint256 i; i < accounts.length; i++) {
-                _whitelistAccount(msg.sender, accounts[i], approvals[i]);
+                _whitelistAccount(listId, accounts[i], approvals[i]);
             }
         }
     }
 
     function whitelistAccountBySig(
-        address operator,
+        uint256 listId,
         address account,
         bool approved,
         uint256 deadline,
@@ -113,38 +153,40 @@ contract KaliWhitelistManager {
 
         address recoveredAddress = ecrecover(digest, v, r, s);
 
-        require(recoveredAddress == operator, 'INVALID_WHITELIST_SIGNATURE');
+        require(recoveredAddress == operatorOf[listId], 'INVALID_WHITELIST_SIGNATURE');
 
-        _whitelistAccount(operator, account, approved);
+        _whitelistAccount(listId, account, approved);
     }
 
     function _whitelistAccount(
-        address operator,
+        uint256 listId,
         address account,
         bool approved
     ) internal virtual {
-        whitelistedAccounts[operator][account] = approved;
+        whitelistedAccounts[listId][account] = approved;
 
-        emit AccountWhitelisted(operator, account, approved);
+        emit AccountWhitelisted(listId, account, approved);
     }
 
     /*///////////////////////////////////////////////////////////////
                             MERKLE LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function setMerkleRoot(bytes32 merkleRoot_) public virtual {
-        merkleRoot[msg.sender] = merkleRoot_;
+    function setMerkleRoot(uint256 listId, bytes32 merkleRoot) public virtual {
+        require(operatorOf[listId] == msg.sender, 'NOT_OPERATOR');
+        
+        merkleRoots[listId] = merkleRoot;
 
-        emit MerkleRootSet(msg.sender, merkleRoot_);
+        emit MerkleRootSet(listId, merkleRoot);
     }
 
     function joinWhitelist(
-        address operator,
+        uint256 listId,
         uint256 index,
         address account,
         bytes32[] calldata merkleProof
     ) public virtual {
-        require(!isWhitelisted(operator, index), 'WHITELIST_CLAIMED');
+        require(!isWhitelisted(listId, index), 'WHITELIST_CLAIMED');
 
         bytes32 node = keccak256(abi.encodePacked(index, account));
 
@@ -162,17 +204,17 @@ contract KaliWhitelistManager {
             }
         }
         // check if the computed hash (root) is equal to the provided root
-        require(computedHash == merkleRoot[operator], 'NOT_ROOTED');
+        require(computedHash == merkleRoots[listId], 'NOT_ROOTED');
 
         uint256 whitelistedWordIndex = index / 256;
 
         uint256 whitelistedBitIndex = index % 256;
 
-        whitelistedBitmap[operator][whitelistedWordIndex] = whitelistedBitmap[operator][whitelistedWordIndex] 
+        whitelistedBitmaps[listId][whitelistedWordIndex] = whitelistedBitmaps[listId][whitelistedWordIndex] 
             | (1 << whitelistedBitIndex);
 
-        _whitelistAccount(operator, account, true);
+        _whitelistAccount(listId, account, true);
 
-        emit WhitelistJoined(operator, index, account);
+        emit WhitelistJoined(listId, index, account);
     }
 }

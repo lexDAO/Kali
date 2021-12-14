@@ -300,9 +300,9 @@ abstract contract KaliDAOtoken {
         unchecked {
             // this is safe from underflow because decrement only occurs if `nCheckpoints` is positive
             if (nCheckpoints != 0 && checkpoints[delegatee][nCheckpoints - 1].fromTimestamp == block.timestamp) {
-                checkpoints[delegatee][nCheckpoints - 1].votes = safeCastTo96(newVotes);
+                checkpoints[delegatee][nCheckpoints - 1].votes = _safeCastTo96(newVotes);
             } else {
-                checkpoints[delegatee][nCheckpoints] = Checkpoint(safeCastTo32(block.timestamp), safeCastTo96(newVotes));
+                checkpoints[delegatee][nCheckpoints] = Checkpoint(_safeCastTo32(block.timestamp), _safeCastTo96(newVotes));
                 
                 // this is reasonably safe from overflow because incrementing `nCheckpoints` beyond
                 // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits

@@ -205,7 +205,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             payloads: payloads,
             yesVotes: 0,
             noVotes: 0,
-            creationTime: selfSponsor ? safeCastTo32(block.timestamp) : 0,
+            creationTime: selfSponsor ? _safeCastTo32(block.timestamp) : 0,
             proposer: msg.sender
         });
         
@@ -249,7 +249,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             payloads: prop.payloads,
             yesVotes: 0,
             noVotes: 0,
-            creationTime: safeCastTo32(block.timestamp),
+            creationTime: _safeCastTo32(block.timestamp),
             proposer: prop.proposer
         }); 
 

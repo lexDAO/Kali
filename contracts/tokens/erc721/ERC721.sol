@@ -114,16 +114,16 @@ abstract contract ERC721 {
     }
 
     function transferFrom(
-        address, 
+        address from, 
         address to, 
         uint256 tokenId
     ) public virtual {
-        address owner = ownerOf[tokenId];
+        require(from == ownerOf[tokenId], 'NOT_OWNER');
         
         require(
-            msg.sender == owner 
+            msg.sender == from 
             || msg.sender == getApproved[tokenId]
-            || isApprovedForAll[owner][msg.sender], 
+            || isApprovedForAll[from][msg.sender], 
             'NOT_APPROVED'
         );
         
@@ -131,7 +131,7 @@ abstract contract ERC721 {
         // against decrement, and sum of all user
         // balances can't exceed 'type(uint256).max'
         unchecked { 
-            balanceOf[owner]--; 
+            balanceOf[from]--; 
         
             balanceOf[to]++;
         }
@@ -140,24 +140,24 @@ abstract contract ERC721 {
         
         ownerOf[tokenId] = to;
         
-        emit Transfer(owner, to, tokenId); 
+        emit Transfer(from, to, tokenId); 
     }
     
     function safeTransferFrom(
-        address, 
+        address from, 
         address to, 
         uint256 tokenId
     ) public virtual {
-        safeTransferFrom(address(0), to, tokenId, '');
+        safeTransferFrom(from, to, tokenId, '');
     }
     
     function safeTransferFrom(
-        address, 
+        address from, 
         address to, 
         uint256 tokenId, 
         bytes memory data
     ) public virtual {
-        transferFrom(address(0), to, tokenId); 
+        transferFrom(from, to, tokenId); 
         
         if (to.code.length > 0) {
             // selector = `onERC721Received(address,address,uint256,bytes)`

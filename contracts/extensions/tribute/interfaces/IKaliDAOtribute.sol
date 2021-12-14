@@ -17,11 +17,25 @@ interface IKaliDAOtribute {
         ESCAPE
     }
 
+    struct Proposal {
+        ProposalType proposalType;
+        string description;
+        address[] accounts; 
+        uint256[] amounts; 
+        bytes[] payloads; 
+        uint96 yesVotes;
+        uint96 noVotes;
+        uint32 creationTime;
+        address proposer;
+    }
+
     struct ProposalState {
         uint256 sponsoredProposal;
         bool passed;
         bool processed;
     }
+
+    function proposals(uint256 proposal) external returns (Proposal memory);
 
     function proposalStates(uint256 proposal) external returns (ProposalState memory);
 

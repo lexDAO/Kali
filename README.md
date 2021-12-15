@@ -13,7 +13,7 @@
 
 `Kali` is a protocol for on-chain orgs inspired by [Compound](https://github.com/compound-finance/compound-protocol/tree/master/contracts/Governance) and [Moloch DAO](https://github.com/MolochVentures/moloch) governance. The smart contract code is *simple* to make it easier to read and secure assets on (less code, less to break). For example, Kali reduces Comp-style governance into a single contract, and can support extensions to add contracts as apps, such as crowdsales and redemptions against pooled funds. Kali contracts are further optimized for gas efficiency and functions are written to be easily adapted via modules through overrides. 
 
-## Designed for [DAC](https://lawbitrage.typepad.com/blog/2015/02/empowering-distributed-autonomous-companies.html)
+## Designed for Legal [DAC](https://lawbitrage.typepad.com/blog/2015/02/empowering-distributed-autonomous-companies.html)
 
 Kali is built for on-chain companies and funds. Proposals are broken out into a variety of types that each can have their own governance settings, such as simple/super majority and quorum requirements. Further, Kali supports hashing and amending docs from deployment and through proposals, providing a hook to wrap organizations into legal templates to rationalize membership rules and liabilities. [Legal forms](./legal) are maintained as open source goods by [LexDAO](https://twitter.com/lex_DAO) legal engineers. Incorporation, and full-service legal engineering support is also being integrated into an MVP UI to allow Kali users to solve their org painpoints quickly and cheaply (stay tuned).
 

@@ -33,12 +33,11 @@ export default function Factory(props) {
   } = useForm();
 
   const handleFactorySubmit = async (values) => {
-
     console.log("Form: ", values);
 
     value.setLoading(true);
     const factory = factoryInstance(factory_rinkeby, web3);
-    const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0";
+    const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0,0";
     const extensions = new Array(0);
     const extensionsData = new Array(0);
 

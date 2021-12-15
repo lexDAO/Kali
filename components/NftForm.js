@@ -65,6 +65,7 @@ function NftForm(props) {
     try {
       // Uplaod tokenUri to Fleek
       const result = await fleek.upload(input)
+      console.log("Metadata hash from Fleek: " + result.hash)
 
       return result.hash
 

@@ -159,7 +159,7 @@ abstract contract ERC721 {
     ) public virtual {
         transferFrom(from, to, tokenId); 
         
-        if (to.code.length > 0) {
+        if (to.code.length != 0) {
             // selector = `onERC721Received(address,address,uint256,bytes)`
             (, bytes memory returned) = to.staticcall(abi.encodeWithSelector(0x150b7a02,
                 msg.sender, from, tokenId, data));

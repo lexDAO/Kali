@@ -84,8 +84,8 @@ class DaoInfo extends Component {
         <Divider />
         <br />
         <HStack>
-          <Button onClick={this.toggleTokenCreation}>Create ERC20</Button>
-          <Button onClick={this.toggleNftCreation}>Create ERC721</Button>
+          <Button onClick={this.toggleTokenCreation}>Gift ERC20</Button>
+          <Button onClick={this.toggleNftCreation}>Gift ERC721</Button>
         </HStack>
         <>
           {this.state.tokenVisible == true ? (

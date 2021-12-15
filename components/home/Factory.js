@@ -1,32 +1,40 @@
-import React, { Component, useContext } from "react";
-import AppContext from '../../context/AppContext';
-import Router, { useRouter } from "next/router";
+import React, { useContext } from "react";
+import AppContext from "../../context/AppContext";
+import Router from "next/router";
 import {
-  Flex,
+  FormErrorMessage,
+  FormLabel,
+  FormControl,
   Input,
   Button,
-  Text,
-  Textarea,
+  Select,
+  Grid,
+  GridItem,
+  Heading,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
   NumberIncrementStepper,
-  NumberDecrementStepper,
-  Select,
+  NumberDecrementStepper
 } from "@chakra-ui/react";
 import FlexGradient from "../elements/FlexGradient";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import FormikControl from "./form/FormikControl.js";
-//const abi = require('../../abi/KaliDAOfactory.json');
 import { factory_rinkeby } from "../../utils/addresses";
 import { factoryInstance } from "../../eth/factory";
+import { useForm } from "react-hook-form";
 
 export default function Factory(props) {
   const value = useContext(AppContext);
   const { web3, account, chainId, loading } = value.state;
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
   const handleFactorySubmit = async (values) => {
+    console.log("Form: ", values);
+    
+      
       value.setLoading(true);
       const factory = factoryInstance(factory_rinkeby, web3);
       const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0";
@@ -123,103 +131,143 @@ export default function Factory(props) {
       }
 
       value.setLoading(false)
-    };
+      
+  };
 
-    const initialValues = {
-      name: "",
-      symbol: "",
-      docs: "",
-      voters: "",
-      shares: "",
-      votingPeriodUnit: "",
-      votingPeriod: 1,
-    };
+  const optionsDocs = [
+    { key: "Code of Conduct", value: "COC" },
+    { key: "UNA", value: "UNA" },
+    { key: "LLC", value: "LLC" },
+    { key: "None", value: "none"}
+  ];
 
-    const validationSchema = Yup.object({
-      name: Yup.string().required("Required"),
-      symbol: Yup.string().required("Required"),
-      voters: Yup.string().required("Required"),
-      shares: Yup.string().required("Required"),
-      docs: Yup.string().required("Required"),
-      votingPeriodUnit: Yup.string().required("Required"),
-      votingPeriod: Yup.number().required("Required"),
-    });
+  const optionsVotingPeriod = [
+    { key: "Minutes", value: "minutes" },
+    { key: "Hours", value: "hours" },
+    { key: "Days", value: "days" },
+  ];
 
-    const optionsDocs = [
-      { key: "Select Document", value: "" },
-      { key: "Code of Conduct", value: "COC" },
-      { key: "UNA", value: "UNA" },
-      { key: "LLC", value: "LLC" },
-    ];
-
-    const optionsVotingPeriod = [
-      { key: "Select Voting Period", value: "" },
-      { key: "Minutes", value: "minutes" },
-      { key: "Hours", value: "hours" },
-      { key: "Days", value: "days" },
-    ];
-
-    return (
-      <FlexGradient>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleFactorySubmit}
-        >
-          {() => (
-            <Form>
-              <FormikControl
-                control="input"
-                type="text"
-                label="Name"
-                name="name"
-                placeholder="KaliDAO"
-              />
-              <FormikControl
-                control="input"
-                type="text"
-                label="Symbol"
-                name="symbol"
-                placeholder="KALI"
-              />
-              <FormikControl
-                control="select"
-                label="Document"
-                name="docs"
-                options={optionsDocs}
-              />
-              <FormikControl
-                control="textarea"
-                type="text"
-                label="Founders"
-                name="voters"
-                placeholder="Enter ETH address or ENS and separate them by a comma like this - 'aaa.eth,bbb.eth'"
-              />
-              <FormikControl
-                control="textarea"
-                type="text"
-                label="Shares"
-                name="shares"
-                placeholder="1,2,3"
-              />
-              <FormikControl
-                control="number-input"
-                label="Voting Period"
-                name="votingPeriod"
+  return (
+    <FlexGradient>
+      {/*
+      - Goal
+      - Name, Symbol
+      - Founder, Share
+      - Document
+      - Configuration: Voting Period, Voting Period Unit
+        */}
+      <Heading as="h2">Build a DAO</Heading>
+      <form onSubmit={handleSubmit(handleFactorySubmit)}>
+        <Grid templateColumns='repeat(2, 1fr)' gap={3}>
+          <GridItem colSpan={2}>
+            <FormControl isInvalid={errors.name && touched.name}>
+                <FormLabel htmlFor="name">Name</FormLabel>
+                <Input
+                  id="name"
+                  placeholder="KaliDAO"
+                  {...register("name", { required: "You must name your DAO!" })}
+                />
+                <FormErrorMessage>
+                  {errors.name && errors.name.message}
+                </FormErrorMessage>
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={2}>
+            <FormControl isInvalid={errors.symbol}>
+                <FormLabel htmlFor="symbol">Symbol</FormLabel>
+                <Input
+                  id="symbol"
+                  placeholder="KALI"
+                  {...register("symbol", {
+                    required: "You must choose a symbol!",
+                  })}
+                />
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={2}>
+            <FormControl >
+              <FormLabel htmlFor="docs">Document</FormLabel>
+              <Select id="docs" variant="outline" placeholder="Select document" {...register("docs")}>
+                    {optionsDocs.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.key}
+                      </option>
+                    ))}
+              </Select>
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={2}>
+            <Heading as="h3">Founders</Heading>
+          </GridItem>
+          <GridItem colSpan={1}>
+            <FormControl isInvalid={errors.founders}>
+                <FormLabel htmlFor="voters">Founder</FormLabel>
+                <Input
+                  id="voters"
+                  placeholder="0x Address or ENS"
+                  {...register("voters", {
+                    required: "You must have a founder!",
+                  })}
+                />
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={1}>
+            <FormControl isInvalid={errors.shares}>
+                <FormLabel htmlFor="shares">Share</FormLabel>
+                <Input
+                  id="shares"
+                  placeholder="1"
+                  {...register("shares", {
+                    required: "Founders need shares!",
+                  })}
+                />
+              </FormControl>
+          </GridItem>
+          <GridItem colSpan={2}>
+            <Heading as="h3">Governance Settings</Heading>
+          </GridItem>
+          <GridItem colSpan={1}>
+            <FormControl>
+              <FormLabel htmlFor="votingPeriod">Voting Period</FormLabel>
+              <NumberInput
+                id="votingPeriod"
+                min={0}
                 defaultValue={3}
-                min={1}
-              />
-              <FormikControl
-                control="select"
-                name="votingPeriodUnit"
-                label="Voting Period Unit"
-                options={optionsVotingPeriod}
-              />
-              <br />
-              <Button type="submit">Summon</Button>
-            </Form>
-          )}
-        </Formik>
-      </FlexGradient>
-    );
-  }
+                {...register("votingPeriod")}
+              >
+                <NumberInputField id="votingPeriod" />
+                <NumberInputStepper>
+                  <NumberIncrementStepper
+                    bg="green.600"
+                    _active={{ bg: "green.500" }}
+                  />
+                  <NumberDecrementStepper
+                    bg="red.600"
+                    _active={{ bg: "red.500" }}
+                  />
+                </NumberInputStepper>
+              </NumberInput>
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={1}>
+            <FormControl>
+                <FormLabel htmlFor="votingPeriodUnit">Voting Period Unit</FormLabel>
+                <Select id="votingPeriodUnit" variant="outline" placeholder="Select voting period unit" {...register("votingPeriodUnit")}>
+                  {optionsVotingPeriod.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.key}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+          </GridItem>
+          <GridItem colSpan={2}>
+            <Button type="submit" isLoading={isSubmitting} isFullWidth>
+              Summon!
+            </Button>
+          </GridItem>
+        </Grid>
+      </form>
+    </FlexGradient>
+  );
+}

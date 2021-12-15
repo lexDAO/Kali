@@ -15,6 +15,7 @@ function NftForm(props) {
 
   // Upload file to Fleek Storage
   const upload = async (values) => {
+    // TODO #1 - Store keys as .env
     const input = {
       apiKey: "W4R0lBRnWsIgoiAWTjLvCw==",
       apiSecret: "/7tzFGnOoybHmrBPyu4f5WeZWpjsjDsZ5Bn9fMNoyfw=",
@@ -41,8 +42,7 @@ function NftForm(props) {
       }
 
       return metadata
-      // Upload metadata to Fleek
-      // uploadMetadata(metadata)
+
     } catch (e) {
       console.log("Error: " + e)
       alert(e)
@@ -52,6 +52,8 @@ function NftForm(props) {
   // ----- Upload metadata to Fleek Storage
   const uploadMetadata = async (metadata) => {
     const data = JSON.stringify(metadata)
+
+    // TODO #1 - Store keys as .env
     const input = {
       apiKey: "W4R0lBRnWsIgoiAWTjLvCw==",
       apiSecret: "/7tzFGnOoybHmrBPyu4f5WeZWpjsjDsZ5Bn9fMNoyfw=",
@@ -63,8 +65,9 @@ function NftForm(props) {
     try {
       // Uplaod tokenUri to Fleek
       const result = await fleek.upload(input)
-      console.log("TokenUri from fleek - " + result.hash)
+
       return result.hash
+
     } catch (e) {
       console.log("Error: " + e, i)
     }
@@ -72,8 +75,6 @@ function NftForm(props) {
 
   const handleNftSubmit = async (values) => {
     toggleLoading();
-    console.log("NFT creation Form: ", values);
-    console.log("DAO Address: ", dao);
 
     const accounts = await web3.eth.getAccounts();
     const tokenId = await kaliNFT.methods.totalSupply().call();
@@ -82,16 +83,14 @@ function NftForm(props) {
 
     // console.log("Account: ", accounts[0]);
     // console.log("KaliNFT tokenId: ", tokenId);
-    // console.log("Metadata: ", JSON.stringify(metadata));
-    // console.log("Metadata2: ", values);
     // console.log(values.file)
 
     try {
       let result = await kaliNFT.methods
         .mint(
           dao,
-          tokenId, // tokenId,
-          tokenUri, // tokenURI
+          tokenId, 
+          tokenUri, 
         )
         .send({ from: accounts[0] })
 
@@ -114,7 +113,7 @@ function NftForm(props) {
   const validationSchema = Yup.object({
     title: Yup.string().required("Required"),
     desc: Yup.string().required("Required"),
-    // Need to validate if file is present
+    // TODO #2 - Validate a file is selected
   })
 
   return (
@@ -141,6 +140,7 @@ function NftForm(props) {
               placeholder="Description for NFT"
             />
             <br />
+            {/* TODO #3 - Conform this to FormikControl for consistency */}
             <input
               id="file"
               name="file"

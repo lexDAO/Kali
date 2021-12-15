@@ -92,7 +92,7 @@ abstract contract ERC721 {
         emit ApprovalForAll(msg.sender, operator, approved);
     }
     
-    function transfer(address to, uint256 tokenId) public virtual {
+    function transfer(address to, uint256 tokenId) public virtual returns (bool success) {
         require(msg.sender == ownerOf[tokenId], 'NOT_OWNER');
         
         // this is safe because ownership is checked
@@ -109,19 +109,21 @@ abstract contract ERC721 {
         ownerOf[tokenId] = to;
         
         emit Transfer(msg.sender, to, tokenId); 
+        
+        success = true;
     }
 
     function transferFrom(
-        address, 
+        address from, 
         address to, 
         uint256 tokenId
     ) public virtual {
-        address owner = ownerOf[tokenId];
+        require(from == ownerOf[tokenId], 'NOT_OWNER');
         
         require(
-            msg.sender == owner 
+            msg.sender == from 
             || msg.sender == getApproved[tokenId]
-            || isApprovedForAll[owner][msg.sender], 
+            || isApprovedForAll[from][msg.sender], 
             'NOT_APPROVED'
         );
         
@@ -129,7 +131,7 @@ abstract contract ERC721 {
         // against decrement, and sum of all user
         // balances can't exceed 'type(uint256).max'
         unchecked { 
-            balanceOf[owner]--; 
+            balanceOf[from]--; 
         
             balanceOf[to]++;
         }
@@ -138,29 +140,29 @@ abstract contract ERC721 {
         
         ownerOf[tokenId] = to;
         
-        emit Transfer(owner, to, tokenId); 
+        emit Transfer(from, to, tokenId); 
     }
     
     function safeTransferFrom(
-        address, 
+        address from, 
         address to, 
         uint256 tokenId
     ) public virtual {
-        safeTransferFrom(address(0), to, tokenId, '');
+        safeTransferFrom(from, to, tokenId, '');
     }
     
     function safeTransferFrom(
-        address, 
+        address from, 
         address to, 
         uint256 tokenId, 
         bytes memory data
     ) public virtual {
-        transferFrom(address(0), to, tokenId); 
+        transferFrom(from, to, tokenId); 
         
-        if (to.code.length > 0) {
+        if (to.code.length != 0) {
             // selector = `onERC721Received(address,address,uint256,bytes)`
             (, bytes memory returned) = to.staticcall(abi.encodeWithSelector(0x150b7a02,
-                msg.sender, address(0), tokenId, data));
+                msg.sender, from, tokenId, data));
                 
             bytes4 selector = abi.decode(returned, (bytes4));
             
@@ -172,6 +174,10 @@ abstract contract ERC721 {
                             EIP-2612-LIKE LOGIC
     //////////////////////////////////////////////////////////////*/
     
+    function DOMAIN_SEPARATOR() public view virtual returns (bytes32 domainSeparator) {
+        domainSeparator = block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
+    }
+
     function _computeDomainSeparator() internal view virtual returns (bytes32 domainSeparator) {
         domainSeparator = keccak256(
             abi.encode(
@@ -182,10 +188,6 @@ abstract contract ERC721 {
                 address(this)
             )
         );
-    }
-    
-    function DOMAIN_SEPARATOR() public view virtual returns (bytes32 domainSeparator) {
-        domainSeparator = block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
     }
     
     function permit(

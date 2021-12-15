@@ -8,6 +8,7 @@ import {
   Textarea,
   Divider
 } from "@chakra-ui/react";
+import { proposalDetails } from "../../utils/viewProposalsHelper";
 
 const ProposalLabel = (props) => {
   return(
@@ -35,44 +36,31 @@ export default function ProposalModal(props) {
   const value = useContext(AppContext);
   const { web3, loading } = value.state;
   const p = props['p'];
+  const type = p['proposalType'];
 
   return(
     <>
-      {p['proposalType']==0 ?
-      <>
-        <ProposalLabel>shares</ProposalLabel>
+        {proposalDetails[type][0] == null ? null :
+        <>
+        <ProposalLabel>{proposalDetails[type][0]}</ProposalLabel>
         <ProposalInput value={p['amount']} />
         <ProposalDivider />
-        <ProposalLabel>account</ProposalLabel>
+        </>
+        }
+        {proposalDetails[type][1] == null ? null :
+        <>
+        <ProposalLabel>{proposalDetails[type][1]}</ProposalLabel>
         <ProposalInput value={p['account']} />
         <ProposalDivider />
-      </>
-      : null}
-
-      {p['proposalType']==1 ?
-      <>
-        <ProposalLabel>shares</ProposalLabel>
-        <ProposalInput value={p['amount']} />
-        <ProposalDivider />
-        <ProposalLabel>account</ProposalLabel>
-        <ProposalInput value={p['account']} />
-        <ProposalDivider />
-      </>
-      : null}
-
-      {p['proposalType']==2 ?
-      <>
-        <ProposalLabel>txn value</ProposalLabel>
-        <ProposalInput value={p['amount']} />
-        <ProposalDivider />
-        <ProposalLabel>contract</ProposalLabel>
-        <ProposalInput value={p['account']} />
-        <ProposalDivider />
+        </>
+        }
+        {proposalDetails[type][2] == null ? null :
+        <>
         <ProposalLabel>payload</ProposalLabel>
         <Textarea>{p['payload']}</Textarea>
         <ProposalDivider />
-      </>
-      : null}
+        </>
+        }
     </>
   )
 }

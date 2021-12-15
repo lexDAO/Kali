@@ -12,8 +12,10 @@ import {
   Button,
 } from "@chakra-ui/react";
 import FlexOutline from "../elements/FlexOutline";
+
 import { BrowserView, MobileView } from "react-device-detect";
 import { proposalHelper } from "../../utils/proposalHelper";
+
 
 export default function NewProposal(props) {
   const [menuItem, setMenuItem] = useState(999); // arbitrary number where no proposal type is selected. if changed, must change below, too
@@ -74,38 +76,35 @@ export default function NewProposal(props) {
               opacity="0.9"
             >
               <option value="999">Select a proposal type</option>
-              {proposalHelper.map((p, index) => (
-                <option key={index} value={index}>
-                  {p[0]}
-                </option>
-              ))}
+              {
+                newProposalHelper.map((p, index) => (
+                  <option key={index} value={index}>{p[0]}</option>
+                ))
+              }
             </Select>
           </FlexOutline>
         </form>
       </MobileView>
-      {menuItem < 999 ? (
-        <BackButton />
-      ) : (
-        <BrowserView>
-          <Grid
-            templateColumns={{
-              sm: "repeat(1, 1fr)",
-              md: "repeat(2, 1fr)",
-              lg: "repeat(4, 1fr)",
-            }}
-          >
-            {proposalHelper.map((p, index) => (
-              <ProposalTile
-                key={index}
-                id={index}
-                title={p[0]}
-                description={p[1]}
-              />
-            ))}
-          </Grid>
-        </BrowserView>
-      )}
-      {proposalHelper.map((row, index) => (menuItem == index ? row[2] : null))}
+      <BrowserView>
+      {menuItem < 999 ? <BackButton /> :
+      <Grid templateColumns={{sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)'}}>
+
+        {
+          newProposalHelper.map((p, index) => (
+            <ProposalTile key={index} id={index} title={p[0]} description={p[1]} />
+          ))
+        }
+
+      </Grid>
+      }
+      </BrowserView>
+
+      {newProposalHelper.map((row, index) => (
+
+        menuItem==index ? <Box p={5} border="1px solid">{row[2]}</Box> : null
+
+      ))}
+
     </>
   );
 }

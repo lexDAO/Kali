@@ -300,9 +300,9 @@ abstract contract KaliDAOtoken {
         unchecked {
             // this is safe from underflow because decrement only occurs if `nCheckpoints` is positive
             if (nCheckpoints != 0 && checkpoints[delegatee][nCheckpoints - 1].fromTimestamp == block.timestamp) {
-                checkpoints[delegatee][nCheckpoints - 1].votes = safeCastTo96(newVotes);
+                checkpoints[delegatee][nCheckpoints - 1].votes = _safeCastTo96(newVotes);
             } else {
-                checkpoints[delegatee][nCheckpoints] = Checkpoint(safeCastTo32(block.timestamp), safeCastTo96(newVotes));
+                checkpoints[delegatee][nCheckpoints] = Checkpoint(_safeCastTo32(block.timestamp), _safeCastTo96(newVotes));
                 
                 // this is reasonably safe from overflow because incrementing `nCheckpoints` beyond
                 // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
@@ -316,6 +316,10 @@ abstract contract KaliDAOtoken {
     /*///////////////////////////////////////////////////////////////
                             EIP-2612 LOGIC
     //////////////////////////////////////////////////////////////*/
+    
+    function DOMAIN_SEPARATOR() public view virtual returns (bytes32 domainSeparator) {
+        domainSeparator = block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
+    }
 
     function _computeDomainSeparator() internal view virtual returns (bytes32 domainSeparator) {
         domainSeparator = keccak256(
@@ -327,10 +331,6 @@ abstract contract KaliDAOtoken {
                 address(this)
             )
         );
-    }
-
-    function DOMAIN_SEPARATOR() public view virtual returns (bytes32 domainSeparator) {
-        domainSeparator = block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
     }
 
     function permit(
@@ -407,13 +407,13 @@ abstract contract KaliDAOtoken {
                             SAFECAST LOGIC
     //////////////////////////////////////////////////////////////*/
     
-    function safeCastTo32(uint256 x) internal pure virtual returns (uint32 y) {
+    function _safeCastTo32(uint256 x) internal pure virtual returns (uint32 y) {
         require(x <= type(uint32).max);
 
         y = uint32(x);
     }
     
-    function safeCastTo96(uint256 x) internal pure virtual returns (uint96 y) {
+    function _safeCastTo96(uint256 x) internal pure virtual returns (uint96 y) {
         require(x <= type(uint96).max);
 
         y = uint96(x);

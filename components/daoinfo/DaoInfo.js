@@ -12,12 +12,12 @@ import {
   ListItem,
 } from "@chakra-ui/react";
 import FlexGradient from "../elements/FlexGradient.js";
-
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs";
+import { convertVotingPeriod } from "../../utils/helpers";
 
 export default function DaoInfo() {
   const value = useContext(AppContext);
-  const { web3, loading, dao, address, holdersArray } = value.state;
+  const { web3, loading, dao, address, holdersArray, balances } = value.state;
   const router = useRouter();
 
   return (
@@ -35,8 +35,8 @@ export default function DaoInfo() {
       <Text>Symbol: {dao["symbol"]}</Text>
       <Text>Shares: {dao["totalSupply"] / 1000000000000000000} </Text>
       <Text>Members: {holdersArray.length}</Text>
-      <Text>Transferable: {dao["paused"]}</Text>
-      <Text>Voting period: {dao["votingPeriod"]} seconds</Text>
+      <Text>Paused: {dao["paused"].toString()}</Text>
+      <Text>Voting period: {convertVotingPeriod(dao['votingPeriod'])}</Text>
       <Text>Quorum: {dao["quorum"]}%</Text>
       <Text>Supermajority: {dao["supermajority"]}%</Text>
       <HStack>
@@ -53,6 +53,15 @@ export default function DaoInfo() {
           </ListItem>
         ))}
       </UnorderedList>
+      <Text>Balances:</Text>
+      <UnorderedList>
+      {balances.map((b, index) => (
+        <ListItem key={index}>
+          {b['token']} ({web3.utils.fromWei(b['balance'])} shares)
+        </ListItem>
+      ))}
+    </UnorderedList>
+    <Text>Tribute: {dao['tribute'].toString()}</Text>
     </FlexGradient>
   );
 }

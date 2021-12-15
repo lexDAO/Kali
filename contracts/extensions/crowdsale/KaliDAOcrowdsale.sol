@@ -13,7 +13,7 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
     mapping(address => Crowdsale) public crowdsales;
 
     struct Crowdsale {
-        address operator;
+        uint256 listId;
         address purchaseToken;
         uint8 purchaseMultiplier;
         uint96 purchaseLimit;
@@ -26,16 +26,16 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
     }
 
     function setExtension(address dao, bytes calldata extensionData) public nonReentrant virtual {
-        (address operator, address purchaseToken, uint8 purchaseMultiplier, uint96 purchaseLimit, uint32 saleEnds) 
-            = abi.decode(extensionData, (address, address, uint8, uint96, uint32));
+        (uint256 listId, address purchaseToken, uint8 purchaseMultiplier, uint96 purchaseLimit, uint32 saleEnds) 
+            = abi.decode(extensionData, (uint256, address, uint8, uint96, uint32));
         
         require(purchaseMultiplier != 0, 'NULL_MULTIPLIER'); 
 
-        require(crowdsales[dao].purchaseMultiplier != 0 || dao == msg.sender, 
+        require(crowdsales[dao].purchaseMultiplier == 0 || dao == msg.sender, 
             'INITIALIZED_OR_NOT_DAO'); 
 
         crowdsales[dao] = Crowdsale({
-            operator: operator,
+            listId: listId,
             purchaseToken: purchaseToken,
             purchaseMultiplier: purchaseMultiplier,
             purchaseLimit: purchaseLimit,
@@ -53,7 +53,7 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
 
         require(block.timestamp <= sale.saleEnds, 'SALE_ENDED');
 
-        if (sale.operator != address(0)) require(whitelistManager.whitelistedAccounts(sale.operator, account), 
+        if (sale.listId != 0) require(whitelistManager.whitelistedAccounts(sale.listId, account), 
             'NOT_WHITELISTED');
 
         if (sale.purchaseToken == address(0)) {

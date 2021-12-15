@@ -28,6 +28,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                             DAO STORAGE
     //////////////////////////////////////////////////////////////*/
 
+    string public docs;
+    
     uint256 public proposalCount;
 
     uint32 public votingPeriod;
@@ -43,13 +45,13 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
     mapping(uint256 => Proposal) public proposals;
 
+    mapping(uint256 => ProposalState) public proposalStates;
+
     mapping(ProposalType => VoteType) public proposalVoteTypes;
     
     mapping(uint256 => mapping(address => bool)) public voted;
 
-    mapping(uint256 => uint256) public linked;
-
-    mapping(uint256 => bool) public passed;
+    mapping(address => uint256) public lastYesVote;
 
     enum ProposalType {
         MINT, // add membership
@@ -61,7 +63,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         TYPE, // set `VoteType` to `ProposalType`
         PAUSE, // flip membership transferability
         EXTENSION, // flip `extensions` whitelisting
-        ESCAPE // delete pending proposal in case of revert
+        ESCAPE, // delete pending proposal in case of revert
+        DOCS // amend org docs
     }
 
     enum VoteType {
@@ -83,6 +86,12 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         address proposer;
     }
 
+    struct ProposalState {
+        uint256 sponsoredProposal;
+        bool passed;
+        bool processed;
+    }
+
     /*///////////////////////////////////////////////////////////////
                             CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
@@ -90,12 +99,13 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     function init(
         string memory name_,
         string memory symbol_,
+        string memory docs_,
         bool paused_,
         address[] memory extensions_,
         address[] memory voters_,
         uint256[] memory shares_,
         uint32 votingPeriod_,
-        uint8[12] memory govSettings_
+        uint8[13] memory govSettings_
     ) public payable nonReentrant virtual {
         require(votingPeriod == 0, 'INITIALIZED');
 
@@ -114,6 +124,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                 extensions[extensions_[i]] = true;
             }
         }
+
+        docs = docs_;
         
         votingPeriod = votingPeriod_;
         
@@ -141,6 +153,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         proposalVoteTypes[ProposalType.EXTENSION] = VoteType(govSettings_[10]);
 
         proposalVoteTypes[ProposalType.ESCAPE] = VoteType(govSettings_[11]);
+
+        proposalVoteTypes[ProposalType.DOCS] = VoteType(govSettings_[12]);
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -170,8 +184,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
         bool selfSponsor;
 
-        // if member is making proposal, include sponsorship
-        if (balanceOf[msg.sender] != 0) selfSponsor = true;
+        // if member or extension is making proposal, include sponsorship
+        if (balanceOf[msg.sender] != 0 || extensions[msg.sender]) selfSponsor = true;
         
         if (proposalType == ProposalType.PERIOD) require(amounts[0] <= 365 days, 'VOTING_PERIOD_BOUNDS');
         
@@ -191,7 +205,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             payloads: payloads,
             yesVotes: 0,
             noVotes: 0,
-            creationTime: selfSponsor ? safeCastTo32(block.timestamp) : 0,
+            creationTime: selfSponsor ? _safeCastTo32(block.timestamp) : 0,
             proposer: msg.sender
         });
         
@@ -235,12 +249,12 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             payloads: prop.payloads,
             yesVotes: 0,
             noVotes: 0,
-            creationTime: safeCastTo32(block.timestamp),
+            creationTime: _safeCastTo32(block.timestamp),
             proposer: prop.proposer
         }); 
 
         // can help external contracts track proposal # changes
-        linked[proposal] = sponsoredProposal;
+        proposalStates[proposal].sponsoredProposal = sponsoredProposal;
 
         // this is reasonably safe from overflow because incrementing `proposalCount` beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
@@ -269,7 +283,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         bytes32 digest =
             keccak256(
                 abi.encodePacked(
-                    "\x19\x01",
+                    '\x19\x01',
                     DOMAIN_SEPARATOR(),
                     keccak256(
                         abi.encode(
@@ -313,6 +327,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         unchecked { 
             if (approve) {
                 prop.yesVotes += weight;
+
+                lastYesVote[signer] = proposal;
             } else {
                 prop.noVotes += weight;
             }
@@ -349,8 +365,6 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         didProposalPass = _countVotes(voteType, prop.yesVotes, prop.noVotes);
         
         if (didProposalPass) {
-            passed[proposal] = true;
-
             // this is reasonably safe from overflow because incrementing `i` loop beyond
             // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
             unchecked {
@@ -402,10 +416,17 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                 
                 if (prop.proposalType == ProposalType.ESCAPE)
                     delete proposals[prop.amounts[0]];
+
+                if (prop.proposalType == ProposalType.DOCS)
+                    docs = prop.description;
+                
+                proposalStates[proposal].passed = true;
             }
         }
 
         delete proposals[proposal];
+
+        proposalStates[proposal].processed = true;
 
         emit ProposalProcessed(proposal, didProposalPass);
     }

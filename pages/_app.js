@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }) {
   const [balances, setBalances] = useState(null);
   const [holdersArray, setHoldersArray] = useState([]);
   const [proposalVoteTypes, setProposalVoteTypes] = useState([]);
-
+  
   useEffect(() => {
 
     if(typeof window !== "undefined" && typeof window.ethereum !== "undefined") {

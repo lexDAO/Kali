@@ -23,10 +23,10 @@ import {
   BsHandThumbsDownFill,
 } from "react-icons/bs";
 import Timer from './Timer';
-import { proposalDescriptions } from '../../utils/appParams';
 import ProposalIcon from './ProposalIcon';
 import VotingModule from './VotingModule';
 import ProposalDetails from './ProposalDetails';
+import { proposalDescriptions, proposalIcons } from "../../utils/viewProposalsHelper";
 
 const ProposalLabel = (props) => {
   return(

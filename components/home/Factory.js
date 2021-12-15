@@ -33,6 +33,7 @@ export default function Factory(props) {
   } = useForm();
 
   const handleFactorySubmit = async (values) => {
+
     console.log("Form: ", values);
 
     value.setLoading(true);

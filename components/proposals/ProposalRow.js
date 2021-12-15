@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import AppContext from '../../context/AppContext';
-//import ProposalDetails from './ProposalDetails';
 import {
   Input,
   Button,
@@ -16,26 +15,14 @@ import {
   Modal,
   Progress
 } from "@chakra-ui/react";
-import {
-  AiOutlinePlusCircle
-} from "react-icons/ai";
-import {
-  BsHandThumbsUpFill,
-  BsHandThumbsDownFill,
-  BsPlusCircle,
-  BsXCircle
-} from "react-icons/bs";
-import {
-  BiLoaderCircle
-} from "react-icons/bi";
 import FlexOutline from '../elements/FlexOutline';
 import Timer from './Timer';
-import { proposalDescriptions } from '../../utils/appParams';
 import { useClipboard } from '@chakra-ui/react'
 import ProposalModal from './ProposalModal';
 import ProposalIcon from './ProposalIcon';
 import ProcessModule from './ProcessModule';
 import { useDisclosure } from '@chakra-ui/react';
+import { proposalDescriptions, proposalIcons } from "../../utils/viewProposalsHelper";
 
 const iconSize = 8;
 
@@ -45,7 +32,7 @@ export default function ProposalRow(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const p = props['p'];
   const i = props['i'];
-
+  console.log(p['proposalType'])
   return(
     <>
       <Modal isOpen={isOpen} onClose={onClose}>

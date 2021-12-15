@@ -29,12 +29,6 @@
 				"internalType": "string",
 				"name": "name",
 				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "docs",
-				"type": "string"
 			}
 		],
 		"name": "DAOdeployed",
@@ -88,9 +82,9 @@
 				"type": "uint32"
 			},
 			{
-				"internalType": "uint8[12]",
+				"internalType": "uint8[13]",
 				"name": "govSettings_",
-				"type": "uint8[12]"
+				"type": "uint8[13]"
 			}
 		],
 		"name": "deployKaliDAO",

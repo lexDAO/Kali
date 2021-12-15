@@ -162,7 +162,7 @@ abstract contract ERC721 {
         if (to.code.length > 0) {
             // selector = `onERC721Received(address,address,uint256,bytes)`
             (, bytes memory returned) = to.staticcall(abi.encodeWithSelector(0x150b7a02,
-                msg.sender, address(0), tokenId, data));
+                msg.sender, from, tokenId, data));
                 
             bytes4 selector = abi.decode(returned, (bytes4));
             
@@ -174,6 +174,10 @@ abstract contract ERC721 {
                             EIP-2612-LIKE LOGIC
     //////////////////////////////////////////////////////////////*/
     
+    function DOMAIN_SEPARATOR() public view virtual returns (bytes32 domainSeparator) {
+        domainSeparator = block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
+    }
+
     function _computeDomainSeparator() internal view virtual returns (bytes32 domainSeparator) {
         domainSeparator = keccak256(
             abi.encode(
@@ -184,10 +188,6 @@ abstract contract ERC721 {
                 address(this)
             )
         );
-    }
-    
-    function DOMAIN_SEPARATOR() public view virtual returns (bytes32 domainSeparator) {
-        domainSeparator = block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
     }
     
     function permit(

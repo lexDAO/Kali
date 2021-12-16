@@ -115,6 +115,10 @@ abstract contract ERC20 {
     /*///////////////////////////////////////////////////////////////
                             EIP-2612 LOGIC
     //////////////////////////////////////////////////////////////*/
+
+    function DOMAIN_SEPARATOR() public view virtual returns (bytes32) {
+        return block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
+    }
     
     function _computeDomainSeparator() internal view virtual returns (bytes32) {
         return
@@ -127,10 +131,6 @@ abstract contract ERC20 {
                     address(this)
                 )
             );
-    }
-    
-    function DOMAIN_SEPARATOR() public view virtual returns (bytes32) {
-        return block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
     }
 
     function permit(

@@ -1,225 +1,286 @@
-import React, { Component, useContext } from "react";
-import AppContext from '../../context/AppContext';
-import Router, { useRouter } from "next/router";
+import React, { useContext } from "react";
+import AppContext from "../../context/AppContext";
+import Router from "next/router";
 import {
-  Flex,
+  FormErrorMessage,
+  FormLabel,
+  FormControl,
   Input,
-  Button,
-  Text,
   Textarea,
+  Button,
+  Select,
+  Grid,
+  GridItem,
+  Heading,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
-  Select,
 } from "@chakra-ui/react";
 import FlexGradient from "../elements/FlexGradient";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import FormikControl from "./form/FormikControl.js";
-//const abi = require('../../abi/KaliDAOfactory.json');
 import { factory_rinkeby } from "../../utils/addresses";
 import { factoryInstance } from "../../eth/factory";
+import { useForm, useFieldArray } from "react-hook-form";
 
 export default function Factory(props) {
   const value = useContext(AppContext);
   const { web3, account, chainId, loading } = value.state;
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
   const handleFactorySubmit = async (values) => {
-      value.setLoading(true);
-      const factory = factoryInstance(factory_rinkeby, web3);
-      const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0,0";
-      const extensions = new Array(0);
-      const extensionsData = new Array(0);
+    console.log("Form: ", values);
 
-      const {
-        name,
-        symbol,
-        docs,
-        voters,
-        shares,
-        votingPeriod,
-        votingPeriodUnit,
-      } = values;
+    value.setLoading(true);
+    const factory = factoryInstance(factory_rinkeby, web3);
+    const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0,0";
+    const extensions = new Array(0);
+    const extensionsData = new Array(0);
 
-      // convert shares to wei
-      let sharesArray = [];
-      for (let i = 0; i < shares.split(",").length; i++) {
-        sharesArray.push(web3.utils.toWei(shares.split(",")[i]));
+    const {
+      name,
+      symbol,
+      docs,
+      voters,
+      shares,
+      votingPeriod,
+      votingPeriodUnit,
+    } = values;
+
+    // convert shares to wei
+    let sharesArray = [];
+    for (let i = 0; i < shares.split(",").length; i++) {
+      sharesArray.push(web3.utils.toWei(shares.split(",")[i]));
+    }
+
+    // convert voting period to appropriate unit
+    if (votingPeriodUnit == "minutes") {
+      votingPeriod *= 60;
+    } else if (votingPeriodUnit == "hours") {
+      votingPeriod *= 60 * 60;
+    } else if (votingPeriodUnit == "days") {
+      votingPeriod *= 60 * 60 * 24;
+    } else if (votingPeriodUnit == "weeks") {
+      votingPeriod *= 60 * 60 * 24 * 7;
+    }
+
+    // convert docs to appropriate links
+    if (docs == "COC") {
+      docs =
+        "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/CodeOfConduct.md";
+    } else if (docs == "UNA") {
+      docs =
+        "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/TUNAA.md";
+    } else if (docs == "LLC") {
+      docs =
+        "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/operating/DelawareOperatingAgreement.md";
+    } else if (docs == "none") {
+      docs = "";
+    }
+
+    let votersArray = voters.split(",");
+    let _voters = "";
+
+    for (let i = 0; i < votersArray.length; i++) {
+      if (votersArray[i].includes(".eth")) {
+        votersArray[i] = await web3.eth.ens
+          .getAddress(votersArray[i])
+          .catch(() => {
+            alert("ENS not found");
+          });
       }
 
-      // convert voting period to appropriate unit
-      if (votingPeriodUnit == "minutes") {
-        votingPeriod *= 60;
-      } else if (votingPeriodUnit == "hours") {
-        votingPeriod *= 60 * 60;
-      } else if (votingPeriodUnit == "days") {
-        votingPeriod *= 60 * 60 * 24;
-      } else if (votingPeriodUnit == "weeks") {
-        votingPeriod *= 60 * 60 * 24 * 7;
+      if (i == votersArray.length - 1) {
+        _voters += votersArray[i];
+      } else {
+        _voters += votersArray[i] + ",";
       }
 
-      // convert docs to appropriate links
-      if (docs == "COC") {
-        docs =
-          "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/CodeOfConduct.md";
-      } else if (docs == "UNA") {
-        docs =
-          "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/TUNAA.md";
-      } else if (docs == "LLC") {
-        docs =
-          "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/operating/DelawareOperatingAgreement.md";
-      }
+      voters = _voters;
+    }
 
-      let votersArray = voters.split(",");
-      let _voters = "";
+    try {
+      let result = await factory.methods
+        .deployKaliDAO(
+          name,
+          symbol,
+          docs,
+          true,
+          extensions,
+          extensionsData,
+          voters.split(","),
+          sharesArray,
+          votingPeriod,
+          govSettings.split(",")
+        )
+        .send({ from: account });
 
-      for (let i = 0; i < votersArray.length; i++) {
-        if (votersArray[i].includes(".eth")) {
-          votersArray[i] = await web3.eth.ens
-            .getAddress(votersArray[i])
-            .catch(() => {
-              alert("ENS not found");
-            });
-        }
+      let dao = result["events"]["DAOdeployed"]["returnValues"]["kaliDAO"];
+      console.log(dao);
+      console.log(result);
 
-        if (i == votersArray.length - 1) {
-          _voters += votersArray[i];
-        } else {
-          _voters += votersArray[i] + ",";
-        }
+      Router.push({
+        pathname: "/daos/[dao]",
+        query: { dao: dao },
+      });
+    } catch (e) {
+      alert(e);
+      console.log(e);
+    }
 
-        voters = _voters;
-      }
+    value.setLoading(false);
+  };
 
-      try {
-        let result = await factory.methods
-          .deployKaliDAO(
-            name,
-            symbol,
-            docs,
-            true,
-            extensions,
-            extensionsData,
-            voters.split(","),
-            sharesArray,
-            votingPeriod,
-            govSettings.split(",")
-          )
-          .send({ from: account });
+  const optionsDocs = [
+    { key: "Code of Conduct", value: "COC" },
+    { key: "UNA", value: "UNA" },
+    { key: "LLC", value: "LLC" },
+    { key: "None", value: "none" },
+  ];
 
-        let dao = result["events"]["DAOdeployed"]["returnValues"]["kaliDAO"];
-        console.log(dao)
-        console.log(result)
+  const optionsVotingPeriod = [
+    { key: "Minutes", value: "minutes" },
+    { key: "Hours", value: "hours" },
+    { key: "Days", value: "days" },
+  ];
 
-        Router.push({
-          pathname: "/daos/[dao]",
-          query: { dao: dao },
-        });
-      } catch (e) {
-        alert(e);
-        console.log(e);
-      }
-
-      value.setLoading(false)
-    };
-
-    const initialValues = {
-      name: "",
-      symbol: "",
-      docs: "",
-      voters: "",
-      shares: "",
-      votingPeriodUnit: "",
-      votingPeriod: 1,
-    };
-
-    const validationSchema = Yup.object({
-      name: Yup.string().required("Required"),
-      symbol: Yup.string().required("Required"),
-      voters: Yup.string().required("Required"),
-      shares: Yup.string().required("Required"),
-      docs: Yup.string().required("Required"),
-      votingPeriodUnit: Yup.string().required("Required"),
-      votingPeriod: Yup.number().required("Required"),
-    });
-
-    const optionsDocs = [
-      { key: "Select Document", value: "" },
-      { key: "Code of Conduct", value: "COC" },
-      { key: "UNA", value: "UNA" },
-      { key: "LLC", value: "LLC" },
-    ];
-
-    const optionsVotingPeriod = [
-      { key: "Select Voting Period", value: "" },
-      { key: "Minutes", value: "minutes" },
-      { key: "Hours", value: "hours" },
-      { key: "Days", value: "days" },
-    ];
-
-    return (
-      <FlexGradient>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleFactorySubmit}
-        >
-          {() => (
-            <Form>
-              <FormikControl
-                control="input"
-                type="text"
-                label="Name"
-                name="name"
+  return (
+    <FlexGradient>
+      {/*
+      - Goal
+      - Name, Symbol
+      - Founder, Share
+      - Document
+      - Configuration: Voting Period, Voting Period Unit
+        */}
+      <Heading as="h2">Build a DAO</Heading>
+      <form onSubmit={handleSubmit(handleFactorySubmit)}>
+        <Grid templateColumns="repeat(2, 1fr)" gap={3}>
+          <GridItem colSpan={2}>
+            <FormControl isInvalid={errors.name && touched.name}>
+              <FormLabel htmlFor="name">Name</FormLabel>
+              <Input
+                id="name"
                 placeholder="KaliDAO"
+                {...register("name", { required: "You must name your DAO!" })}
               />
-              <FormikControl
-                control="input"
-                type="text"
-                label="Symbol"
-                name="symbol"
+              <FormErrorMessage>
+                {errors.name && errors.name.message}
+              </FormErrorMessage>
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={2}>
+            <FormControl isInvalid={errors.symbol}>
+              <FormLabel htmlFor="symbol">Symbol</FormLabel>
+              <Input
+                id="symbol"
                 placeholder="KALI"
+                {...register("symbol", {
+                  required: "You must choose a symbol!",
+                })}
               />
-              <FormikControl
-                control="select"
-                label="Document"
-                name="docs"
-                options={optionsDocs}
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={2}>
+            <FormControl>
+              <FormLabel htmlFor="docs">Document</FormLabel>
+              <Select
+                id="docs"
+                variant="outline"
+                placeholder="Select document"
+                {...register("docs")}
+              >
+                {optionsDocs.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.key}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={2}>
+            <Heading as="h3">Founders</Heading>
+          </GridItem>
+          <GridItem colSpan={1}>
+            <FormControl isInvalid={errors.founders}>
+              <FormLabel htmlFor="voters">Founder</FormLabel>
+              <Textarea
+                id="voters"
+                placeholder="0x Address or ENS"
+                {...register("voters", {
+                  required: "You must have a founder!",
+                })}
               />
-              <FormikControl
-                control="textarea"
-                type="text"
-                label="Founders"
-                name="voters"
-                placeholder="Enter ETH address or ENS and separate them by a comma like this - 'aaa.eth,bbb.eth'"
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={1}>
+            <FormControl isInvalid={errors.shares}>
+              <FormLabel htmlFor="shares">Share</FormLabel>
+              <Textarea
+                id="shares"
+                placeholder="1"
+                {...register("shares", {
+                  required: "Founders need shares!",
+                })}
               />
-              <FormikControl
-                control="textarea"
-                type="text"
-                label="Shares"
-                name="shares"
-                placeholder="1,2,3"
-              />
-              <FormikControl
-                control="number-input"
-                label="Voting Period"
-                name="votingPeriod"
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={2}>
+            <Heading as="h3">Governance Settings</Heading>
+          </GridItem>
+          <GridItem colSpan={1}>
+            <FormControl>
+              <FormLabel htmlFor="votingPeriod">Voting Period</FormLabel>
+              <NumberInput
+                id="votingPeriod"
+                min={0}
                 defaultValue={3}
-                min={1}
-              />
-              <FormikControl
-                control="select"
-                name="votingPeriodUnit"
-                label="Voting Period Unit"
-                options={optionsVotingPeriod}
-              />
-              <br />
-              <Button type="submit">Summon</Button>
-            </Form>
-          )}
-        </Formik>
-      </FlexGradient>
-    );
-  }
+                {...register("votingPeriod")}
+              >
+                <NumberInputField id="votingPeriod" />
+                <NumberInputStepper>
+                  <NumberIncrementStepper
+                    bg="green.600"
+                    _active={{ bg: "green.500" }}
+                  />
+                  <NumberDecrementStepper
+                    bg="red.600"
+                    _active={{ bg: "red.500" }}
+                  />
+                </NumberInputStepper>
+              </NumberInput>
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={1}>
+            <FormControl>
+              <FormLabel htmlFor="votingPeriodUnit">
+                Voting Period Unit
+              </FormLabel>
+              <Select
+                id="votingPeriodUnit"
+                variant="outline"
+                placeholder="Select voting period unit"
+                {...register("votingPeriodUnit")}
+              >
+                {optionsVotingPeriod.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.key}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          </GridItem>
+          <GridItem colSpan={2}>
+            <Button type="submit" isLoading={isSubmitting} isFullWidth>
+              Summon!
+            </Button>
+          </GridItem>
+        </Grid>
+      </form>
+    </FlexGradient>
+  );
+}

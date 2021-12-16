@@ -184,8 +184,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
         bool selfSponsor;
 
-        // if member is making proposal, include sponsorship
-        if (balanceOf[msg.sender] != 0) selfSponsor = true;
+        // if member or extension is making proposal, include sponsorship
+        if (balanceOf[msg.sender] != 0 || extensions[msg.sender]) selfSponsor = true;
         
         if (proposalType == ProposalType.PERIOD) require(amounts[0] <= 365 days, 'VOTING_PERIOD_BOUNDS');
         
@@ -205,7 +205,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             payloads: payloads,
             yesVotes: 0,
             noVotes: 0,
-            creationTime: selfSponsor ? safeCastTo32(block.timestamp) : 0,
+            creationTime: selfSponsor ? _safeCastTo32(block.timestamp) : 0,
             proposer: msg.sender
         });
         
@@ -249,7 +249,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             payloads: prop.payloads,
             yesVotes: 0,
             noVotes: 0,
-            creationTime: safeCastTo32(block.timestamp),
+            creationTime: _safeCastTo32(block.timestamp),
             proposer: prop.proposer
         }); 
 
@@ -283,7 +283,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         bytes32 digest =
             keccak256(
                 abi.encodePacked(
-                    "\x19\x01",
+                    '\x19\x01',
                     DOMAIN_SEPARATOR(),
                     keccak256(
                         abi.encode(
@@ -365,8 +365,6 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         didProposalPass = _countVotes(voteType, prop.yesVotes, prop.noVotes);
         
         if (didProposalPass) {
-            proposalStates[proposal].passed = true;
-
             // this is reasonably safe from overflow because incrementing `i` loop beyond
             // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
             unchecked {
@@ -421,6 +419,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
                 if (prop.proposalType == ProposalType.DOCS)
                     docs = prop.description;
+                
+                proposalStates[proposal].passed = true;
             }
         }
 

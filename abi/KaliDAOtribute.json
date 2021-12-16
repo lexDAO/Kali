@@ -46,8 +46,14 @@
 			},
 			{
 				"indexed": false,
+				"internalType": "bool",
+				"name": "nft",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
 				"internalType": "uint256",
-				"name": "assetAmount",
+				"name": "value",
 				"type": "uint256"
 			}
 		],
@@ -105,13 +111,18 @@
 				"type": "bytes[]"
 			},
 			{
+				"internalType": "bool",
+				"name": "nft",
+				"type": "bool"
+			},
+			{
 				"internalType": "address",
 				"name": "asset",
 				"type": "address"
 			},
 			{
 				"internalType": "uint256",
-				"name": "assetAmount",
+				"name": "value",
 				"type": "uint256"
 			}
 		],
@@ -189,8 +200,13 @@
 				"type": "address"
 			},
 			{
+				"internalType": "bool",
+				"name": "nft",
+				"type": "bool"
+			},
+			{
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "value",
 				"type": "uint256"
 			}
 		],

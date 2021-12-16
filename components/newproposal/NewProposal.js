@@ -1,5 +1,5 @@
-import { useState, useContext, useEffect } from 'react';
-import AppContext from '../../context/AppContext';
+import { useState, useContext, useEffect } from "react";
+import AppContext from "../../context/AppContext";
 import {
   Select,
   Text,
@@ -8,11 +8,13 @@ import {
   LinkBox,
   LinkOverlay,
   Heading,
-  Button
+  Divider,
+  Button,
 } from "@chakra-ui/react";
 import FlexOutline from "../elements/FlexOutline";
-import { BrowserView, MobileView } from 'react-device-detect';
-import { newProposalHelper } from '../../utils/newProposalHelper';
+
+import { BrowserView, MobileView } from "react-device-detect";
+import { newProposalHelper } from "../../utils/newProposalHelper";
 
 export default function NewProposal(props) {
   const [menuItem, setMenuItem] = useState(999); // arbitrary number where no proposal type is selected. if changed, must change below, too
@@ -21,15 +23,31 @@ export default function NewProposal(props) {
   const balances = props.balances;
 
   const ProposalTile = (props) => {
-    return(
-        <LinkBox backgroundColor="lightgrey" p={5} m={5} rounded="lg">
-          <LinkOverlay href="#" onClick={() => setMenuItem(props.id)}>
-          <Heading size="md"><b>{props.title}</b></Heading>
-          </LinkOverlay>
-          <Text>{props.description}</Text>
-        </LinkBox>
-      )
-    }
+    return (
+      <LinkBox
+        bgGradient="linear(to-br, kali.400, kali.100)"
+        p={5}
+        m={2}
+        borderRadius="2xl"
+        boxShadow="dark-lg"
+        _hover={{
+          bgGradient: "linear(to-br, kali.100, kali.400)",
+        }}
+      >
+        <LinkOverlay href="#" onClick={() => setMenuItem(props.id)}>
+          <Heading
+            size="md"
+            fontWeight="extrabold"
+            color="#080800"
+            textTransform="uppercase"
+          >
+            {props.title}
+          </Heading>
+        </LinkOverlay>
+        <Text color="#292929">{props.description}</Text>
+      </LinkBox>
+    );
+  };
 
   const updateMenuItem = (e) => {
     let newValue = e.target.value;
@@ -37,12 +55,14 @@ export default function NewProposal(props) {
   };
 
   const BackButton = () => {
-    return(
-      <Button size="sm" onClick={() => setMenuItem(999)} marginBottom={5}>« Back</Button>
-    )
-  }
+    return (
+      <Button size="sm" onClick={() => setMenuItem(999)} marginBottom={5}>
+        « Back
+      </Button>
+    );
+  };
 
-  return(
+  return (
     <>
       <MobileView>
         <form>
@@ -55,36 +75,45 @@ export default function NewProposal(props) {
               opacity="0.9"
             >
               <option value="999">Select a proposal type</option>
-              {
-                newProposalHelper.map((p, index) => (
-                  <option key={index} value={index}>{p[0]}</option>
-                ))
-              }
+              {newProposalHelper.map((p, index) => (
+                <option key={index} value={index}>
+                  {p[0]}
+                </option>
+              ))}
             </Select>
           </FlexOutline>
         </form>
       </MobileView>
-
       <BrowserView>
-      {menuItem < 999 ? <BackButton /> :
-      <Grid templateColumns={{sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)'}}>
-
-        {
-          newProposalHelper.map((p, index) => (
-            <ProposalTile key={index} id={index} title={p[0]} description={p[1]} />
-          ))
-        }
-
-      </Grid>
-      }
+        {menuItem < 999 ? (
+          <BackButton />
+        ) : (
+          <Grid
+            templateColumns={{
+              sm: "repeat(1, 1fr)",
+              md: "repeat(2, 1fr)",
+              lg: "repeat(4, 1fr)",
+            }}
+          >
+            {newProposalHelper.map((p, index) => (
+              <ProposalTile
+                key={index}
+                id={index}
+                title={p[0]}
+                description={p[1]}
+              />
+            ))}
+          </Grid>
+        )}
       </BrowserView>
 
-      {newProposalHelper.map((row, index) => (
-
-        menuItem==index ? <Box p={5} border="1px solid">{row[2]}</Box> : null
-
-      ))}
-
+      {newProposalHelper.map((row, index) =>
+        menuItem == index ? (
+          <Box p={5} border="1px solid">
+            {row[2]}
+          </Box>
+        ) : null
+      )}
     </>
-  )
+  );
 }

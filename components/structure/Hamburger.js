@@ -23,7 +23,7 @@ export default function Hamburger() {
       <MenuList>
         <MenuGroup title="General">
           <MenuItem _focus={{ bg: "kali.700" }}>My DAOs</MenuItem>
-          <MenuItem>Tools</MenuItem>
+          <MenuItem _focus={{ bg: "kali.700" }}>Tools</MenuItem>
           {/*TODO: Add Tools Sub-Menu*/}
         </MenuGroup>
         <MenuGroup title="Help">

@@ -74,6 +74,8 @@ export default function ProposalModal(props) {
         <ModalCloseButton />
         <ModalBody m={5}>
 
+        <Text casing="uppercase">Submitted by {p['proposer']}</Text>
+
         <ProposalLabel>description</ProposalLabel>
         <Text>{p['description']}</Text>
         <ProposalDivider />

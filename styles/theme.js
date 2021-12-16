@@ -21,6 +21,11 @@ const config = {
 };
 
 const theme = extendTheme({
+
+  fonts: {
+
+  },
+
   components: {
     Button: Button,
   },

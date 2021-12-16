@@ -1,5 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import AppContext from '../context/AppContext';
+import '@fontsource/roboto/300.css'
 import infura from '../utils/infura';
 import Web3 from 'web3';
 import { useState, useEffect } from 'react';
@@ -8,9 +9,9 @@ const abi = require("../abi/KaliDAO.json");
 
 function MyApp({ Component, pageProps }) {
 
-  const [web3, setWeb3] = useState(infura);
+  const [web3, setWeb3] = useState(infura[0]);
   const [account, setAccount] = useState(null);
-  const [chainId, setChainId] = useState(null);
+  const [chainId, setChainId] = useState(infura[1]);
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(0);
@@ -20,7 +21,9 @@ function MyApp({ Component, pageProps }) {
   const [balances, setBalances] = useState(null);
   const [holdersArray, setHoldersArray] = useState([]);
   const [proposalVoteTypes, setProposalVoteTypes] = useState([]);
-  
+  const [extensions, setExtensions] = useState();
+  const [isMember, setIsMember] = useState();
+
   useEffect(() => {
 
     if(typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
@@ -104,7 +107,9 @@ function MyApp({ Component, pageProps }) {
             proposals: proposals,
             balances: balances,
             holdersArray: holdersArray,
-            proposalVoteTypes: proposalVoteTypes
+            proposalVoteTypes: proposalVoteTypes,
+            extensions: extensions,
+            isMember: isMember
           },
           setWeb3: setWeb3,
           setAccount: setAccount,
@@ -119,7 +124,9 @@ function MyApp({ Component, pageProps }) {
           setProposals: setProposals,
           setBalances: setBalances,
           setHoldersArray: setHoldersArray,
-          setProposalVoteTypes: setProposalVoteTypes
+          setProposalVoteTypes: setProposalVoteTypes,
+          setExtensions: setExtensions,
+          setIsMember: setIsMember
         }}
       >
         <Component {...pageProps} />

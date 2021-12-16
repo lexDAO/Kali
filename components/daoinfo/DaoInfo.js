@@ -17,7 +17,7 @@ import { convertVotingPeriod } from "../../utils/helpers";
 
 export default function DaoInfo() {
   const value = useContext(AppContext);
-  const { web3, loading, dao, address, holdersArray, balances } = value.state;
+  const { web3, loading, dao, address, holdersArray, balances, extensions } = value.state;
   const router = useRouter();
 
   return (
@@ -61,7 +61,13 @@ export default function DaoInfo() {
         </ListItem>
       ))}
     </UnorderedList>
-    <Text>Tribute: {dao['tribute'].toString()}</Text>
+    <Text>Extensions</Text>
+    <UnorderedList>
+    {Object.entries(extensions).map(([key, value]) => (
+      <ListItem>{key}</ListItem>
+    ))}
+    </UnorderedList>
+
     </FlexGradient>
   );
 }

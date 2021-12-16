@@ -9,6 +9,7 @@ import GovSupermajority from "../components/newproposal/GovSupermajority";
 import GovPause from "../components/newproposal/GovPause";
 import GovVotingSettings from "../components/newproposal/GovVotingSettings";
 import Extensions from "../components/newproposal/Extensions";
+import Tribute from "../components/newproposal/Tribute";
 
 export const newProposalHelper = [ // title, description, component
   ["Send Shares", "Add a new member, or send more shares to an existing member.", <SendShares />],
@@ -17,6 +18,7 @@ export const newProposalHelper = [ // title, description, component
   ["Governance Settings", "Adjust the DAO's voting period, quorum, supermajority, and share transferability.", <GovernanceSettings />],
   ["Extensions", "Add, remove, and configure extensions.", <Extensions />],
   ["Remove Member", "Propose removal of member due to misconduct or wallet hack.", <RemoveMember />],
+  ["Tribute", "Propose joining the DAO, and send tribute.", <Tribute />],
 ]
 
 export const govSettingsHelper = [ // solidity enum id, description, component

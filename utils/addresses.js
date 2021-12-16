@@ -7,3 +7,8 @@ export const factory_rinkeby = "0xD1B857C5B691b710b39E2e072BCB492F0b13D65d";
 // - tribute
 export const tribute_rinkeby = "0x8B652867304859ad994437408F505237007966B5";
 
+export const extensions = { // grouped by chain id
+  4: {
+    "tribute": "0x8B652867304859ad994437408F505237007966B5"
+  }
+}

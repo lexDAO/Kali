@@ -13,7 +13,7 @@ import NumInputField from "../elements/NumInputField";
 
 export default function SendShares() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address } = value.state;
+  const { web3, loading, account, abi, address, isMember, chainId, extensions } = value.state;
 
   const submitProposal = async (event) => {
     event.preventDefault();

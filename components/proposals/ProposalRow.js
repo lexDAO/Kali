@@ -44,7 +44,7 @@ export default function ProposalRow(props) {
 
           <ProposalIcon p={p} />
           <Text casing="uppercase">{proposalDescriptions[p['proposalType']]}</Text>
-
+          {p['isSponsored']==false ? <Text casing="uppercase">needs sponsor</Text> : null}
           <Timer expires={p['expires']} open={p['open']} />
           <Progress width="100%" colorScheme='green' backgroundColor='pink' value={p['progress']} />
 

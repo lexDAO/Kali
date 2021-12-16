@@ -1,9 +1,9 @@
 import { proposalTypes } from './appParams';
-import { factory_rinkeby, tribute_rinkeby } from "./addresses";
+import { factory_rinkeby, extensions } from "./addresses";
 import { factoryInstance } from "../eth/factory";
 import { tokenBalances } from "./tokens";
 
-export async function fetchAll(instance, factory, address, web3) {
+export async function fetchAll(instance, factory, address, web3, chainId, account) {
   const proposalCount = parseInt(
     await instance.methods.proposalCount().call()
   );
@@ -72,8 +72,10 @@ export async function fetchAll(instance, factory, address, web3) {
   for (var i = proposalCount - 1; i >=0; i--) {
     if(foundZero == false) {
       var proposal = await instance.methods.proposals(i).call();
+      proposal['isSponsored'] = await isMember(instance, proposer); // for sponsorship
       let creationTime = parseInt(proposal["creationTime"]);
-      if(creationTime == 0) {
+      let proposer = proposal["proposer"];
+      if(creationTime == 0 && proposer == "0x0000000000000000000000000000000000000000") {
         foundZero = true;
       } else {
         var proposalArrays = await instance.methods.getProposalArrays(i).call();
@@ -120,9 +122,11 @@ export async function fetchAll(instance, factory, address, web3) {
 
   const balances_ = await getBalances(address, web3);
 
-  dao_['tribute'] = await instance.methods.extensions(tribute_rinkeby).call();
+  const extensions_ = await getExtensions(instance, chainId);
 
-  return { dao_, holdersArray_, proposalVoteTypes_, proposals_, balances_ };
+  const isMember_ = await isMember(instance, account);
+
+  return { dao_, holdersArray_, proposalVoteTypes_, proposals_, balances_, extensions_, isMember_ };
 }
 
 export function getPassing(voteType, yesVotes, noVotes, totalSupply, quorum, supermajority, open) {
@@ -191,4 +195,26 @@ export async function getBalances(address, web3) {
     tokenBalances.push({'token': token['token'], 'address': token['address'], 'balance': balance})
   }
   return tokenBalances;
+}
+
+export async function getExtensions(instance, chainId) {
+  const extensionArray = [];
+  let ext = extensions[chainId];
+  for(const [key, value] of Object.entries(ext)) {
+    let bool = await instance.methods.extensions(value).call();
+    if(bool==true) {
+      console.log(value)
+      extensionArray[key] = value;
+    }
+  }
+  return extensionArray;
+}
+
+export async function isMember(instance, account) {
+  var bool = false;
+  if(account!=null) {
+    let balance = await instance.methods.balanceOf(account).call();
+    if(balance>0) {bool = true} else {bool = false}
+  }
+  return bool;
 }

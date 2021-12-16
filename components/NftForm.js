@@ -13,7 +13,6 @@ import fleek from "@fleekhq/fleek-storage-js"
 function NftForm(props) {
   const { toggleLoading, dao } = props;
 
-  console.log(process.env.REACT_APP_FLEEK_API_SECRET)
   // Upload file to Fleek Storage
   const upload = async (values) => {
 

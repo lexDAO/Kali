@@ -21,6 +21,7 @@ import { useClipboard } from '@chakra-ui/react'
 import ProposalModal from './ProposalModal';
 import ProposalIcon from './ProposalIcon';
 import ProcessModule from './ProcessModule';
+import Sponsor from './Sponsor';
 import { useDisclosure } from '@chakra-ui/react';
 import { proposalDescriptions, proposalIcons } from "../../utils/viewProposalsHelper";
 
@@ -32,7 +33,7 @@ export default function ProposalRow(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const p = props['p'];
   const i = props['i'];
-  console.log(p['proposalType'])
+  console.log(p['inLimbo'])
   return(
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -44,7 +45,6 @@ export default function ProposalRow(props) {
 
           <ProposalIcon p={p} />
           <Text casing="uppercase">{proposalDescriptions[p['proposalType']]}</Text>
-          {p['isSponsored']==false ? <Text casing="uppercase">needs sponsor</Text> : null}
           <Timer expires={p['expires']} open={p['open']} />
           <Progress width="100%" colorScheme='green' backgroundColor='pink' value={p['progress']} />
 
@@ -55,9 +55,9 @@ export default function ProposalRow(props) {
           <Button key={p['id']} onClick={onOpen}>
             {p['open'] == false ? 'Details' : 'Review & Vote' }
           </Button>
-          {p['open'] == false ?
-          <ProcessModule i={i} p={p} />
-          : null}
+          {p['inLimbo']==true
+          ? <Sponsor p={p} />
+          : p['isOpen']==false ? <ProcessModule i={i} p={p} /> : null}
           </HStack>
         </VStack>
       </Box>

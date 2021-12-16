@@ -26,6 +26,7 @@ import Timer from './Timer';
 import ProposalIcon from './ProposalIcon';
 import VotingModule from './VotingModule';
 import ProposalDetails from './ProposalDetails';
+import Sponsor from './Sponsor';
 import { proposalDescriptions, proposalIcons } from "../../utils/viewProposalsHelper";
 
 const ProposalLabel = (props) => {
@@ -85,9 +86,9 @@ export default function ProposalModal(props) {
         <Center>
           {p['open']==true ?
           <VotingModule p={p} />
-        :
-
-          <i>voting has closed</i>
+        : p['inLimbo']==true
+        ? <Sponsor p={p} />
+        : <i>voting has closed</i>
         }
         </Center>
         </ModalBody>

@@ -52,9 +52,11 @@ export default function Tribute() {
 
         asset_ = "0x0000000000000000000000000000000000000000";
 
+        const nft = "false";
+
         try {
           let result = await instance.methods
-            .submitTributeProposal(address, proposalType_, description_, [account_], [amount_], [payload_], asset_, assetAmount_)
+            .submitTributeProposal(address, proposalType_, description_, [account_], [amount_], [payload_], nft, asset_, assetAmount_)
             .send({ from: account, value: assetAmount_ });
             value.setReload(value.state.reload+1);
             value.setVisibleView(1);

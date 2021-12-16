@@ -72,7 +72,6 @@ export async function fetchAll(instance, factory, address, web3, chainId, accoun
   for (var i = proposalCount - 1; i >=0; i--) {
     if(foundZero == false) {
       var proposal = await instance.methods.proposals(i).call();
-      proposal['isSponsored'] = await isMember(instance, proposer); // for sponsorship
       let creationTime = parseInt(proposal["creationTime"]);
       let proposer = proposal["proposer"];
       if(creationTime == 0 && proposer == "0x0000000000000000000000000000000000000000") {
@@ -98,13 +97,15 @@ export async function fetchAll(instance, factory, address, web3, chainId, accoun
           proposal["open"] = false;
           proposal["timeRemaining"] = 0;
         }
+        proposal['isSponsored'] = await isSponsored(instance, proposer, proposal); // for sponsorship
+        proposal['inLimbo'] = await inLimbo(proposal);
         // calculate progress bar and passing/failing
         let proposalType = proposal["proposalType"];
         let yesVotes = parseInt(proposal["yesVotes"]);
         let noVotes = parseInt(proposal["noVotes"]);
         let voteType = proposalVoteTypes_[proposalType];
 
-        proposal['passing'] = getPassing(voteType, yesVotes, noVotes, totalSupply, quorum, supermajority, proposal['open']);
+        proposal['passing'] = getPassing(voteType, yesVotes, noVotes, totalSupply, quorum, supermajority, proposal['open'], proposal['inLimbo']);
         proposal['progress'] = getProgress(yesVotes, noVotes);
 
         // integrate data from array getter function
@@ -129,7 +130,7 @@ export async function fetchAll(instance, factory, address, web3, chainId, accoun
   return { dao_, holdersArray_, proposalVoteTypes_, proposals_, balances_, extensions_, isMember_ };
 }
 
-export function getPassing(voteType, yesVotes, noVotes, totalSupply, quorum, supermajority, open) {
+export function getPassing(voteType, yesVotes, noVotes, totalSupply, quorum, supermajority, open, inLimbo) {
 
   let passing;
   let passingText;
@@ -167,6 +168,10 @@ export function getPassing(voteType, yesVotes, noVotes, totalSupply, quorum, sup
     passingText = "failing";
   } else if(passing==false && open==false){
     passingText = "failed";
+  }
+
+  if(inLimbo==true) {
+    passingText = "awaiting vote"
   }
 
   return passingText;
@@ -210,11 +215,33 @@ export async function getExtensions(instance, chainId) {
   return extensionArray;
 }
 
+export async function isSponsored(instance, proposer, proposal) {
+  var bool = false;
+  if(isMember(instance, proposer)==true) {
+    bool = true;
+  } else {
+    if(proposal['creationTime'] > 0 && proposal['proposer'] != "0x0000000000000000000000000000000000000000") {
+      bool = true;
+    }
+  }
+  return bool;
+}
+
 export async function isMember(instance, account) {
   var bool = false;
   if(account!=null) {
     let balance = await instance.methods.balanceOf(account).call();
     if(balance>0) {bool = true} else {bool = false}
+  }
+  return bool;
+}
+
+export async function inLimbo(proposal) {
+  let bool = false;
+  if(proposal['open']==false) {
+    if(proposal['proposer'] != "0x0000000000000000000000000000000000000000") {
+      bool = true;
+    }
   }
   return bool;
 }

@@ -239,7 +239,7 @@ export async function isMember(instance, account) {
 export async function inLimbo(proposal) {
   let bool = false;
   if(proposal['open']==false) {
-    if(proposal['proposer'] != "0x0000000000000000000000000000000000000000") {
+    if(proposal['proposer'] != "0x0000000000000000000000000000000000000000" && proposal['creationTime'] == 0)  {
       bool = true;
     }
   }

@@ -33,7 +33,7 @@ export default function ProposalRow(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const p = props['p'];
   const i = props['i'];
-  console.log(p['inLimbo'])
+
   return(
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -57,7 +57,8 @@ export default function ProposalRow(props) {
           </Button>
           {p['inLimbo']==true
           ? <Sponsor p={p} />
-          : p['isOpen']==false ? <ProcessModule i={i} p={p} /> : null}
+          : null}
+          { p['isOpen']==false && p['inLimbo']==false ? <ProcessModule i={i} p={p} /> : null}
           </HStack>
         </VStack>
       </Box>

@@ -33,7 +33,7 @@ export default function ProposalRow(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const p = props['p'];
   const i = props['i'];
-
+  console.log(p['proposalType'])
   return(
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -45,6 +45,7 @@ export default function ProposalRow(props) {
 
           <ProposalIcon p={p} />
           <Text casing="uppercase">{proposalDescriptions[p['proposalType']]}</Text>
+          {p['isSponsored']==false ? <Text casing="uppercase">needs sponsor</Text> : null}
           <Timer expires={p['expires']} open={p['open']} />
           <Progress width="100%" colorScheme='green' backgroundColor='pink' value={p['progress']} />
 
@@ -55,10 +56,12 @@ export default function ProposalRow(props) {
           <Button key={p['id']} onClick={onOpen}>
             {p['open'] == false ? 'Details' : 'Review & Vote' }
           </Button>
-          {p['inLimbo']==true
-          ? <Sponsor p={p} />
+          {p['open'] == false && p['inLimbo'] == false ?
+          <ProcessModule i={i} p={p} />
           : null}
-          { p['isOpen']==false && p['inLimbo']==false ? <ProcessModule i={i} p={p} /> : null}
+          {p['inLimbo'] == true ?
+          <Sponsor i={i} p={p} />
+          : null}
           </HStack>
         </VStack>
       </Box>

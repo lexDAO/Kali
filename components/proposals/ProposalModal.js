@@ -86,10 +86,14 @@ export default function ProposalModal(props) {
         <Center>
           {p['open']==true ?
           <VotingModule p={p} />
-        : p['inLimbo']==true
-        ? <Sponsor p={p} />
-        : <i>voting has closed</i>
-        }
+          :
+          null
+          }
+          {p['inLimbo']==true ?
+          <Sponsor p={p} />
+          :
+          null
+          }
         </Center>
         </ModalBody>
 

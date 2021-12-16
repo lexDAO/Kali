@@ -16,38 +16,58 @@ import { proposalTypes, voteTypes } from "../../utils/appParams";
 
 export default function Proposals(props) {
   const value = useContext(AppContext);
-  const { web3, loading, proposals, address } = value.state;
-  const [sponsoredVisible, setSponsoredVisible] = useState(true);
+  const { web3, loading, proposals, pendingProposals, address } = value.state;
+  const [toggle, setToggle] = useState(false);
+  const [visible, setVisible] = useState(proposals); // to toggle between sponsored and unsponsored
 
-  const proposalFilter = () => {
-    setSponsoredVisible(!sponsoredVisible);
-    console.log(sponsoredVisible)
+  console.log(proposals)
+
+  const handleClick = () => {
+    setToggle(!toggle);
+    if(toggle==false) {
+      setVisible(proposals);
+    } else {
+      setVisible(pendingProposals);
+    }
+  }
+
+  useEffect(() => {
+    if(!proposals) {
+      return;
+    } else {
+      visible = proposals;
+    }
+
+  }, []);
+
+  const ProposalContainer = (props) => {
+    return(
+    <>
+    {props['proposals'].length==0 ? 'Awaiting Proposals' :
+    <Grid templateColumns={{sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)'}}>
+      {props['proposals'].map((p, index) => (
+
+        <ProposalRow
+          key={index}
+          p={p}
+          i={index}
+        />
+
+      ))}
+    </Grid>
+    }
+    </>
+  );
   }
 
   return(
     <>
-      <Button onClick = {proposalFilter}>
-      {sponsoredVisible==true ? 'Show Unsponsored' : 'Show Sponsored'}
+      <Button onClick={handleClick}>
+        {toggle==false ? 'Show Sponsored' : 'Show Unsponsored'}
       </Button>
-      {proposals === null ?
-        <Text>Loading . . . </Text>
-        :
-        <>
-        {proposals.length==0 ? 'Awaiting Proposals' :
-        <Grid templateColumns={{sm: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)'}}>
-          {proposals.map((p, index) => (
-            (p['inLimbo']==true && sponsoredVisible==false) || (p['inLimbo']==false && sponsoredVisible==true) ?
-            <ProposalRow
-              key={index}
-              p={p}
-              i={index}
-            />
-            : null
-          ))}
-        </Grid>
-        }
-        </>
-      }
+      {visible != null ?
+      <ProposalContainer proposals={visible} />
+      : null}
     </>
   )
 }

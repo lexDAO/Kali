@@ -67,6 +67,7 @@ export async function fetchAll(instance, factory, address, web3, chainId, accoun
   }
 
   const proposals_ = [];
+  const pendingProposals_ = [];
   const cutoff = Date.now() / 1000 - parseInt(votingPeriod);
   var foundZero = false;
   for (var i = proposalCount - 1; i >=0; i--) {
@@ -115,11 +116,16 @@ export async function fetchAll(instance, factory, address, web3, chainId, accoun
         let payload = proposalArrays["payloads"][0];
         //proposal["payloadArray"] = payload.match(/.{0,40}/g);
         proposal["payload"] = payload;
-        proposals_.push(proposal);
+        if(proposal['inLimbo']==true) {
+          pendingProposals_.push(proposal);
+        } else {
+          proposals_.push(proposal);
+        }
       } // end live proposals
     } // end for loop
   }
   proposals_.reverse();
+  pendingProposals_.reverse();
 
   const balances_ = await getBalances(address, web3);
 
@@ -127,7 +133,7 @@ export async function fetchAll(instance, factory, address, web3, chainId, accoun
 
   const isMember_ = await isMember(instance, account);
 
-  return { dao_, holdersArray_, proposalVoteTypes_, proposals_, balances_, extensions_, isMember_ };
+  return { dao_, holdersArray_, proposalVoteTypes_, proposals_, pendingProposals_, balances_, extensions_, isMember_ };
 }
 
 export function getPassing(voteType, yesVotes, noVotes, totalSupply, quorum, supermajority, open, inLimbo) {

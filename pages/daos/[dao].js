@@ -18,7 +18,7 @@ import { factoryInstance } from '../../eth/factory';
 
 export default function Dao() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, chainId, reload, visibleView, dao, proposals, balances, holdersArray } = value.state;
+  const { web3, loading, account, abi, chainId, reload, visibleView, dao, proposals, pendingProposals, balances, holdersArray } = value.state;
 
   // * get DAO address from route * //
   const router = useRouter();
@@ -44,7 +44,8 @@ export default function Dao() {
         dao_,
         holdersArray_,
         proposalVoteTypes_,
-        proposals_, 
+        proposals_,
+        pendingProposals_,
         balances_,
         extensions_,
         isMember_
@@ -53,6 +54,7 @@ export default function Dao() {
       value.setHoldersArray(holdersArray_);
       value.setProposalVoteTypes(proposalVoteTypes_);
       value.setProposals(proposals_);
+      value.setPendingProposals(pendingProposals_);
       value.setBalances(balances_);
       value.setExtensions(extensions_);
       value.setIsMember(isMember_);

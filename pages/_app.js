@@ -18,6 +18,7 @@ function MyApp({ Component, pageProps }) {
   const [visibleView, setVisibleView] = useState(1);
   const [dao, setDao] = useState({});
   const [proposals, setProposals] = useState(null);
+  const [pendingProposals, setPendingProposals] = useState(null);
   const [balances, setBalances] = useState(null);
   const [holdersArray, setHoldersArray] = useState([]);
   const [proposalVoteTypes, setProposalVoteTypes] = useState([]);
@@ -105,6 +106,7 @@ function MyApp({ Component, pageProps }) {
             visibleView: visibleView,
             dao: dao,
             proposals: proposals,
+            pendingProposals: pendingProposals,
             balances: balances,
             holdersArray: holdersArray,
             proposalVoteTypes: proposalVoteTypes,
@@ -122,6 +124,7 @@ function MyApp({ Component, pageProps }) {
           setVisibleView: setVisibleView,
           setDao: setDao,
           setProposals: setProposals,
+          setPendingProposals: setPendingProposals,
           setBalances: setBalances,
           setHoldersArray: setHoldersArray,
           setProposalVoteTypes: setProposalVoteTypes,

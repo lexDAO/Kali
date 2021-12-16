@@ -13,12 +13,13 @@ import fleek from "@fleekhq/fleek-storage-js"
 function NftForm(props) {
   const { toggleLoading, dao } = props;
 
+  console.log(process.env.REACT_APP_FLEEK_API_SECRET)
   // Upload file to Fleek Storage
   const upload = async (values) => {
-    // TODO #1 - Store keys as .env
+
     const input = {
-      apiKey: "W4R0lBRnWsIgoiAWTjLvCw==",
-      apiSecret: "/7tzFGnOoybHmrBPyu4f5WeZWpjsjDsZ5Bn9fMNoyfw=",
+      apiKey: process.env.REACT_APP_FLEEK_API_KEY,
+      apiSecret: process.env.REACT_APP_FLEEK_API_SECRET,
       bucket: "f4a2a9f1-7442-4cf2-8b0e-106f14be163b-bucket",
       key: values.title,
       data: values.file,
@@ -55,8 +56,8 @@ function NftForm(props) {
 
     // TODO #1 - Store keys as .env
     const input = {
-      apiKey: "W4R0lBRnWsIgoiAWTjLvCw==",
-      apiSecret: "/7tzFGnOoybHmrBPyu4f5WeZWpjsjDsZ5Bn9fMNoyfw=",
+      apiKey: process.env.REACT_APP_FLEEK_API_KEY,
+      apiSecret: process.env.REACT_APP_FLEEK_API_SECRET,
       bucket: "f4a2a9f1-7442-4cf2-8b0e-106f14be163b-bucket",
       key: metadata.image,
       data,
@@ -141,7 +142,6 @@ function NftForm(props) {
               placeholder="Description for NFT"
             />
             <br />
-            {/* TODO #3 - Conform this to FormikControl for consistency */}
             <input
               id="file"
               name="file"

@@ -24,6 +24,7 @@ function MyApp({ Component, pageProps }) {
   const [proposalVoteTypes, setProposalVoteTypes] = useState([]);
   const [extensions, setExtensions] = useState();
   const [isMember, setIsMember] = useState();
+  const [crowdsale, setCrowdsale] = useState();
 
   useEffect(() => {
 
@@ -111,7 +112,8 @@ function MyApp({ Component, pageProps }) {
             holdersArray: holdersArray,
             proposalVoteTypes: proposalVoteTypes,
             extensions: extensions,
-            isMember: isMember
+            isMember: isMember,
+            crowdsale: crowdsale
           },
           setWeb3: setWeb3,
           setAccount: setAccount,
@@ -129,7 +131,8 @@ function MyApp({ Component, pageProps }) {
           setHoldersArray: setHoldersArray,
           setProposalVoteTypes: setProposalVoteTypes,
           setExtensions: setExtensions,
-          setIsMember: setIsMember
+          setIsMember: setIsMember,
+          setCrowdsale: setCrowdsale
         }}
       >
         <Component {...pageProps} />

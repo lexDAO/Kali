@@ -48,7 +48,8 @@ export default function Dao() {
         pendingProposals_,
         balances_,
         extensions_,
-        isMember_
+        isMember_,
+        crowdsale_
       } = await fetchAll(instance, factory, address, web3, chainId, account);
       value.setDao(dao_);
       value.setHoldersArray(holdersArray_);
@@ -58,8 +59,9 @@ export default function Dao() {
       value.setBalances(balances_);
       value.setExtensions(extensions_);
       value.setIsMember(isMember_);
+      value.setCrowdsale(crowdsale_);
       console.log(isMember_)
-      console.log(balances_)
+      console.log(crowdsale_)
       value.setLoading(false);
     }
   }

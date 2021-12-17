@@ -10,12 +10,22 @@ import {
   Select
 } from "@chakra-ui/react";
 import { extensions } from "../../utils/addresses";
+import { extensionsHelper } from "../../utils/newProposalHelper";
+import NumInputField from "../elements/NumInputField";
 
 export default function Extensions() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address, chainId } = value.state;
-  console.log(extensions[chainId]['tribute'])
+  const { web3, loading, account, abi, address, chainId, balances } = value.state;
+  const [propType, setPropType] = useState('tribute');
+  const [ext, setExt] = useState();
 
+  const handleChange = (e) => {
+    let propType_ = e.target.value;
+    setPropType(propType_);
+    let ext_ = extensions[chainId][propType_];
+    setExt(ext_);
+    console.log(ext_)
+  }
 
   const submitProposal = async (event) => {
     event.preventDefault();
@@ -63,22 +73,17 @@ export default function Extensions() {
   };
 
   return (
-    <form onSubmit={submitProposal}>
     <Stack>
-      <Text><b>Details</b></Text>
-      <Textarea name="description_" size="lg" placeholder=". . ." />
-
       <Text><b>Extension</b></Text>
-      <Select name="account_">
+      <Select onChange={handleChange}>
         {Object.entries(extensions[chainId]).map(([key, value]) => (
-          <option value={value}>{key}</option>
+          <option key={key} value={key}>{key}</option>
         ))}
       </Select>
 
-      <Input type="hidden" name="proposalType_" value="8" />
-
-      <Button type="submit">Submit Proposal</Button>
+      {extensionsHelper.map((e, index) => (
+        propType==e[0] ? e[1] : null
+      ))}
     </Stack>
-    </form>
   );
 }

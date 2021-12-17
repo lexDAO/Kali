@@ -7,13 +7,19 @@ import {
   Select,
   Text,
   Textarea,
-  Stack
+  Stack,
+  HStack
 } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
+import { tokenHelper } from "../../utils/helpers";
 
-export default function BuyCrowdsale() {
+export default function Tribute() {
   const value = useContext(AppContext);
-  const { web3, loading, account, isMember, chainId, extensions, address, abi } = value.state;
+  const { web3, loading, account, extensions, address, crowdsale, balances } = value.state;
+  const token = tokenHelper(balances, crowdsale, web3);
+
+  const [shares, setShares] = useState(0); // calculates # of shares you get for purchase price
+  const handleChange = value => setShares(value);
 
   const submitProposal = async (event) => {
     event.preventDefault();
@@ -30,34 +36,28 @@ export default function BuyCrowdsale() {
         }
 
         var {
-          description_,
           account_,
-          amount_,
-          proposalType_,
-          asset_,
-          assetAmount_
+          amount_
         } = array; // this must contain any inputs from custom forms
 
-        const payload_ = Array(0);
+        var value_ = 0;
+        if(crowdsale["purchaseToken"] == "0x0000000000000000000000000000000000000000") {
+          value_=amount_;
+        }
 
-        const tribAbi = require("../../abi/KaliDAOtribute.json");
-
-        const tribAddress = extensions.tribute
-
-        const instance = new web3.eth.Contract(tribAbi, tribAddress);
+        const calldata = "0x";
 
         amount_ = web3.utils.toWei(amount_);
 
-        assetAmount_ = web3.utils.toWei(assetAmount_);
-
-        asset_ = "0x0000000000000000000000000000000000000000";
-
-        const nft = "false";
+        const abi_ = require("../../abi/KaliDAOcrowdsale.json");
+        const address_ = extensions['crowdsale'];
+        const instance_ = new web3.eth.Contract(abi_, address_);
+        console.log(instance_)
 
         try {
-          let result = await instance.methods
-            .submitTributeProposal(address, proposalType_, description_, [account_], [amount_], [payload_], nft, asset_, assetAmount_)
-            .send({ from: account, value: assetAmount_ });
+          let result = await instance_.methods
+            .callExtension(account_, amount_, calldata)
+            .send({ from: account, value: value_ });
             value.setReload(value.state.reload+1);
             value.setVisibleView(1);
         } catch (e) {
@@ -76,20 +76,16 @@ export default function BuyCrowdsale() {
   return (
     <form onSubmit={submitProposal}>
     <Stack>
-      <Text><b>Details</b></Text>
-
-      <Textarea name="description_" size="lg" placeholder=". . ." />
-
       <Text><b>Recipient</b></Text>
       <Input name="account_" size="lg" placeholder="0x or .eth"></Input>
 
-      <Text><b>Shares</b></Text>
-      <NumInputField name="amount_" />
+      <HStack>
+        <Text><b>Purchase Amount ({token}):</b></Text>
+        <NumInputField name="amount_" min=".000000000000000001" onChange={handleChange} />
 
-      <Text><b>Tribute (ETH)</b></Text>
-      <NumInputField name="assetAmount_" min=".000000000000000001" />
-
-      <Input type="hidden" name="proposalType_" value="0" />
+        <Text><b>Shares</b></Text>
+        <Input value={shares} disabled />
+      </HStack>
 
       <Button type="submit">Submit Proposal</Button>
     </Stack>

@@ -9,15 +9,25 @@ import {
 export default function NumInputField(props) {
 
   let min;
+  let onChange;
+  let defaultValue;
   if(props.min) {
     min = props.min;
   }else {
     min = 1;
   }
+  if(props.onChange) {
+    onChange=props.onChange;
+  }
+  if(props.defaultValue) {
+    defaultValue=props.defaultValue;
+  } else {
+    defaultValue=0;
+  }
 
   return (
 
-      <NumberInput name={props.name} size="lg" defaultValue={1} min={min}>
+      <NumberInput name={props.name} size="lg" defaultValue={defaultValue} min={min} onChange={onChange}>
 
         <NumberInputField focusBorderColor="red.200" />
 

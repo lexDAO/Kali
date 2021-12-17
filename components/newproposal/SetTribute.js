@@ -1,20 +1,27 @@
-import { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Router, { useRouter } from "next/router";
 import AppContext from '../../context/AppContext';
 import {
   Input,
   Button,
-  Select,
   Text,
   Textarea,
-  Stack
+  Stack,
+  Select
 } from "@chakra-ui/react";
-import { tokenBalances } from '../../utils/tokens';
+import { extensions } from "../../utils/addresses";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import NumInputField from "../elements/NumInputField";
 
-export default function SendToken() {
+export default function SetTribute() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address, balances } = value.state;
+  const { web3, loading, account, abi, address, chainId, balances } = value.state;
+
+  const updateExtType = (e) => {
+    let newValue = e.target.value;
+    setExtType(newValue);
+  };
 
   const submitProposal = async (event) => {
     event.preventDefault();
@@ -31,27 +38,18 @@ export default function SendToken() {
         }
 
         var {
-          proposalType_,
           description_,
           account_,
-          amount_,
-          amount_,
-          recipient_,
-          tokenAmount_
+          proposalType_
         } = array; // this must contain any inputs from custom forms
 
-        console.log(array);
+        const amount_ = 0;
 
-        tokenAmount_ = web3.utils.toWei(tokenAmount_);
+        const payload_ = Array(0);
 
         const instance = new web3.eth.Contract(abi, address);
 
-        const ierc20 = require('../../abi/ERC20.json');
-        const tokenContract = new web3.eth.Contract(ierc20, account_);
-        var payload_ = tokenContract.methods.transfer(recipient_, tokenAmount_).encodeABI();
-
         try {
-
           let result = await instance.methods
             .propose(proposalType_, description_, [account_], [amount_], [payload_])
             .send({ from: account });
@@ -75,26 +73,9 @@ export default function SendToken() {
     <Stack>
       <Text><b>Details</b></Text>
       <Textarea name="description_" size="lg" placeholder=". . ." />
-      <Text><b>Recipient</b></Text>
-      <Input name="recipient_" size="lg" placeholder="0x or .eth"></Input>
-      <Text><b>Token</b></Text>
 
-      <Select
-        name="account_"
-      >
-        {balances.map((b, index) => (
-
-          <option key={index} value={b['address']}>{b['token']} (balance: {web3.utils.fromWei(b['balance'])})</option>
-        ))}
-      </Select>
-      <Text>
-        <b>Amount</b>
-      </Text>
-      <NumInputField name="tokenAmount_" />
-
-      <Input type="hidden" name="proposalType_" value="2" />
-
-      <Input type="hidden" name="amount_" value="0" />
+      <Input type="hidden" name="proposalType_" value="8" />
+      <Input type="hidden" name="account_" value={extensions[chainId]['tribute']} />
 
       <Button type="submit">Submit Proposal</Button>
     </Stack>

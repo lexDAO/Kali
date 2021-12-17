@@ -58,5 +58,6 @@ export const proposalDetails = [ // descriptions for: amount, account, payload
   ["proposed supermajority threshold", null, null],
   ["proposed proposal/vote type", null, null],
   [null, null, null],
+  ["proposal number", null, null],
   ["proposal number", null, null]
 ]

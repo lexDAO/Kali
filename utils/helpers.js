@@ -28,3 +28,14 @@ export function votingPeriodToSeconds(period, type) {
     }
     return amount;
 }
+
+export function tokenHelper(balances, crowdsale, web3) {
+  let token;
+
+  for(var i=0; i < balances.length; i++) {
+    if(web3.utils.toChecksumAddress(balances[i]['address'])==web3.utils.toChecksumAddress(crowdsale['purchaseToken'])) {
+      token = balances[i]['token'];
+    }
+  }
+  return token;
+}

@@ -131,9 +131,21 @@ export async function fetchAll(instance, factory, address, web3, chainId, accoun
 
   const extensions_ = await getExtensions(instance, chainId);
 
+  const crowdsale_ = await getCrowdsale(web3, extensions_, address);
+
   const isMember_ = await isMember(instance, account);
 
-  return { dao_, holdersArray_, proposalVoteTypes_, proposals_, pendingProposals_, balances_, extensions_, isMember_ };
+  return {
+    dao_,
+    holdersArray_,
+    proposalVoteTypes_,
+    proposals_,
+    pendingProposals_,
+    balances_,
+    extensions_,
+    isMember_,
+    crowdsale_
+  };
 }
 
 export function getPassing(voteType, yesVotes, noVotes, totalSupply, quorum, supermajority, open, inLimbo) {
@@ -194,7 +206,6 @@ export function getProgress(yesVotes, noVotes) {
   return progress;
 }
 
-
 export async function getBalances(address, web3) {
   const abi = require('../abi/ERC20.json');
   const tokens = require('./tokens.json');
@@ -205,6 +216,8 @@ export async function getBalances(address, web3) {
     const balance = await contract.methods.balanceOf(address).call();
     tokenBalances.push({'token': token['token'], 'address': token['address'], 'balance': balance})
   }
+  const ethBalance = await web3.eth.getBalance(address);
+  tokenBalances.push({'token': 'eth', 'address': '0x0000000000000000000000000000000000000000', 'balance': ethBalance})
   return tokenBalances;
 }
 
@@ -250,4 +263,20 @@ export async function inLimbo(proposal) {
     }
   }
   return bool;
+}
+
+export async function getCrowdsale(web3, extensions_, address) {
+
+  const abi_ = require("../abi/KaliDAOcrowdsale.json");
+  var crowdsale = null;
+  if(extensions_['crowdsale'] != null) {
+    const address_ = extensions_['crowdsale'];
+    console.log(extensions_);
+    const instance_ = new web3.eth.Contract(abi_, address_);
+    console.log(instance_)
+    crowdsale = instance_.methods.crowdsales(address).call();
+  }
+
+  return crowdsale;
+
 }

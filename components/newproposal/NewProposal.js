@@ -19,7 +19,7 @@ import { newProposalHelper } from "../../utils/newProposalHelper";
 export default function NewProposal(props) {
   const [menuItem, setMenuItem] = useState(999); // arbitrary number where no proposal type is selected. if changed, must change below, too
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address } = value.state;
+  const { web3, loading, account, abi, address, extensions, chainId } = value.state;
   const balances = props.balances;
 
   const ProposalTile = (props) => {
@@ -76,9 +76,11 @@ export default function NewProposal(props) {
             >
               <option value="999">Select a proposal type</option>
               {newProposalHelper.map((p, index) => (
+                p[3]==null || (extensions[p[3]] != null && extensions[p[3]] != "0x0000000000000000000000000000000000000000") ?
                 <option key={index} value={index}>
                   {p[0]}
                 </option>
+                : null
               ))}
             </Select>
           </FlexOutline>
@@ -96,12 +98,15 @@ export default function NewProposal(props) {
             }}
           >
             {newProposalHelper.map((p, index) => (
+              p[3]==null || (extensions[p[3]] != null && extensions[p[3]] != "0x0000000000000000000000000000000000000000") ?
               <ProposalTile
                 key={index}
                 id={index}
                 title={p[0]}
                 description={p[1]}
               />
+              :
+              null
             ))}
           </Grid>
         )}

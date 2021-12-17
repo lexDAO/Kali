@@ -37,7 +37,7 @@ export default function ProcessModule(props) {
           .send({ from: account });
 
           value.setReload(value.state.reload+1);
-          
+
       } catch (e) {
         alert(e);
         value.setLoading(false);
@@ -54,7 +54,7 @@ export default function ProcessModule(props) {
         name="dao"
       />
       <Input type="hidden" name="id" value={p["id"]} />
-      {i == 0 ?
+      {i == 0 || p['proposalType'] == 9 ?
       <Button type="submit">Process</Button>
       :
       <Button type="submit" disabled>In Queue</Button>

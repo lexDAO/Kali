@@ -57,7 +57,7 @@ export default function DaoInfo() {
       <UnorderedList>
       {balances.map((b, index) => (
         <ListItem key={index}>
-          {b['token']} ({web3.utils.fromWei(b['balance'])} shares)
+          {b['token']} ({web3.utils.fromWei(b['balance'])})
         </ListItem>
       ))}
     </UnorderedList>

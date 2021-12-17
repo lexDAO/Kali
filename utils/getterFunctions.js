@@ -194,7 +194,6 @@ export function getProgress(yesVotes, noVotes) {
   return progress;
 }
 
-
 export async function getBalances(address, web3) {
   const abi = require('../abi/ERC20.json');
   const tokens = require('./tokens.json');
@@ -205,6 +204,8 @@ export async function getBalances(address, web3) {
     const balance = await contract.methods.balanceOf(address).call();
     tokenBalances.push({'token': token['token'], 'address': token['address'], 'balance': balance})
   }
+  const ethBalance = await web3.eth.getBalance(address);
+  tokenBalances.push({'token': 'eth', 'address': '0x0000000000000000000000000000000000000000', 'balance': ethBalance})
   return tokenBalances;
 }
 

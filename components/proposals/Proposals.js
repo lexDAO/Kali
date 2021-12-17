@@ -17,28 +17,19 @@ import { proposalTypes, voteTypes } from "../../utils/appParams";
 export default function Proposals(props) {
   const value = useContext(AppContext);
   const { web3, loading, proposals, pendingProposals, address } = value.state;
-  const [toggle, setToggle] = useState(false);
-  const [visible, setVisible] = useState(proposals); // to toggle between sponsored and unsponsored
+  const [toggle, setToggle] = useState(0);
+
+  const propViews = [proposals, pendingProposals];
 
   console.log(proposals)
 
   const handleClick = () => {
-    setToggle(!toggle);
-    if(toggle==false) {
-      setVisible(proposals);
+    if(toggle==1) {
+      setToggle(0);
     } else {
-      setVisible(pendingProposals);
+      setToggle(1);
     }
   }
-
-  useEffect(() => {
-    if(!proposals) {
-      return;
-    } else {
-      visible = proposals;
-    }
-
-  }, []);
 
   const ProposalContainer = (props) => {
     return(
@@ -63,11 +54,12 @@ export default function Proposals(props) {
   return(
     <>
       <Button onClick={handleClick}>
-        {toggle==false ? 'Show Sponsored' : 'Show Unsponsored'}
+        {toggle==false ? 'Show Unsponsored' : 'Show Active'}
       </Button>
-      {visible != null ?
-      <ProposalContainer proposals={visible} />
+      {propViews[toggle] != null ?
+      <ProposalContainer proposals={propViews[toggle]} />
       : null}
+
     </>
   )
 }

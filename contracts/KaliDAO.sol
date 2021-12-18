@@ -14,7 +14,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                             EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event NewProposal(address indexed proposer, uint256 indexed proposal, string description);
+    event NewProposal(address indexed proposer, uint256 indexed proposal);
 
     event ProposalCancelled(address indexed proposer, uint256 indexed proposal);
 
@@ -102,11 +102,14 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         string memory docs_,
         bool paused_,
         address[] memory extensions_,
+        bytes[] memory extensionsData_,
         address[] memory voters_,
         uint256[] memory shares_,
         uint32 votingPeriod_,
         uint8[13] memory govSettings_
     ) public payable nonReentrant virtual {
+        require(extensions_.length == extensionsData_.length, 'NO_ARRAY_PARITY');
+        
         require(votingPeriod == 0, 'INITIALIZED');
 
         require(votingPeriod_ != 0 && votingPeriod_ <= 365 days, 'VOTING_PERIOD_BOUNDS');
@@ -117,11 +120,16 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
         KaliDAOtoken._init(name_, symbol_, paused_, voters_, shares_);
 
-        // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
-        unchecked {
-            for (uint256 i; i < extensions_.length; i++) {
-                extensions[extensions_[i]] = true;
+        if (extensions_.length != 0) {
+            // this is reasonably safe from overflow because incrementing `i` loop beyond
+            // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+            unchecked {
+                for (uint256 i; i < extensions_.length; i++) {
+                    extensions[extensions_[i]] = true;
+
+                    if (extensionsData_[i].length != 0) IKaliDAOextension(extensions_[i])
+                        .setExtension(extensionsData_[i]);
+                }
             }
         }
 
@@ -179,8 +187,6 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         bytes[] calldata payloads
     ) public nonReentrant virtual returns (uint256 proposal) {
         require(accounts.length == amounts.length && amounts.length == payloads.length, 'NO_ARRAY_PARITY');
-        
-        require(accounts.length <= 10, 'ARRAY_MAX');
 
         bool selfSponsor;
 
@@ -193,7 +199,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         
         if (proposalType == ProposalType.SUPERMAJORITY) require(amounts[0] > 51 && amounts[0] <= 100, 'SUPERMAJORITY_BOUNDS');
 
-        if (proposalType == ProposalType.TYPE) require(amounts[0] <= 9 && amounts[1] <= 3, 'TYPE_MAX');
+        if (proposalType == ProposalType.TYPE) require(amounts[0] <= 10 && amounts[1] <= 3 && amounts.length == 2, 'TYPE_MAX');
 
         proposal = proposalCount;
 
@@ -215,7 +221,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             proposalCount++;
         }
 
-        emit NewProposal(msg.sender, proposal, description);
+        emit NewProposal(msg.sender, proposal);
     }
 
     function cancelProposal(uint256 proposal) public nonReentrant virtual {
@@ -308,11 +314,11 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint256 proposal, 
         bool approve
     ) internal virtual {
+        Proposal storage prop = proposals[proposal];
+
         require(balanceOf[signer] != 0, 'NOT_MEMBER');
 
         require(!voted[proposal][signer], 'ALREADY_VOTED');
-        
-        Proposal storage prop = proposals[proposal];
         
         // this is safe from overflow because `votingPeriod` is capped so it will not combine
         // with unix time to exceed 'type(uint256).max'
@@ -344,6 +350,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     ) {
         Proposal storage prop = proposals[proposal];
 
+        VoteType voteType = proposalVoteTypes[prop.proposalType];
+
         require(prop.creationTime != 0, 'PROCESSED');
         
         // this is safe from overflow because `votingPeriod` is capped so it will not combine
@@ -351,8 +359,6 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         unchecked {
             require(block.timestamp > prop.creationTime + votingPeriod, 'VOTING_NOT_ENDED');
         }
-
-        VoteType voteType = proposalVoteTypes[prop.proposalType];
 
         // skip previous proposal processing requirement in case of escape hatch
         if (prop.proposalType != ProposalType.ESCAPE) {
@@ -406,13 +412,15 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                     proposalVoteTypes[ProposalType(prop.amounts[0])] = VoteType(prop.amounts[1]);
                 
                 if (prop.proposalType == ProposalType.PAUSE) 
-                    _togglePause();
+                    _flipPause();
                 
                  if (prop.proposalType == ProposalType.EXTENSION) 
-                    extensions[prop.accounts[0]] = !extensions[prop.accounts[0]];
+                    for (uint256 i; i < prop.accounts.length; i++) {
+                        extensions[prop.accounts[i]] = !extensions[prop.accounts[i]];
                     
-                    if (prop.payloads[0].length != 0) IKaliDAOextension(prop.accounts[0])
-                        .setExtension(address(this), prop.payloads[0]);
+                        if (prop.payloads[i].length != 0) IKaliDAOextension(prop.accounts[i])
+                            .setExtension(prop.payloads[i]);
+                    }
                 
                 if (prop.proposalType == ProposalType.ESCAPE)
                     delete proposals[prop.amounts[0]];

@@ -41,21 +41,12 @@ contract KaliDAOfactory {
             docs_,
             paused_, 
             extensions_,
+            extensionsData_,
             voters_, 
             shares_, 
             votingPeriod_, 
             govSettings_
         );
-
-        if (extensions_.length != 0) {
-            // this is reasonably safe from overflow because incrementing `i` loop beyond
-            // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
-            unchecked {
-                for (uint256 i; i < extensions_.length; i++) {
-                    IKaliDAOextension(extensions_[i]).setExtension(address(kaliDAO), extensionsData_[i]);
-                }
-            }
-        }
 
         bytes memory docs = bytes(docs_);
 

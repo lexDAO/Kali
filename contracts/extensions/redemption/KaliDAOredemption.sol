@@ -8,6 +8,8 @@ import '../../utils/ReentrancyGuard.sol';
 
 /// @notice Redemption contract that transfers registered tokens from DAO in proportion to burnt DAO tokens.
 contract KaliDAOredemption is ReentrancyGuard {
+    using SafeTransferLib for address;
+
     mapping(address => address[]) public redeemables;
 
     mapping(address => uint256) public redemptionStarts;
@@ -44,8 +46,7 @@ contract KaliDAOredemption is ReentrancyGuard {
             
             // `transferFrom` DAO to redeemer
             if (amountToRedeem != 0) {
-                SafeTransferLib.safeTransferFrom(
-                    address(redeemables[msg.sender][i]), 
+                address(redeemables[msg.sender][i]).safeTransferFrom(
                     msg.sender, 
                     account, 
                     amountToRedeem

@@ -8,22 +8,22 @@ import '../../utils/ReentrancyGuard.sol';
 
 /// @notice Redemption contract that transfers registered tokens from DAO in proportion to burnt DAO tokens.
 contract KaliDAOredemption is ReentrancyGuard {
+    using SafeTransferLib for address;
+
     mapping(address => address[]) public redeemables;
 
     mapping(address => uint256) public redemptionStarts;
 
-    function setExtension(address dao, bytes calldata extensionData) public nonReentrant virtual {
+    function setExtension(bytes calldata extensionData) public nonReentrant virtual {
         (address[] memory tokens, uint256 redemptionStart) = abi.decode(extensionData, (address[], uint256));
 
         require(tokens.length != 0, "NULL_TOKENS");
-        
-        require(redeemables[dao].length == 0, "INITIALIZED");
         
         // this is reasonably safe from overflow because incrementing `i` loop beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
         unchecked {
             for (uint256 i; i < tokens.length; i++) {
-                redeemables[dao].push(tokens[i]);
+                redeemables[msg.sender].push(tokens[i]);
             }
         }
 
@@ -44,8 +44,7 @@ contract KaliDAOredemption is ReentrancyGuard {
             
             // `transferFrom` DAO to redeemer
             if (amountToRedeem != 0) {
-                SafeTransferLib.safeTransferFrom(
-                    address(redeemables[msg.sender][i]), 
+                address(redeemables[msg.sender][i]).safeTransferFrom(
                     msg.sender, 
                     account, 
                     amountToRedeem

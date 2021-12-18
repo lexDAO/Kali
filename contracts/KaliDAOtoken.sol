@@ -18,7 +18,7 @@ abstract contract KaliDAOtoken {
 
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
 
-    event PauseToggled(bool indexed paused);
+    event PauseFlipped(bool indexed paused);
 
     /*///////////////////////////////////////////////////////////////
                             METADATA STORAGE
@@ -224,7 +224,6 @@ abstract contract KaliDAOtoken {
         // this is safe from underflow because decrement only occurs if `nCheckpoints` is positive
         unchecked {
             if (checkpoints[account][nCheckpoints - 1].fromTimestamp <= timestamp)
-                
                 return checkpoints[account][nCheckpoints - 1].votes;
 
             if (checkpoints[account][0].fromTimestamp > timestamp) return 0;
@@ -397,10 +396,10 @@ abstract contract KaliDAOtoken {
                             PAUSE LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function _togglePause() internal virtual {
+    function _flipPause() internal virtual {
         paused = !paused;
 
-        emit PauseToggled(paused);
+        emit PauseFlipped(paused);
     }
     
     /*///////////////////////////////////////////////////////////////

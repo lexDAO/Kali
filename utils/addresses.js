@@ -5,11 +5,11 @@ export const factory_rinkeby = "0x208c1798422dB763455A746022E61c43439d9531";
 
 // extension addresses
 // - tribute
-export const tribute_rinkeby = "0xaDf9Bd10aDdd2879058A206c5DA50abD1B2fe410";
+export const tribute_rinkeby = "0xd024Bf8bb77A5bf3421f1400D408e7C06bbe07ff";
 
 export const extensions = { // grouped by chain id
   4: {
-    "tribute": "0xaDf9Bd10aDdd2879058A206c5DA50abD1B2fe410",
+    "tribute": "0xd024Bf8bb77A5bf3421f1400D408e7C06bbe07ff",
     "crowdsale": "0x431faBDc0c8B66eE3E19E2F26EC7b640a4E217cD"
   }
 }

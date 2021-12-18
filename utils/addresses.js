@@ -10,6 +10,6 @@ export const tribute_rinkeby = "0xaDf9Bd10aDdd2879058A206c5DA50abD1B2fe410";
 export const extensions = { // grouped by chain id
   4: {
     "tribute": "0xaDf9Bd10aDdd2879058A206c5DA50abD1B2fe410",
-    "crowdsale": "0x25ea392819f0DcBea17Ee0bc1602Adedb59eAE9D"
+    "crowdsale": "0x431faBDc0c8B66eE3E19E2F26EC7b640a4E217cD"
   }
 }

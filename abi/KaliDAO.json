@@ -224,6 +224,11 @@
 				"type": "address[]"
 			},
 			{
+				"internalType": "bytes[]",
+				"name": "extensionsData_",
+				"type": "bytes[]"
+			},
+			{
 				"internalType": "address[]",
 				"name": "voters_",
 				"type": "address[]"
@@ -282,12 +287,6 @@
 				"internalType": "uint256",
 				"name": "proposal",
 				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
 			}
 		],
 		"name": "NewProposal",
@@ -303,7 +302,7 @@
 				"type": "bool"
 			}
 		],
-		"name": "PauseToggled",
+		"name": "PauseFlipped",
 		"type": "event"
 	},
 	{

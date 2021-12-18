@@ -8,6 +8,8 @@ import '../../utils/ReentrancyGuard.sol';
 
 /// @notice Crowdsale contract that receives ETH or tokens to mint registered DAO tokens, including merkle whitelisting.
 contract KaliDAOcrowdsale is ReentrancyGuard {
+    using SafeTransferLib for address;
+    
     IKaliWhitelistManager public immutable whitelistManager;
 
     mapping(address => Crowdsale) public crowdsales;
@@ -25,16 +27,13 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
         whitelistManager = whitelistManager_;
     }
 
-    function setExtension(address dao, bytes calldata extensionData) public nonReentrant virtual {
+    function setExtension(bytes calldata extensionData) public nonReentrant virtual {
         (uint256 listId, address purchaseToken, uint8 purchaseMultiplier, uint96 purchaseLimit, uint32 saleEnds) 
             = abi.decode(extensionData, (uint256, address, uint8, uint96, uint32));
         
         require(purchaseMultiplier != 0, 'NULL_MULTIPLIER'); 
 
-        require(crowdsales[dao].purchaseMultiplier == 0 || dao == msg.sender, 
-            'INITIALIZED_OR_NOT_DAO'); 
-
-        crowdsales[dao] = Crowdsale({
+        crowdsales[msg.sender] = Crowdsale({
             listId: listId,
             purchaseToken: purchaseToken,
             purchaseMultiplier: purchaseMultiplier,
@@ -62,12 +61,12 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
             require(sale.amountPurchased + amountOut <= sale.purchaseLimit, 'PURCHASE_LIMIT');
 
             // send ETH to DAO
-            SafeTransferLib.safeTransferETH(msg.sender, msg.value);
+            msg.sender.safeTransferETH(msg.value);
 
             sale.amountPurchased += uint96(amountOut);
         } else {
             // send tokens to DAO
-            SafeTransferLib.safeTransferFrom(sale.purchaseToken, account, msg.sender, amount);
+            sale.purchaseToken.safeTransferFrom(account, msg.sender, amount);
 
             amountOut = amount * sale.purchaseMultiplier;
 

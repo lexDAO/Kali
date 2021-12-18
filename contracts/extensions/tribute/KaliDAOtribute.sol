@@ -9,6 +9,8 @@ import '../../utils/ReentrancyGuard.sol';
 
 /// @notice Tribute contract that escrows ETH or tokens for DAO proposals.
 contract KaliDAOtribute is ReentrancyGuard {
+    using SafeTransferLib for address;
+
     event NewTributeProposal(
         IKaliDAOtribute indexed dao,
         address indexed proposer, 
@@ -49,7 +51,7 @@ contract KaliDAOtribute is ReentrancyGuard {
             value = msg.value;
             if (nft) nft = false;
         } else {
-            SafeTransferLib.safeTransferFrom(asset, msg.sender, address(this), value);
+            asset.safeTransferFrom(msg.sender, address(this), value);
         }
 
         uint256 proposal = dao.propose(
@@ -82,11 +84,11 @@ contract KaliDAOtribute is ReentrancyGuard {
 
         // return tribute from escrow
         if (trib.asset == address(0)) {
-            SafeTransferLib.safeTransferETH(trib.proposer, trib.value);
+            trib.proposer.safeTransferETH(trib.value);
         } else if (!trib.nft) {
-            SafeTransferLib.safeTransfer(trib.asset, trib.proposer, trib.value);
+            trib.asset.safeTransfer(trib.proposer, trib.value);
         } else {
-            SafeTransferLib.safeTransferFrom(trib.asset, address(this), trib.proposer, trib.value);
+            trib.asset.safeTransferFrom(address(this), trib.proposer, trib.value);
         }
         
         delete tributes[dao][proposal];
@@ -113,19 +115,19 @@ contract KaliDAOtribute is ReentrancyGuard {
         // release tribute from escrow based on proposal outcome
         if (prop.passed) {
             if (trib.asset == address(0)) {
-                SafeTransferLib.safeTransferETH(address(trib.dao), trib.value);
+                address(trib.dao).safeTransferETH(trib.value);
             } else if (!trib.nft) {
-                SafeTransferLib.safeTransfer(trib.asset, address(trib.dao), trib.value);
+                trib.asset.safeTransfer(address(trib.dao), trib.value);
             } else {
-                SafeTransferLib.safeTransferFrom(trib.asset, address(this), address(trib.dao), trib.value);
+                trib.asset.safeTransferFrom(address(this), address(trib.dao), trib.value);
             }
         } else {
             if (trib.asset == address(0)) {
-                SafeTransferLib.safeTransferETH(trib.proposer, trib.value);
+                trib.proposer.safeTransferETH(trib.value);
             } else if (!trib.nft) {
-                SafeTransferLib.safeTransfer(trib.asset, trib.proposer, trib.value);
+                trib.asset.safeTransfer(trib.proposer, trib.value);
             } else {
-                SafeTransferLib.safeTransferFrom(trib.asset, address(this), trib.proposer, trib.value);
+                trib.asset.safeTransferFrom(address(this), trib.proposer, trib.value);
             }
         }
     }

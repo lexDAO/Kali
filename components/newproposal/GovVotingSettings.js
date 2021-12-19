@@ -37,19 +37,19 @@ export default function GovVotingSettings() {
           proposalType_
         } = array; // this must contain any inputs from custom forms
         console.log(array)
-        var account_ = "0x0000000000000000000000000000000000000000";
-
-        var amount_ = Array(pType_, vType_);
+        var account_ = Array("0x0000000000000000000000000000000000000000","0x0000000000000000000000000000000000000000");
+        console.log(account_)
+        var amount_ = Array(parseInt(pType_),parseInt(vType_));
         console.log("amount")
         console.log(amount_)
 
-        const payload_ = Array(0);
-
+        const payload_ = Array('0x','0x');
+        console.log(payload_)
         const instance = new web3.eth.Contract(abi, address);
 
         try {
           let result = await instance.methods
-            .propose(proposalType_, description_, [account_], amount_, [payload_])
+            .propose(proposalType_, description_, account_, amount_, payload_)
             .send({ from: account });
             value.setReload(value.state.reload+1);
             value.setVisibleView(1);

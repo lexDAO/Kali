@@ -416,7 +416,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                 
                  if (prop.proposalType == ProposalType.EXTENSION) 
                     for (uint256 i; i < prop.accounts.length; i++) {
-                        extensions[prop.accounts[i]] = !extensions[prop.accounts[i]];
+                        if (prop.amounts[i] != 0) 
+                            extensions[prop.accounts[i]] = !extensions[prop.accounts[i]];
                     
                         if (prop.payloads[i].length != 0) IKaliDAOextension(prop.accounts[i])
                             .setExtension(prop.payloads[i]);
@@ -457,10 +458,9 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             }
         }
         
-        // simple majority
+        // run voting logic
         if (voteType == VoteType.SIMPLE_MAJORITY || voteType == VoteType.SIMPLE_MAJORITY_QUORUM_REQUIRED) {
             if (yesVotes > noVotes) return true;
-        // super majority
         } else {
             // example: 7 yes, 2 no, supermajority = 66
             // ((7+2) * 66) / 100 = 5.94; 7 yes will pass

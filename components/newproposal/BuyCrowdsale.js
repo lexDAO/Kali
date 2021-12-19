@@ -94,10 +94,18 @@ export default function Tribute() {
     <>
     <form onSubmit={submitProposal}>
     <Stack>
+    <Text>Sale Details</Text>
+      <Text>Price: {1 / crowdsale['purchaseMultiplier']} {token} ({crowdsale['purchaseMultiplier']} shares per {token})</Text>
+      <Text>Maximum shares allowed: {crowdsale['purchaseLimit']}</Text>
       <Text>Sale ends {unixToDate(crowdsale['saleEnds'])}</Text>
       <HStack>
         <Text><b>Purchase Amount ({token}):</b></Text>
-        <NumInputField name="amount_" min=".000000000000000001" onChange={handleChange} />
+        <NumInputField
+          name="amount_"
+          min=".000000000000000001"
+          max={crowdsale['purchaseLimit'] / crowdsale['purchaseMultiplier']}
+          onChange={handleChange}
+        />
 
         <Text><b>Shares</b></Text>
         <Input value={amt * crowdsale['purchaseMultiplier']} disabled />

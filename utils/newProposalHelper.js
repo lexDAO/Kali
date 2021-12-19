@@ -24,7 +24,7 @@ export const newProposalHelper = [ // title, description, component, extensionNa
   ["Remove Member", "Propose removal of member due to misconduct or wallet hack.", <RemoveMember />, null],
   ["Tribute", "Propose joining the DAO, and send tribute.", <Tribute />, 'tribute'],
   ["Buy Crowdsale", "Join the DAO through crowdsale.", <BuyCrowdsale />, 'crowdsale'],
-  ["Escape", "Delete a broken proposal.", <Escape />, null]
+  //["Escape", "Delete a broken proposal.", <Escape />, null] *** hiding this proposal type from front end
 ]
 
 export const govSettingsHelper = [ // solidity enum id, description, component

@@ -1,3 +1,6 @@
+import ReactDOM from 'react-dom';
+import AlertMessage from "../components/elements/AlertMessage";
+
 export function convertVotingPeriod(seconds) {
     let time;
     let text;
@@ -50,4 +53,12 @@ export function unixToDate(unix) {
   var sec = a.getSeconds();
   var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
   return time;
+}
+
+export function alertMessage(type) {
+  ReactDOM.render(<AlertMessage type={type} />, document.getElementById('alert'));
+}
+
+export function hideAlert() {
+  ReactDOM.unmountComponentAtNode(document.getElementById('alert'));
 }

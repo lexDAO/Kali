@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { tokenBalances } from '../../utils/tokens';
 import NumInputField from "../elements/NumInputField";
+import { alertMessage } from "../../utils/helpers";
 
 export default function SendToken() {
   const value = useContext(AppContext);
@@ -21,7 +22,7 @@ export default function SendToken() {
     value.setLoading(true);
 
     if(account===null) {
-      alert("Please connect to wallet");
+      alertMessage('connect');
     } else {
       try {
         let object = event.target;
@@ -58,11 +59,11 @@ export default function SendToken() {
             value.setReload(value.state.reload+1);
             value.setVisibleView(1);
         } catch (e) {
-          alert(e);
+          alertMessage('send-transaction');
           value.setLoading(false);
         }
       } catch(e) {
-        alert(e);
+        alertMessage('send-transaction');
         value.setLoading(false);
       }
     }

@@ -7,6 +7,7 @@ import Head from "next/head";
 import Nav from "./Nav";
 import LoadingIndicator from "./Loading";
 import Footer from "./Footer";
+import AlertContainer from "./AlertContainer";
 
 export default function Layout(props) {
   const value = useContext(AppContext);
@@ -23,6 +24,7 @@ export default function Layout(props) {
         />
       </Head>
       <Nav />
+      <AlertContainer />
       <Container
         minheight="100vh"
         maxW="container.lg"

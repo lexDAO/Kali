@@ -12,6 +12,7 @@ import {
   BsHandThumbsDownFill,
 } from "react-icons/bs";
 import { useDisclosure } from '@chakra-ui/react';
+import { alertMessage } from "../../utils/helpers";
 
 export default function VotingModule(props) {
   const value = useContext(AppContext);
@@ -20,40 +21,47 @@ export default function VotingModule(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const vote = async () => {
-    event.preventDefault();
-    value.setLoading(true);
+    if(!account) {
+      alertMessage('connect');
+    } else {
+      event.preventDefault();
+      value.setLoading(true);
 
-    let object = event.target;
-    var array = [];
-    for (let i = 0; i < object.length; i++) {
-      array[object[i].name] = object[i].value;
-    }
+      let object = event.target;
+      var array = [];
+      for (let i = 0; i < object.length; i++) {
+        array[object[i].name] = object[i].value;
+      }
 
-    const { id, approval } = array;
+      const { id, approval } = array;
 
-    try {
-      // * first, see if they already voted * //
-      const instance = new web3.eth.Contract(abi, address);
-      const voted = await instance.methods.voted(id, account).call();
-      if (voted == true) {
-        alert("You already voted");
-      } else {
-        try {
-          let result = await instance.methods
-            .vote(id, parseInt(approval))
-            .send({ from: account });
+      try {
+        // * first, see if they already voted * //
+        const instance = new web3.eth.Contract(abi, address);
+        const voted = await instance.methods.voted(id, account).call();
+        if (voted == true) {
+          alert("You already voted");
+        } else {
+          try {
+            let result = await instance.methods
+              .vote(id, parseInt(approval))
+              .send({ from: account });
 
-            value.setReload(value.state.reload+1);
+              value.setReload(value.state.reload+1);
 
-        } catch (e) {}
+          } catch (e) {
+            alertMessage('send-transaction');
+            value.setLoading(false);
+          }
+        }
+
+      } catch (e) {
+        alertMessage('send-transaction');
         value.setLoading(false);
       }
 
-    } catch (e) {
       value.setLoading(false);
     }
-
-    value.setLoading(false);
   };
 
   return(

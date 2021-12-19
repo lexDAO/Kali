@@ -1,5 +1,4 @@
 import { useState, useContext, useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import { useRouter } from "next/router";
 import AppContext from '../../context/AppContext';
 import {
@@ -10,11 +9,13 @@ import Proposals from "../../components/proposals/Proposals"
 import NewProposal from "../../components/newproposal/NewProposal"
 import DaoInfo from "../../components/daoinfo/DaoInfo"
 import ActionMenu from "../../components/structure/ActionMenu"
-
-const proposalTypes = require("../../utils/appParams");
 import { fetchAll } from '../../utils/getterFunctions';
 import { factory_rinkeby } from '../../utils/addresses';
 import { factoryInstance } from '../../eth/factory';
+import { hideAlert } from '../../utils/helpers';
+
+const proposalTypes = require("../../utils/appParams");
+
 
 export default function Dao() {
   const value = useContext(AppContext);

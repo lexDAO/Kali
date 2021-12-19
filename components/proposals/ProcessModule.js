@@ -4,6 +4,7 @@ import {
   Input,
   Button
 } from "@chakra-ui/react";
+import { alertMessage } from "../../utils/helpers";
 
 export default function ProcessModule(props) {
   const value = useContext(AppContext);
@@ -18,7 +19,7 @@ export default function ProcessModule(props) {
     value.setLoading(true);
 
     if(account===null) {
-      alert("Please connect to wallet");
+      alertMessage('connect');
     } else {
       let object = event.target;
       var array = [];
@@ -39,7 +40,7 @@ export default function ProcessModule(props) {
           value.setReload(value.state.reload+1);
 
       } catch (e) {
-        alert(e);
+        alertMessage('send-transaction');
         value.setLoading(false);
       }
     }

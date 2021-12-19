@@ -9,6 +9,7 @@ import {
   Textarea,
   Stack
 } from "@chakra-ui/react";
+import { alertMessage } from "../../utils/helpers";
 
 export default function ContractCall() {
   const value = useContext(AppContext);
@@ -37,7 +38,7 @@ export default function ContractCall() {
       setFunctions(functions_);
       setInputs(null);
     } catch(error) {
-      alert("Please enter valid JSON")
+      alertMessage('invalid-json');
     }
 
   }
@@ -74,7 +75,7 @@ export default function ContractCall() {
     value.setLoading(true);
 
     if(account===null) {
-      alert("Please connect to wallet");
+      alertMessage('connect');
     } else {
       try {
         let object = event.target;
@@ -120,11 +121,11 @@ export default function ContractCall() {
             value.setReload(value.state.reload+1);
             value.setVisibleView(1);
         } catch (e) {
-          alert(e);
+          alertMessage('send-transaction');
           value.setLoading(false);
         }
       } catch(e) {
-        alert(e);
+        alertMessage('send-transaction');
         value.setLoading(false);
       }
     }

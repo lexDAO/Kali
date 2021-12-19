@@ -11,7 +11,7 @@ import {
   HStack
 } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
-import { tokenHelper, toDecimals, unixToDate } from "../../utils/helpers";
+import { tokenHelper, toDecimals, unixToDate, alertMessage } from "../../utils/helpers";
 
 export default function Tribute() {
   const value = useContext(AppContext);
@@ -22,7 +22,7 @@ export default function Tribute() {
 
   const approveSpend = async () => {
     if(account===null) {
-      alert("Please connect to wallet");
+      alertMessage('connect');
     } else {
       value.setLoading(true);
       let amt_ = toDecimals(amt, crowdsale['decimals']).toString()
@@ -39,7 +39,7 @@ export default function Tribute() {
     value.setLoading(true);
 
     if(account===null) {
-      alert("Please connect to wallet");
+      alertMessage('connect');
     } else {
       try {
         let object = event.target;
@@ -78,11 +78,11 @@ export default function Tribute() {
             value.setReload(value.state.reload+1);
             value.setVisibleView(1);
         } catch (e) {
-          alert(e);
+          alertMessage('send-transaction');
           value.setLoading(false);
         }
       } catch(e) {
-        alert(e);
+        alertMessage('send-transaction');
         value.setLoading(false);
       }
     }
@@ -91,6 +91,7 @@ export default function Tribute() {
   };
 
   return (
+    <>
     <form onSubmit={submitProposal}>
     <Stack>
       <Text>Sale ends {unixToDate(crowdsale['saleEnds'])}</Text>
@@ -111,5 +112,6 @@ export default function Tribute() {
 
     </Stack>
     </form>
+    </>
   );
 }

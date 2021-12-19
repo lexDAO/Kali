@@ -10,6 +10,7 @@ import {
   Stack
 } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
+import { alertMessage } from "../../utils/helpers";
 
 export default function BuyCrowdsale() {
   const value = useContext(AppContext);
@@ -20,7 +21,7 @@ export default function BuyCrowdsale() {
     value.setLoading(true);
 
     if(account===null) {
-      alert("Please connect to wallet");
+      alertMessage('connect');
     } else {
       try {
         let object = event.target;
@@ -61,11 +62,11 @@ export default function BuyCrowdsale() {
             value.setReload(value.state.reload+1);
             value.setVisibleView(1);
         } catch (e) {
-          alert(e);
+          alertMessage('send-transaction');
           value.setLoading(false);
         }
       } catch(e) {
-        alert(e);
+        alertMessage('send-transaction');
         value.setLoading(false);
       }
     }

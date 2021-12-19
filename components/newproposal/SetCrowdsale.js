@@ -74,10 +74,12 @@ export default function SetCrowdsale() {
         } catch (e) {
           alertMessage('send-transaction');
           value.setLoading(false);
+          console.log(e);
         }
       } catch(e) {
         alertMessage('send-transaction');
         value.setLoading(false);
+        console.log(e);
       }
     }
 
@@ -100,7 +102,7 @@ export default function SetCrowdsale() {
         ))}
       </Select>
       <Text>Purchase Multiplier</Text>
-      <NumInputField name="purchaseMultiplier_" min=".000000000000000001" />
+      <NumInputField name="purchaseMultiplier_" min="1" max="255" />
       <Text>Purchase Limit</Text>
       <NumInputField name="purchaseLimit_" min=".000000000000000001" />
       <Text>Sale Ends</Text>

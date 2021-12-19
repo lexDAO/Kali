@@ -64,7 +64,7 @@ export default function DaoInfo() {
     <Text>Extensions</Text>
     <UnorderedList>
     {Object.entries(extensions).map(([key, value]) => (
-      <ListItem>{key}</ListItem>
+      <ListItem key={key}>{key}</ListItem>
     ))}
     </UnorderedList>
 

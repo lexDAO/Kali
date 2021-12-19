@@ -47,12 +47,14 @@ export default function SetCrowdsale() {
           purchaseLimit_,
           saleEnds_
         } = array; // this must contain any inputs from custom forms
-        console.log(array);
+
         saleEnds_ = new Date(saleEnds_).getTime() / 1000;
-        console.log(saleEnds_)
+
         const listId_ = 0;
 
         const amount_ = 0;
+
+        purchaseLimit_ = web3.utils.toWei(purchaseLimit_);
 
         const payload_ = web3.eth.abi.encodeParameters(
           ['uint256', 'address', 'uint8', 'uint96', 'uint32'],
@@ -93,7 +95,7 @@ export default function SetCrowdsale() {
       >
         {balances.map((b, index) => (
 
-          <option key={index} value={b['address']}>{b['token']} (balance: {web3.utils.fromWei(b['balance'])})</option>
+          <option key={index} value={b['address']}>{b['token']} (balance: {b['balance']})</option>
         ))}
       </Select>
       <Text>Purchase Multiplier</Text>
@@ -101,7 +103,7 @@ export default function SetCrowdsale() {
       <Text>Purchase Limit</Text>
       <NumInputField name="purchaseLimit_" min=".000000000000000001" />
       <Text>Sale Ends</Text>
-      <DatePicker name="saleEnds_" selected={startDate} onChange={(date) => setStartDate(date)} />
+      <DatePicker name="saleEnds_" selected={startDate} onChange={(date) => setStartDate(date)} showTimeSelect />
 
       <Input type="hidden" name="proposalType_" value="8" />
       <Input type="hidden" name="account_" value={extensions[chainId]['crowdsale']} />

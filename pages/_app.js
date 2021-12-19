@@ -88,7 +88,6 @@ function MyApp({ Component, pageProps }) {
 
   const changeChain = async () => {
     window.location.reload();
-    connect();
   };
 
   const reloadButton = () => {

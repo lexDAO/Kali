@@ -1,7 +1,7 @@
 import { proposalTypes } from './appParams';
 import { factory_rinkeby, extensions } from "./addresses";
 import { factoryInstance } from "../eth/factory";
-import { tokenBalances } from "./tokens";
+const tokens = require('./tokens.json');
 
 export async function fetchAll(instance, factory, address, web3, chainId, account) {
   const proposalCount = parseInt(
@@ -131,7 +131,7 @@ export async function fetchAll(instance, factory, address, web3, chainId, accoun
 
   const extensions_ = await getExtensions(instance, chainId);
 
-  const crowdsale_ = await getCrowdsale(web3, extensions_, address);
+  const crowdsale_ = await getCrowdsale(web3, extensions_, address, balances_);
 
   const isMember_ = await isMember(instance, account);
 
@@ -208,16 +208,15 @@ export function getProgress(yesVotes, noVotes) {
 
 export async function getBalances(address, web3) {
   const abi = require('../abi/ERC20.json');
-  const tokens = require('./tokens.json');
   const tokenBalances = [];
   for(var i=0; i < tokens.length; i++) {
     let token = tokens[i];
     const contract = new web3.eth.Contract(abi, token['address']);
     const balance = await contract.methods.balanceOf(address).call();
-    tokenBalances.push({'token': token['token'], 'address': token['address'], 'balance': balance})
+    tokenBalances.push({'token': token['token'], 'address': token['address'], 'decimals': token['decimals'], 'balance': balance})
   }
   const ethBalance = await web3.eth.getBalance(address);
-  tokenBalances.push({'token': 'eth', 'address': '0x0000000000000000000000000000000000000000', 'balance': ethBalance})
+  tokenBalances.push({'token': 'eth', 'address': '0x0000000000000000000000000000000000000000', 'decimals': 18, 'balance': ethBalance})
   return tokenBalances;
 }
 
@@ -265,16 +264,21 @@ export async function inLimbo(proposal) {
   return bool;
 }
 
-export async function getCrowdsale(web3, extensions_, address) {
+export async function getCrowdsale(web3, extensions_, address, balances_) {
 
   const abi_ = require("../abi/KaliDAOcrowdsale.json");
-  var crowdsale = null;
+  var crowdsale = [];
   if(extensions_['crowdsale'] != null) {
     const address_ = extensions_['crowdsale'];
-    console.log(extensions_);
     const instance_ = new web3.eth.Contract(abi_, address_);
-    console.log(instance_)
-    crowdsale = instance_.methods.crowdsales(address).call();
+    crowdsale = await instance_.methods.crowdsales(address).call();
+
+    for(var i=0; i < balances_.length; i++) {
+      if(web3.utils.toChecksumAddress(balances_[i]['address'])==web3.utils.toChecksumAddress(crowdsale['purchaseToken'])) {
+        crowdsale['tokenName'] = balances_[i]['token'];
+        crowdsale['decimals'] = balances_[i]['decimals'];
+      }
+    }
   }
 
   return crowdsale;

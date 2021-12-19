@@ -31,11 +31,6 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "dao",
-				"type": "address"
-			},
-			{
 				"internalType": "bytes",
 				"name": "extensionData",
 				"type": "bytes"

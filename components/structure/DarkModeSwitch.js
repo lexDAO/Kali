@@ -9,7 +9,7 @@ function DarkModeSwitch() {
     <IconButton
       aria-label="Toggle Dark Switch"
       variant="ghost"
-        _hover={{ bg: "kali.400" }}
+      _hover={{ bg: "kali.400" }}
       icon={colorMode === "dark" ? <BsSunFill /> : <BsMoonFill />}
       onClick={toggleColorMode}
     />

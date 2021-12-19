@@ -1,10 +1,3 @@
-import { useColorModeValue } from "@chakra-ui/color-mode";
-
-/*
-const bg = useColorModeValue("kali.600", "kali.700");
-const color = useColorModeValue("kali.800", "kali.900");
-*/
-
 const Button = {
   baseStyle: {
     display: "flex",
@@ -18,7 +11,7 @@ const Button = {
       color: props.colorMode === "dark" ? "kali.900" : "kali.800",
     }),
     ghost: (props) => ({
-      bg: props.colorMode === "dark" ? "kali.700" : "kali.900",
+      bg: props.colorMode === "dark" ? null : null,
       color: props.colorMode === "dark" ? "kali.900" : "kali.800",
     }),
     solid: (props) => ({

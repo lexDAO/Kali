@@ -10,9 +10,17 @@ import '../../utils/ReentrancyGuard.sol';
 contract KaliDAOredemption is ReentrancyGuard {
     using SafeTransferLib for address;
 
+    event TokensAdded(address indexed dao, address[] tokens);
+
+    event TokensRemoved(address indexed dao, uint256[] tokenIndex);
+
     mapping(address => address[]) public redeemables;
 
     mapping(address => uint256) public redemptionStarts;
+
+    function getRedeemables(address dao) public view virtual returns (address[] memory tokens) {
+        tokens = redeemables[dao];
+    }
 
     function setExtension(bytes calldata extensionData) public nonReentrant virtual {
         (address[] memory tokens, uint256 redemptionStart) = abi.decode(extensionData, (address[], uint256));
@@ -64,6 +72,8 @@ contract KaliDAOredemption is ReentrancyGuard {
                 redeemables[msg.sender].push(tokens[i]);
             }
         }
+
+        emit TokensAdded(msg.sender, tokens);
     }
 
     function removeTokens(uint256[] memory tokenIndex) public nonReentrant virtual {
@@ -73,5 +83,7 @@ contract KaliDAOredemption is ReentrancyGuard {
 
             redeemables[msg.sender].pop();
         }
+
+        emit TokensRemoved(msg.sender, tokenIndex);
     }
 }

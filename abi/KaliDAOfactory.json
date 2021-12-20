@@ -16,6 +16,11 @@
 		"type": "constructor"
 	},
 	{
+		"inputs": [],
+		"name": "NullDeploy",
+		"type": "error"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{

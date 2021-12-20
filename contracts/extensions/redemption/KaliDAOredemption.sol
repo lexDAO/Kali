@@ -10,9 +10,17 @@ import '../../utils/ReentrancyGuard.sol';
 contract KaliDAOredemption is ReentrancyGuard {
     using SafeTransferLib for address;
 
+    event ExtensionSet(address indexed dao, address[] tokens, uint256 indexed redemptionStart);
+
+    event ExtensionCalled(address indexed dao, address indexed member, uint256 indexed amountBurned);
+
     event TokensAdded(address indexed dao, address[] tokens);
 
     event TokensRemoved(address indexed dao, uint256[] tokenIndex);
+
+    error NullTokens();
+
+    error NotStarted();
 
     mapping(address => address[]) public redeemables;
 
@@ -25,7 +33,10 @@ contract KaliDAOredemption is ReentrancyGuard {
     function setExtension(bytes calldata extensionData) public nonReentrant virtual {
         (address[] memory tokens, uint256 redemptionStart) = abi.decode(extensionData, (address[], uint256));
 
-        require(tokens.length != 0, "NULL_TOKENS");
+        if (tokens.length == 0) revert NullTokens();
+
+        // if redeemables are already set, this call will be interpreted as reset
+        if (redeemables[msg.sender].length != 0) delete redeemables[msg.sender];
         
         // this is reasonably safe from overflow because incrementing `i` loop beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
@@ -36,23 +47,26 @@ contract KaliDAOredemption is ReentrancyGuard {
         }
 
         redemptionStarts[msg.sender] = redemptionStart;
+
+        emit ExtensionSet(msg.sender, tokens, redemptionStart);
     }
 
     function callExtension(
         address account, 
         uint256 amount, 
         bytes calldata
-    ) public nonReentrant virtual returns (uint256 amountOut) {
-        require(block.timestamp >= redemptionStarts[msg.sender], 'NOT_STARTED');
+    ) public nonReentrant virtual returns (bool mint, uint256 amountOut) {
+        if (block.timestamp < redemptionStarts[msg.sender]) revert NotStarted();
 
         for (uint256 i; i < redeemables[msg.sender].length; i++) {
             // calculate fair share of given token for redemption
-            uint256 amountToRedeem = amount * IERC20minimal(redeemables[msg.sender][i]).balanceOf(msg.sender) / 
+            uint256 amountToRedeem = amount * 
+                IERC20minimal(redeemables[msg.sender][i]).balanceOf(msg.sender) / 
                 IERC20minimal(msg.sender).totalSupply();
             
             // `transferFrom` DAO to redeemer
             if (amountToRedeem != 0) {
-                address(redeemables[msg.sender][i]).safeTransferFrom(
+                address(redeemables[msg.sender][i])._safeTransferFrom(
                     msg.sender, 
                     account, 
                     amountToRedeem
@@ -60,11 +74,13 @@ contract KaliDAOredemption is ReentrancyGuard {
             }
         }
 
-        // placeholder value to conform to interface
-        amountOut = amount;
+        // placeholder values to conform to interface and disclaim mint
+        (mint, amountOut) = (false, amount);
+
+        emit ExtensionCalled(msg.sender, account, amount);
     }
 
-    function addTokens(address[] memory tokens) public nonReentrant virtual {
+    function addTokens(address[] calldata tokens) public nonReentrant virtual {
         // this is reasonably safe from overflow because incrementing `i` loop beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
         unchecked {
@@ -76,10 +92,11 @@ contract KaliDAOredemption is ReentrancyGuard {
         emit TokensAdded(msg.sender, tokens);
     }
 
-    function removeTokens(uint256[] memory tokenIndex) public nonReentrant virtual {
+    function removeTokens(uint256[] calldata tokenIndex) public nonReentrant virtual {
         for (uint256 i; i < tokenIndex.length; i++) {
             // move last token to replace indexed spot and pop array to remove last token
-            redeemables[msg.sender][tokenIndex[i]] = redeemables[msg.sender][redeemables[msg.sender].length - 1];
+            redeemables[msg.sender][tokenIndex[i]] = 
+                redeemables[msg.sender][redeemables[msg.sender].length - 1];
 
             redeemables[msg.sender].pop();
         }

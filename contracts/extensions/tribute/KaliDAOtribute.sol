@@ -23,6 +23,14 @@ contract KaliDAOtribute is ReentrancyGuard {
     event TributeProposalCancelled(IKaliDAOtribute indexed dao, uint256 indexed proposal);
 
     event TributeProposalReleased(IKaliDAOtribute indexed dao, uint256 indexed proposal);
+    
+    error NotProposer();
+
+    error Sponsored(); 
+
+    error NotProposal();
+
+    error NotProcessed();
 
     mapping(IKaliDAOtribute => mapping(uint256 => Tribute)) public tributes;
 
@@ -51,7 +59,7 @@ contract KaliDAOtribute is ReentrancyGuard {
             value = msg.value;
             if (nft) nft = false;
         } else {
-            asset.safeTransferFrom(msg.sender, address(this), value);
+            asset._safeTransferFrom(msg.sender, address(this), value);
         }
 
         uint256 proposal = dao.propose(
@@ -76,19 +84,19 @@ contract KaliDAOtribute is ReentrancyGuard {
     function cancelTributeProposal(IKaliDAOtribute dao, uint256 proposal) public nonReentrant virtual {
         Tribute storage trib = tributes[dao][proposal];
 
-        require(msg.sender == trib.proposer, 'NOT_PROPOSER');
+        if (msg.sender != trib.proposer) revert NotProposer();
 
-        require(dao.proposals(proposal).creationTime == 0, 'SPONSORED');
+        if (dao.proposals(proposal).creationTime != 0) revert Sponsored();
 
         dao.cancelProposal(proposal);
 
         // return tribute from escrow
         if (trib.asset == address(0)) {
-            trib.proposer.safeTransferETH(trib.value);
+            trib.proposer._safeTransferETH(trib.value);
         } else if (!trib.nft) {
-            trib.asset.safeTransfer(trib.proposer, trib.value);
+            trib.asset._safeTransfer(trib.proposer, trib.value);
         } else {
-            trib.asset.safeTransferFrom(address(this), trib.proposer, trib.value);
+            trib.asset._safeTransferFrom(address(this), trib.proposer, trib.value);
         }
         
         delete tributes[dao][proposal];
@@ -99,7 +107,7 @@ contract KaliDAOtribute is ReentrancyGuard {
     function releaseTributeProposal(IKaliDAOtribute dao, uint256 proposal) public nonReentrant virtual {
         Tribute memory trib = tributes[dao][proposal];
 
-        require(address(trib.dao) != address(0), 'NOT_PROPOSAL');
+        if (address(trib.dao) == address(0)) revert NotProposal();
         
         delete tributes[dao][proposal];
 
@@ -110,24 +118,24 @@ contract KaliDAOtribute is ReentrancyGuard {
 
         IKaliDAOtribute.ProposalState memory prop = dao.proposalStates(proposal);
 
-        require(prop.processed, 'NOT_PROCESSED');
+        if (!prop.processed) revert NotProcessed();
 
         // release tribute from escrow based on proposal outcome
         if (prop.passed) {
             if (trib.asset == address(0)) {
-                address(trib.dao).safeTransferETH(trib.value);
+                address(trib.dao)._safeTransferETH(trib.value);
             } else if (!trib.nft) {
-                trib.asset.safeTransfer(address(trib.dao), trib.value);
+                trib.asset._safeTransfer(address(trib.dao), trib.value);
             } else {
-                trib.asset.safeTransferFrom(address(this), address(trib.dao), trib.value);
+                trib.asset._safeTransferFrom(address(this), address(trib.dao), trib.value);
             }
         } else {
             if (trib.asset == address(0)) {
-                trib.proposer.safeTransferETH(trib.value);
+                trib.proposer._safeTransferETH(trib.value);
             } else if (!trib.nft) {
-                trib.asset.safeTransfer(trib.proposer, trib.value);
+                trib.asset._safeTransfer(trib.proposer, trib.value);
             } else {
-                trib.asset.safeTransferFrom(address(this), trib.proposer, trib.value);
+                trib.asset._safeTransferFrom(address(this), trib.proposer, trib.value);
             }
         }
     }

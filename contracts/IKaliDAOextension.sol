@@ -10,5 +10,5 @@ interface IKaliDAOextension {
         address account, 
         uint256 amount, 
         bytes calldata extensionData
-    ) external payable returns (uint256 amountOut);
+    ) external payable returns (bool mint, uint256 amountOut);
 }

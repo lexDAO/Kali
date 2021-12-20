@@ -10,6 +10,10 @@ import '../../utils/ReentrancyGuard.sol';
 contract KaliDAOredemption is ReentrancyGuard {
     using SafeTransferLib for address;
 
+    event ExtensionSet(address indexed dao, address[] tokens, uint256 indexed redemptionStart);
+
+    event ExtensionCalled(address indexed dao, address indexed member, uint256 indexed amountBurned);
+
     event TokensAdded(address indexed dao, address[] tokens);
 
     event TokensRemoved(address indexed dao, uint256[] tokenIndex);
@@ -40,6 +44,8 @@ contract KaliDAOredemption is ReentrancyGuard {
         }
 
         redemptionStarts[msg.sender] = redemptionStart;
+
+        emit ExtensionSet(msg.sender, tokens, redemptionStart);
     }
 
     function callExtension(
@@ -66,6 +72,8 @@ contract KaliDAOredemption is ReentrancyGuard {
 
         // placeholder values to conform to interface and disclaim mint
         (mint, amountOut) = (false, amount);
+
+        emit ExtensionCalled(msg.sender, account, amount);
     }
 
     function addTokens(address[] calldata tokens) public nonReentrant virtual {

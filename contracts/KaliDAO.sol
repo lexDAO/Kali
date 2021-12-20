@@ -25,6 +25,40 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     event ProposalProcessed(uint256 indexed proposal, bool indexed didProposalPass);
 
     /*///////////////////////////////////////////////////////////////
+                            ERRORS
+    //////////////////////////////////////////////////////////////*/
+
+    error Initialized();
+
+    error VotingPeriodBounds();
+
+    error QuorumMax();
+
+    error SupermajorityBounds();
+
+    error TypeBounds();
+
+    error NotProposer();
+
+    error Sponsored();
+
+    error NotMember();
+
+    error NotProposal();
+
+    error AlreadyVoted();
+
+    error VotingEnded();
+
+    error Processed();
+
+    error VotingNotEnded();
+
+    error PrevNotProcessed();
+
+    error NotExtension();
+
+    /*///////////////////////////////////////////////////////////////
                             DAO STORAGE
     //////////////////////////////////////////////////////////////*/
 
@@ -108,15 +142,15 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint32 votingPeriod_,
         uint8[13] memory govSettings_
     ) public payable nonReentrant virtual {
-        require(extensions_.length == extensionsData_.length, 'NO_ARRAY_PARITY');
-        
-        require(votingPeriod == 0, 'INITIALIZED');
+        if (extensions_.length != extensionsData_.length) revert NoArrayParity();
 
-        require(votingPeriod_ != 0 && votingPeriod_ <= 365 days, 'VOTING_PERIOD_BOUNDS');
-        
-        require(govSettings_[0] <= 100, 'QUORUM_MAX');
-        
-        require(govSettings_[1] > 51 && govSettings_[1] <= 100, 'SUPERMAJORITY_BOUNDS');
+        if (votingPeriod != 0) revert Initialized();
+
+        if (votingPeriod_ == 0 || votingPeriod_ > 365 days) revert VotingPeriodBounds();
+
+        if (govSettings_[0] > 100) revert QuorumMax();
+
+        if (govSettings_[1] <= 51 || govSettings_[1] > 100) revert SupermajorityBounds();
 
         KaliDAOtoken._init(name_, symbol_, paused_, voters_, shares_);
 
@@ -186,20 +220,20 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint256[] calldata amounts,
         bytes[] calldata payloads
     ) public nonReentrant virtual returns (uint256 proposal) {
-        require(accounts.length == amounts.length && amounts.length == payloads.length, 'NO_ARRAY_PARITY');
+        if (accounts.length != amounts.length || amounts.length != payloads.length) revert NoArrayParity();
 
         bool selfSponsor;
 
         // if member or extension is making proposal, include sponsorship
         if (balanceOf[msg.sender] != 0 || extensions[msg.sender]) selfSponsor = true;
         
-        if (proposalType == ProposalType.PERIOD) require(amounts[0] <= 365 days, 'VOTING_PERIOD_BOUNDS');
+        if (proposalType == ProposalType.PERIOD) if (amounts[0] == 0 || amounts[0] > 365 days) revert VotingPeriodBounds();
         
-        if (proposalType == ProposalType.QUORUM) require(amounts[0] <= 100, 'QUORUM_MAX');
+        if (proposalType == ProposalType.QUORUM) if (amounts[0] > 100) revert QuorumMax();
         
-        if (proposalType == ProposalType.SUPERMAJORITY) require(amounts[0] > 51 && amounts[0] <= 100, 'SUPERMAJORITY_BOUNDS');
+        if (proposalType == ProposalType.SUPERMAJORITY) if (amounts[0] <= 51 || amounts[0] > 100) revert SupermajorityBounds();
 
-        if (proposalType == ProposalType.TYPE) require(amounts[0] <= 10 && amounts[1] <= 3 && amounts.length == 2, 'TYPE_MAX');
+        if (proposalType == ProposalType.TYPE) if (amounts[0] > 10 || amounts[1] > 3 || amounts.length != 2) revert TypeBounds();
 
         proposal = proposalCount;
 
@@ -227,9 +261,9 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     function cancelProposal(uint256 proposal) public nonReentrant virtual {
         Proposal storage prop = proposals[proposal];
 
-        require(msg.sender == prop.proposer, 'NOT_PROPOSER');
+        if (msg.sender != prop.proposer) revert NotProposer();
 
-        require(prop.creationTime == 0, 'SPONSORED');
+        if (prop.creationTime != 0) revert Sponsored();
 
         delete proposals[proposal];
 
@@ -239,11 +273,11 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     function sponsorProposal(uint256 proposal) public nonReentrant virtual returns (uint256 sponsoredProposal) {
         Proposal storage prop = proposals[proposal];
 
-        require(balanceOf[msg.sender] != 0, 'NOT_MEMBER');
+        if (balanceOf[msg.sender] == 0) revert NotMember();
 
-        require(prop.proposer != address(0), 'NOT_PROPOSAL');
+        if (prop.proposer == address(0)) revert NotProposal();
 
-        require(prop.creationTime == 0, 'SPONSORED');
+        if (prop.creationTime != 0) revert Sponsored();
 
         sponsoredProposal = proposalCount;
 
@@ -303,8 +337,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             );
             
         address recoveredAddress = ecrecover(digest, v, r, s);
-        
-        require(recoveredAddress == signer, 'INVALID_SIG');
+
+        if (recoveredAddress != signer) revert InvalidSignature();
         
         _vote(signer, proposal, approve);
     }
@@ -316,14 +350,14 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     ) internal virtual {
         Proposal storage prop = proposals[proposal];
 
-        require(balanceOf[signer] != 0, 'NOT_MEMBER');
+        if (balanceOf[signer] == 0) revert NotMember();
 
-        require(!voted[proposal][signer], 'ALREADY_VOTED');
+        if (voted[proposal][signer]) revert AlreadyVoted();
         
         // this is safe from overflow because `votingPeriod` is capped so it will not combine
         // with unix time to exceed 'type(uint256).max'
         unchecked {
-            require(block.timestamp <= prop.creationTime + votingPeriod, 'VOTING_ENDED');
+            if (block.timestamp > prop.creationTime + votingPeriod) revert VotingEnded();
         }
 
         uint96 weight = getPriorVotes(signer, prop.creationTime);
@@ -352,19 +386,19 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
         VoteType voteType = proposalVoteTypes[prop.proposalType];
 
-        require(prop.creationTime != 0, 'PROCESSED');
+        if (prop.creationTime == 0) revert Processed();
         
         // this is safe from overflow because `votingPeriod` is capped so it will not combine
         // with unix time to exceed 'type(uint256).max'
         unchecked {
-            require(block.timestamp > prop.creationTime + votingPeriod, 'VOTING_NOT_ENDED');
+            if (block.timestamp <= prop.creationTime + votingPeriod) revert VotingNotEnded();
         }
 
         // skip previous proposal processing requirement in case of escape hatch
         if (prop.proposalType != ProposalType.ESCAPE) {
-            // allow underflow in this case to permit first proposal
+            // tolerate underflow in this case to allow first proposal
             unchecked {
-                require(proposals[proposal - 1].creationTime == 0, 'PREV_NOT_PROCESSED');
+                if (proposals[proposal - 1].creationTime != 0) revert PrevNotProcessed();
             }
         }
 
@@ -416,7 +450,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                 
                  if (prop.proposalType == ProposalType.EXTENSION) 
                     for (uint256 i; i < prop.accounts.length; i++) {
-                        extensions[prop.accounts[i]] = !extensions[prop.accounts[i]];
+                        if (prop.amounts[i] != 0) 
+                            extensions[prop.accounts[i]] = !extensions[prop.accounts[i]];
                     
                         if (prop.payloads[i].length != 0) IKaliDAOextension(prop.accounts[i])
                             .setExtension(prop.payloads[i]);
@@ -457,10 +492,9 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             }
         }
         
-        // simple majority
+        // run voting logic
         if (voteType == VoteType.SIMPLE_MAJORITY || voteType == VoteType.SIMPLE_MAJORITY_QUORUM_REQUIRED) {
             if (yesVotes > noVotes) return true;
-        // super majority
         } else {
             // example: 7 yes, 2 no, supermajority = 66
             // ((7+2) * 66) / 100 = 5.94; 7 yes will pass
@@ -479,12 +513,11 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     function callExtension(
         address extension, 
         uint256 amount, 
-        bytes calldata extensionData,
-        bool mint
-    ) public payable nonReentrant virtual returns (uint256 amountOut) {
-        require(extensions[extension], 'NOT_EXTENSION');
+        bytes calldata extensionData
+    ) public payable nonReentrant virtual returns (bool mint, uint256 amountOut) {
+        if (!extensions[extension]) revert NotExtension();
         
-        amountOut = IKaliDAOextension(extension).callExtension{value: msg.value}
+        (mint, amountOut) = IKaliDAOextension(extension).callExtension{value: msg.value}
             (msg.sender, amount, extensionData);
         
         if (mint) {

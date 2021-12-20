@@ -4,6 +4,7 @@ import {
   Input,
   Button
 } from "@chakra-ui/react";
+import { alertMessage } from "../../utils/helpers";
 
 export default function Sponsor(props) {
   const value = useContext(AppContext);
@@ -18,7 +19,7 @@ export default function Sponsor(props) {
     value.setLoading(true);
 
     if(account===null) {
-      alert("Please connect to wallet");
+      alertMessage('connect');
     } else {
       let object = event.target;
       var array = [];

@@ -1,28 +1,8 @@
 [
 	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "spender",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "Approval",
-		"type": "event"
+		"inputs": [],
+		"name": "AlreadyVoted",
+		"type": "error"
 	},
 	{
 		"inputs": [
@@ -64,15 +44,15 @@
 				"internalType": "bytes",
 				"name": "extensionData",
 				"type": "bytes"
-			},
-			{
-				"internalType": "bool",
-				"name": "mint",
-				"type": "bool"
 			}
 		],
 		"name": "callExtension",
 		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "mint",
+				"type": "bool"
+			},
 			{
 				"internalType": "uint256",
 				"name": "amountOut",
@@ -81,6 +61,151 @@
 		],
 		"stateMutability": "payable",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "Initialized",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "InvalidNonce",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "InvalidSignature",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NoArrayParity",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NotDetermined",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NotExtension",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NotMember",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NotProposal",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NotProposer",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NullAddress",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "Paused",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "PrevNotProcessed",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "Processed",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "QuorumMax",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "Reentrancy",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "SignatureExpired",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "Sponsored",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "SupermajorityBounds",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "TypeBounds",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "Uint32max",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "Uint96max",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "VotingEnded",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "VotingNotEnded",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "VotingPeriodBounds",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "Approval",
+		"type": "event"
 	},
 	{
 		"inputs": [
@@ -224,6 +349,11 @@
 				"type": "address[]"
 			},
 			{
+				"internalType": "bytes[]",
+				"name": "extensionsData_",
+				"type": "bytes[]"
+			},
+			{
 				"internalType": "address[]",
 				"name": "voters_",
 				"type": "address[]"
@@ -282,12 +412,6 @@
 				"internalType": "uint256",
 				"name": "proposal",
 				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
 			}
 		],
 		"name": "NewProposal",
@@ -303,7 +427,7 @@
 				"type": "bool"
 			}
 		],
-		"name": "PauseToggled",
+		"name": "PauseFlipped",
 		"type": "event"
 	},
 	{

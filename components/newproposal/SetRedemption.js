@@ -9,15 +9,13 @@ import {
   Stack,
   Select
 } from "@chakra-ui/react";
-import { extensions } from "../../utils/addresses";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import NumInputField from "../elements/NumInputField";
+import DateSelect from "../elements/DateSelect";
 import { alertMessage } from "../../utils/helpers";
 
-export default function SetCrowdsale() {
+export default function SetRedemption() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address, chainId, balances } = value.state;
+  const { web3, loading, account, abi, address, chainId, balances, extensions, redemption } = value.state;
   const [startDate, setStartDate] = useState(new Date());
 
   const updateExtType = (e) => {
@@ -43,23 +41,26 @@ export default function SetCrowdsale() {
           description_,
           account_,
           proposalType_,
-          purchaseToken_,
-          purchaseMultiplier_,
-          purchaseLimit_,
-          saleEnds_
+          tokens_,
+          redemptionStart_
         } = array; // this must contain any inputs from custom forms
 
-        saleEnds_ = new Date(saleEnds_).getTime() / 1000;
+        var amount_ = 0;
 
-        const listId_ = 0;
+        if(extensions['redemption']==null) {
+          amount_ = 1; // prevent toggling extension back off
+        }
+        console.log("amount:" + amount_);
+        console.log(extensions)
 
-        const amount_ = 0;
+        const tokenArray = tokens_.split(",");
+        console.log(tokens_)
 
-        purchaseLimit_ = web3.utils.toWei(purchaseLimit_);
+        redemptionStart_ = new Date(redemptionStart_).getTime() / 1000;
 
         const payload_ = web3.eth.abi.encodeParameters(
-          ['uint256', 'address', 'uint8', 'uint96', 'uint32'],
-          [listId_, purchaseToken_, purchaseMultiplier_, purchaseLimit_, saleEnds_]
+          ['address[]','uint256'],
+          [tokenArray, redemptionStart_]
         );
         console.log(payload_)
 
@@ -92,24 +93,16 @@ export default function SetCrowdsale() {
       <Text><b>Details</b></Text>
       <Textarea name="description_" size="lg" placeholder=". . ." />
 
-      <Text>Purchase Token</Text>
-      <Select
-        name="purchaseToken_"
-      >
-        {balances.map((b, index) => (
+      <Text><b>Token Addresses (separate by comma)</b></Text>
+      <Textarea name="tokens_" placeholder="" />
 
-          <option key={index} value={b['address']}>{b['token']} (balance: {b['balance']})</option>
-        ))}
-      </Select>
-      <Text>Purchase Multiplier</Text>
-      <NumInputField name="purchaseMultiplier_" min="1" max="255" />
-      <Text>Purchase Limit</Text>
-      <NumInputField name="purchaseLimit_" min=".000000000000000001" />
-      <Text>Sale Ends</Text>
-      <DatePicker name="saleEnds_" selected={startDate} onChange={(date) => setStartDate(date)} showTimeSelect />
+      <Text>Redemption Start</Text>
+
+      <DateSelect name="redemptionStart_" />
+
 
       <Input type="hidden" name="proposalType_" value="8" />
-      <Input type="hidden" name="account_" value={extensions[chainId]['crowdsale']} />
+      <Input type="hidden" name="account_" value={extensions['redemption']} />
 
       <Button type="submit">Submit Proposal</Button>
     </Stack>

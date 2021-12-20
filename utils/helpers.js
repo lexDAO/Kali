@@ -1,3 +1,6 @@
+import ReactDOM from 'react-dom';
+import AlertMessage from "../components/elements/AlertMessage";
+
 export function convertVotingPeriod(seconds) {
     let time;
     let text;
@@ -29,13 +32,33 @@ export function votingPeriodToSeconds(period, type) {
     return amount;
 }
 
-export function tokenHelper(balances, crowdsale, web3) {
-  let token;
-
-  for(var i=0; i < balances.length; i++) {
-    if(web3.utils.toChecksumAddress(balances[i]['address'])==web3.utils.toChecksumAddress(crowdsale['purchaseToken'])) {
-      token = balances[i]['token'];
-    }
+export function toDecimals(amount, decimals) {
+  console.log("to decimals")
+  var stringf = "1";
+  for(var i=0;i<decimals;i++){
+    stringf = stringf+"0";
   }
-  return token;
+
+  return amount * stringf;
+}
+
+export function unixToDate(unix) {
+  var a = new Date(unix * 1000);
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var year = a.getFullYear();
+  var month = months[a.getMonth()];
+  var date = a.getDate();
+  var hour = a.getHours();
+  var min = a.getMinutes();
+  var sec = a.getSeconds();
+  var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+  return time;
+}
+
+export function alertMessage(type) {
+  ReactDOM.render(<AlertMessage type={type} />, document.getElementById('alert'));
+}
+
+export function hideAlert() {
+  ReactDOM.unmountComponentAtNode(document.getElementById('alert'));
 }

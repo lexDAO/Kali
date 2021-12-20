@@ -1,25 +1,29 @@
 import { useState, useContext, useEffect } from 'react';
+import Router, { useRouter } from "next/router";
 import AppContext from '../../context/AppContext';
 import {
-  Textarea,
-  Button,
   Input,
+  Button,
   Select,
   Text,
-  HStack,
-  Stack
+  Textarea,
+  Stack,
+  HStack
 } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
-import { alertMessage } from "../../utils/helpers";
+import { tokenHelper, toDecimals, unixToDate, alertMessage } from "../../utils/helpers";
 
-export default function GovSupermajority() {
+export default function Redemption() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address, dao } = value.state;
+  const { web3, loading, account, extensions, address, redemption, balances, abi } = value.state;
+  const [amt, setAmt] = useState(0); // amount to be spent on shares, not converted to wei/decimals
+  const handleChange = value => setAmt(value);
+  const redeemables = redemption['redeemables'];
 
   const submitProposal = async (event) => {
     event.preventDefault();
     value.setLoading(true);
-    console.log(value)
+
     if(account===null) {
       alertMessage('connect');
     } else {
@@ -31,20 +35,24 @@ export default function GovSupermajority() {
         }
 
         var {
-          description_,
-          amount_,
-          proposalType_
+          amount_
         } = array; // this must contain any inputs from custom forms
 
-        var account_ = "0x0000000000000000000000000000000000000000";
+        amount_ = web3.utils.toWei(amount_);
 
-        const payload_ = Array(0);
+        var extAddress = extensions['redemption'];
+        console.log("extAddress")
+        console.log(extAddress)
+
+        const calldata = "0x";
+        console.log(calldata)
 
         const instance = new web3.eth.Contract(abi, address);
+        console.log(instance)
 
         try {
           let result = await instance.methods
-            .propose(proposalType_, description_, [account_], [amount_], [payload_])
+            .callExtension(extAddress, amount_, calldata, 0)
             .send({ from: account });
             value.setReload(value.state.reload+1);
             value.setVisibleView(1);
@@ -64,12 +72,17 @@ export default function GovSupermajority() {
   return (
     <form onSubmit={submitProposal}>
       <Stack>
-        <Text><b>Details</b></Text>
-        <Textarea name="description_" size="lg" placeholder=". . ." />
-        <Text>Supermajority (currently {dao['supermajority']}%):</Text>
-        <NumInputField name="amount_" />
-        <Input type="hidden" name="proposalType_" value="5" />
-        <Button type="submit">Submit Proposal</Button>
+        <Text>Redemption begins {unixToDate(redemption['redemptionStarts'])}</Text>
+        <Text>Redeemables:</Text>
+        {redeemables.map((r, index) => (
+        <Text>{r}</Text>
+        ))}
+        <Text><b>Amount:</b></Text>
+        <NumInputField
+          name="amount_"
+          min=".000000000000000001"
+        />
+        <Button type="submit">Redeem Shares</Button>
       </Stack>
     </form>
   );

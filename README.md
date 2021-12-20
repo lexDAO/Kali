@@ -109,13 +109,15 @@ Kali adopts standard security conventions, including a [`ReentrancyGuard`](https
 
 ### Rinkeby
 
-KaliDAOfactory: [`0x0066086A1cd3074D7e41252695DA86915302860e`](https://rinkeby.etherscan.io/address/0x0066086A1cd3074D7e41252695DA86915302860e#code)
+KaliDAOfactory: [`0x1405101a6959a2105d659bA13c58609eA6E9FEeb`](https://rinkeby.etherscan.io/address/0x1405101a6959a2105d659bA13c58609eA6E9FEeb#code)
 
-KaliDAOtribute: [`0xaDf9Bd10aDdd2879058A206c5DA50abD1B2fe410`](https://rinkeby.etherscan.io/address/0xaDf9Bd10aDdd2879058A206c5DA50abD1B2fe410#code)
+KaliDAOtribute: [`0xE490B0cF7feE153d93Aa200E9Ff7021aBe3df346`](https://rinkeby.etherscan.io/address/0xE490B0cF7feE153d93Aa200E9Ff7021aBe3df346#code)
+
+KaliDAOcrowdsale: [`0x4ED219Ef77EF8367649496b1D0876BC065ed1ecc`](https://rinkeby.etherscan.io/address/0x4ED219Ef77EF8367649496b1D0876BC065ed1ecc#code)
+
+KaliDAOredemption: [`0x43709960A5b35d40B0C0836162B85e88b03FE3a5`](https://rinkeby.etherscan.io/address/0x43709960A5b35d40B0C0836162B85e88b03FE3a5#code)
 
 FixedERC20factory: [`0x6aBab95BB30710159B3e40bF6e049f935547D12b`](https://rinkeby.etherscan.io/address/0x6aBab95BB30710159B3e40bF6e049f935547D12b#code)
-
-LexLocker: [`0x5F0d15EF165D670F82510bb56a28B4bA48cf08Fc`](https://rinkeby.etherscan.io/address/0x5F0d15EF165D670F82510bb56a28B4bA48cf08Fc#code)
 
 ## Contributors
 

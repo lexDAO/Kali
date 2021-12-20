@@ -12,15 +12,20 @@ import {
   Button,
 } from "@chakra-ui/react";
 import FlexOutline from "../elements/FlexOutline";
-
 import { BrowserView, MobileView } from "react-device-detect";
 import { newProposalHelper } from "../../utils/newProposalHelper";
+import { hideAlert } from "../../utils/helpers";
 
 export default function NewProposal(props) {
   const [menuItem, setMenuItem] = useState(999); // arbitrary number where no proposal type is selected. if changed, must change below, too
   const value = useContext(AppContext);
   const { web3, loading, account, abi, address, extensions, chainId } = value.state;
   const balances = props.balances;
+
+  const handleClick = () => {
+    setMenuItem(999);
+    hideAlert();
+  }
 
   const ProposalTile = (props) => {
     return (
@@ -56,7 +61,7 @@ export default function NewProposal(props) {
 
   const BackButton = () => {
     return (
-      <Button size="sm" onClick={() => setMenuItem(999)} marginBottom={5}>
+      <Button size="sm" onClick={handleClick} marginBottom={5}>
         « Back
       </Button>
     );

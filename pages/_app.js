@@ -6,6 +6,7 @@ import Web3 from 'web3';
 import { useState, useEffect } from 'react';
 import theme from '../styles/theme';
 const abi = require("../abi/KaliDAO.json");
+import { alertMessage } from "../utils/helpers";
 
 function MyApp({ Component, pageProps }) {
 
@@ -25,6 +26,7 @@ function MyApp({ Component, pageProps }) {
   const [extensions, setExtensions] = useState();
   const [isMember, setIsMember] = useState();
   const [crowdsale, setCrowdsale] = useState();
+  const [redemption, setRedemption] = useState();
 
   useEffect(() => {
 
@@ -70,6 +72,7 @@ function MyApp({ Component, pageProps }) {
 
         if (accounts.length !== 0) {
           setAccount(ethereum.selectedAddress);
+          connect();
         } else {
           console.log("No authorised account found");
           return;
@@ -113,7 +116,8 @@ function MyApp({ Component, pageProps }) {
             proposalVoteTypes: proposalVoteTypes,
             extensions: extensions,
             isMember: isMember,
-            crowdsale: crowdsale
+            crowdsale: crowdsale,
+            redemption: redemption
           },
           setWeb3: setWeb3,
           setAccount: setAccount,
@@ -132,7 +136,8 @@ function MyApp({ Component, pageProps }) {
           setProposalVoteTypes: setProposalVoteTypes,
           setExtensions: setExtensions,
           setIsMember: setIsMember,
-          setCrowdsale: setCrowdsale
+          setCrowdsale: setCrowdsale,
+          setRedemption: setRedemption
         }}
       >
         <Component {...pageProps} />

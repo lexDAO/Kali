@@ -11,22 +11,35 @@ import {
   HStack
 } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
-import { tokenHelper } from "../../utils/helpers";
+import { tokenHelper, toDecimals, unixToDate, alertMessage } from "../../utils/helpers";
 
 export default function Tribute() {
   const value = useContext(AppContext);
-  const { web3, loading, account, extensions, address, crowdsale, balances } = value.state;
-  const token = tokenHelper(balances, crowdsale, web3);
+  const { web3, loading, account, extensions, address, crowdsale, balances, abi } = value.state;
+  const token = crowdsale['tokenName']
+  const [amt, setAmt] = useState(0); // amount to be spent on shares, not converted to wei/decimals
+  const handleChange = value => setAmt(value);
 
-  const [shares, setShares] = useState(0); // calculates # of shares you get for purchase price
-  const handleChange = value => setShares(value);
+  const approveSpend = async () => {
+    if(account===null) {
+      alertMessage('connect');
+    } else {
+      value.setLoading(true);
+      let amt_ = toDecimals(amt, crowdsale['decimals']).toString()
+      const abi_ = require("../../abi/ERC20.json");
+      const instance_ = new web3.eth.Contract(abi_, crowdsale['purchaseToken']);
+      let spender = extensions['crowdsale'];
+      let result = await instance_.methods.approve(spender, amt_).send({ from: account });
+      value.setLoading(false);
+    }
+  }
 
   const submitProposal = async (event) => {
     event.preventDefault();
     value.setLoading(true);
 
     if(account===null) {
-      alert("Please connect to wallet");
+      alertMessage('connect');
     } else {
       try {
         let object = event.target;
@@ -36,36 +49,40 @@ export default function Tribute() {
         }
 
         var {
-          account_,
           amount_
         } = array; // this must contain any inputs from custom forms
 
+        amount_ = toDecimals(amount_, crowdsale['decimals']).toString();
+        console.log("amount")
+        console.log(amount_);
+
         var value_ = 0;
         if(crowdsale["purchaseToken"] == "0x0000000000000000000000000000000000000000") {
-          value_=amount_;
+          value_ = amount_;
         }
+        console.log("value")
+        console.log(value_)
+
+        var extAddress = extensions['crowdsale'];
+        console.log(extAddress)
 
         const calldata = "0x";
 
-        amount_ = web3.utils.toWei(amount_);
-
-        const abi_ = require("../../abi/KaliDAOcrowdsale.json");
-        const address_ = extensions['crowdsale'];
-        const instance_ = new web3.eth.Contract(abi_, address_);
-        console.log(instance_)
+        const instance = new web3.eth.Contract(abi, address);
+        console.log(instance)
 
         try {
-          let result = await instance_.methods
-            .callExtension(account_, amount_, calldata)
+          let result = await instance.methods
+            .callExtension(extAddress, amount_, calldata, 1)
             .send({ from: account, value: value_ });
             value.setReload(value.state.reload+1);
             value.setVisibleView(1);
         } catch (e) {
-          alert(e);
+          alertMessage('send-transaction');
           value.setLoading(false);
         }
       } catch(e) {
-        alert(e);
+        alertMessage('send-transaction');
         value.setLoading(false);
       }
     }
@@ -74,21 +91,35 @@ export default function Tribute() {
   };
 
   return (
+    <>
     <form onSubmit={submitProposal}>
     <Stack>
-      <Text><b>Recipient</b></Text>
-      <Input name="account_" size="lg" placeholder="0x or .eth"></Input>
-
+    <Text>Sale Details</Text>
+      <Text>Price: {1 / crowdsale['purchaseMultiplier']} {token} ({crowdsale['purchaseMultiplier']} shares per {token})</Text>
+      <Text>Maximum shares allowed: {crowdsale['purchaseLimit']}</Text>
+      <Text>Sale ends {unixToDate(crowdsale['saleEnds'])}</Text>
       <HStack>
         <Text><b>Purchase Amount ({token}):</b></Text>
-        <NumInputField name="amount_" min=".000000000000000001" onChange={handleChange} />
+        <NumInputField
+          name="amount_"
+          min=".000000000000000001"
+          max={crowdsale['purchaseLimit'] / crowdsale['purchaseMultiplier']}
+          onChange={handleChange}
+        />
 
         <Text><b>Shares</b></Text>
-        <Input value={shares} disabled />
-      </HStack>
+        <Input value={amt * crowdsale['purchaseMultiplier']} disabled />
 
-      <Button type="submit">Submit Proposal</Button>
+      </HStack>
+      {crowdsale['purchaseToken'] != "0x0000000000000000000000000000000000000000" ?
+        <Button onClick={approveSpend}>Approve</Button>
+        : null
+      }
+
+      <Button type="submit">Purchase Shares</Button>
+
     </Stack>
     </form>
+    </>
   );
 }

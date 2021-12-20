@@ -8,7 +8,7 @@ import {
   Textarea,
   Divider
 } from "@chakra-ui/react";
-import { proposalDetails } from "../../utils/viewProposalsHelper";
+import { proposalDetails, extensionParams } from "../../utils/viewProposalsHelper";
 
 const ProposalLabel = (props) => {
   return(
@@ -37,27 +37,58 @@ export default function ProposalModal(props) {
   const { web3, loading } = value.state;
   const p = props['p'];
   const type = p['proposalType'];
+  let decoded;
+  if(type==8) {
+    let params = extensionParams[0][p['extension']];
+    if(params != null) {
+      decoded = JSON.stringify(web3.eth.abi.decodeParameters(params, p['payload']));
+    }
+  }
+  if(type==2) {
+    if(p['payload'].includes("0xa9059cbb", 0)) {
+      params = ['address', 'uint256'];
+      let bytecode = p['payload'].replace('0xa9059cbb','');
+      console.log(bytecode)
+      decoded = JSON.stringify(web3.eth.abi.decodeParameters(params, "0x"+bytecode));
+    }
+  }
+  console.log(params)
 
   return(
     <>
+        <Text casing="uppercase">Submitted by {p['proposer']}</Text>
+        <ProposalDivider />
+
+        <ProposalLabel>description</ProposalLabel>
+        <Text>{p['description']}</Text>
+        <ProposalDivider />
+
         {proposalDetails[type][0] == null ? null :
         <>
         <ProposalLabel>{proposalDetails[type][0]}</ProposalLabel>
-        <ProposalInput value={p['amount']} />
+        <Text>{p['amount']}</Text>
         <ProposalDivider />
         </>
         }
+        {type==8 ?
+          <>
+        <ProposalLabel>Extension type</ProposalLabel>
+        <Text>{p['extension']}</Text>
+        <ProposalDivider />
+          </>
+        : null}
         {proposalDetails[type][1] == null ? null :
         <>
         <ProposalLabel>{proposalDetails[type][1]}</ProposalLabel>
-        <ProposalInput value={p['account']} />
+        <Text>{p['account']}</Text>
         <ProposalDivider />
         </>
         }
         {proposalDetails[type][2] == null ? null :
         <>
         <ProposalLabel>payload</ProposalLabel>
-        <Textarea>{p['payload']}</Textarea>
+        <Text>{p['payload']}</Text>
+        <Text>Decoded: {decoded}</Text>
         <ProposalDivider />
         </>
         }

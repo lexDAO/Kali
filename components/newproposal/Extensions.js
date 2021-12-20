@@ -12,6 +12,7 @@ import {
 import { extensions } from "../../utils/addresses";
 import { extensionsHelper } from "../../utils/newProposalHelper";
 import NumInputField from "../elements/NumInputField";
+import { alertMessage } from "../../utils/helpers";
 
 export default function Extensions() {
   const value = useContext(AppContext);
@@ -32,7 +33,7 @@ export default function Extensions() {
     value.setLoading(true);
 
     if(account===null) {
-      alert("Please connect to wallet");
+      alertMessage('connect');
     } else {
       try {
         let object = event.target;
@@ -60,11 +61,11 @@ export default function Extensions() {
             value.setReload(value.state.reload+1);
             value.setVisibleView(1);
         } catch (e) {
-          alert(e);
+          alertMessage('send-transaction');
           value.setLoading(false);
         }
       } catch(e) {
-        alert(e);
+        alertMessage('send-transaction');
         value.setLoading(false);
       }
     }

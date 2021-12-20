@@ -2,16 +2,26 @@
 
 pragma solidity >=0.8.0;
 
-/// @notice Safe ETH and ERC20 transfer library that gracefully handles missing return values.
-/// @author Modified from RariCapital (https://github.com/Rari-Capital/solmate/blob/main/src/utils/SafeTransferLib.sol)
+/// @notice Safe ETH and ERC-20 transfer library that gracefully handles missing return values.
+/// @author Modified from SolMate (https://github.com/Rari-Capital/solmate/blob/main/src/utils/SafeTransferLib.sol)
 /// License-Identifier: AGPL-3.0-only
 /// @dev Use with caution! Some functions in this library knowingly create dirty bits at the destination of the free memory pointer.
 library SafeTransferLib {
     /*///////////////////////////////////////////////////////////////
+                            ERRORS
+    //////////////////////////////////////////////////////////////*/
+
+    error ETHtransferFailed();
+
+    error TransferFailed();
+
+    error TransferFromFailed();
+
+    /*///////////////////////////////////////////////////////////////
                             ETH OPERATIONS
     //////////////////////////////////////////////////////////////*/
 
-    function safeTransferETH(address to, uint256 amount) internal {
+    function _safeTransferETH(address to, uint256 amount) internal {
         bool callStatus;
 
         assembly {
@@ -19,14 +29,14 @@ library SafeTransferLib {
             callStatus := call(gas(), to, amount, 0, 0, 0, 0)
         }
 
-        require(callStatus, "ETH_TRANSFER_FAILED");
+        if (!callStatus) revert ETHtransferFailed();
     }
 
     /*///////////////////////////////////////////////////////////////
                             ERC20 OPERATIONS
     //////////////////////////////////////////////////////////////*/
 
-    function safeTransfer(
+    function _safeTransfer(
         address token,
         address to,
         uint256 amount
@@ -49,10 +59,10 @@ library SafeTransferLib {
             callStatus := call(gas(), token, 0, freeMemoryPointer, 68, 0, 0)
         }
 
-        require(didLastOptionalReturnCallSucceed(callStatus), "TRANSFER_FAILED");
+        if (!_didLastOptionalReturnCallSucceed(callStatus)) revert TransferFailed();
     }
 
-    function safeTransferFrom(
+    function _safeTransferFrom(
         address token,
         address from,
         address to,
@@ -78,14 +88,14 @@ library SafeTransferLib {
             callStatus := call(gas(), token, 0, freeMemoryPointer, 100, 0, 0)
         }
 
-        require(didLastOptionalReturnCallSucceed(callStatus), "TRANSFER_FROM_FAILED");
+        if (!_didLastOptionalReturnCallSucceed(callStatus)) revert TransferFromFailed();
     }
 
     /*///////////////////////////////////////////////////////////////
                             INTERNAL HELPER LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function didLastOptionalReturnCallSucceed(bool callStatus) internal pure returns (bool success) {
+    function _didLastOptionalReturnCallSucceed(bool callStatus) internal pure returns (bool success) {
         assembly {
             // get how many bytes the call returned
             let returnDataSize := returndatasize()

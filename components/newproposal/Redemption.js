@@ -39,10 +39,9 @@ export default function Redemption() {
         } = array; // this must contain any inputs from custom forms
 
         amount_ = web3.utils.toWei(amount_);
-        console.log("amount")
-        console.log(amount_);
 
         var extAddress = extensions['redemption'];
+        console.log("extAddress")
         console.log(extAddress)
 
         const calldata = "0x";

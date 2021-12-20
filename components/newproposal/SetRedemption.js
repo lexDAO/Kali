@@ -9,14 +9,13 @@ import {
   Stack,
   Select
 } from "@chakra-ui/react";
-import { extensions } from "../../utils/addresses";
 import NumInputField from "../elements/NumInputField";
 import DateSelect from "../elements/DateSelect";
 import { alertMessage } from "../../utils/helpers";
 
 export default function SetRedemption() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address, chainId, balances, redemption } = value.state;
+  const { web3, loading, account, abi, address, chainId, balances, extensions, redemption } = value.state;
   const [startDate, setStartDate] = useState(new Date());
 
   const updateExtType = (e) => {
@@ -48,10 +47,11 @@ export default function SetRedemption() {
 
         var amount_ = 0;
 
-        if(!redemption) {
-          amount_ = 1;
+        if(extensions['redemption']==null) {
+          amount_ = 1; // prevent toggling extension back off
         }
         console.log("amount:" + amount_);
+        console.log(extensions)
 
         const tokenArray = tokens_.split(",");
 
@@ -101,7 +101,7 @@ export default function SetRedemption() {
 
 
       <Input type="hidden" name="proposalType_" value="8" />
-      <Input type="hidden" name="account_" value={extensions[chainId]['redemption']} />
+      <Input type="hidden" name="account_" value={extensions['redemption']} />
 
       <Button type="submit">Submit Proposal</Button>
     </Stack>

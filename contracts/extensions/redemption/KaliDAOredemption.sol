@@ -60,7 +60,8 @@ contract KaliDAOredemption is ReentrancyGuard {
 
         for (uint256 i; i < redeemables[msg.sender].length; i++) {
             // calculate fair share of given token for redemption
-            uint256 amountToRedeem = amount * IERC20minimal(redeemables[msg.sender][i]).balanceOf(msg.sender) / 
+            uint256 amountToRedeem = amount * 
+                IERC20minimal(redeemables[msg.sender][i]).balanceOf(msg.sender) / 
                 IERC20minimal(msg.sender).totalSupply();
             
             // `transferFrom` DAO to redeemer
@@ -94,7 +95,8 @@ contract KaliDAOredemption is ReentrancyGuard {
     function removeTokens(uint256[] calldata tokenIndex) public nonReentrant virtual {
         for (uint256 i; i < tokenIndex.length; i++) {
             // move last token to replace indexed spot and pop array to remove last token
-            redeemables[msg.sender][tokenIndex[i]] = redeemables[msg.sender][redeemables[msg.sender].length - 1];
+            redeemables[msg.sender][tokenIndex[i]] = 
+                redeemables[msg.sender][redeemables[msg.sender].length - 1];
 
             redeemables[msg.sender].pop();
         }

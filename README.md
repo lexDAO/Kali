@@ -37,28 +37,6 @@ Proposals can be made under 11 types:
 
 ![image](https://user-images.githubusercontent.com/92001561/146144169-361124fb-1f3f-4477-a58f-9d093e1b57c0.png)
 
-`MINT`: create more membership tokens.
-
-`BURN`: burn membership tokens, similar to Moloch DAO `ragekick()`.
-
-`CALL`: make external calls to other smart contracts, similar to Moloch DAO [`Minion`](https://github.com/raid-guild/moloch-minion). 
-
-`PERIOD`: adjust voting period.
-
-`QUORUM`: adjust voting quorum requirement, that is, the % of membership tokens that must vote for proposals to pass.
-
-`SUPERMAJORITY`: adjust super-majority requirement, that is, the % of member approvals required for proposals to pass.
-
-`TYPE`: set `ProposalType` to a `VoteType`.
-
-`PAUSE`: toggle member token transferability.
-
-`EXTENSION`: toggle approval for certain contract external calls via `extensionCall()`.
-
-`ESCAPE`: delete a pending proposal in case of reverts as an extra safeguard for proposal clearing.
-e
-`DOCS`: amend the org docs string stored in DAO - these docs can be reasoned about by other contracts.
-
 | Proposal      | Description | Inputs | proposalType | description | accounts[^note] | amounts[^note] | payloads[^note] |
 | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | 
 | `MINT`      | create more membership tokens       | → | `0` | any | `[recipient address, ...]` | `[amount to mint, ...]` | any | 

@@ -14,6 +14,10 @@ contract KaliDAOredemption is ReentrancyGuard {
 
     event TokensRemoved(address indexed dao, uint256[] tokenIndex);
 
+    error NullTokens();
+
+    error NotStarted();
+
     mapping(address => address[]) public redeemables;
 
     mapping(address => uint256) public redemptionStarts;
@@ -25,7 +29,7 @@ contract KaliDAOredemption is ReentrancyGuard {
     function setExtension(bytes calldata extensionData) public nonReentrant virtual {
         (address[] memory tokens, uint256 redemptionStart) = abi.decode(extensionData, (address[], uint256));
 
-        require(tokens.length != 0, "NULL_TOKENS");
+        if (tokens.length == 0) revert NullTokens();
         
         // this is reasonably safe from overflow because incrementing `i` loop beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
@@ -42,8 +46,8 @@ contract KaliDAOredemption is ReentrancyGuard {
         address account, 
         uint256 amount, 
         bytes calldata
-    ) public nonReentrant virtual returns (uint256 amountOut) {
-        require(block.timestamp >= redemptionStarts[msg.sender], 'NOT_STARTED');
+    ) public nonReentrant virtual returns (bool mint, uint256 amountOut) {
+        if (block.timestamp < redemptionStarts[msg.sender]) revert NotStarted();
 
         for (uint256 i; i < redeemables[msg.sender].length; i++) {
             // calculate fair share of given token for redemption
@@ -60,11 +64,11 @@ contract KaliDAOredemption is ReentrancyGuard {
             }
         }
 
-        // placeholder value to conform to interface
-        amountOut = amount;
+        // placeholder values to conform to interface and disclaim mint
+        (mint, amountOut) = (false, amount);
     }
 
-    function addTokens(address[] memory tokens) public nonReentrant virtual {
+    function addTokens(address[] calldata tokens) public nonReentrant virtual {
         // this is reasonably safe from overflow because incrementing `i` loop beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
         unchecked {
@@ -76,7 +80,7 @@ contract KaliDAOredemption is ReentrancyGuard {
         emit TokensAdded(msg.sender, tokens);
     }
 
-    function removeTokens(uint256[] memory tokenIndex) public nonReentrant virtual {
+    function removeTokens(uint256[] calldata tokenIndex) public nonReentrant virtual {
         for (uint256 i; i < tokenIndex.length; i++) {
             // move last token to replace indexed spot and pop array to remove last token
             redeemables[msg.sender][tokenIndex[i]] = redeemables[msg.sender][redeemables[msg.sender].length - 1];

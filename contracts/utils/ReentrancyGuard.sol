@@ -7,6 +7,8 @@ pragma solidity >=0.8.0;
 /// (https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol)
 /// License-Identifier: MIT
 abstract contract ReentrancyGuard {
+    error Reentrancy();
+
     uint256 private constant NOT_ENTERED = 1;
 
     uint256 private constant ENTERED = 2;
@@ -14,7 +16,7 @@ abstract contract ReentrancyGuard {
     uint256 private status = NOT_ENTERED;
 
     modifier nonReentrant() {
-        require(status != ENTERED, 'REENTRANCY');
+        if (status == ENTERED) revert Reentrancy();
 
         status = ENTERED;
 

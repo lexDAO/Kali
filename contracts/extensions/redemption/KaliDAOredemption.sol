@@ -66,7 +66,7 @@ contract KaliDAOredemption is ReentrancyGuard {
             
             // `transferFrom` DAO to redeemer
             if (amountToRedeem != 0) {
-                address(redeemables[msg.sender][i]).safeTransferFrom(
+                address(redeemables[msg.sender][i])._safeTransferFrom(
                     msg.sender, 
                     account, 
                     amountToRedeem

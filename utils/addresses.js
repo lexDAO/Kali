@@ -10,7 +10,7 @@ export const tribute_rinkeby = "0xE490B0cF7feE153d93Aa200E9Ff7021aBe3df346";
 export const extensions = { // grouped by chain id
   4: {
     "tribute": "0xE490B0cF7feE153d93Aa200E9Ff7021aBe3df346",
-    "crowdsale": "0x431faBDc0c8B66eE3E19E2F26EC7b640a4E217cD",
+    "crowdsale": "0x4ED219Ef77EF8367649496b1D0876BC065ed1ecc",
     "redemption": "0x43709960A5b35d40B0C0836162B85e88b03FE3a5"
   }
 }

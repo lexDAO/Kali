@@ -26,6 +26,7 @@ function MyApp({ Component, pageProps }) {
   const [extensions, setExtensions] = useState();
   const [isMember, setIsMember] = useState();
   const [crowdsale, setCrowdsale] = useState();
+  const [redemption, setRedemption] = useState();
 
   useEffect(() => {
 
@@ -115,7 +116,8 @@ function MyApp({ Component, pageProps }) {
             proposalVoteTypes: proposalVoteTypes,
             extensions: extensions,
             isMember: isMember,
-            crowdsale: crowdsale
+            crowdsale: crowdsale,
+            redemption: redemption
           },
           setWeb3: setWeb3,
           setAccount: setAccount,
@@ -134,7 +136,8 @@ function MyApp({ Component, pageProps }) {
           setProposalVoteTypes: setProposalVoteTypes,
           setExtensions: setExtensions,
           setIsMember: setIsMember,
-          setCrowdsale: setCrowdsale
+          setCrowdsale: setCrowdsale,
+          setRedemption: setRedemption
         }}
       >
         <Component {...pageProps} />

@@ -13,6 +13,8 @@ import Tribute from "../components/newproposal/Tribute";
 import SetTribute from "../components/newproposal/SetTribute";
 import SetCrowdsale from "../components/newproposal/SetCrowdsale";
 import BuyCrowdsale from "../components/newproposal/BuyCrowdsale";
+import SetRedemption from "../components/newproposal/SetRedemption";
+import Redemption from "../components/newproposal/Redemption";
 import Escape from "../components/newproposal/Escape";
 
 export const newProposalHelper = [ // title, description, component, extensionName
@@ -24,6 +26,7 @@ export const newProposalHelper = [ // title, description, component, extensionNa
   ["Remove Member", "Propose removal of member due to misconduct or wallet hack.", <RemoveMember />, null],
   ["Tribute", "Propose joining the DAO, and send tribute.", <Tribute />, 'tribute'],
   ["Buy Crowdsale", "Join the DAO through crowdsale.", <BuyCrowdsale />, 'crowdsale'],
+  ["Redeem Shares", "Leave the DAO and get your fair share of treasury assets.", <Redemption />, 'redemption'],
   //["Escape", "Delete a broken proposal.", <Escape />, null] *** hiding this proposal type from front end
 ]
 
@@ -37,5 +40,6 @@ export const govSettingsHelper = [ // solidity enum id, description, component
 
 export const extensionsHelper = [ // solidity enum id, description, component
   ["tribute", <SetTribute />],
-  ["crowdsale", <SetCrowdsale />]
+  ["crowdsale", <SetCrowdsale />],
+  ["redemption", <SetRedemption />]
 ]

@@ -133,6 +133,8 @@ export async function fetchAll(instance, factory, address, web3, chainId, accoun
 
   const crowdsale_ = await getCrowdsale(web3, extensions_, address, balances_);
 
+  const redemption_ = await getRedemption(web3, extensions_, address);
+
   const isMember_ = await isMember(instance, account);
 
   return {
@@ -144,7 +146,8 @@ export async function fetchAll(instance, factory, address, web3, chainId, accoun
     balances_,
     extensions_,
     isMember_,
-    crowdsale_
+    crowdsale_,
+    redemption_
   };
 }
 
@@ -282,5 +285,21 @@ export async function getCrowdsale(web3, extensions_, address, balances_) {
   }
 
   return crowdsale;
+
+}
+
+export async function getRedemption(web3, extensions_, address) {
+  const abi_ = require("../abi/KaliDAOredemption.json");
+  var redemption = [];
+  if(extensions_['redemption'] != null) {
+    const address_ = extensions_['redemption'];
+    const instance_ = new web3.eth.Contract(abi_, address_);
+    let redeemables = await instance_.methods.getRedeemables(address).call();
+    let redemptionStarts = await instance_.methods.redemptionStarts(address).call();
+    redemption['redeemables'] = redeemables;
+    redemption['redemptionStarts'] = redemptionStarts;
+  }
+
+  return redemption;
 
 }

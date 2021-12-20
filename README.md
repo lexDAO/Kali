@@ -56,8 +56,25 @@ Proposals can be made under 11 types:
 `EXTENSION`: toggle approval for certain contract external calls via `extensionCall()`.
 
 `ESCAPE`: delete a pending proposal in case of reverts as an extra safeguard for proposal clearing.
-
+e
 `DOCS`: amend the org docs string stored in DAO - these docs can be reasoned about by other contracts.
+
+| Proposal      | Description | Inputs | proposalType | description | accounts[^note] | amounts[^note] | payloads[^note] |
+| ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | 
+| `MINT`      | create more membership tokens       | → | `0` | any | `[recipient address, ...]` | `[amount to mint, ...]` | any | 
+| `BURN`   | burn membership tokens, similar to Moloch DAO `ragekick()`        | → | `1` | any | `[member address, ...]` | `[amount to burn, ...]` | any | 
+| `CALL`   | make external calls to other smart contracts, similar to Moloch DAO [`Minion`](https://github.com/raid-guild/moloch-minion)        | → | `2` | any | `[external contract address, ...]` | `[amount, ...]` | `[ABI, ...]`| 
+| `PERIOD`   | adjust voting period        | → | `3` | any | any | `[0 < x < 365]` | any | 
+| `QUORUM`   | adjust voting quorum requirement, that is, the % of membership tokens that must vote for proposals to pass        | → | `4` | any | any | `[x < 100]` | any | 
+| `SUPERMAJORITY`   | adjust super-majority requirement, that is, the % of member approvals required for proposals to pass        | → | `5` | any | any | `[51 < x < 100]` | any | 
+| `TYPE`   | set `ProposalType` to a `VoteType`        | → | `6` | any | any | `[ProposalType, VoteType]` | any | 
+| `PAUSE`   | toggle member token transferability        | → | `7` | any | any | any | any | 
+| `EXTENSION`   | toggle approval for certain contract external calls via `extensionCall()`        | → | `8` | any | `[extension contract address, ...]` | any | `[ABI, ...]` | 
+| `ESCAPE`   | delete a pending proposal in case of reverts as an extra safeguard for proposal clearing        | → | `9` | any | `[proposal #]` | any | any | 
+| `DOCS`   | amend the org docs string stored in DAO - these docs can be reasoned about by other contracts        | → | `10` | any | any | any | any | 
+
+[^note]: `accounts`, `amounts`, and `payloads` must have array parity 
+
 
 ## Voting Types
 

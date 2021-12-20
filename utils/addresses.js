@@ -1,7 +1,7 @@
 // factory addresses
 export const factory_arbitrum = "0xd53B46aE3781904F1f61CF38Fd9d4F47A7e9242B";
 export const factory_polygon = "0x582eAF6a83E55d60615A5FfB80913bE5c1724c41";
-export const factory_rinkeby = "0xd89118052aCe566493873497975f90bA68a74f2f";
+export const factory_rinkeby = "0x1405101a6959a2105d659bA13c58609eA6E9FEeb";
 
 // extension addresses
 // - tribute

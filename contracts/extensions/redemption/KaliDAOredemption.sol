@@ -34,6 +34,9 @@ contract KaliDAOredemption is ReentrancyGuard {
         (address[] memory tokens, uint256 redemptionStart) = abi.decode(extensionData, (address[], uint256));
 
         if (tokens.length == 0) revert NullTokens();
+
+        // if redeemables are already set, this call will be interpreted as reset
+        if (redeemables[msg.sender].length != 0) delete redeemables[msg.sender];
         
         // this is reasonably safe from overflow because incrementing `i` loop beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits

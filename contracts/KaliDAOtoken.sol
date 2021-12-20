@@ -21,6 +21,28 @@ abstract contract KaliDAOtoken {
     event PauseFlipped(bool indexed paused);
 
     /*///////////////////////////////////////////////////////////////
+                            ERRORS
+    //////////////////////////////////////////////////////////////*/
+
+    error NoArrayParity();
+
+    error Paused();
+
+    error SignatureExpired();
+
+    error NullAddress();
+
+    error InvalidNonce();
+
+    error NotDetermined();
+
+    error InvalidSignature();
+
+    error Uint32max();
+
+    error Uint96max();
+
+    /*///////////////////////////////////////////////////////////////
                             METADATA STORAGE
     //////////////////////////////////////////////////////////////*/
 
@@ -84,7 +106,7 @@ abstract contract KaliDAOtoken {
         address[] memory voters_,
         uint256[] memory shares_
     ) internal virtual {
-        require(voters_.length == shares_.length, 'NO_ARRAY_PARITY');
+        if (voters_.length != shares_.length) revert NoArrayParity();
 
         name = name_;
         
@@ -163,7 +185,7 @@ abstract contract KaliDAOtoken {
     //////////////////////////////////////////////////////////////*/
 
     modifier notPaused() {
-        require(!paused, 'PAUSED');
+        if (paused) revert Paused();
 
         _;
     }
@@ -195,27 +217,27 @@ abstract contract KaliDAOtoken {
         bytes32 r, 
         bytes32 s
     ) public virtual {
+        if (block.timestamp > expiry) revert SignatureExpired();
+
         bytes32 structHash = keccak256(abi.encode(DELEGATION_TYPEHASH, delegatee, nonce, expiry));
 
         bytes32 digest = keccak256(abi.encodePacked('\x19\x01', DOMAIN_SEPARATOR(), structHash));
 
         address signatory = ecrecover(digest, v, r, s);
 
-        require(signatory != address(0), 'ZERO_ADDRESS');
+        if (signatory == address(0)) revert NullAddress();
         
         // this is reasonably safe from overflow because incrementing `nonces` beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
         unchecked {
-            require(nonce == nonces[signatory]++, 'INVALID_NONCE');
+            if (nonce != nonces[signatory]++) revert InvalidNonce();
         }
-
-        require(block.timestamp <= expiry, 'SIGNATURE_EXPIRED');
 
         _delegate(signatory, delegatee);
     }
 
     function getPriorVotes(address account, uint256 timestamp) public view virtual returns (uint96 votes) {
-        require(block.timestamp > timestamp, 'NOT_YET_DETERMINED');
+        if (block.timestamp <= timestamp) revert NotDetermined();
 
         uint256 nCheckpoints = numCheckpoints[account];
 
@@ -341,7 +363,7 @@ abstract contract KaliDAOtoken {
         bytes32 r,
         bytes32 s
     ) public virtual {
-        require(block.timestamp <= deadline, 'PERMIT_DEADLINE_EXPIRED');
+        if (block.timestamp > deadline) revert SignatureExpired();
 
         // this is reasonably safe from overflow because incrementing `nonces` beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
@@ -355,8 +377,8 @@ abstract contract KaliDAOtoken {
             );
 
             address recoveredAddress = ecrecover(digest, v, r, s);
-            
-            require(recoveredAddress != address(0) && recoveredAddress == owner, 'INVALID_PERMIT_SIGNATURE');
+
+            if (recoveredAddress == address(0) || recoveredAddress != owner) revert InvalidSignature();
 
             allowance[recoveredAddress][spender] = value;
         }
@@ -407,13 +429,13 @@ abstract contract KaliDAOtoken {
     //////////////////////////////////////////////////////////////*/
     
     function _safeCastTo32(uint256 x) internal pure virtual returns (uint32 y) {
-        require(x <= type(uint32).max);
+        if (x > type(uint32).max) revert Uint32max();
 
         y = uint32(x);
     }
     
     function _safeCastTo96(uint256 x) internal pure virtual returns (uint96 y) {
-        require(x <= type(uint96).max);
+        if (x > type(uint96).max) revert Uint96max();
 
         y = uint96(x);
     }

@@ -54,6 +54,7 @@ export default function SetRedemption() {
         console.log(extensions)
 
         const tokenArray = tokens_.split(",");
+        console.log(tokens_)
 
         redemptionStart_ = new Date(redemptionStart_).getTime() / 1000;
 

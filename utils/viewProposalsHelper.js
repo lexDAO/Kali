@@ -58,6 +58,13 @@ export const proposalDetails = [ // descriptions for: amount, account, payload
   ["proposed supermajority threshold", null, null],
   ["proposed proposal/vote type", null, null],
   [null, null, null],
+  [null, "extension address", "params"],
   ["proposal number", null, null],
-  ["proposal number", null, null]
+  [null, null, null],
 ]
+
+export const extensionParams = [{
+  "tribute": null,
+  "crowdsale": ['uint256', 'address', 'uint8', 'uint96', 'uint32'],
+  "redemption": ['address[]','uint256']
+}]

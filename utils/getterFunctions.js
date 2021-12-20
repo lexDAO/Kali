@@ -116,6 +116,15 @@ export async function fetchAll(instance, factory, address, web3, chainId, accoun
         let payload = proposalArrays["payloads"][0];
         //proposal["payloadArray"] = payload.match(/.{0,40}/g);
         proposal["payload"] = payload;
+        // is this an extension proposal?
+        if(proposal["proposalType"]==8) {
+          let extAddress = proposalArrays["accounts"][0];
+          for(const [key, value] of Object.entries(extensions[chainId])) {
+            if(extAddress==value) {
+              proposal["extension"] = key;
+            }
+          }
+        }
         if(proposal['inLimbo']==true) {
           pendingProposals_.push(proposal);
         } else {

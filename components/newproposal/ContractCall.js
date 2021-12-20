@@ -101,6 +101,7 @@ export default function ContractCall() {
 
         inputs = JSON.parse(inputs);
         inputParams = JSON.parse(inputParams);
+        console.log("test")
         console.log(abi_);
         console.log(inputs);
         console.log(inputParams);

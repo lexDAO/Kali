@@ -11,6 +11,6 @@ export const extensions = { // grouped by chain id
   4: {
     "tribute": "0xd024Bf8bb77A5bf3421f1400D408e7C06bbe07ff",
     "crowdsale": "0x431faBDc0c8B66eE3E19E2F26EC7b640a4E217cD",
-    "redemption": "0xbeC103CE0CFd1b8367926C3B60AD4E3188487cf1"
+    "redemption": "0x43709960A5b35d40B0C0836162B85e88b03FE3a5"
   }
 }

@@ -448,7 +448,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                 if (prop.proposalType == ProposalType.PAUSE) 
                     _flipPause();
                 
-                 if (prop.proposalType == ProposalType.EXTENSION) 
+                if (prop.proposalType == ProposalType.EXTENSION) 
                     for (uint256 i; i < prop.accounts.length; i++) {
                         if (prop.amounts[i] != 0) 
                             extensions[prop.accounts[i]] = !extensions[prop.accounts[i]];

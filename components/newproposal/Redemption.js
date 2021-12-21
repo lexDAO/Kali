@@ -75,7 +75,7 @@ export default function Redemption() {
         <Text>Redemption begins {unixToDate(redemption['redemptionStarts'])}</Text>
         <Text>Redeemables:</Text>
         {redeemables.map((r, index) => (
-        <Text>{r}</Text>
+        <Text key={index}>{r}</Text>
         ))}
         <Text><b>Amount:</b></Text>
         <NumInputField

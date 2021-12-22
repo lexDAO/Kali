@@ -247,45 +247,11 @@ async function advanceTime(time) {
         [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       )
       await kali.propose(8, "TEST", [wethAddress], [1], [0x00])
-      console.log(await kali.voted(0, proposer.address))
       await kali.vote(0, true)
       await advanceTime(35)
       await kali.processProposal(0)
-      console.log(await kali.voted(0, proposer.address))
       expect(await kali.extensions(wethAddress)).to.equal(true)
     })
-    // voted[proposal][signer] NOT UPDATED WHEN A PROPOSAL IS DELETED
-    // it("Should toggle extension proposal", async function () {
-    //   await kali.init(
-    //     "KALI",
-    //     "KALI",
-    //     "DOCS",
-    //     true,
-    //     [],
-    //     [],
-    //     [proposer.address],
-    //     [getBigNumber(1)],
-    //     30,
-    //     [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    //   )
-    //   await kali.propose(8, "TEST", [wethAddress], [1], [0x00])
-    //   await kali.vote(0, true)
-    //   await advanceTime(35)
-    //   await kali.processProposal(0)
-    //   console.log(await kali.extensions(wethAddress))
-    //   await kali.propose(
-    //     0,
-    //     "TEST",
-    //     [proposer.address],
-    //     [getBigNumber(1)],
-    //     [0x00]
-    //   )
-    //   await kali.vote(1, true)
-    //   await advanceTime(35)
-    //   await kali.processProposal(0)
-    //   console.log(await kali.extensions(wethAddress))
-    //   expect(await kali.extensions(wethAddress)).to.equal(true)
-    // })
     it("Should process escape proposal", async function () {
       await kali.init(
         "KALI",
@@ -299,12 +265,33 @@ async function advanceTime(time) {
         30,
         [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       )
-      await kali.propose(9, "TEST", [proposer.address], [100], [0x00])
-      // console.log(await kali.proposals(0))
+      // initiate proposal #1
+      await kali.propose(
+        0,
+        "TEST",
+        [proposer.address],
+        [getBigNumber(1000)],
+        [0x00]
+      )
       await kali.vote(0, true)
+      // initiate proposal #2
+      await kali.propose(
+        0,
+        "TEST",
+        [proposer.address],
+        [getBigNumber(99)],
+        [0x00]
+      )
+      await kali.vote(1, false)
+      // initiate ESCAPE proposal
+      await kali.propose(9, "TEST", [proposer.address], [1], [0x00])
+      await kali.vote(2, true)
       await advanceTime(35)
-      await kali.processProposal(0)
-      // console.log(await kali.proposals(0));
+      await kali.processProposal(2)
+      // Proposal #1 remains intact
+      console.log(await kali.proposals(0))
+      // Proposal #2 deleted
+      console.log(await kali.proposals(1))
     })
     it("Should process docs proposal", async function () {
       await kali.init(

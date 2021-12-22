@@ -1,23 +1,16 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from "react";
 import Router, { useRouter } from "next/router";
-import AppContext from '../../context/AppContext';
-import {
-  Input,
-  Button,
-  Text,
-  Textarea,
-  Stack,
-  Select
-} from "@chakra-ui/react";
-import { extensions } from "../../utils/addresses";
+import AppContext from "../../context/AppContext";
+import { Input, Button, Text, Textarea, Stack, Select } from "@chakra-ui/react";
+import { addresses } from "../../constants/addresses";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import NumInputField from "../elements/NumInputField";
-import { alertMessage } from "../../utils/helpers";
 
 export default function SetTribute() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address, chainId, balances } = value.state;
+  const { web3, loading, account, abi, address, chainId, balances } =
+    value.state;
 
   const updateExtType = (e) => {
     let newValue = e.target.value;
@@ -28,8 +21,8 @@ export default function SetTribute() {
     event.preventDefault();
     value.setLoading(true);
 
-    if(account===null) {
-      alertMessage('connect');
+    if (account === null) {
+      alert("connect");
     } else {
       try {
         let object = event.target;
@@ -38,11 +31,7 @@ export default function SetTribute() {
           array[object[i].name] = object[i].value;
         }
 
-        var {
-          description_,
-          account_,
-          proposalType_
-        } = array; // this must contain any inputs from custom forms
+        var { description_, account_, proposalType_ } = array; // this must contain any inputs from custom forms
 
         const amount_ = 0;
 
@@ -52,16 +41,22 @@ export default function SetTribute() {
 
         try {
           let result = await instance.methods
-            .propose(proposalType_, description_, [account_], [amount_], [payload_])
+            .propose(
+              proposalType_,
+              description_,
+              [account_],
+              [amount_],
+              [payload_]
+            )
             .send({ from: account });
-            value.setReload(value.state.reload+1);
-            value.setVisibleView(1);
+          value.setReload(value.state.reload + 1);
+          value.setVisibleView(1);
         } catch (e) {
-          alertMessage('send-transaction');
+          alert("send-transaction");
           value.setLoading(false);
         }
-      } catch(e) {
-        alertMessage('send-transaction');
+      } catch (e) {
+        alert("send-transaction");
         value.setLoading(false);
       }
     }
@@ -71,15 +66,21 @@ export default function SetTribute() {
 
   return (
     <form onSubmit={submitProposal}>
-    <Stack>
-      <Text><b>Details</b></Text>
-      <Textarea name="description_" size="lg" placeholder=". . ." />
+      <Stack>
+        <Text>
+          <b>Details</b>
+        </Text>
+        <Textarea name="description_" size="lg" placeholder=". . ." />
 
-      <Input type="hidden" name="proposalType_" value="8" />
-      <Input type="hidden" name="account_" value={extensions[chainId]['tribute']} />
+        <Input type="hidden" name="proposalType_" value="8" />
+        <Input
+          type="hidden"
+          name="account_"
+          value={addresses[chainId]["extensions"]["tribute"]}
+        />
 
-      <Button type="submit">Submit Proposal</Button>
-    </Stack>
+        <Button type="submit">Submit Proposal</Button>
+      </Stack>
     </form>
   );
 }

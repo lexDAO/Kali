@@ -1,20 +1,21 @@
-import { useContext, useState } from 'react';
-import AppContext from '../../context/AppContext';
-import {
-  Icon
-} from "@chakra-ui/react";
+import { useContext, useState } from "react";
+import AppContext from "../../context/AppContext";
+import { Icon } from "@chakra-ui/react";
 
 const iconSize = 8;
-import { proposalIcons } from "../../utils/viewProposalsHelper";
+import { viewProposalsHelper } from "../../constants/viewProposalsHelper";
 
 export default function ProposalRow(props) {
   const value = useContext(AppContext);
   const { web3, loading } = value.state;
-  const p = props['p'];
+  const p = props["p"];
 
-  return(
+  return (
     <>
-      <Icon as={proposalIcons[p['proposalType']]} boxSize={iconSize} />
+      <Icon
+        as={viewProposalsHelper[p["proposalType"]]["icon"]}
+        boxSize={iconSize}
+      />
     </>
-  )
+  );
 }

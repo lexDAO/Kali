@@ -1,15 +1,10 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect } from "react";
 import Router, { useRouter } from "next/router";
-import AppContext from '../../context/AppContext';
-import {
-  Select,
-  Text,
-  Stack
-} from "@chakra-ui/react";
+import AppContext from "../../context/AppContext";
+import { Select, Text, Stack } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
-import { govSettingsHelper } from "../../utils/newProposalHelper";
-import { votingPeriodToSeconds } from "../../utils/helpers";
-import { alertMessage } from "../../utils/helpers";
+import { govSettingsHelper } from "../../constants/govSettingsHelper";
+import { votingPeriodToSeconds } from "../../utils/formatters";
 
 export default function GovernanceSettings() {
   const value = useContext(AppContext);
@@ -22,19 +17,23 @@ export default function GovernanceSettings() {
   };
 
   return (
-      <>
-      <Text><b>Setting to Adjust</b></Text>
+    <>
+      <Text>
+        <b>Setting to Adjust</b>
+      </Text>
 
       <Select name="proposalType_" onChange={updatePropType}>
         <option value="999">Select</option>
+
         {govSettingsHelper.map((g, index) => (
-          <option key={index} value={g[0]}>{g[1]}</option>
+          <option key={index} value={g["proposalType"]}>
+            {g["text"]}
+          </option>
         ))}
       </Select>
-
-      {govSettingsHelper.map((g, index) => (
-        propType==g[0] ? g[2] : null
-      ))}
-      </>
+      {govSettingsHelper.map((g, index) =>
+        propType == g["proposalType"] ? g["component"] : null
+      )}
+    </>
   );
 }

@@ -1,5 +1,5 @@
-import { useState, useContext, useEffect } from 'react';
-import AppContext from '../../context/AppContext';
+import { useState, useContext, useEffect } from "react";
+import AppContext from "../../context/AppContext";
 import {
   Textarea,
   Button,
@@ -7,12 +7,14 @@ import {
   Select,
   Text,
   HStack,
-  Stack
+  Stack,
 } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
-import { votingPeriodUnits } from "../../utils/appParams";
-import { convertVotingPeriod } from "../../utils/helpers";
-import { alertMessage, votingPeriodToSeconds } from "../../utils/helpers";
+import { votingPeriodUnits } from "../../constants/params";
+import {
+  votingPeriodToSeconds,
+  convertVotingPeriod,
+} from "../../utils/formatters";
 
 export default function GovPeriod() {
   const value = useContext(AppContext);
@@ -22,8 +24,8 @@ export default function GovPeriod() {
     event.preventDefault();
     value.setLoading(true);
 
-    if(account===null) {
-      alertMessage('connect');
+    if (account === null) {
+      alert("connect");
     } else {
       try {
         let object = event.target;
@@ -32,17 +34,12 @@ export default function GovPeriod() {
           array[object[i].name] = object[i].value;
         }
 
-        var {
-          description_,
-          proposalType_,
-          period_,
-          unit_
-        } = array; // this must contain any inputs from custom forms
-        console.log(array)
+        var { description_, proposalType_, period_, unit_ } = array; // this must contain any inputs from custom forms
+        console.log(array);
         var account_ = "0x0000000000000000000000000000000000000000";
 
         var amount_ = votingPeriodToSeconds(period_, unit_);
-        console.log(amount_)
+        console.log(amount_);
 
         const payload_ = Array(0);
 
@@ -50,16 +47,22 @@ export default function GovPeriod() {
 
         try {
           let result = await instance.methods
-            .propose(proposalType_, description_, [account_], [amount_], [payload_])
+            .propose(
+              proposalType_,
+              description_,
+              [account_],
+              [amount_],
+              [payload_]
+            )
             .send({ from: account });
-            value.setReload(value.state.reload+1);
-            value.setVisibleView(1);
+          value.setReload(value.state.reload + 1);
+          value.setVisibleView(1);
         } catch (e) {
-          alertMessage('send-transaction');
+          alert("send-transaction");
           value.setLoading(false);
         }
-      } catch(e) {
-        alertMessage('send-transaction');
+      } catch (e) {
+        alert("send-transaction");
         value.setLoading(false);
       }
     }
@@ -70,14 +73,20 @@ export default function GovPeriod() {
   return (
     <form onSubmit={submitProposal}>
       <Stack>
-        <Text><b>Details</b></Text>
+        <Text>
+          <b>Details</b>
+        </Text>
         <Textarea name="description_" size="lg" placeholder=". . ." />
-        <Text>Voting Period (currently {convertVotingPeriod(dao['votingPeriod'])}):</Text>
+        <Text>
+          Voting Period (currently {convertVotingPeriod(dao["gov"]["votingPeriod"])}):
+        </Text>
         <HStack>
           <NumInputField name="period_" />
           <Select name="unit_">
-            {votingPeriodUnits.map((v, index) => (
-              <option key={index} value={v}>{v}</option>
+            {Object.entries(votingPeriodUnits).map(([k, v]) => (
+              <option key={k} value={v}>
+                {v}
+              </option>
             ))}
           </Select>
         </HStack>

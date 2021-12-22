@@ -1,12 +1,8 @@
-import {
-  Button,
-  Text,
-  Stack,
-} from "@chakra-ui/react";
-import FlexGradient from '../elements/FlexGradient';
+import { Button, Text, Stack } from "@chakra-ui/react";
+import FlexGradient from "../elements/FlexGradient";
 
 export default function HomeTile() {
-  return(
+  return (
     <FlexGradient>
       <Stack spacing={5} p={5} alignItems="center">
         <Text fontSize="xl">
@@ -14,5 +10,5 @@ export default function HomeTile() {
         </Text>
       </Stack>
     </FlexGradient>
-  )
+  );
 }

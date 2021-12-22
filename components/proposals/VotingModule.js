@@ -1,28 +1,18 @@
-import { useContext, useState } from 'react';
-import AppContext from '../../context/AppContext';
-import {
-  Text,
-  IconButton,
-  HStack,
-  VStack,
-  Input
-} from "@chakra-ui/react";
-import {
-  BsHandThumbsUpFill,
-  BsHandThumbsDownFill,
-} from "react-icons/bs";
-import { useDisclosure } from '@chakra-ui/react';
-import { alertMessage } from "../../utils/helpers";
+import { useContext, useState } from "react";
+import AppContext from "../../context/AppContext";
+import { Text, IconButton, HStack, VStack, Input } from "@chakra-ui/react";
+import { BsHandThumbsUpFill, BsHandThumbsDownFill } from "react-icons/bs";
+import { useDisclosure } from "@chakra-ui/react";
 
 export default function VotingModule(props) {
   const value = useContext(AppContext);
   const { web3, loading, account, address, abi } = value.state;
-  const p = props['p'];
+  const p = props["p"];
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const vote = async () => {
-    if(!account) {
-      alertMessage('connect');
+    if (!account) {
+      alert("connect");
     } else {
       event.preventDefault();
       value.setLoading(true);
@@ -47,16 +37,14 @@ export default function VotingModule(props) {
               .vote(id, parseInt(approval))
               .send({ from: account });
 
-              value.setReload(value.state.reload+1);
-
+            value.setReload(value.state.reload + 1);
           } catch (e) {
-            alertMessage('send-transaction');
+            alert("send-transaction");
             value.setLoading(false);
           }
         }
-
       } catch (e) {
-        alertMessage('send-transaction');
+        alert("send-transaction");
         value.setLoading(false);
       }
 
@@ -64,30 +52,30 @@ export default function VotingModule(props) {
     }
   };
 
-  return(
-    <VStack border="#ccc" backgroundColor="#eee" width="100%" p={5} rounded="lg">
-      <Text fontSize="lg"><b>VOTE</b></Text>
+  return (
+    <VStack
+      border="#ccc"
+      backgroundColor="#eee"
+      width="100%"
+      p={5}
+      rounded="lg"
+    >
+      <Text fontSize="lg">
+        <b>VOTE</b>
+      </Text>
       <HStack gap={3}>
-      <form onSubmit={vote}>
-        <Input type="hidden" name="id" value={p["id"]} />
-        <Input type="hidden" name="approval" value={1} />
-        <IconButton
-          icon={<BsHandThumbsUpFill />}
-          size='lg'
-          type="submit"
-        />
-      </form>
+        <form onSubmit={vote}>
+          <Input type="hidden" name="id" value={p["id"]} />
+          <Input type="hidden" name="approval" value={1} />
+          <IconButton icon={<BsHandThumbsUpFill />} size="lg" type="submit" />
+        </form>
 
-      <form onSubmit={vote}>
-        <Input type="hidden" name="id" value={p["id"]} />
-        <Input type="hidden" name="approval" value={0} />
-        <IconButton
-          icon={<BsHandThumbsDownFill />}
-          size='lg'
-          type="submit"
-        />
-      </form>
+        <form onSubmit={vote}>
+          <Input type="hidden" name="id" value={p["id"]} />
+          <Input type="hidden" name="approval" value={0} />
+          <IconButton icon={<BsHandThumbsDownFill />} size="lg" type="submit" />
+        </form>
       </HStack>
     </VStack>
-  )
+  );
 }

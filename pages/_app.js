@@ -1,15 +1,12 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import AppContext from '../context/AppContext';
-import '@fontsource/roboto/300.css'
-import infura from '../utils/infura';
-import Web3 from 'web3';
-import { useState, useEffect } from 'react';
-import theme from '../styles/theme';
+import AppContext from "../context/AppContext";
+import infura from "../utils/infura";
+import Web3 from "web3";
+import { useState, useEffect } from "react";
+import theme from "../styles/theme";
 const abi = require("../abi/KaliDAO.json");
-import { alertMessage } from "../utils/helpers";
 
 function MyApp({ Component, pageProps }) {
-
   const [web3, setWeb3] = useState(infura[0]);
   const [account, setAccount] = useState(null);
   const [chainId, setChainId] = useState(infura[1]);
@@ -17,20 +14,14 @@ function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(0);
   const [visibleView, setVisibleView] = useState(1);
-  const [dao, setDao] = useState({});
+  const [dao, setDao] = useState(null);
   const [proposals, setProposals] = useState(null);
-  const [pendingProposals, setPendingProposals] = useState(null);
-  const [balances, setBalances] = useState(null);
-  const [holdersArray, setHoldersArray] = useState([]);
-  const [proposalVoteTypes, setProposalVoteTypes] = useState([]);
-  const [extensions, setExtensions] = useState();
-  const [isMember, setIsMember] = useState();
-  const [crowdsale, setCrowdsale] = useState();
-  const [redemption, setRedemption] = useState();
 
   useEffect(() => {
-
-    if(typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.ethereum !== "undefined"
+    ) {
       ethereum.on("accountsChanged", function (accounts) {
         changeAccount();
       });
@@ -39,8 +30,7 @@ function MyApp({ Component, pageProps }) {
         changeChain();
       });
 
-      ethereum.on("connect", () => {
-      });
+      ethereum.on("connect", () => {});
 
       ethereum.on("disconnect", () => {
         console.log("disconnected");
@@ -50,18 +40,20 @@ function MyApp({ Component, pageProps }) {
 
   const connect = async () => {
     console.log("connect");
-    if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.ethereum !== "undefined"
+    ) {
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
       let metamask = new Web3(window.ethereum);
       setWeb3(metamask);
       setAccount(accounts[0]);
-      console.log(accounts[0])
     } else {
-      alert("please connect to wallet")
+      alert("please connect to wallet");
     }
-  }
+  };
 
   const changeAccount = async () => {
     if (window.ethereum) {
@@ -85,15 +77,15 @@ function MyApp({ Component, pageProps }) {
     } else {
       console.log("Make sure you have MetaMask!");
     }
-  }
+  };
 
   const changeChain = async () => {
     window.location.reload();
   };
 
   const reloadButton = () => {
-    setReload(reload+1);
-  }
+    setReload(reload + 1);
+  };
 
   return (
     <ChakraProvider theme={theme}>
@@ -110,14 +102,6 @@ function MyApp({ Component, pageProps }) {
             visibleView: visibleView,
             dao: dao,
             proposals: proposals,
-            pendingProposals: pendingProposals,
-            balances: balances,
-            holdersArray: holdersArray,
-            proposalVoteTypes: proposalVoteTypes,
-            extensions: extensions,
-            isMember: isMember,
-            crowdsale: crowdsale,
-            redemption: redemption
           },
           setWeb3: setWeb3,
           setAccount: setAccount,
@@ -126,18 +110,10 @@ function MyApp({ Component, pageProps }) {
           setAddress: setAddress,
           connect: connect,
           setReload: setReload,
-          reloadButton: reloadButton,
           setVisibleView: setVisibleView,
           setDao: setDao,
           setProposals: setProposals,
-          setPendingProposals: setPendingProposals,
-          setBalances: setBalances,
-          setHoldersArray: setHoldersArray,
-          setProposalVoteTypes: setProposalVoteTypes,
-          setExtensions: setExtensions,
-          setIsMember: setIsMember,
-          setCrowdsale: setCrowdsale,
-          setRedemption: setRedemption
+          reloadButton: reloadButton,
         }}
       >
         <Component {...pageProps} />

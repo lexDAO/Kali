@@ -1,28 +1,19 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect } from "react";
 import Router, { useRouter } from "next/router";
-import AppContext from '../../context/AppContext';
-import {
-  Input,
-  Button,
-  Select,
-  Text,
-  Textarea,
-  Stack
-} from "@chakra-ui/react";
-import { tokenBalances } from '../../utils/tokens';
+import AppContext from "../../context/AppContext";
+import { Input, Button, Select, Text, Textarea, Stack } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
-import { alertMessage } from "../../utils/helpers";
 
 export default function SendToken() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address, balances } = value.state;
+  const { web3, loading, account, abi, address, dao } = value.state;
 
   const submitProposal = async (event) => {
     event.preventDefault();
     value.setLoading(true);
 
-    if(account===null) {
-      alertMessage('connect');
+    if (account === null) {
+      alert("connect");
     } else {
       try {
         let object = event.target;
@@ -38,7 +29,7 @@ export default function SendToken() {
           amount_,
           amount_,
           recipient_,
-          tokenAmount_
+          tokenAmount_,
         } = array; // this must contain any inputs from custom forms
 
         console.log(array);
@@ -47,23 +38,30 @@ export default function SendToken() {
 
         const instance = new web3.eth.Contract(abi, address);
 
-        const ierc20 = require('../../abi/ERC20.json');
+        const ierc20 = require("../../abi/ERC20.json");
         const tokenContract = new web3.eth.Contract(ierc20, account_);
-        var payload_ = tokenContract.methods.transfer(recipient_, tokenAmount_).encodeABI();
+        var payload_ = tokenContract.methods
+          .transfer(recipient_, tokenAmount_)
+          .encodeABI();
 
         try {
-
           let result = await instance.methods
-            .propose(proposalType_, description_, [account_], [amount_], [payload_])
+            .propose(
+              proposalType_,
+              description_,
+              [account_],
+              [amount_],
+              [payload_]
+            )
             .send({ from: account });
-            value.setReload(value.state.reload+1);
-            value.setVisibleView(1);
+          value.setReload(value.state.reload + 1);
+          value.setVisibleView(1);
         } catch (e) {
-          alertMessage('send-transaction');
+          alert("send-transaction");
           value.setLoading(false);
         }
-      } catch(e) {
-        alertMessage('send-transaction');
+      } catch (e) {
+        alert("send-transaction");
         value.setLoading(false);
       }
     }
@@ -73,32 +71,37 @@ export default function SendToken() {
 
   return (
     <form onSubmit={submitProposal}>
-    <Stack>
-      <Text><b>Details</b></Text>
-      <Textarea name="description_" size="lg" placeholder=". . ." />
-      <Text><b>Recipient</b></Text>
-      <Input name="recipient_" size="lg" placeholder="0x or .eth"></Input>
-      <Text><b>Token</b></Text>
+      <Stack>
+        <Text>
+          <b>Details</b>
+        </Text>
+        <Textarea name="description_" size="lg" placeholder=". . ." />
+        <Text>
+          <b>Recipient</b>
+        </Text>
+        <Input name="recipient_" size="lg" placeholder="0x or .eth"></Input>
+        <Text>
+          <b>Token</b>
+        </Text>
 
-      <Select
-        name="account_"
-      >
-        {balances.map((b, index) => (
+        <Select name="account_">
+          {dao["balances"].map((b, index) => (
+            <option key={index} value={b["address"]}>
+              {b["token"]}
+            </option>
+          ))}
+        </Select>
+        <Text>
+          <b>Amount</b>
+        </Text>
+        <NumInputField name="tokenAmount_" />
 
-          <option key={index} value={b['address']}>{b['token']} (balance: {web3.utils.fromWei(b['balance'])})</option>
-        ))}
-      </Select>
-      <Text>
-        <b>Amount</b>
-      </Text>
-      <NumInputField name="tokenAmount_" />
+        <Input type="hidden" name="proposalType_" value="2" />
 
-      <Input type="hidden" name="proposalType_" value="2" />
+        <Input type="hidden" name="amount_" value="0" />
 
-      <Input type="hidden" name="amount_" value="0" />
-
-      <Button type="submit">Submit Proposal</Button>
-    </Stack>
+        <Button type="submit">Submit Proposal</Button>
+      </Stack>
     </form>
   );
 }

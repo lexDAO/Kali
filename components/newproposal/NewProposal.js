@@ -10,22 +10,21 @@ import {
   Heading,
   Divider,
   Button,
+  Flex,
 } from "@chakra-ui/react";
-import FlexOutline from "../elements/FlexOutline";
 import { BrowserView, MobileView } from "react-device-detect";
-import { newProposalHelper } from "../../utils/newProposalHelper";
-import { hideAlert } from "../../utils/helpers";
+import { newProposalHelper } from "../../constants/newProposalHelper";
 
 export default function NewProposal(props) {
   const [menuItem, setMenuItem] = useState(999); // arbitrary number where no proposal type is selected. if changed, must change below, too
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address, extensions, chainId } = value.state;
+  const { web3, loading, account, abi, address, dao, chainId } = value.state;
   const balances = props.balances;
+  console.log(newProposalHelper);
 
   const handleClick = () => {
     setMenuItem(999);
-    hideAlert();
-  }
+  };
 
   const ProposalTile = (props) => {
     return (
@@ -71,7 +70,7 @@ export default function NewProposal(props) {
     <>
       <MobileView>
         <form>
-          <FlexOutline>
+          <Flex>
             <Select
               name="menuItem" // will have to convert to proposalType corresponding with smart contract enums
               onChange={updateMenuItem}
@@ -80,15 +79,17 @@ export default function NewProposal(props) {
               opacity="0.9"
             >
               <option value="999">Select a proposal type</option>
-              {newProposalHelper.map((p, index) => (
-                p[3]==null || (extensions[p[3]] != null && extensions[p[3]] != "0x0000000000000000000000000000000000000000") ?
-                <option key={index} value={index}>
-                  {p[0]}
-                </option>
-                : null
-              ))}
+              {Object.entries(newProposalHelper).map(([k, v]) =>
+                newProposalHelper[k]["extension"] == null ||
+                ("extensions" in dao &&
+                  newProposalHelper[k]["extension"] in dao["extensions"]) ? (
+                  <option key={k} value={k}>
+                    {newProposalHelper[k]["title"]}
+                  </option>
+                ) : null
+              )}
             </Select>
-          </FlexOutline>
+          </Flex>
         </form>
       </MobileView>
       <BrowserView>
@@ -102,25 +103,26 @@ export default function NewProposal(props) {
               lg: "repeat(4, 1fr)",
             }}
           >
-            {newProposalHelper.map((p, index) => (
-              p[3]==null || (extensions[p[3]] != null && extensions[p[3]] != "0x0000000000000000000000000000000000000000") ?
-              <ProposalTile
-                key={index}
-                id={index}
-                title={p[0]}
-                description={p[1]}
-              />
-              :
-              null
-            ))}
+            {Object.entries(newProposalHelper).map(([k, v]) =>
+              newProposalHelper[k]["extension"] == null ||
+              ("extensions" in dao &&
+                newProposalHelper[k]["extension"] in dao["extensions"]) ? (
+                <ProposalTile
+                  key={k}
+                  id={k}
+                  title={newProposalHelper[k]["title"]}
+                  description={newProposalHelper[k]["description"]}
+                />
+              ) : null
+            )}
           </Grid>
         )}
       </BrowserView>
 
-      {newProposalHelper.map((row, index) =>
-        menuItem == index ? (
+      {Object.entries(newProposalHelper).map(([k, v]) =>
+        menuItem == k ? (
           <Box p={5} border="1px solid">
-            {row[2]}
+            {newProposalHelper[k]["component"]}
           </Box>
         ) : null
       )}

@@ -1,5 +1,5 @@
-import { useState, useContext, useEffect } from 'react';
-import AppContext from '../../context/AppContext';
+import { useState, useContext, useEffect } from "react";
+import AppContext from "../../context/AppContext";
 import {
   Textarea,
   Button,
@@ -7,10 +7,9 @@ import {
   Select,
   Text,
   HStack,
-  Stack
+  Stack,
 } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
-import { alertMessage } from "../../utils/helpers";
 
 export default function GovQuorum() {
   const value = useContext(AppContext);
@@ -19,9 +18,9 @@ export default function GovQuorum() {
   const submitProposal = async (event) => {
     event.preventDefault();
     value.setLoading(true);
-    console.log(value)
-    if(account===null) {
-      alertMessage('connect');
+    console.log(value);
+    if (account === null) {
+      alert("connect");
     } else {
       try {
         let object = event.target;
@@ -30,11 +29,7 @@ export default function GovQuorum() {
           array[object[i].name] = object[i].value;
         }
 
-        var {
-          description_,
-          amount_,
-          proposalType_
-        } = array; // this must contain any inputs from custom forms
+        var { description_, amount_, proposalType_ } = array; // this must contain any inputs from custom forms
 
         var account_ = "0x0000000000000000000000000000000000000000";
 
@@ -44,16 +39,22 @@ export default function GovQuorum() {
 
         try {
           let result = await instance.methods
-            .propose(proposalType_, description_, [account_], [amount_], [payload_])
+            .propose(
+              proposalType_,
+              description_,
+              [account_],
+              [amount_],
+              [payload_]
+            )
             .send({ from: account });
-            value.setReload(value.state.reload+1);
-            value.setVisibleView(1);
+          value.setReload(value.state.reload + 1);
+          value.setVisibleView(1);
         } catch (e) {
-          alertMessage('send-transaction');
+          alert("send-transaction");
           value.setLoading(false);
         }
-      } catch(e) {
-        alertMessage('send-transaction');
+      } catch (e) {
+        alert("send-transaction");
         value.setLoading(false);
       }
     }
@@ -64,9 +65,11 @@ export default function GovQuorum() {
   return (
     <form onSubmit={submitProposal}>
       <Stack>
-        <Text><b>Details</b></Text>
+        <Text>
+          <b>Details</b>
+        </Text>
         <Textarea name="description_" size="lg" placeholder=". . ." />
-        <Text>Quorum (currently {dao['quorum']}%):</Text>
+        <Text>Quorum (currently {dao["gov"]["quorum"]}%):</Text>
         <NumInputField name="amount_" />
         <Input type="hidden" name="proposalType_" value="4" />
         <Button type="submit">Submit Proposal</Button>

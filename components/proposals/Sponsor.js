@@ -1,25 +1,23 @@
-import { useContext, useState } from 'react';
-import AppContext from '../../context/AppContext';
-import {
-  Input,
-  Button
-} from "@chakra-ui/react";
-import { alertMessage } from "../../utils/helpers";
+import { useContext, useState } from "react";
+import AppContext from "../../context/AppContext";
+import { Input, Button } from "@chakra-ui/react";
 
 export default function Sponsor(props) {
   const value = useContext(AppContext);
   const { web3, loading, account, abi, address } = value.state;
-  const p = props['p'];
-  const i = props['i'];
+  const p = props["p"];
+  const i = props["i"];
   var disabled = true;
-  if(i==0) {disabled = false;}
+  if (i == 0) {
+    disabled = false;
+  }
 
   const sponsor = async (event) => {
     event.preventDefault();
     value.setLoading(true);
 
-    if(account===null) {
-      alertMessage('connect');
+    if (account === null) {
+      alert("connect");
     } else {
       let object = event.target;
       var array = [];
@@ -30,15 +28,13 @@ export default function Sponsor(props) {
       const { id } = array;
 
       try {
-
         const instance = new web3.eth.Contract(abi, address);
 
         let result = await instance.methods
           .sponsorProposal(id)
           .send({ from: account });
 
-          value.setReload(value.state.reload+1);
-
+        value.setReload(value.state.reload + 1);
       } catch (e) {
         alert(e);
         value.setLoading(false);
@@ -48,13 +44,11 @@ export default function Sponsor(props) {
     value.setLoading(false);
   };
 
-  return(
+  return (
     <form onSubmit={sponsor}>
-
       <Input type="hidden" name="id" value={p["id"]} />
 
       <Button type="submit">Sponsor</Button>
-
     </form>
-  )
+  );
 }

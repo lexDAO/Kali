@@ -124,6 +124,7 @@ export default function SetRedemption() {
               <Checkbox
                 name={`tokens_[${index}]`}
                 id={index}
+                key={index}
                 value={token['address']}
                 isChecked={`checked[${index}]`}
                 onChange={handleCheck}

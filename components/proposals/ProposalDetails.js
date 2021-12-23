@@ -73,7 +73,7 @@ export default function ProposalModal(props) {
                 <Text>Decoded:</Text>
               <ul>
                 {decoded[index].map((item, index) => (
-                  <li>{item}</li>
+                  <li key={index}>{item}</li>
                 ))}
               </ul>
               </>

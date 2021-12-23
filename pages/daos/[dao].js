@@ -4,7 +4,7 @@ import AppContext from "../../context/AppContext";
 import Layout from "../../components/structure/Layout";
 import Proposals from "../../components/proposals/Proposals";
 import NewProposal from "../../components/newproposal/NewProposal";
-import DaoInfo from "../../components/daoinfo/DaoInfo";
+import Dashboard from "../../components/dashboard/Dashboard";
 import ActionMenu from "../../components/structure/ActionMenu";
 
 export default function Dao() {
@@ -28,14 +28,14 @@ export default function Dao() {
       <>
       <ActionMenu />
       {visibleView == 1 ? (
-        <DaoInfo />
+        <Dashboard />
       ) : visibleView == 2 ? (
         <Proposals />
       ) : visibleView == 3 ? (
         <NewProposal />
       ) : null}
       </>
-      
+
     </Layout>
   );
 }

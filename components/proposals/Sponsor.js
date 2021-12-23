@@ -33,8 +33,6 @@ export default function Sponsor(props) {
         let result = await instance.methods
           .sponsorProposal(id)
           .send({ from: account });
-
-        value.setReload(value.state.reload + 1);
       } catch (e) {
         alert(e);
         value.setLoading(false);

@@ -12,7 +12,6 @@ function MyApp({ Component, pageProps }) {
   const [chainId, setChainId] = useState(infura[1]);
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [reload, setReload] = useState(0);
   const [visibleView, setVisibleView] = useState(1);
   const [dao, setDao] = useState(null);
   const [proposals, setProposals] = useState(null);
@@ -83,10 +82,6 @@ function MyApp({ Component, pageProps }) {
     window.location.reload();
   };
 
-  const reloadButton = () => {
-    setReload(reload + 1);
-  };
-
   return (
     <ChakraProvider theme={theme}>
       <AppContext.Provider
@@ -98,7 +93,6 @@ function MyApp({ Component, pageProps }) {
             loading: loading,
             address: address,
             abi: abi,
-            reload: reload,
             visibleView: visibleView,
             dao: dao,
             proposals: proposals,
@@ -109,11 +103,9 @@ function MyApp({ Component, pageProps }) {
           setLoading: setLoading,
           setAddress: setAddress,
           connect: connect,
-          setReload: setReload,
           setVisibleView: setVisibleView,
           setDao: setDao,
-          setProposals: setProposals,
-          reloadButton: reloadButton,
+          setProposals: setProposals
         }}
       >
         <Component {...pageProps} />

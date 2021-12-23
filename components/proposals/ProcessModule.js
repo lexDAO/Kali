@@ -34,7 +34,6 @@ export default function ProcessModule(props) {
           .processProposal(id)
           .send({ from: account });
 
-        value.setReload(value.state.reload + 1);
       } catch (e) {
         alert("send-transaction");
         value.setLoading(false);

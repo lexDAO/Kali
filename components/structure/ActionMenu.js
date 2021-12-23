@@ -27,7 +27,7 @@ const inactive = "white";
 
 export default function ActionMenu(props) {
   const value = useContext(AppContext);
-  const { web3, loading, abi, reload, visibleView } = value.state;
+  const { web3, loading, abi, visibleView } = value.state;
 
   const handleClick = (id) => {
     value.setVisibleView(id);

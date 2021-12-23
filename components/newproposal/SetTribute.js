@@ -49,7 +49,6 @@ export default function SetTribute() {
               [payload_]
             )
             .send({ from: account });
-          value.setReload(value.state.reload + 1);
           value.setVisibleView(1);
         } catch (e) {
           alert("send-transaction");

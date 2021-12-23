@@ -53,7 +53,6 @@ export default function Extensions() {
               [payload_]
             )
             .send({ from: account });
-          value.setReload(value.state.reload + 1);
           value.setVisibleView(1);
         } catch (e) {
           alert("send-transaction");
@@ -75,7 +74,7 @@ export default function Extensions() {
       </Text>
       <Select onChange={handleChange}>
         {Object.entries(extensionsHelper).map(([key, value]) => (
-          <option key={key} value={key}>
+          <option key={`option-${key}`} value={key}>
             {key}
           </option>
         ))}

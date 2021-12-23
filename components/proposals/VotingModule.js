@@ -36,8 +36,6 @@ export default function VotingModule(props) {
             let result = await instance.methods
               .vote(id, parseInt(approval))
               .send({ from: account });
-
-            value.setReload(value.state.reload + 1);
           } catch (e) {
             alert("send-transaction");
             value.setLoading(false);

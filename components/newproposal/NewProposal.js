@@ -83,7 +83,7 @@ export default function NewProposal(props) {
                 newProposalHelper[k]["extension"] == null ||
                 ("extensions" in dao &&
                   newProposalHelper[k]["extension"] in dao["extensions"]) ? (
-                  <option key={k} value={k}>
+                  <option key={`option-${k}`} value={k}>
                     {newProposalHelper[k]["title"]}
                   </option>
                 ) : null
@@ -108,7 +108,7 @@ export default function NewProposal(props) {
               ("extensions" in dao &&
                 newProposalHelper[k]["extension"] in dao["extensions"]) ? (
                 <ProposalTile
-                  key={k}
+                  key={`propTile-${k}`}
                   id={k}
                   title={newProposalHelper[k]["title"]}
                   description={newProposalHelper[k]["description"]}
@@ -121,7 +121,7 @@ export default function NewProposal(props) {
 
       {Object.entries(newProposalHelper).map(([k, v]) =>
         menuItem == k ? (
-          <Box p={5} border="1px solid">
+          <Box key={`component-${k}`} p={5} border="1px solid">
             {newProposalHelper[k]["component"]}
           </Box>
         ) : null

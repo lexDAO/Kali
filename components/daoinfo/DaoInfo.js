@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Router, { useRouter } from "next/router";
 import AppContext from "../../context/AppContext";
 import Link from "next/link";
@@ -12,13 +12,57 @@ import {
   ListItem,
 } from "@chakra-ui/react";
 import FlexGradient from "../elements/FlexGradient.js";
+import Reload from "../elements/Reload.js";
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs";
 import { convertVotingPeriod, fromDecimals } from "../../utils/formatters";
+import { fetchDaoInfo } from "../../utils/fetchDaoInfo";
+import { addresses } from "../../constants/addresses";
+import { factoryInstance } from "../../eth/factory";
+
+const proposalTypes = require("../../constants/params");
 
 export default function DaoInfo() {
   const value = useContext(AppContext);
-  const { web3, loading, dao, address } = value.state;
-  const router = useRouter();
+  const { web3, loading, account, abi, chainId, visibleView, dao, address } = value.state;
+
+  const reloadDao = async() => {
+    fetchData();
+  }
+
+  useEffect(() => {
+    if(!address) {
+      return;
+    } else {
+      if(!dao) {
+        fetchData();
+      }
+    }
+  }, [address]);
+
+  async function fetchData() {
+    if (!address) {
+      return;
+    } else {
+      value.setLoading(true);
+
+      const instance = new web3.eth.Contract(abi, address);
+
+      const factory = factoryInstance(addresses[chainId]["factory"], web3);
+
+      const { dao_ } = await fetchDaoInfo(
+        instance,
+        factory,
+        address,
+        web3,
+        chainId,
+        account
+      );
+
+      value.setDao(dao_);
+      console.log(dao_);
+      value.setLoading(false);
+    }
+  }
 
   return (
     <FlexGradient>
@@ -26,6 +70,7 @@ export default function DaoInfo() {
         "Loading . . ."
       ) : (
         <>
+          <Reload reload={reloadDao} />
           <Text>Name: {dao["name"]}</Text>
           <HStack>
             <Text>Address: {dao["address"]}</Text>

@@ -70,7 +70,6 @@ export default function BuyCrowdsale() {
               assetAmount_
             )
             .send({ from: account, value: assetAmount_ });
-          value.setReload(value.state.reload + 1);
           value.setVisibleView(1);
         } catch (e) {
           alert("send-transaction");

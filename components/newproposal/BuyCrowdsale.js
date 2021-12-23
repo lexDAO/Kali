@@ -75,7 +75,6 @@ export default function Tribute() {
           let result = await instance.methods
             .callExtension(extAddress, amount_, calldata)
             .send({ from: account, value: value_ });
-          value.setReload(value.state.reload + 1);
           value.setVisibleView(1);
         } catch (e) {
           alert("send-transaction");

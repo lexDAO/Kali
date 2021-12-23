@@ -50,7 +50,6 @@ export default function Redemption() {
           let result = await instance.methods
             .callExtension(extAddress, amount_, calldata)
             .send({ from: account });
-          value.setReload(value.state.reload + 1);
           value.setVisibleView(1);
         } catch (e) {
           alert("send-transaction");

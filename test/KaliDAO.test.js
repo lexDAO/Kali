@@ -3,6 +3,7 @@ const chai = require("chai");
 const { expect } = require("chai");
 
 const wethAddress = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+const kaliNFTabi = require("../abi/KaliNFT.json")
 
 chai
   .should();
@@ -16,13 +17,20 @@ async function advanceTime(time) {
   await ethers.provider.send("evm_increaseTime", [time])
 }
 
+async function getEthBalance(address) {
+  let balance = await ethers.provider.getBalance(address)
+  return balance
+}
+
   describe("KaliDAO", function () {
     let Kali // KaliDAO contract
     let kali // KaliDAO contract instance
     let proposer // signer
+    let alice 
+    let bob
 
     beforeEach(async () => {
-      [proposer] = await ethers.getSigners()
+      ;[proposer, alice, bob] = await ethers.getSigners()
 
       Kali = await ethers.getContractFactory("KaliDAO")
       kali = await Kali.deploy()
@@ -83,8 +91,59 @@ async function advanceTime(time) {
       await kali.processProposal(0)
       expect(await kali.balanceOf(proposer.address)).to.equal(0)
     })
+    it("Should process contract call proposal - Single", async function () {
+      let KaliNFT = await ethers.getContractFactory("KaliNFT")
+      let kaliNFT = await KaliNFT.deploy("kali", "kali")
+      await kaliNFT.deployed()
+      let payload = kaliNFT.interface.encodeFunctionData("mint", [
+        alice.address,
+        0,
+        "kali be cool",
+      ])
+      await kali.init(
+        "KALI",
+        "KALI",
+        "DOCS",
+        true,
+        [],
+        [],
+        [proposer.address],
+        [getBigNumber(1)],
+        30,
+        [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      )
+      await kali.propose(2, "TEST", [kaliNFT.address], [0], [payload])
+      await kali.vote(0, true)
+      await advanceTime(35)
+      await kali.processProposal(0)
+      expect(await kaliNFT.totalSupply()).to.equal(1)
+      expect(await kaliNFT.ownerOf(0)).to.equal(alice.address)
+    })
+    it("Should process contract call proposal - Multiple", async function () {
+      // Send Eth to Kali
+      proposer.sendTransaction({
+        to: kali.address,
+        value: getBigNumber(10),
+      })
 
-    it("Should process contract call proposal", async function () {
+      // Instantiate 1st contract
+      let KaliNFT = await ethers.getContractFactory("KaliNFT")
+      let kaliNFT = await KaliNFT.deploy("kali", "kali")
+      await kaliNFT.deployed()
+      let payload = kaliNFT.interface.encodeFunctionData("mint", [
+        alice.address,
+        0,
+        "kali be cool",
+      ])
+      // Instantiate 2nd contract
+      let DropETH = await ethers.getContractFactory("DropETH")
+      let dropETH = await DropETH.deploy()
+      await dropETH.deployed()
+      let payload2 = dropETH.interface.encodeFunctionData("dropETH", [
+        [alice.address, bob.address],
+        "hello",
+      ])
+
       await kali.init(
         "KALI",
         "KALI",
@@ -100,13 +159,17 @@ async function advanceTime(time) {
       await kali.propose(
         2,
         "TEST",
-        [proposer.address],
-        [getBigNumber(1000)],
-        [0x00]
+        [kaliNFT.address, dropETH.address],
+        [0, getBigNumber(4)],
+        [payload, payload2]
       )
       await kali.vote(0, true)
       await advanceTime(35)
       await kali.processProposal(0)
+      expect(await kaliNFT.totalSupply()).to.equal(1)
+      expect(await kaliNFT.ownerOf(0)).to.equal(alice.address)
+      expect(await dropETH.amount()).to.equal(getBigNumber(2))
+      expect(await dropETH.recipients(1)).to.equal(bob.address)
     })
 
     it("Should process period proposal", async function () {
@@ -289,9 +352,9 @@ async function advanceTime(time) {
       await advanceTime(35)
       await kali.processProposal(2)
       // Proposal #1 remains intact
-      console.log(await kali.proposals(0))
+      // console.log(await kali.proposals(0))
       // Proposal #2 deleted
-      console.log(await kali.proposals(1))
+      // console.log(await kali.proposals(1))
     })
     it("Should process docs proposal", async function () {
       await kali.init(

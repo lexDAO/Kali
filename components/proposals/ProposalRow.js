@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import AppContext from "../../context/AppContext";
 import {
   Input,
@@ -31,13 +31,20 @@ export default function ProposalRow(props) {
   const value = useContext(AppContext);
   const { web3, loading } = value.state;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isExpired, setIsExpired] = useState(false); // updates dynamically
   const p = props["p"];
   const i = props["i"];
-  console.log(p["proposalType"]);
+
+  useEffect(() => {
+    if(p['open']==false) {
+      setIsExpired(true)
+    }
+  }, []);
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
-        <ProposalModal p={p} i={i} />
+        <ProposalModal p={p} i={i} isExpired={isExpired} />
       </Modal>
 
       <Box
@@ -55,7 +62,12 @@ export default function ProposalRow(props) {
           {p["pending"] == true ? (
             <Text casing="uppercase">needs sponsor</Text>
           ) : null}
-          <Timer expires={p["expires"]} open={p["open"]} />
+          <Timer
+            expires={p["expires"]}
+            open={p["open"]}
+            isExpired={isExpired}
+            setIsExpired={setIsExpired}
+          />
           <Progress
             width="100%"
             colorScheme="green"
@@ -68,9 +80,9 @@ export default function ProposalRow(props) {
           <Divider w="80%" align="center" />
           <HStack>
             <Button key={p["id"]} onClick={onOpen}>
-              {p["open"] == false ? "Details" : "Review & Vote"}
+              {isExpired == true ? "Details" : "Review & Vote"}
             </Button>
-            {p["open"] == false && p["pending"] == false ? (
+            {isExpired==true && p["pending"] == false ? (
               <ProcessModule i={i} p={p} />
             ) : null}
             {p["pending"] == true ? <Sponsor i={i} p={p} /> : null}

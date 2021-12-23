@@ -69,7 +69,7 @@ export default function ProposalModal(props) {
           <ProposalDetails p={p} i={i} />
 
           <Center>
-            {p["open"] == true ? <VotingModule p={p} /> : null}
+            {props.isExpired == false ? <VotingModule p={p} /> : null}
             {p["pending"] == true ? <Sponsor p={p} /> : null}
           </Center>
         </ModalBody>

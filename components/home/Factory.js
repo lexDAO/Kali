@@ -22,7 +22,7 @@ import {
   ListItem,
 } from "@chakra-ui/react";
 import FlexGradient from "../elements/FlexGradient";
-import { factory_rinkeby } from "../../utils/addresses";
+import { addresses } from "../../constants/addresses";
 import { factoryInstance } from "../../eth/factory";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 
@@ -43,7 +43,7 @@ export default function Factory(props) {
     console.log("Form: ", values);
 
     value.setLoading(true);
-    const factory = factoryInstance(factory_rinkeby, web3);
+    const factory = factoryInstance(addresses[chainId]['factory'], web3);
     const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0,0";
     const extensions = new Array(0);
     const extensionsData = new Array(0);

@@ -1,16 +1,8 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect } from "react";
 import Router, { useRouter } from "next/router";
-import AppContext from '../../context/AppContext';
-import {
-  Input,
-  Button,
-  Select,
-  Text,
-  Textarea,
-  Stack
-} from "@chakra-ui/react";
+import AppContext from "../../context/AppContext";
+import { Input, Button, Select, Text, Textarea, Stack } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
-import { alertMessage } from "../../utils/helpers";
 
 export default function SendShares() {
   const value = useContext(AppContext);
@@ -20,8 +12,8 @@ export default function SendShares() {
     event.preventDefault();
     value.setLoading(true);
 
-    if(account===null) {
-      alertMessage('connect');
+    if (account === null) {
+      alert("connect");
     } else {
       try {
         let object = event.target;
@@ -30,11 +22,7 @@ export default function SendShares() {
           array[object[i].name] = object[i].value;
         }
 
-        var {
-          description_,
-          account_,
-          proposalType_
-        } = array; // this must contain any inputs from custom forms
+        var { description_, account_, proposalType_ } = array; // this must contain any inputs from custom forms
 
         const payload_ = Array(0);
 
@@ -44,16 +32,21 @@ export default function SendShares() {
 
         try {
           let result = await instance.methods
-            .propose(proposalType_, description_, [account_], [amount_], [payload_])
+            .propose(
+              proposalType_,
+              description_,
+              [account_],
+              [amount_],
+              [payload_]
+            )
             .send({ from: account });
-            value.setReload(value.state.reload+1);
-            value.setVisibleView(1);
+          value.setVisibleView(1);
         } catch (e) {
-          alertMessage('send-transaction');
+          alert("send-transaction");
           value.setLoading(false);
         }
-      } catch(e) {
-        alertMessage('send-transaction');
+      } catch (e) {
+        alert("send-transaction");
         value.setLoading(false);
       }
     }
@@ -63,18 +56,22 @@ export default function SendShares() {
 
   return (
     <form onSubmit={submitProposal}>
-    <Stack>
-      <Text><b>Details</b></Text>
+      <Stack>
+        <Text>
+          <b>Details</b>
+        </Text>
 
-      <Textarea name="description_" size="lg" placeholder=". . ." />
+        <Textarea name="description_" size="lg" placeholder=". . ." />
 
-      <Text><b>Address to Kick</b></Text>
-      <Input name="account_" size="lg" placeholder="0x or .eth"></Input>
+        <Text>
+          <b>Address to Kick</b>
+        </Text>
+        <Input name="account_" size="lg" placeholder="0x or .eth"></Input>
 
-      <Input type="hidden" name="proposalType_" value="1" />
+        <Input type="hidden" name="proposalType_" value="1" />
 
-      <Button type="submit">Submit Proposal</Button>
-    </Stack>
+        <Button type="submit">Submit Proposal</Button>
+      </Stack>
     </form>
   );
 }

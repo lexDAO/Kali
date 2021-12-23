@@ -1,256 +1,256 @@
 [
-	{
-		"inputs": [],
-		"name": "ETHtransferFailed",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "NotProcessed",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "NotProposal",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "NotProposer",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "Reentrancy",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "Sponsored",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "TransferFailed",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "TransferFromFailed",
-		"type": "error"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "contract IKaliDAOtribute",
-				"name": "dao",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "proposer",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "proposal",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "asset",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "nft",
-				"type": "bool"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			}
-		],
-		"name": "NewTributeProposal",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "contract IKaliDAOtribute",
-				"name": "dao",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "proposal",
-				"type": "uint256"
-			}
-		],
-		"name": "TributeProposalCancelled",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "contract IKaliDAOtribute",
-				"name": "dao",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "proposal",
-				"type": "uint256"
-			}
-		],
-		"name": "TributeProposalReleased",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "contract IKaliDAOtribute",
-				"name": "dao",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "proposal",
-				"type": "uint256"
-			}
-		],
-		"name": "cancelTributeProposal",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "contract IKaliDAOtribute",
-				"name": "dao",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "proposal",
-				"type": "uint256"
-			}
-		],
-		"name": "releaseTributeProposal",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "contract IKaliDAOtribute",
-				"name": "dao",
-				"type": "address"
-			},
-			{
-				"internalType": "enum IKaliDAOtribute.ProposalType",
-				"name": "proposalType",
-				"type": "uint8"
-			},
-			{
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
-			},
-			{
-				"internalType": "address[]",
-				"name": "accounts",
-				"type": "address[]"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "amounts",
-				"type": "uint256[]"
-			},
-			{
-				"internalType": "bytes[]",
-				"name": "payloads",
-				"type": "bytes[]"
-			},
-			{
-				"internalType": "bool",
-				"name": "nft",
-				"type": "bool"
-			},
-			{
-				"internalType": "address",
-				"name": "asset",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			}
-		],
-		"name": "submitTributeProposal",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "contract IKaliDAOtribute",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "tributes",
-		"outputs": [
-			{
-				"internalType": "contract IKaliDAOtribute",
-				"name": "dao",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "proposer",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "asset",
-				"type": "address"
-			},
-			{
-				"internalType": "bool",
-				"name": "nft",
-				"type": "bool"
-			},
-			{
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	}
+  {
+    "inputs": [],
+    "name": "ETHtransferFailed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotProcessed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotProposal",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotProposer",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Reentrancy",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Sponsored",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TransferFailed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TransferFromFailed",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "contract IKaliDAOtribute",
+        "name": "dao",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "proposer",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "proposal",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "asset",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "nft",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "NewTributeProposal",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "contract IKaliDAOtribute",
+        "name": "dao",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "proposal",
+        "type": "uint256"
+      }
+    ],
+    "name": "TributeProposalCancelled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "contract IKaliDAOtribute",
+        "name": "dao",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "proposal",
+        "type": "uint256"
+      }
+    ],
+    "name": "TributeProposalReleased",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IKaliDAOtribute",
+        "name": "dao",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "proposal",
+        "type": "uint256"
+      }
+    ],
+    "name": "cancelTributeProposal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IKaliDAOtribute",
+        "name": "dao",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "proposal",
+        "type": "uint256"
+      }
+    ],
+    "name": "releaseTributeProposal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IKaliDAOtribute",
+        "name": "dao",
+        "type": "address"
+      },
+      {
+        "internalType": "enum IKaliDAOtribute.ProposalType",
+        "name": "proposalType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "internalType": "address[]",
+        "name": "accounts",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "amounts",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "bytes[]",
+        "name": "payloads",
+        "type": "bytes[]"
+      },
+      {
+        "internalType": "bool",
+        "name": "nft",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "asset",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "submitTributeProposal",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IKaliDAOtribute",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "tributes",
+    "outputs": [
+      {
+        "internalType": "contract IKaliDAOtribute",
+        "name": "dao",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "proposer",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "asset",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "nft",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
 ]

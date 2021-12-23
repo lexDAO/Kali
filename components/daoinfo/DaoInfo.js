@@ -1,6 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Router, { useRouter } from "next/router";
-import AppContext from '../../context/AppContext';
+import AppContext from "../../context/AppContext";
 import Link from "next/link";
 import {
   Flex,
@@ -12,62 +12,108 @@ import {
   ListItem,
 } from "@chakra-ui/react";
 import FlexGradient from "../elements/FlexGradient.js";
+import Reload from "../elements/Reload.js";
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs";
-import { convertVotingPeriod } from "../../utils/helpers";
+import { convertVotingPeriod, fromDecimals } from "../../utils/formatters";
+import { fetchDaoInfo } from "../../utils/fetchDaoInfo";
+import { addresses } from "../../constants/addresses";
+import { factoryInstance } from "../../eth/factory";
+
+const proposalTypes = require("../../constants/params");
 
 export default function DaoInfo() {
   const value = useContext(AppContext);
-  const { web3, loading, dao, address, holdersArray, balances, extensions } = value.state;
-  const router = useRouter();
+  const { web3, loading, account, abi, chainId, visibleView, dao, address } = value.state;
+
+  const reloadDao = async() => {
+    fetchData();
+  }
+
+  useEffect(() => {
+    if(!address) {
+      return;
+    } else {
+      if(!dao) {
+        fetchData();
+      }
+    }
+  }, [address]);
+
+  async function fetchData() {
+    if (!address) {
+      return;
+    } else {
+      value.setLoading(true);
+
+      const instance = new web3.eth.Contract(abi, address);
+
+      const factory = factoryInstance(addresses[chainId]["factory"], web3);
+
+      const { dao_ } = await fetchDaoInfo(
+        instance,
+        factory,
+        address,
+        web3,
+        chainId,
+        account
+      );
+
+      value.setDao(dao_);
+      console.log(dao_);
+      value.setLoading(false);
+    }
+  }
 
   return (
     <FlexGradient>
-      <Text>Name: {dao["name"]}</Text>
-      <HStack>
-        <Text>Address: {dao["address"]}</Text>
-        <Link
-          passHref
-          href={`https://rinkeby.etherscan.io/address/${dao["address"]}`}
-        >
-          <Icon as={BsFillArrowUpRightSquareFill} />
-        </Link>
-      </HStack>
-      <Text>Symbol: {dao["symbol"]}</Text>
-      <Text>Shares: {dao["totalSupply"] / 1000000000000000000} </Text>
-      <Text>Members: {holdersArray.length}</Text>
-      <Text>Paused: {dao["paused"].toString()}</Text>
-      <Text>Voting period: {convertVotingPeriod(dao['votingPeriod'])}</Text>
-      <Text>Quorum: {dao["quorum"]}%</Text>
-      <Text>Supermajority: {dao["supermajority"]}%</Text>
-      <HStack>
-        <Text isTruncated>Docs: {dao["docs"]}</Text>
-        <Link href={`${dao["docs"]}`}>
-          <Icon as={BsFillArrowUpRightSquareFill} />
-        </Link>
-      </HStack>
-      <Text>Members:</Text>
-      <UnorderedList>
-        {holdersArray.map((h, index) => (
-          <ListItem key={index}>
-            {h[0]} ({web3.utils.fromWei(h[1])} shares)
-          </ListItem>
-        ))}
-      </UnorderedList>
-      <Text>Balances:</Text>
-      <UnorderedList>
-      {balances.map((b, index) => (
-        <ListItem key={index}>
-          {b['token']} ({web3.utils.fromWei(b['balance'])})
-        </ListItem>
-      ))}
-    </UnorderedList>
-    <Text>Extensions</Text>
-    <UnorderedList>
-    {Object.entries(extensions).map(([key, value]) => (
-      <ListItem key={key}>{key}</ListItem>
-    ))}
-    </UnorderedList>
-
+      {dao == null ? (
+        "Loading . . ."
+      ) : (
+        <>
+          <Reload reload={reloadDao} />
+          <Text>Name: {dao["name"]}</Text>
+          <HStack>
+            <Text>Address: {dao["address"]}</Text>
+            <Link
+              passHref
+              href={`https://rinkeby.etherscan.io/address/${dao["address"]}`}
+            >
+              <Icon as={BsFillArrowUpRightSquareFill} />
+            </Link>
+          </HStack>
+          <Text>Symbol: {dao["token"]["symbol"]}</Text>
+          <Text>
+            Shares: {dao["token"]["totalSupply"] / 1000000000000000000}{" "}
+          </Text>
+          <Text>Paused: {dao["token"]["paused"].toString()}</Text>
+          <Text>
+            Voting period: {convertVotingPeriod(dao["gov"]["votingPeriod"])}
+          </Text>
+          <Text>Quorum: {dao["gov"]["quorum"]}%</Text>
+          <Text>Supermajority: {dao["gov"]["supermajority"]}%</Text>
+          <HStack>
+            <Text isTruncated>Docs: {dao["docs"]}</Text>
+            <Link href={`${dao["docs"]}`}>
+              <Icon as={BsFillArrowUpRightSquareFill} />
+            </Link>
+          </HStack>
+          <Text>Members: {dao["members"].length}</Text>
+          <Text>Balances:</Text>
+          <UnorderedList>
+            {dao["balances"].map((b, index) => (
+              <ListItem key={index}>
+                {b["token"]} ({fromDecimals(b["balance"], 18)})
+              </ListItem>
+            ))}
+          </UnorderedList>
+          <Text>Extensions</Text>
+          <UnorderedList>
+            {dao["extensions"].map((e, index) => (
+              <ListItem key={index}>{e}</ListItem>
+            ))}
+          </UnorderedList>
+        </>
+      )}
     </FlexGradient>
   );
 }

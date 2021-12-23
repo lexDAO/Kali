@@ -1,84 +1,102 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from "react";
 import Router, { useRouter } from "next/router";
-import AppContext from '../../context/AppContext';
-import {
-  Input,
-  Button,
-  Text,
-  Textarea,
-  Stack,
-  Select
-} from "@chakra-ui/react";
+import AppContext from "../../context/AppContext";
+import { Input, Button, Text, Textarea, Stack, Select, Checkbox, CheckboxGroup, HStack } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
 import DateSelect from "../elements/DateSelect";
-import { alertMessage } from "../../utils/helpers";
+import { addresses } from "../../constants/addresses";
+import { tokens } from "../../constants/tokens";
 
 export default function SetRedemption() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address, chainId, balances, extensions, redemption } = value.state;
+  const { web3, loading, account, abi, address, chainId, dao } = value.state;
   const [startDate, setStartDate] = useState(new Date());
+  const [checked, setChecked] = useState();
 
-  const updateExtType = (e) => {
-    let newValue = e.target.value;
-    setExtType(newValue);
-  };
+  useEffect(() => {
+    let array = [];
+    for(var i=0; i < tokens.length; i++) {
+      array.push(false);
+    }
+    setChecked(array);
+  }, []);
+
+  const handleCheck = (e) => {
+    let id = e.target.id;
+    let array = checked;
+    array[id] = !array[id];
+    setChecked(array);
+    console.log(array)
+  }
 
   const submitProposal = async (event) => {
     event.preventDefault();
     value.setLoading(true);
 
-    if(account===null) {
-      alertMessage('connect');
+    if (account === null) {
+      alert("connect");
     } else {
       try {
         let object = event.target;
+
         var array = [];
         for (let i = 0; i < object.length; i++) {
           array[object[i].name] = object[i].value;
+          console.log(object[i].value)
         }
 
         var {
           description_,
           account_,
           proposalType_,
-          tokens_,
-          redemptionStart_
+          redemptionStart_,
         } = array; // this must contain any inputs from custom forms
+        console.log(array)
 
         var amount_ = 0;
 
-        if(extensions['redemption']==null) {
+        if (dao["extensions"]["redemption"] == null) {
           amount_ = 1; // prevent toggling extension back off
         }
         console.log("amount:" + amount_);
-        console.log(extensions)
 
-        const tokenArray = tokens_.split(",");
-        console.log(tokens_)
+        const tokenArray = [];
+        for(var i=0; i < tokens.length; i++) {
+          if(checked[i]==true) {
+            tokenArray.push(tokens[i]["address"])
+          }
+        }
+
+        console.log(tokenArray);
 
         redemptionStart_ = new Date(redemptionStart_).getTime() / 1000;
 
         const payload_ = web3.eth.abi.encodeParameters(
-          ['address[]','uint256'],
+          ["address[]", "uint256"],
           [tokenArray, redemptionStart_]
         );
-        console.log(payload_)
+        console.log(payload_);
 
         const instance = new web3.eth.Contract(abi, address);
 
         try {
           let result = await instance.methods
-            .propose(proposalType_, description_, [account_], [amount_], [payload_])
+            .propose(
+              proposalType_,
+              description_,
+              [account_],
+              [amount_],
+              [payload_]
+            )
             .send({ from: account });
-            value.setReload(value.state.reload+1);
-            value.setVisibleView(1);
+          value.setVisibleView(1);
         } catch (e) {
-          alertMessage('send-transaction');
+          alert("send-transaction");
           value.setLoading(false);
           console.log(e);
         }
-      } catch(e) {
-        alertMessage('send-transaction');
+      } catch (e) {
+        alert("send-transaction");
         value.setLoading(false);
         console.log(e);
       }
@@ -89,23 +107,44 @@ export default function SetRedemption() {
 
   return (
     <form onSubmit={submitProposal}>
-    <Stack>
-      <Text><b>Details</b></Text>
-      <Textarea name="description_" size="lg" placeholder=". . ." />
+      <Stack>
+        <Text>
+          <b>Details</b>
+        </Text>
+        <Textarea name="description_" size="lg" placeholder=". . ." />
 
-      <Text><b>Token Addresses (separate by comma)</b></Text>
-      <Textarea name="tokens_" placeholder="" />
+        <Text>
+          <b>Tokens for Redemption</b>
+        </Text>
 
-      <Text>Redemption Start</Text>
+        <CheckboxGroup colorScheme='green'>
+          <HStack>
+            {tokens.map((token, index) => (
+              <Checkbox
+                name={`tokens_[${index}]`}
+                id={index}
+                key={index}
+                value={token['address']}
+                isChecked={`checked[${index}]`}
+                onChange={handleCheck}
+                >{token['token']}</Checkbox>
+            ))}
+          </HStack>
+        </CheckboxGroup>
 
-      <DateSelect name="redemptionStart_" />
+        <Text>Redemption Start</Text>
 
+        <DateSelect name="redemptionStart_" />
 
-      <Input type="hidden" name="proposalType_" value="8" />
-      <Input type="hidden" name="account_" value={extensions['redemption']} />
+        <Input type="hidden" name="proposalType_" value="8" />
+        <Input
+          type="hidden"
+          name="account_"
+          value={addresses[chainId]["extensions"]["redemption"]}
+        />
 
-      <Button type="submit">Submit Proposal</Button>
-    </Stack>
+        <Button type="submit">Submit Proposal</Button>
+      </Stack>
     </form>
   );
 }

@@ -15,20 +15,16 @@ import { toDecimals, unixToDate } from "../../utils/formatters";
 
 export default function Tribute() {
   const value = useContext(AppContext);
-  const {
-    web3,
-    loading,
-    account,
-    address,
-    abi,
-    dao
-  } = value.state;
+  const { web3, loading, account, address, abi, dao } = value.state;
   const [amt, setAmt] = useState(0); // amount to be spent on shares, not converted to wei/decimals
   const handleChange = (value) => setAmt(value);
   const token = dao["extensions"]["crowdsale"]["details"]["tokenName"];
-  const purchaseToken = dao["extensions"]["crowdsale"]["details"]["purchaseToken"];
-  const purchaseMultiplier = dao["extensions"]["crowdsale"]["details"]["purchaseMultiplier"];
-  const purchaseLimit = dao["extensions"]["crowdsale"]["details"]["purchaseLimit"];
+  const purchaseToken =
+    dao["extensions"]["crowdsale"]["details"]["purchaseToken"];
+  const purchaseMultiplier =
+    dao["extensions"]["crowdsale"]["details"]["purchaseMultiplier"];
+  const purchaseLimit =
+    dao["extensions"]["crowdsale"]["details"]["purchaseLimit"];
   const saleEnds = dao["extensions"]["crowdsale"]["details"]["saleEnds"];
   const decimals = dao["extensions"]["crowdsale"]["details"]["decimals"];
   const extAddress = dao["extensions"]["crowdsale"]["address"];
@@ -38,7 +34,7 @@ export default function Tribute() {
       alert("connect");
     } else {
       value.setLoading(true);
-      let amt_ = toDecimals(amt, decimals).toString();
+      let amt_ = toDecimals(amt, decimals).toString(); // toWei() won't work for tokens with less than 18 decimals
       const abi_ = require("../../abi/ERC20.json");
       const instance_ = new web3.eth.Contract(abi_, purchaseToken);
       let result = await instance_.methods
@@ -67,10 +63,7 @@ export default function Tribute() {
         amount_ = toDecimals(amount_, decimals).toString();
 
         var value_ = 0;
-        if (
-          purchaseToken ==
-          "0x0000000000000000000000000000000000000000"
-        ) {
+        if (purchaseToken == "0x0000000000000000000000000000000000000000") {
           value_ = amount_;
         }
 
@@ -103,8 +96,8 @@ export default function Tribute() {
         <Stack>
           <Text>Sale Details</Text>
           <Text>
-            Price: {1 / purchaseMultiplier} {token} (
-            {purchaseMultiplier} shares per {token})
+            Price: {1 / purchaseMultiplier} {token} ({purchaseMultiplier} shares
+            per {token})
           </Text>
           <Text>Maximum shares allowed: {purchaseLimit}</Text>
           <Text>Sale ends {unixToDate(saleEnds)}</Text>
@@ -124,8 +117,7 @@ export default function Tribute() {
             </Text>
             <Input value={amt * purchaseMultiplier} disabled />
           </HStack>
-          {purchaseToken !=
-          "0x0000000000000000000000000000000000000000" ? (
+          {purchaseToken != "0x0000000000000000000000000000000000000000" ? (
             <Button onClick={approveSpend}>Approve</Button>
           ) : null}
 

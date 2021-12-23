@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { toDecimals } from "../../utils/formatters";
 
 export default function SendShares() {
   const value = useContext(AppContext);
@@ -33,6 +34,10 @@ export default function SendShares() {
     name: "recipients",
   });
 
+  useEffect(() => {
+    append({ address: "" }); // add first recipient input field
+  }, []);
+
   const submitProposal = async (values) => {
     value.setLoading(true);
 
@@ -41,10 +46,10 @@ export default function SendShares() {
     } else {
       try {
         var { description_, recipients } = values; // this must contain any inputs from custom forms
-        console.log(values)
+        console.log(values);
         let amounts_ = [];
         for (let i = 0; i < recipients.length; i++) {
-          amounts_.push(web3.utils.toWei(recipients[i].share));
+          amounts_.push(toDecimals(recipients[i].share, 18).toString());
         }
         console.log("Shares Array", amounts_);
 
@@ -58,11 +63,17 @@ export default function SendShares() {
         const proposalType_ = 0;
 
         let payloads_ = [];
-        for(let i = 0; i < recipients.length; i++) {
+        for (let i = 0; i < recipients.length; i++) {
           payloads_.push("0x");
         }
-        console.log(payloads_)
-        console.log(proposalType_, description_, accounts_, amounts_, payloads_);
+        console.log(payloads_);
+        console.log(
+          proposalType_,
+          description_,
+          accounts_,
+          amounts_,
+          payloads_
+        );
         const instance = new web3.eth.Contract(abi, address);
 
         try {

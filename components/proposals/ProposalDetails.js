@@ -3,6 +3,7 @@ import AppContext from "../../context/AppContext";
 import ProposalDetails from "./ProposalDetails";
 import { chakra, Input, Text, Textarea, Divider } from "@chakra-ui/react";
 import { viewProposalsHelper } from "../../constants/viewProposalsHelper";
+import { decodeBytes, formatAmounts } from "../../utils/formatters";
 
 const ProposalLabel = (props) => {
   return (
@@ -25,6 +26,12 @@ export default function ProposalModal(props) {
   const { web3, loading } = value.state;
   const p = props["p"];
   const type = p["proposalType"];
+  const details = viewProposalsHelper[type]["details"];
+  let decoded;
+  if(type==2 || type==8) {
+    decoded = decodeBytes(p["payloads"], type, p, web3);
+  }
+  const amountsFormatted = formatAmounts(p["amounts"], type);
 
   return (
     <>
@@ -37,32 +44,43 @@ export default function ProposalModal(props) {
 
       {p["amounts"].map((item, index) => (
         <>
-          {viewProposalsHelper[type]["details"]["amounts"] == null ? null : (
+          {details["amounts"] == null ? null : (
             <>
               <ProposalLabel>
-                {viewProposalsHelper[type]["details"]["amounts"]}
+                {details["amounts"]}
               </ProposalLabel>
-              <Text>{p["amounts"][index]}</Text>
+              <Text>{amountsFormatted[index]}</Text>
               <ProposalDivider />
             </>
           )}
 
-          {viewProposalsHelper[type]["details"]["accounts"] == null ? null : (
+          {details["accounts"] == null ? null : (
             <>
               <ProposalLabel>
-                {viewProposalsHelper[type]["details"]["accounts"]}
+                {details["accounts"]}
               </ProposalLabel>
               <Text>{p["accounts"][index]}</Text>
               <ProposalDivider />
             </>
           )}
-          {viewProposalsHelper[type]["details"]["payloads"] == null ? null : (
+          {details["payloads"] == null ? null : (
+            p["payloads"][index] != "0x" ? // don't display dummy data
             <>
               <ProposalLabel>payload</ProposalLabel>
               <Text>{p["payloads"][index]}</Text>
-              <Text>Decoded: </Text>
+              {decoded.length > 0 ?
+                <>
+                <Text>Decoded:</Text>
+              <ul>
+                {decoded[index].map((item, index) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+              </>
+              : null}
               <ProposalDivider />
             </>
+            : null
           )}
         </>
       ))}

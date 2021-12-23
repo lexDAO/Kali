@@ -1,15 +1,33 @@
 import React, { useState, useContext, useEffect } from "react";
 import Router, { useRouter } from "next/router";
 import AppContext from "../../context/AppContext";
-import { Input, Button, Text, Textarea, Stack, Select } from "@chakra-ui/react";
+import { Input, Button, Text, Textarea, Stack, Select, Checkbox, CheckboxGroup, HStack } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
 import DateSelect from "../elements/DateSelect";
 import { addresses } from "../../constants/addresses";
+import { tokens } from "../../constants/tokens";
 
 export default function SetRedemption() {
   const value = useContext(AppContext);
   const { web3, loading, account, abi, address, chainId, dao } = value.state;
   const [startDate, setStartDate] = useState(new Date());
+  const [checked, setChecked] = useState();
+
+  useEffect(() => {
+    let array = [];
+    for(var i=0; i < tokens.length; i++) {
+      array.push(false);
+    }
+    setChecked(array);
+  }, []);
+
+  const handleCheck = (e) => {
+    let id = e.target.id;
+    let array = checked;
+    array[id] = !array[id];
+    setChecked(array);
+    console.log(array)
+  }
 
   const submitProposal = async (event) => {
     event.preventDefault();
@@ -20,19 +38,21 @@ export default function SetRedemption() {
     } else {
       try {
         let object = event.target;
+
         var array = [];
         for (let i = 0; i < object.length; i++) {
           array[object[i].name] = object[i].value;
+          console.log(object[i].value)
         }
 
         var {
           description_,
           account_,
           proposalType_,
-          tokens_,
           redemptionStart_,
         } = array; // this must contain any inputs from custom forms
         console.log(array)
+
         var amount_ = 0;
 
         if (dao["extensions"]["redemption"] == null) {
@@ -40,8 +60,14 @@ export default function SetRedemption() {
         }
         console.log("amount:" + amount_);
 
-        const tokenArray = tokens_.split(",");
-        console.log(tokens_);
+        const tokenArray = [];
+        for(var i=0; i < tokens.length; i++) {
+          if(checked[i]==true) {
+            tokenArray.push(tokens[i]["address"])
+          }
+        }
+
+        console.log(tokenArray);
 
         redemptionStart_ = new Date(redemptionStart_).getTime() / 1000;
 
@@ -89,9 +115,22 @@ export default function SetRedemption() {
         <Textarea name="description_" size="lg" placeholder=". . ." />
 
         <Text>
-          <b>Token Addresses (separate by comma)</b>
+          <b>Tokens for Redemption</b>
         </Text>
-        <Textarea name="tokens_" placeholder="" />
+
+        <CheckboxGroup colorScheme='green'>
+          <HStack>
+            {tokens.map((token, index) => (
+              <Checkbox
+                name={`tokens_[${index}]`}
+                id={index}
+                value={token['address']}
+                isChecked={`checked[${index}]`}
+                onChange={handleCheck}
+                >{token['token']}</Checkbox>
+            ))}
+          </HStack>
+        </CheckboxGroup>
 
         <Text>Redemption Start</Text>
 

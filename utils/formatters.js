@@ -1,4 +1,5 @@
 // functions to format data for display to user
+import { scientificNotation } from "../constants/numbers";
 
 export function convertVotingPeriod(seconds) {
   let time;
@@ -14,9 +15,9 @@ export function convertVotingPeriod(seconds) {
   } else if (seconds < 86400) {
     time = seconds / 3600;
     if (time == 1) {
-      text = "day";
+      text = "hour";
     } else {
-      text = "days";
+      text = "hours";
     }
   } else {
     time = seconds / 86400;
@@ -44,13 +45,11 @@ export function votingPeriodToSeconds(period, type) {
 }
 
 export function toDecimals(amount, decimals) {
-  console.log("to decimals");
-  var stringf = "1";
-  for (var i = 0; i < decimals; i++) {
-    stringf = stringf + "0";
-  }
+  return amount * scientificNotation[decimals - 1];
+}
 
-  return amount * stringf;
+export function fromDecimals(amount, decimals) {
+  return amount / scientificNotation[decimals - 1];
 }
 
 export function unixToDate(unix) {
@@ -78,4 +77,123 @@ export function unixToDate(unix) {
   var time =
     date + " " + month + " " + year + " " + hour + ":" + min + ":" + sec;
   return time;
+}
+
+export function decodeBytes(payloads, type, p, web3) {
+  let paramArray = {
+    crowdsale: {
+      decode: ["uint256", "address", "uint8", "uint96", "uint32"],
+      labels: [
+        "listId",
+        "purchaseToken",
+        "purchaseMultiplier",
+        "purchaseLimit",
+        "saleEnds",
+      ],
+      types: ["uint", "token", "uint", "decimals", "date"],
+    },
+    redemption: {
+      decode: ["address[]", "uint256"],
+      labels: ["tokenArray", "redemptionStart"],
+      types: ["token", "date"],
+    },
+    tribute: {
+      decode: null,
+      labels: null,
+      types: null,
+    },
+    erc20: {
+      decode: ["address", "uint256"],
+      labels: ["to", "amount"],
+      types: ["address", "decimals"],
+    },
+  };
+
+  let array = [];
+
+  for (var k = 0; k < payloads.length; k++) {
+    let decoded;
+    let decodeType;
+    let bytes = payloads[k];
+    let bytecode;
+    var item = [];
+
+    if (type == 8) {
+      decodeType = p["extensions"][k];
+      bytecode = bytes;
+    }
+    if (type == 2) {
+      decodeType = "erc20";
+      bytecode = "0x" + bytes.replace("0xa9059cbb", "");
+    }
+    const params = paramArray[decodeType]["decode"];
+    const labels = paramArray[decodeType]["labels"];
+    const types = paramArray[decodeType]["types"];
+
+    if (params != null) {
+      decoded = web3.eth.abi.decodeParameters(params, bytecode);
+      var i = 0;
+      for (const [k, v] of Object.entries(decoded)) {
+        if (labels[i] != undefined) {
+          var formatted = v;
+          if (types[i] == "date") {
+            formatted = unixToDate(v);
+          }
+          item.push(labels[i] + ": " + formatted);
+        }
+        i++;
+      }
+    }
+    array.push(item);
+  }
+  console.log(array);
+  return array;
+}
+
+export function formatAmounts(amounts, type) {
+  const formattedAmounts = [];
+
+  for (var i = 0; i < amounts.length; i++) {
+    let amount = amounts[i];
+    let formattedAmount;
+
+    if (type == 0 || type == 1) {
+      // mint/burn shares
+      formattedAmount = fromDecimals(amount, 18);
+    }
+    if (type == 2) {
+      // contract integration
+      formattedAmount = amount;
+    }
+    if (type == 3) {
+      // voting period
+      formattedAmount = convertVotingPeriod(amount);
+    }
+    if (type == 4 || type == 5) {
+      // quorum, supermajority
+      formattedAmount = amount + "%";
+    }
+    if (type == 6) {
+      // proposalVoteTypes
+      formattedAmount = amount;
+    }
+    if (type == 7) {
+      // pause
+      formattedAmount = amount;
+    }
+    if (type == 8) {
+      // extension
+      formattedAmount = amount;
+    }
+    if (type == 9) {
+      // escape
+      formattedAmount = amount;
+    }
+    if (type == 10) {
+      // docs
+      formattedAmount = amount;
+    }
+    formattedAmounts.push(formattedAmount);
+  }
+  return formattedAmounts;
 }

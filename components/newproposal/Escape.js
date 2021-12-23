@@ -30,8 +30,6 @@ export default function Escape() {
 
         const instance = new web3.eth.Contract(abi, address);
 
-        amount_ = web3.utils.toWei(amount_);
-
         try {
           let result = await instance.methods
             .propose(

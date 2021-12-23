@@ -1,4 +1,6 @@
-export async function fetchProposals(instance, address, web3, dao) {
+import { addresses } from "../constants/addresses";
+
+export async function fetchProposals(instance, address, web3, chainId, dao) {
   const proposalCount = parseInt(await instance.methods.proposalCount().call());
 
   const proposals_ = {};
@@ -25,6 +27,8 @@ export async function fetchProposals(instance, address, web3, dao) {
       } else {
         var proposalArrays = await instance.methods.getProposalArrays(i).call();
 
+        proposal["proposalType"] = parseInt(proposal["proposalType"]);
+
         proposal["id"] = i; // add solidity contract id to array
 
         proposal["expires"] = creationTime + votingPeriod; // add expiration date
@@ -44,7 +48,9 @@ export async function fetchProposals(instance, address, web3, dao) {
 
         proposal["accounts"] = proposalArrays["accounts"];
 
-        proposal["payloads"] = proposalArrays["payloads"][0];
+        proposal["payloads"] = proposalArrays["payloads"];
+
+        proposal["extensions"] = fetchExtension(proposal['proposalType'], proposalArrays["accounts"], web3, chainId); // null, or array of extensions
 
         if (proposal["pending"] == true) {
           proposals_["pending"].push(proposal);
@@ -154,4 +160,27 @@ function isPassing(dao, proposal) {
   }
 
   return passingText;
+}
+
+function fetchExtension(type, accounts, web3, chainId) {
+  var array = [];
+  let ext = addresses[chainId]['extensions'];
+  console.log(ext, "ext")
+  if(type==8) {
+    for(var i=0; i < accounts.length; i++) {
+      let account = web3.utils.toChecksumAddress(accounts[i]);
+      console.log("account", account)
+      for(const [k, v] of Object.entries(ext)) {
+        let extAddress = web3.utils.toChecksumAddress(v);
+        console.log(extAddress)
+        if(account==extAddress) {
+          array.push(k);
+          console.log("k", k)
+        }
+      }
+    }
+  } else {
+    array = null;
+  }
+  return array;
 }

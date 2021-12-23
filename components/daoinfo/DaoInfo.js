@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import FlexGradient from "../elements/FlexGradient.js";
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs";
-import { convertVotingPeriod } from "../../utils/formatters";
+import { convertVotingPeriod, fromDecimals } from "../../utils/formatters";
 
 export default function DaoInfo() {
   const value = useContext(AppContext);
@@ -57,7 +57,7 @@ export default function DaoInfo() {
           <UnorderedList>
             {dao["balances"].map((b, index) => (
               <ListItem key={index}>
-                {b["token"]} ({web3.utils.fromWei(b["balance"])})
+                {b["token"]} ({fromDecimals(b["balance"], 18)})
               </ListItem>
             ))}
           </UnorderedList>

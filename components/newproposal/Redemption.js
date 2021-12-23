@@ -15,26 +15,20 @@ import { toDecimals, unixToDate } from "../../utils/formatters";
 
 export default function Redemption() {
   const value = useContext(AppContext);
-  const {
-    web3,
-    loading,
-    account,
-    address,
-    dao,
-    abi
-  } = value.state;
+  const { web3, loading, account, address, dao, abi } = value.state;
   const [amt, setAmt] = useState(0); // amount to be spent on shares, not converted to wei/decimals
   const handleChange = (value) => setAmt(value);
   const extAddress = dao["extensions"]["redemption"]["address"];
   const redeemables = dao["extensions"]["redemption"]["details"]["redeemables"];
-  const redemptionStarts = dao["extensions"]["redemption"]["details"]["redemptionStarts"];
+  const redemptionStarts =
+    dao["extensions"]["redemption"]["details"]["redemptionStarts"];
 
   const submitProposal = async (event) => {
     event.preventDefault();
     value.setLoading(true);
 
     if (account === null) {
-      alert('connect');
+      alert("connect");
     } else {
       try {
         let object = event.target;
@@ -74,9 +68,7 @@ export default function Redemption() {
   return (
     <form onSubmit={submitProposal}>
       <Stack>
-        <Text>
-          Redemption begins {unixToDate(redemptionStarts)}
-        </Text>
+        <Text>Redemption begins {unixToDate(redemptionStarts)}</Text>
         <Text>Redeemables:</Text>
         {redeemables.map((r, index) => (
           <Text key={index}>{r}</Text>

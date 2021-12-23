@@ -3,6 +3,8 @@ import Router, { useRouter } from "next/router";
 import AppContext from "../../context/AppContext";
 import { Input, Button, Select, Text, Textarea, Stack } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
+import { toDecimals } from "../../utils/formatters";
+import { tokens } from "../../constants/tokens";
 
 export default function SendToken() {
   const value = useContext(AppContext);
@@ -25,16 +27,18 @@ export default function SendToken() {
         var {
           proposalType_,
           description_,
-          account_,
-          amount_,
+          tokenIndex_,
           amount_,
           recipient_,
           tokenAmount_,
         } = array; // this must contain any inputs from custom forms
 
         console.log(array);
+        let account_ = tokens[tokenIndex_]["address"];
 
-        tokenAmount_ = web3.utils.toWei(tokenAmount_);
+        let decimals = tokens[tokenIndex_]["decimals"];
+
+        tokenAmount_ = toDecimals(tokenAmount_, decimals).toString();
 
         const instance = new web3.eth.Contract(abi, address);
 
@@ -84,9 +88,9 @@ export default function SendToken() {
           <b>Token</b>
         </Text>
 
-        <Select name="account_">
+        <Select name="tokenIndex_">
           {dao["balances"].map((b, index) => (
-            <option key={index} value={b["address"]}>
+            <option key={index} value={index}>
               {b["token"]}
             </option>
           ))}

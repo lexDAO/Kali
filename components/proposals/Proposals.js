@@ -10,7 +10,7 @@ import { fetchProposals } from "../../utils/fetchProposals";
 
 export default function Proposals(props) {
   const value = useContext(AppContext);
-  const { web3, loading, proposals, address, dao, reload } = value.state;
+  const { web3, loading, proposals, address, dao, reload, chainId } = value.state;
   const [toggle, setToggle] = useState("active");
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function Proposals(props) {
   async function fetchData() {
     let abi = require("../../abi/KaliDAO.json");
     let instance = new web3.eth.Contract(abi, address);
-    let proposals_ = await fetchProposals(instance, address, web3, dao);
+    let proposals_ = await fetchProposals(instance, address, web3, chainId, dao);
     value.setProposals(proposals_);
     console.log(proposals_);
   }

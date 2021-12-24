@@ -6,15 +6,13 @@ import '../../utils/ReentrancyGuard.sol';
 
 /// @notice Vesting contract for KaliDAO tokens.
 contract KaliDAOvesting is ReentrancyGuard {
-    event ExtensionSet(address indexed dao, address[] accounts, uint256[] amounts, uint256[] startTimes, uint256[] endTimes);
+    event ExtensionSet(address indexed dao, address[] accounts, uint256[] amounts, uint256[] rates, uint256[] startTimes, uint256[] endTimes);
 
     event ExtensionCalled(address indexed dao, uint256 vestingId, address indexed member, uint256 indexed amountOut);
 
     error NoArrayParity();
 
     error InvalidTimespan();
-
-    error InsufficientAmount();
 
     error AmountNotSpanMultiple();
 
@@ -41,11 +39,12 @@ contract KaliDAOvesting is ReentrancyGuard {
     }
 
     function setExtension(bytes calldata extensionData) public nonReentrant virtual {
-        (address[] memory accounts, uint256[] memory amounts, uint256[] memory startTimes, uint256[] memory endTimes) 
-            = abi.decode(extensionData, (address[], uint256[], uint256[], uint256[]));
+        (address[] memory accounts, uint256[] memory amounts, uint256[] memory rates, uint256[] memory startTimes, uint256[] memory endTimes) 
+            = abi.decode(extensionData, (address[], uint256[], uint256[], uint256[], uint256[]));
         
         if (accounts.length != amounts.length 
-            || amounts.length != startTimes.length 
+            || amounts.length != startTimes.length
+            || startTimes.length != rates.length 
             || startTimes.length != endTimes.length) 
             revert NoArrayParity();
 
@@ -56,14 +55,6 @@ contract KaliDAOvesting is ReentrancyGuard {
             for (uint256 i; i < accounts.length; i++) {
                 if (startTimes[i] > endTimes[i]) revert InvalidTimespan();
 
-                uint256 timeDifference = endTimes[i] - startTimes[i];
-
-                if (amounts[i] > timeDifference) revert InsufficientAmount();
-
-                if (amounts[i] % timeDifference != 0) revert AmountNotSpanMultiple();
-
-                uint256 rate = amounts[i] / timeDifference;
-
                 uint256 vestingId = vestingCount++;
 
                 vestings[vestingId] = Vesting({
@@ -71,14 +62,14 @@ contract KaliDAOvesting is ReentrancyGuard {
                     account: accounts[i],
                     depositAmount: uint128(amounts[i]),
                     withdrawAmount: 0,
-                    rate: uint128(rate),
+                    rate: uint128(rates[i]),
                     startTime: uint64(startTimes[i]),
                     endTime: uint64(endTimes[i])
                 });
             }
         }
 
-        emit ExtensionSet(msg.sender, accounts, amounts, startTimes, endTimes);
+        emit ExtensionSet(msg.sender, accounts, amounts, rates, startTimes, endTimes);
     }
 
     function callExtension(

@@ -73,13 +73,19 @@ export default function Dashboard() {
   }
 
   return (
-    <Grid>
+    <>
+    <Reload reload={reloadDao} />
+    <Grid
+      gap={5}
+      templateColumns={{
+        sm: "repeat(1, 1fr)",
+        md: "repeat(2, 1fr)",
+        lg: "repeat(2, 1fr)",
+      }}>
       {dao == null ? (
         "Loading . . ."
       ) : (
         <>
-          <Reload reload={reloadDao} />
-          <Divider />
           {Object.entries(dashboardHelper).map(([k, v]) => (
             <Box
               key={`component-${k}`}
@@ -101,5 +107,6 @@ export default function Dashboard() {
         </>
       )}
     </Grid>
+    </>
   );
 }

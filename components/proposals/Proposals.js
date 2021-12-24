@@ -26,12 +26,17 @@ export default function Proposals(props) {
 
   async function fetchData() {
     value.setLoading(true);
-    let abi = require("../../abi/KaliDAO.json");
-    let instance = new web3.eth.Contract(abi, address);
-    let proposals_ = await fetchProposals(instance, address, web3, chainId, dao);
-    value.setProposals(proposals_);
-    console.log(proposals_);
-    value.setLoading(false);
+    try {
+      let abi = require("../../abi/KaliDAO.json");
+      let instance = new web3.eth.Contract(abi, address);
+      let proposals_ = await fetchProposals(instance, address, web3, chainId, dao);
+      value.setProposals(proposals_);
+      console.log(proposals_);
+      value.setLoading(false);
+    } catch(e) {
+      value.toast(e);
+      value.setLoading(false);
+    }
   }
 
   const reloadProposals = async() => {

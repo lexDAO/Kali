@@ -33,73 +33,69 @@ export default function SetRedemption() {
     event.preventDefault();
     value.setLoading(true);
 
-    if (account === null) {
-      alert("connect");
-    } else {
+    try {
+      let object = event.target;
+
+      var array = [];
+      for (let i = 0; i < object.length; i++) {
+        array[object[i].name] = object[i].value;
+        console.log(object[i].value)
+      }
+
+      var {
+        description_,
+        account_,
+        proposalType_,
+        redemptionStart_,
+      } = array; // this must contain any inputs from custom forms
+      console.log(array)
+
+      var amount_ = 0;
+
+      if (dao["extensions"]["redemption"] == null) {
+        amount_ = 1; // prevent toggling extension back off
+      }
+      console.log("amount:" + amount_);
+
+      const tokenArray = [];
+      for(var i=0; i < tokens.length; i++) {
+        if(checked[i]==true) {
+          tokenArray.push(tokens[i]["address"])
+        }
+      }
+
+      console.log(tokenArray);
+
+      redemptionStart_ = new Date(redemptionStart_).getTime() / 1000;
+
+      const payload_ = web3.eth.abi.encodeParameters(
+        ["address[]", "uint256"],
+        [tokenArray, redemptionStart_]
+      );
+      console.log(payload_);
+
+      const instance = new web3.eth.Contract(abi, address);
+
       try {
-        let object = event.target;
-
-        var array = [];
-        for (let i = 0; i < object.length; i++) {
-          array[object[i].name] = object[i].value;
-          console.log(object[i].value)
-        }
-
-        var {
-          description_,
-          account_,
-          proposalType_,
-          redemptionStart_,
-        } = array; // this must contain any inputs from custom forms
-        console.log(array)
-
-        var amount_ = 0;
-
-        if (dao["extensions"]["redemption"] == null) {
-          amount_ = 1; // prevent toggling extension back off
-        }
-        console.log("amount:" + amount_);
-
-        const tokenArray = [];
-        for(var i=0; i < tokens.length; i++) {
-          if(checked[i]==true) {
-            tokenArray.push(tokens[i]["address"])
-          }
-        }
-
-        console.log(tokenArray);
-
-        redemptionStart_ = new Date(redemptionStart_).getTime() / 1000;
-
-        const payload_ = web3.eth.abi.encodeParameters(
-          ["address[]", "uint256"],
-          [tokenArray, redemptionStart_]
-        );
-        console.log(payload_);
-
-        const instance = new web3.eth.Contract(abi, address);
-
-        try {
-          let result = await instance.methods
-            .propose(
-              proposalType_,
-              description_,
-              [account_],
-              [amount_],
-              [payload_]
-            )
-            .send({ from: account });
-          value.setVisibleView(1);
-        } catch (e) {
-          alert("send-transaction");
-          value.setLoading(false);
-          console.log(e);
-        }
+        let result = await instance.methods
+          .propose(
+            proposalType_,
+            description_,
+            [account_],
+            [amount_],
+            [payload_]
+          )
+          .send({ from: account });
+        value.setVisibleView(1);
       } catch (e) {
-        alert("send-transaction");
+        value.toast(e);
         value.setLoading(false);
         console.log(e);
       }
+    } catch (e) {
+      value.toast(e);
+      value.setLoading(false);
+      console.log(e);
     }
 
     value.setLoading(false);

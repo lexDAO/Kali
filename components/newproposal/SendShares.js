@@ -41,60 +41,56 @@ export default function SendShares() {
   const submitProposal = async (values) => {
     value.setLoading(true);
 
-    if (account === null) {
-      alert("connect");
-    } else {
+    try {
+      var { description_, recipients } = values; // this must contain any inputs from custom forms
+      console.log(values);
+      let amounts_ = [];
+      for (let i = 0; i < recipients.length; i++) {
+        amounts_.push(toDecimals(recipients[i].share, 18).toString());
+      }
+      console.log("Shares Array", amounts_);
+
+      // voters ENS check
+      let accounts_ = [];
+      for (let i = 0; i < recipients.length; i++) {
+        accounts_.push(recipients[i].address);
+      }
+      console.log("Voters Array", accounts_);
+
+      const proposalType_ = 0;
+
+      let payloads_ = [];
+      for (let i = 0; i < recipients.length; i++) {
+        payloads_.push("0x");
+      }
+      console.log(payloads_);
+      console.log(
+        proposalType_,
+        description_,
+        accounts_,
+        amounts_,
+        payloads_
+      );
+      const instance = new web3.eth.Contract(abi, address);
+
       try {
-        var { description_, recipients } = values; // this must contain any inputs from custom forms
-        console.log(values);
-        let amounts_ = [];
-        for (let i = 0; i < recipients.length; i++) {
-          amounts_.push(toDecimals(recipients[i].share, 18).toString());
-        }
-        console.log("Shares Array", amounts_);
-
-        // voters ENS check
-        let accounts_ = [];
-        for (let i = 0; i < recipients.length; i++) {
-          accounts_.push(recipients[i].address);
-        }
-        console.log("Voters Array", accounts_);
-
-        const proposalType_ = 0;
-
-        let payloads_ = [];
-        for (let i = 0; i < recipients.length; i++) {
-          payloads_.push("0x");
-        }
-        console.log(payloads_);
-        console.log(
-          proposalType_,
-          description_,
-          accounts_,
-          amounts_,
-          payloads_
-        );
-        const instance = new web3.eth.Contract(abi, address);
-
-        try {
-          let result = await instance.methods
-            .propose(
-              proposalType_,
-              description_,
-              accounts_,
-              amounts_,
-              payloads_
-            )
-            .send({ from: account });
-          value.setVisibleView(1);
-        } catch (e) {
-          alert("send-transaction");
-          value.setLoading(false);
-        }
+        let result = await instance.methods
+          .propose(
+            proposalType_,
+            description_,
+            accounts_,
+            amounts_,
+            payloads_
+          )
+          .send({ from: account });
+        value.setVisibleView(1);
       } catch (e) {
-        alert("send-transaction");
+        value.toast(e);
         value.setLoading(false);
       }
+    } catch (e) {
+      value.toast(e);
+      value.setLoading(false);
     }
 
     value.setLoading(false);

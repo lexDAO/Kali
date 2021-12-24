@@ -27,38 +27,34 @@ export default function Redemption() {
     event.preventDefault();
     value.setLoading(true);
 
-    if (account === null) {
-      alert("connect");
-    } else {
+    try {
+      let object = event.target;
+      var array = [];
+      for (let i = 0; i < object.length; i++) {
+        array[object[i].name] = object[i].value;
+      }
+
+      var { amount_ } = array; // this must contain any inputs from custom forms
+
+      amount_ = web3.utils.toWei(amount_);
+
+      const calldata = "0x";
+      console.log(calldata);
+
+      const instance = new web3.eth.Contract(abi, address);
+
       try {
-        let object = event.target;
-        var array = [];
-        for (let i = 0; i < object.length; i++) {
-          array[object[i].name] = object[i].value;
-        }
-
-        var { amount_ } = array; // this must contain any inputs from custom forms
-
-        amount_ = web3.utils.toWei(amount_);
-
-        const calldata = "0x";
-        console.log(calldata);
-
-        const instance = new web3.eth.Contract(abi, address);
-
-        try {
-          let result = await instance.methods
-            .callExtension(extAddress, amount_, calldata)
-            .send({ from: account });
-          value.setVisibleView(1);
-        } catch (e) {
-          alert("send-transaction");
-          value.setLoading(false);
-        }
+        let result = await instance.methods
+          .callExtension(extAddress, amount_, calldata)
+          .send({ from: account });
+        value.setVisibleView(1);
       } catch (e) {
-        alert("send-transaction");
+        value.toast(e);
         value.setLoading(false);
       }
+    } catch (e) {
+      value.toast(e);
+      value.setLoading(false);
     }
 
     value.setLoading(false);

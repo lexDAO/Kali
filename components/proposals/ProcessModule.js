@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import AppContext from "../../context/AppContext";
 import { Input, Button } from "@chakra-ui/react";
+import { createToast } from "../../utils/toast";
 
 export default function ProcessModule(props) {
   const value = useContext(AppContext);
@@ -16,9 +17,7 @@ export default function ProcessModule(props) {
     event.preventDefault();
     value.setLoading(true);
 
-    if (account === null) {
-      alert("connect");
-    } else {
+    try {
       let object = event.target;
       var array = [];
       for (let i = 0; i < object.length; i++) {
@@ -35,9 +34,12 @@ export default function ProcessModule(props) {
           .send({ from: account });
 
       } catch (e) {
-        alert("send-transaction");
+        value.toast(e);
         value.setLoading(false);
       }
+    } catch(e) {
+      value.toast(e);
+      value.setLoading(false);
     }
 
     value.setLoading(false);

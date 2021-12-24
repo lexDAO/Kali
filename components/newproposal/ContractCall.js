@@ -29,8 +29,8 @@ export default function ContractCall() {
       }
       setFunctions(functions_);
       setInputs(null);
-    } catch (error) {
-      alert("invalid-json");
+    } catch (e) {
+      value.toast(e);
     }
   };
 
@@ -65,68 +65,64 @@ export default function ContractCall() {
     event.preventDefault();
     value.setLoading(true);
 
-    if (account === null) {
-      alert("connect");
-    } else {
+    try {
+      let object = event.target;
+      var array = [];
+      for (let i = 0; i < object.length; i++) {
+        array[object[i].name] = object[i].value;
+      }
+
+      var {
+        proposalType_,
+        description_,
+        account_,
+        amount_,
+        abi_,
+        functionName,
+        inputParams,
+        inputs,
+      } = array; // this must contain any inputs from custom forms
+
+      console.log(array);
+
+      abi_ = JSON.parse(abi_);
+
+      inputs = JSON.parse(inputs);
+      inputParams = JSON.parse(inputParams);
+      console.log("test");
+      console.log(abi_);
+      console.log(inputs);
+      console.log(inputParams);
+
+      var payload_ = web3.eth.abi.encodeFunctionCall(
+        {
+          name: functionName,
+          type: "function",
+          inputs: inputs,
+        },
+        inputParams
+      );
+      console.log(payload_);
+      const instance = new web3.eth.Contract(abi, address);
+
       try {
-        let object = event.target;
-        var array = [];
-        for (let i = 0; i < object.length; i++) {
-          array[object[i].name] = object[i].value;
-        }
-
-        var {
-          proposalType_,
-          description_,
-          account_,
-          amount_,
-          abi_,
-          functionName,
-          inputParams,
-          inputs,
-        } = array; // this must contain any inputs from custom forms
-
-        console.log(array);
-
-        abi_ = JSON.parse(abi_);
-
-        inputs = JSON.parse(inputs);
-        inputParams = JSON.parse(inputParams);
-        console.log("test");
-        console.log(abi_);
-        console.log(inputs);
-        console.log(inputParams);
-
-        var payload_ = web3.eth.abi.encodeFunctionCall(
-          {
-            name: functionName,
-            type: "function",
-            inputs: inputs,
-          },
-          inputParams
-        );
-        console.log(payload_);
-        const instance = new web3.eth.Contract(abi, address);
-
-        try {
-          let result = await instance.methods
-            .propose(
-              proposalType_,
-              description_,
-              [account_],
-              [amount_],
-              [payload_]
-            )
-            .send({ from: account });
-          value.setVisibleView(1);
-        } catch (e) {
-          alert("send-transaction");
-          value.setLoading(false);
-        }
+        let result = await instance.methods
+          .propose(
+            proposalType_,
+            description_,
+            [account_],
+            [amount_],
+            [payload_]
+          )
+          .send({ from: account });
+        value.setVisibleView(1);
       } catch (e) {
-        alert("send-transaction");
+        value.toast(e);
         value.setLoading(false);
       }
+    } catch (e) {
+      value.toast(e);
+      value.setLoading(false);
     }
 
     value.setLoading(false);

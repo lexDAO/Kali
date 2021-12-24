@@ -11,43 +11,44 @@ export default function VotingModule(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const vote = async () => {
-    if (!account) {
-      alert("connect");
-    } else {
+
       event.preventDefault();
       value.setLoading(true);
 
-      let object = event.target;
-      var array = [];
-      for (let i = 0; i < object.length; i++) {
-        array[object[i].name] = object[i].value;
-      }
-
-      const { id, approval } = array;
-
       try {
-        // * first, see if they already voted * //
-        const instance = new web3.eth.Contract(abi, address);
-        const voted = await instance.methods.voted(id, account).call();
-        if (voted == true) {
-          alert("You already voted");
-        } else {
-          try {
-            let result = await instance.methods
-              .vote(id, parseInt(approval))
-              .send({ from: account });
-          } catch (e) {
-            alert("send-transaction");
-            value.setLoading(false);
-          }
+        let object = event.target;
+        var array = [];
+        for (let i = 0; i < object.length; i++) {
+          array[object[i].name] = object[i].value;
         }
-      } catch (e) {
-        alert("send-transaction");
+
+        const { id, approval } = array;
+
+        try {
+          // * first, see if they already voted * //
+          const instance = new web3.eth.Contract(abi, address);
+          const voted = await instance.methods.voted(id, account).call();
+          if (voted == true) {
+            alert("You already voted");
+          } else {
+            try {
+              let result = await instance.methods
+                .vote(id, parseInt(approval))
+                .send({ from: account });
+            } catch (e) {
+              value.toast(e);
+              value.setLoading(false);
+            }
+          }
+        } catch (e) {
+          value.toast(e);
+          value.setLoading(false);
+        }
+      } catch(e) {
+        value.toast(e);
         value.setLoading(false);
       }
-
       value.setLoading(false);
-    }
   };
 
   return (

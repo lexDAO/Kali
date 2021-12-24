@@ -5,6 +5,7 @@ import Web3 from "web3";
 import { useState, useEffect } from "react";
 import theme from "../styles/theme";
 const abi = require("../abi/KaliDAO.json");
+import { createToast } from "../utils/toast";
 
 function MyApp({ Component, pageProps }) {
   const [web3, setWeb3] = useState(infura[0]);
@@ -82,6 +83,10 @@ function MyApp({ Component, pageProps }) {
     window.location.reload();
   };
 
+  const toast = (props) => {
+    createToast(props);
+  }
+
   return (
     <ChakraProvider theme={theme}>
       <AppContext.Provider
@@ -105,7 +110,8 @@ function MyApp({ Component, pageProps }) {
           connect: connect,
           setVisibleView: setVisibleView,
           setDao: setDao,
-          setProposals: setProposals
+          setProposals: setProposals,
+          toast: toast
         }}
       >
         <Component {...pageProps} />

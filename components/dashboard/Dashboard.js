@@ -26,17 +26,18 @@ const proposalTypes = require("../../constants/params");
 
 export default function Dashboard() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, chainId, visibleView, dao, address } = value.state;
+  const { web3, loading, account, abi, chainId, visibleView, dao, address } =
+    value.state;
 
-  const reloadDao = async() => {
+  const reloadDao = async () => {
     fetchData();
-  }
+  };
 
   useEffect(() => {
-    if(!address) {
+    if (!address) {
       return;
     } else {
-      if(!dao) {
+      if (!dao) {
         fetchData();
       }
     }
@@ -47,24 +48,27 @@ export default function Dashboard() {
       return;
     } else {
       value.setLoading(true);
+      try {
+        const instance = new web3.eth.Contract(abi, address);
 
-      const instance = new web3.eth.Contract(abi, address);
+        const factory = factoryInstance(addresses[chainId]["factory"], web3);
 
-      const factory = factoryInstance(addresses[chainId]["factory"], web3);
+        const { dao_ } = await fetchDaoInfo(
+          instance,
+          factory,
+          address,
+          web3,
+          chainId,
+          account
+        );
 
-      const { dao_ } = await fetchDaoInfo(
-        instance,
-        factory,
-        address,
-        web3,
-        chainId,
-        account
-      );
-
-      value.setDao(dao_);
-      console.log(dao_);
-      value.setLoading(false);
-      console.log(dashboardHelper)
+        value.setDao(dao_);
+        console.log(dao_);
+        value.setLoading(false);
+      } catch (e) {
+        value.toast(e);
+        value.setLoading(false);
+      }
     }
   }
 
@@ -76,8 +80,7 @@ export default function Dashboard() {
         <>
           <Reload reload={reloadDao} />
           <Divider />
-          {Object.entries(dashboardHelper).map(([k, v]) =>
-
+          {Object.entries(dashboardHelper).map(([k, v]) => (
             <Box
               key={`component-${k}`}
               p={5}
@@ -89,11 +92,12 @@ export default function Dashboard() {
               padding="25px"
               margin="5px"
             >
-              <Text fontSize="xl"><b>{dashboardHelper[k]["title"]}</b></Text>
+              <Text fontSize="xl">
+                <b>{dashboardHelper[k]["title"]}</b>
+              </Text>
               {dashboardHelper[k]["component"]}
             </Box>
-
-          )}
+          ))}
         </>
       )}
     </Grid>

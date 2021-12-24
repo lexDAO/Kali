@@ -30,9 +30,7 @@ export default function Tribute() {
   const extAddress = dao["extensions"]["crowdsale"]["address"];
 
   const approveSpend = async () => {
-    if (account === null) {
-      alert("connect");
-    } else {
+    try {
       value.setLoading(true);
       let amt_ = toDecimals(amt, decimals).toString(); // toWei() won't work for tokens with less than 18 decimals
       const abi_ = require("../../abi/ERC20.json");
@@ -41,6 +39,8 @@ export default function Tribute() {
         .approve(extAddress, amt_)
         .send({ from: account });
       value.setLoading(false);
+    } catch(e) {
+      value.toast(e);
     }
   };
 
@@ -48,42 +48,38 @@ export default function Tribute() {
     event.preventDefault();
     value.setLoading(true);
 
-    if (account === null) {
-      alert("connect");
-    } else {
+    try {
+      let object = event.target;
+      var array = [];
+      for (let i = 0; i < object.length; i++) {
+        array[object[i].name] = object[i].value;
+      }
+
+      var { amount_ } = array; // this must contain any inputs from custom forms
+
+      amount_ = toDecimals(amount_, decimals).toString();
+
+      var value_ = 0;
+      if (purchaseToken == "0x0000000000000000000000000000000000000000") {
+        value_ = amount_;
+      }
+
+      const calldata = "0x";
+
+      const instance = new web3.eth.Contract(abi, address);
+
       try {
-        let object = event.target;
-        var array = [];
-        for (let i = 0; i < object.length; i++) {
-          array[object[i].name] = object[i].value;
-        }
-
-        var { amount_ } = array; // this must contain any inputs from custom forms
-
-        amount_ = toDecimals(amount_, decimals).toString();
-
-        var value_ = 0;
-        if (purchaseToken == "0x0000000000000000000000000000000000000000") {
-          value_ = amount_;
-        }
-
-        const calldata = "0x";
-
-        const instance = new web3.eth.Contract(abi, address);
-
-        try {
-          let result = await instance.methods
-            .callExtension(extAddress, amount_, calldata)
-            .send({ from: account, value: value_ });
-          value.setVisibleView(1);
-        } catch (e) {
-          alert("send-transaction");
-          value.setLoading(false);
-        }
+        let result = await instance.methods
+          .callExtension(extAddress, amount_, calldata)
+          .send({ from: account, value: value_ });
+        value.setVisibleView(1);
       } catch (e) {
-        alert("send-transaction");
+        value.toast(e);
         value.setLoading(false);
       }
+    } catch (e) {
+      value.toast(e);
+      value.setLoading(false);
     }
 
     value.setLoading(false);

@@ -21,73 +21,69 @@ export default function SetCrowdsale() {
     event.preventDefault();
     value.setLoading(true);
 
-    if (account === null) {
-      alert("connect");
-    } else {
-      try {
-        let object = event.target;
-        var array = [];
-        for (let i = 0; i < object.length; i++) {
-          array[object[i].name] = object[i].value;
-        }
+    try {
+      let object = event.target;
+      var array = [];
+      for (let i = 0; i < object.length; i++) {
+        array[object[i].name] = object[i].value;
+      }
 
-        var {
-          description_,
-          account_,
-          proposalType_,
+      var {
+        description_,
+        account_,
+        proposalType_,
+        purchaseToken_,
+        purchaseMultiplier_,
+        purchaseLimit_,
+        saleEnds_,
+      } = array; // this must contain any inputs from custom forms
+
+      saleEnds_ = new Date(saleEnds_).getTime() / 1000;
+
+      const listId_ = 0;
+
+      var amount_ = 0;
+
+      if (dao["extensions"]["crowdsale"] == null) {
+        amount_ = 1; // prevent toggling extension back off
+      }
+
+      purchaseLimit_ = web3.utils.toWei(purchaseLimit_);
+
+      const payload_ = web3.eth.abi.encodeParameters(
+        ["uint256", "address", "uint8", "uint96", "uint32"],
+        [
+          listId_,
           purchaseToken_,
           purchaseMultiplier_,
           purchaseLimit_,
           saleEnds_,
-        } = array; // this must contain any inputs from custom forms
+        ]
+      );
+      console.log(payload_);
 
-        saleEnds_ = new Date(saleEnds_).getTime() / 1000;
+      const instance = new web3.eth.Contract(abi, address);
 
-        const listId_ = 0;
-
-        var amount_ = 0;
-
-        if (dao["extensions"]["crowdsale"] == null) {
-          amount_ = 1; // prevent toggling extension back off
-        }
-
-        purchaseLimit_ = web3.utils.toWei(purchaseLimit_);
-
-        const payload_ = web3.eth.abi.encodeParameters(
-          ["uint256", "address", "uint8", "uint96", "uint32"],
-          [
-            listId_,
-            purchaseToken_,
-            purchaseMultiplier_,
-            purchaseLimit_,
-            saleEnds_,
-          ]
-        );
-        console.log(payload_);
-
-        const instance = new web3.eth.Contract(abi, address);
-
-        try {
-          let result = await instance.methods
-            .propose(
-              proposalType_,
-              description_,
-              [account_],
-              [amount_],
-              [payload_]
-            )
-            .send({ from: account });
-          value.setVisibleView(1);
-        } catch (e) {
-          alert("send-transaction");
-          value.setLoading(false);
-          console.log(e);
-        }
+      try {
+        let result = await instance.methods
+          .propose(
+            proposalType_,
+            description_,
+            [account_],
+            [amount_],
+            [payload_]
+          )
+          .send({ from: account });
+        value.setVisibleView(1);
       } catch (e) {
-        alert("send-transaction");
+        value.toast(e);
         value.setLoading(false);
         console.log(e);
       }
+    } catch (e) {
+      value.toast(e);
+      value.setLoading(false);
+      console.log(e);
     }
 
     value.setLoading(false);

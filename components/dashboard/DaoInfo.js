@@ -25,7 +25,7 @@ export default function DaoInfo() {
     </Text>
 
     <HStack>
-      <Text isTruncated>Docs: {dao["docs"]}</Text>
+      <Text>Docs: {dao["docs"]}</Text>
       <Link href={`${dao["docs"]}`}>
         <Icon as={BsFillArrowUpRightSquareFill} />
       </Link>

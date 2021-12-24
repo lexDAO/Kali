@@ -25,43 +25,39 @@ export default function Extensions() {
     event.preventDefault();
     value.setLoading(true);
 
-    if (account === null) {
-      alert("connect");
-    } else {
+    try {
+      let object = event.target;
+      var array = [];
+      for (let i = 0; i < object.length; i++) {
+        array[object[i].name] = object[i].value;
+      }
+
+      var { description_, account_, proposalType_ } = array; // this must contain any inputs from custom forms
+
+      const payload_ = Array(0);
+
+      const instance = new web3.eth.Contract(abi, address);
+
+      const amount_ = 0;
+
       try {
-        let object = event.target;
-        var array = [];
-        for (let i = 0; i < object.length; i++) {
-          array[object[i].name] = object[i].value;
-        }
-
-        var { description_, account_, proposalType_ } = array; // this must contain any inputs from custom forms
-
-        const payload_ = Array(0);
-
-        const instance = new web3.eth.Contract(abi, address);
-
-        const amount_ = 0;
-
-        try {
-          let result = await instance.methods
-            .propose(
-              proposalType_,
-              description_,
-              [account_],
-              [amount_],
-              [payload_]
-            )
-            .send({ from: account });
-          value.setVisibleView(1);
-        } catch (e) {
-          alert("send-transaction");
-          value.setLoading(false);
-        }
+        let result = await instance.methods
+          .propose(
+            proposalType_,
+            description_,
+            [account_],
+            [amount_],
+            [payload_]
+          )
+          .send({ from: account });
+        value.setVisibleView(1);
       } catch (e) {
-        alert("send-transaction");
+        value.toast(e);
         value.setLoading(false);
       }
+    } catch (e) {
+      value.toast(e);
+      value.setLoading(false);
     }
 
     value.setLoading(false);

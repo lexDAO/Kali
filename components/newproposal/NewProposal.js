@@ -29,13 +29,13 @@ export default function NewProposal(props) {
   const ProposalTile = (props) => {
     return (
       <LinkBox
-        bgGradient="linear(to-br, kali.400, kali.100)"
+        //bgGradient="linear(to-br, kali.400, kali.100)"
         p={5}
         m={2}
         borderRadius="2xl"
-        boxShadow="dark-lg"
+        boxShadow="lg"
         _hover={{
-          bgGradient: "linear(to-br, kali.100, kali.400)",
+          bgGradient: "linear(to-br, kali.600, kali.700)",
         }}
       >
         <LinkOverlay href="#" onClick={() => setMenuItem(props.id)}>

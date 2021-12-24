@@ -30,10 +30,11 @@ export default function NewProposal(props) {
     return (
       <LinkBox
         //bgGradient="linear(to-br, kali.400, kali.100)"
+        border="1px solid"
         p={5}
         m={2}
         borderRadius="2xl"
-        boxShadow="lg"
+        //boxShadow="lg"
         _hover={{
           bgGradient: "linear(to-br, kali.600, kali.700)",
         }}

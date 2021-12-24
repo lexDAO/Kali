@@ -2,7 +2,6 @@
 
 pragma solidity >=0.8.4;
 
-import '../../libraries/SafeTransferLib.sol';
 import '../../utils/ReentrancyGuard.sol';
 
 /// @notice Vesting contract for KaliDAO tokens.

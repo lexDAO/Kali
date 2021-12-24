@@ -88,6 +88,10 @@ A DAO can allow members to burn their tokens to claim their fair share of DAO ca
 
 Users can call this extension to make a proposal to a DAO with an escrowed sum of ETH, tokens or NFT, familiar to Moloch-style tribute offerings. This extension is dissimilar to others, in that it does not offer immediate updates to membership balances, but merely adds an economic element to normal proposals that must be approved by existing members.
 
+### [Vesting](./contracts/extensions/vesting)
+
+DAO tokens can be scheduled for vesting, as well, to allow founders and other DAO stakeholders to have predictable lockups of their voting weight.
+
 ## TX Batching
 
 Proposals support batching for membership (`MINT`/`BURN`) so that groups of accounts can be updated, as well as for `EXTENSION` external calls, so that complex contract interactions can be arranged, such as approving and executing DeFi positions.

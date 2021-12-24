@@ -6,13 +6,17 @@ import '../../utils/ReentrancyGuard.sol';
 
 /// @notice Vesting contract for KaliDAO tokens.
 contract KaliDAOvesting is ReentrancyGuard {
-    using SafeTransferLib for address;
-
-    event ExtensionSet(address indexed dao, address[] accounts, uint256[] amounts, uint256[] deadlines);
+    event ExtensionSet(address indexed dao, address[] accounts, uint256[] amounts, uint256[] startTimes, uint256[] endTimes);
 
     event ExtensionCalled(address indexed dao, uint256 vestingId, address indexed member, uint256 indexed amountOut);
 
     error NoArrayParity();
+
+    error InvalidTimespan();
+
+    error InsufficientAmount();
+
+    error AmountNotSpanMultiple();
 
     error NotDAO();
 
@@ -29,34 +33,52 @@ contract KaliDAOvesting is ReentrancyGuard {
     struct Vesting {
         address dao;
         address account;
-        uint256 amount;
-        uint256 deadline;
+        uint128 depositAmount;
+        uint128 withdrawAmount;
+        uint128 rate;
+        uint64 startTime;
+        uint64 endTime;
     }
 
     function setExtension(bytes calldata extensionData) public nonReentrant virtual {
-        (address[] memory accounts, uint256[] memory amounts, uint256[] memory deadlines) 
-            = abi.decode(extensionData, (address[], uint256[], uint256[]));
+        (address[] memory accounts, uint256[] memory amounts, uint256[] memory startTimes, uint256[] memory endTimes) 
+            = abi.decode(extensionData, (address[], uint256[], uint256[], uint256[]));
         
-        if (accounts.length != amounts.length || amounts.length != deadlines.length) revert NoArrayParity();
+        if (accounts.length != amounts.length 
+            || amounts.length != startTimes.length 
+            || startTimes.length != endTimes.length) 
+            revert NoArrayParity();
 
         // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits,
+        // and `timeDifference` is checked by reversion
         unchecked {
             for (uint256 i; i < accounts.length; i++) {
-                uint256 vestingId = vestingCount;
+                if (startTimes[i] > endTimes[i]) revert InvalidTimespan();
+
+                uint256 timeDifference = endTimes[i] - startTimes[i];
+
+                if (amounts[i] > timeDifference) revert InsufficientAmount();
+
+                if (amounts[i] % timeDifference != 0) revert AmountNotSpanMultiple();
+
+                uint256 rate = amounts[i] / timeDifference;
+
+                uint256 vestingId = vestingCount++;
 
                 vestings[vestingId] = Vesting({
                     dao: msg.sender,
                     account: accounts[i],
-                    amount: amounts[i],
-                    deadline: deadlines[i]
+                    depositAmount: uint128(amounts[i]),
+                    withdrawAmount: 0,
+                    rate: uint128(rate),
+                    startTime: uint64(startTimes[i]),
+                    endTime: uint64(endTimes[i])
                 });
             }
-
-            vestingCount++;
         }
 
-        emit ExtensionSet(msg.sender, accounts, amounts, deadlines);
+        emit ExtensionSet(msg.sender, accounts, amounts, startTimes, endTimes);
     }
 
     function callExtension(
@@ -72,13 +94,19 @@ contract KaliDAOvesting is ReentrancyGuard {
 
         if (account != vest.account) revert NotVestee();
 
-        if (block.timestamp < vest.deadline) revert VestNotStarted();
+        if (block.timestamp < vest.startTime) revert VestNotStarted();
 
-        if (amount > vest.amount) revert VestExceeded();
+        unchecked {
+            uint256 timeDelta = block.timestamp - vest.startTime;
+
+            uint256 vesteeBalance = (vest.rate * timeDelta) - uint256(vest.withdrawAmount);
+
+            if (amount > vesteeBalance) revert VestExceeded();
+        }
 
         // this is safe as amount is checked in above reversion
         unchecked {
-            vest.amount -= amount;
+            vest.withdrawAmount += uint128(amount);
         }
 
         (mint, amountOut) = (true, amount);

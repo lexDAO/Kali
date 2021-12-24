@@ -58,7 +58,7 @@ contract KaliDAOvesting is ReentrancyGuard {
 
                 uint256 timeDifference = endTimes[i] - startTimes[i];
 
-                if (amounts[i] > timeDifference) revert InsufficientAmount();
+                if (amounts[i] < timeDifference) revert InsufficientAmount();
 
                 if (amounts[i] % timeDifference != 0) revert AmountNotSpanMultiple();
 
@@ -96,6 +96,7 @@ contract KaliDAOvesting is ReentrancyGuard {
 
         if (block.timestamp < vest.startTime) revert VestNotStarted();
 
+        // this is safe as timespan is checked in above reversion and withdrawable balance cannot exceed deposit
         unchecked {
             uint256 timeDelta = block.timestamp - vest.startTime;
 

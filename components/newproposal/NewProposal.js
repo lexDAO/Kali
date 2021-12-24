@@ -69,6 +69,8 @@ export default function NewProposal(props) {
 
   return (
     <>
+    {dao == null ? null :
+      <>
       <MobileView>
         <form>
           <Flex>
@@ -127,6 +129,8 @@ export default function NewProposal(props) {
           </Box>
         ) : null
       )}
+    </>
+    }
     </>
   );
 }

@@ -135,7 +135,7 @@ async function fetchMembers(instance) {
     let shares = await instance.methods.balanceOf(holder).call();
 
     if (shares > 0) {
-      holdersArray_.push([holder, shares]);
+      holdersArray_.push({member: holder, shares: shares});
     }
   }
 

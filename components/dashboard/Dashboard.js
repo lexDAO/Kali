@@ -90,7 +90,7 @@ export default function Dashboard() {
             <Box
               key={`component-${k}`}
               p={5}
-              w="100%"
+              w="450px"
               border="1px solid"
               border="1px solid"
               rounded="xl"

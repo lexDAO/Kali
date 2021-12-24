@@ -14,11 +14,15 @@ export default function Extensions() {
   const [ext, setExt] = useState();
 
   const handleChange = (e) => {
-    let propType_ = e.target.value;
-    setPropType(propType_);
-    let ext_ = addresses[chainId]["extensions"][propType_];
-    setExt(ext_);
-    console.log(ext_);
+    try {
+      let propType_ = e.target.value;
+      setPropType(propType_);
+      let ext_ = addresses[chainId]["extensions"][propType_];
+      setExt(ext_);
+      console.log(ext_);
+    } catch(e) {
+      value.toast(e)
+    }
   };
 
   const submitProposal = async (event) => {

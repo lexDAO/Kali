@@ -43,7 +43,12 @@ export default function Factory(props) {
     console.log("Form: ", values);
 
     value.setLoading(true);
-    const factory = factoryInstance(addresses[chainId]['factory'], web3);
+    let factory;
+    try {
+      factory = factoryInstance(addresses[chainId]['factory'], web3);
+    } catch(e) {
+      value.toast(e)
+    }
     const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0,0";
     const extensions = new Array(0);
     const extensionsData = new Array(0);
@@ -69,7 +74,7 @@ export default function Factory(props) {
         votersArray[i] = await web3.eth.ens
           .getAddress(votersArray[i])
           .catch(() => {
-            alert("ENS not found");
+            value.toast("ENS not found");
           });
       }
     }
@@ -124,7 +129,7 @@ export default function Factory(props) {
         query: { dao: dao },
       });
     } catch (e) {
-      alert(e);
+      value.toast(e);
       console.log(e);
     }
 

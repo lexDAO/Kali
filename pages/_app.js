@@ -48,8 +48,10 @@ function MyApp({ Component, pageProps }) {
         method: "eth_requestAccounts",
       });
       let metamask = new Web3(window.ethereum);
+      //let chainId_ =  await window.ethereum.request({ method: 'eth_chainId' });
       setWeb3(metamask);
       setAccount(accounts[0]);
+      //setChainId(parseInt(chainId_));
     } else {
       alert("please connect to wallet");
     }
@@ -80,7 +82,9 @@ function MyApp({ Component, pageProps }) {
   };
 
   const changeChain = async () => {
-    window.location.reload();
+    //let chainId_ =  await window.ethereum.request({ method: 'eth_chainId' });
+    //console.log(parseInt(chainId))
+    //setChainId(parseInt(chainId_));
   };
 
   const toast = (props) => {

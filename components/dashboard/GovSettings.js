@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
-import { Text } from "@chakra-ui/react";
+import { Text, UnorderedList, ListItem } from "@chakra-ui/react";
 import { convertVotingPeriod } from "../../utils/formatters";
 
 export default function GovSettings() {
@@ -8,13 +8,13 @@ export default function GovSettings() {
   const { dao } = value.state;
 
   return(
-    <>
-    <Text>Paused: {dao["token"]["paused"].toString()}</Text>
-    <Text>
+    <UnorderedList>
+    <ListItem>Paused: {dao["token"]["paused"].toString()}</ListItem>
+    <ListItem>
       Voting period: {convertVotingPeriod(dao["gov"]["votingPeriod"])}
-    </Text>
-    <Text>Quorum: {dao["gov"]["quorum"]}%</Text>
-    <Text>Supermajority: {dao["gov"]["supermajority"]}%</Text>
-    </>
+    </ListItem>
+    <ListItem>Quorum: {dao["gov"]["quorum"]}%</ListItem>
+    <ListItem>Supermajority: {dao["gov"]["supermajority"]}%</ListItem>
+    </UnorderedList>
   );
 }

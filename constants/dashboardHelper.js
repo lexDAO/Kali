@@ -2,6 +2,7 @@ import DaoInfo from "../components/dashboard/DaoInfo";
 import GovSettings from "../components/dashboard/GovSettings";
 import Treasury from "../components/dashboard/Treasury";
 import Extensions from "../components/dashboard/Extensions";
+import Members from "../components/dashboard/Members";
 
 export const dashboardHelper = [
   {
@@ -19,5 +20,9 @@ export const dashboardHelper = [
   {
     title: "Extensions",
     component: <Extensions />,
+  },
+  {
+    title: "Members",
+    component: <Members />,
   }
 ]

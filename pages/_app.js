@@ -6,11 +6,14 @@ import theme from "../styles/theme";
 const abi = require("../abi/KaliDAO.json");
 import { createToast } from "../utils/toast";
 import { checkNetwork } from "../utils/checkNetwork";
+import { getNetworkName } from "../utils/formatters";
+import { supportedChains } from "../constants/supportedChains";
 
 function MyApp({ Component, pageProps }) {
   const [web3, setWeb3] = useState(null);
   const [account, setAccount] = useState(null);
   const [chainId, setChainId] = useState(null);
+  const [daoChain, setDaoChain] = useState(null);
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(false);
   const [visibleView, setVisibleView] = useState(1);
@@ -40,34 +43,38 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     connectToInfura();
-
   }, [address]);
+
+  useEffect(() => {
+    if(chainId != null) {
+      isCorrectChain();
+    }
+  }, [chainId]);
 
   const connectToInfura = async () => {
     let result = await checkNetwork(address);
-    console.log("result of infura", result)
-    if(result['web3'] != null) {
-      setWeb3(result['web3']);
-      setChainId(result['chainId']);
-    }
+    setWeb3(result['web3']);
+    setDaoChain(result['chainId']);
+    setChainId(result['chainId']);
   }
 
   const connect = async () => {
-    console.log("connect");
-    if (
-      typeof window !== "undefined" &&
-      typeof window.ethereum !== "undefined"
-    ) {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      let metamask = new Web3(window.ethereum);
-      //let chainId_ =  await window.ethereum.request({ method: 'eth_chainId' });
-      setWeb3(metamask);
-      setAccount(accounts[0]);
-      //setChainId(parseInt(chainId_));
-    } else {
-      alert("please connect to wallet");
+    try {
+      if (
+        typeof window !== "undefined" &&
+        typeof window.ethereum !== "undefined"
+      ) {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        let metamask = new Web3(window.ethereum);
+        let chainId_ =  await window.ethereum.request({ method: 'eth_chainId' });
+        setWeb3(metamask);
+        setAccount(accounts[0]);
+        setChainId(parseInt(chainId_));
+      }
+    } catch(e) {
+      toast(e)
     }
   };
 
@@ -96,10 +103,29 @@ function MyApp({ Component, pageProps }) {
   };
 
   const changeChain = async () => {
-    //let chainId_ =  await window.ethereum.request({ method: 'eth_chainId' });
-    //console.log(parseInt(chainId))
-    //setChainId(parseInt(chainId_));
+    console.log("change chain")
+    let chainId_ =  await window.ethereum.request({ method: 'eth_chainId' });
+    setChainId(parseInt(chainId_));
   };
+
+  const isCorrectChain = async () => {
+    if(address != null) {
+      if(chainId != daoChain) {
+        let name = getNetworkName(daoChain);
+        toast("Please connect to the " + name + " network.");
+      }
+    } else {
+      var supported = false;
+      for(var i=0; i < supportedChains.length; i++) {
+        if(supportedChains[i]["chainId"]==chainId) {
+          supported = true;
+        }
+      }
+      if(supported == false) {
+        toast("This network is not currently supported.")
+      }
+    }
+  }
 
   const toast = (props) => {
     createToast(props);
@@ -113,6 +139,7 @@ function MyApp({ Component, pageProps }) {
             web3: web3,
             account: account,
             chainId: chainId,
+            daoChain: daoChain,
             loading: loading,
             address: address,
             abi: abi,
@@ -123,6 +150,7 @@ function MyApp({ Component, pageProps }) {
           setWeb3: setWeb3,
           setAccount: setAccount,
           setChainId: setChainId,
+          setDaoChain: setDaoChain,
           setLoading: setLoading,
           setAddress: setAddress,
           connect: connect,

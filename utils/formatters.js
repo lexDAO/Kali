@@ -1,5 +1,6 @@
 // functions to format data for display to user
 import { scientificNotation } from "../constants/numbers";
+import { supportedChains } from "../constants/supportedChains";
 
 export function convertVotingPeriod(seconds) {
   let time;
@@ -202,4 +203,15 @@ export function truncateAddress(account) {
   return account.substr(0, 5) +
   "..." +
   account.substr(account.length - 4, account.length);
+}
+
+export function getNetworkName(chainId) {
+
+  var networkName = "unsupported";
+  for(var i=0; i < supportedChains.length; i++) {
+    if(supportedChains[i]['chainId']==chainId) {
+      networkName = supportedChains[i]['name'];
+    }
+  }
+  return networkName;
 }

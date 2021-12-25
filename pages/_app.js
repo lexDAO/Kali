@@ -1,16 +1,16 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import AppContext from "../context/AppContext";
-import infura from "../utils/infura";
 import Web3 from "web3";
 import { useState, useEffect } from "react";
 import theme from "../styles/theme";
 const abi = require("../abi/KaliDAO.json");
 import { createToast } from "../utils/toast";
+import { checkNetwork } from "../utils/checkNetwork";
 
 function MyApp({ Component, pageProps }) {
-  const [web3, setWeb3] = useState(infura[0]);
+  const [web3, setWeb3] = useState(null);
   const [account, setAccount] = useState(null);
-  const [chainId, setChainId] = useState(infura[1]);
+  const [chainId, setChainId] = useState(null);
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(false);
   const [visibleView, setVisibleView] = useState(1);
@@ -37,6 +37,20 @@ function MyApp({ Component, pageProps }) {
       });
     }
   }, []);
+
+  useEffect(() => {
+    connectToInfura();
+
+  }, [address]);
+
+  const connectToInfura = async () => {
+    let result = await checkNetwork(address);
+    console.log("result of infura", result)
+    if(result['web3'] != null) {
+      setWeb3(result['web3']);
+      setChainId(result['chainId']);
+    }
+  }
 
   const connect = async () => {
     console.log("connect");

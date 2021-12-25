@@ -21,6 +21,7 @@ import { fetchDaoInfo } from "../../utils/fetchDaoInfo";
 import { addresses } from "../../constants/addresses";
 import { factoryInstance } from "../../eth/factory";
 import { dashboardHelper } from "../../constants/dashboardHelper";
+import { checkNetwork } from "../../utils/checkNetwork";
 
 const proposalTypes = require("../../constants/params");
 
@@ -34,41 +35,34 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    if (!address) {
-      return;
-    } else {
-      if (!dao) {
-        fetchData();
-      }
+    if (!dao) {
+      fetchData();
     }
-  }, [address]);
+  }, [chainId]);
 
   async function fetchData() {
-    if (!address) {
-      return;
-    } else {
-      value.setLoading(true);
-      try {
-        const instance = new web3.eth.Contract(abi, address);
+    value.setLoading(true);
 
-        const factory = factoryInstance(addresses[chainId]["factory"], web3);
+    try {
+      const instance = new web3.eth.Contract(abi, address);
 
-        const { dao_ } = await fetchDaoInfo(
-          instance,
-          factory,
-          address,
-          web3,
-          chainId,
-          account
-        );
+      const factory = factoryInstance(addresses[chainId]["factory"], web3);
 
-        value.setDao(dao_);
-        console.log(dao_);
-        value.setLoading(false);
-      } catch (e) {
-        value.toast(e);
-        value.setLoading(false);
-      }
+      const { dao_ } = await fetchDaoInfo(
+        instance,
+        factory,
+        address,
+        web3,
+        chainId,
+        account
+      );
+
+      value.setDao(dao_);
+      console.log(dao_);
+      value.setLoading(false);
+    } catch (e) {
+      value.toast(e);
+      value.setLoading(false);
     }
   }
 
@@ -82,7 +76,7 @@ export default function Dashboard() {
         md: "repeat(2, 1fr)",
         lg: "repeat(2, 1fr)",
       }}>
-      {dao == null ? (
+      {dao == null || web3 == undefined ? (
         "Loading . . ."
       ) : (
         <>

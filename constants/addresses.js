@@ -7,7 +7,7 @@ export const addresses =
       extensions: {
         tribute: "0xE490B0cF7feE153d93Aa200E9Ff7021aBe3df346",
         crowdsale: "0x4ED219Ef77EF8367649496b1D0876BC065ed1ecc",
-        redemption: "0x43709960A5b35d40B0C0836162B85e88b03FE3a5",
+        redemption: "0x4973670f38c98126F4cA1d74A92F7FE397d18F58",
       },
     },
   };

@@ -6,6 +6,7 @@ import { chakra, Center, Text, Grid, Button } from "@chakra-ui/react";
 import Layout from "../structure/Layout";
 import ProposalRow from "./ProposalRow";
 import Reload from "../elements/Reload";
+import ToggleProposals from "./ToggleProposals";
 import { proposalTypes, voteTypes } from "../../constants/params";
 import { fetchProposals } from "../../utils/fetchProposals";
 
@@ -43,12 +44,8 @@ export default function Proposals(props) {
     fetchData();
   }
 
-  const handleClick = () => {
-    if (toggle == "active") {
-      setToggle("pending");
-    } else {
-      setToggle("active");
-    }
+  const handleClick = (value) => {
+    setToggle(value);
   };
 
   const ProposalContainer = (props) => {
@@ -75,9 +72,7 @@ export default function Proposals(props) {
 
   return (
     <>
-      <Button onClick={handleClick}>
-        {toggle == 'active' ? "Show Unsponsored" : "Show Active"}
-      </Button>
+      <ToggleProposals handleClick={handleClick} toggle={toggle} />
       <Reload reload={reloadProposals} />
       {proposals != null ? (
         <ProposalContainer proposals={proposals[toggle]} />

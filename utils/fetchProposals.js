@@ -31,6 +31,8 @@ export async function fetchProposals(instance, address, web3, daoChain, dao) {
 
         proposal["id"] = i; // add solidity contract id to array
 
+        proposal["creationTime"] = creationTime; // integer
+
         proposal["expires"] = creationTime + votingPeriod; // add expiration date
 
         proposal["open"] = isOpen(votingPeriod, creationTime); // check if voting still open

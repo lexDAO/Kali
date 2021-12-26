@@ -31,13 +31,19 @@ export default function ProposalRow(props) {
   const value = useContext(AppContext);
   const { web3, loading } = value.state;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isExpired, setIsExpired] = useState(false); // updates dynamically
+  const [votingStarted, setVotingStarted] = useState(false);
+  const [isExpired, setIsExpired] = useState(false);
   const p = props["p"];
   const i = props["i"];
+  let now = Math.round(Date.now() / 1000);
+  let buffer = p["creationTime"] + 20;
 
   useEffect(() => {
-    if(p['open']==false) {
-      setIsExpired(true)
+    if (p["open"] == false) {
+      setIsExpired(true);
+    }
+    if (now >= buffer) {
+      setVotingStarted(true);
     }
   }, []);
 
@@ -66,7 +72,9 @@ export default function ProposalRow(props) {
             expires={p["expires"]}
             open={p["open"]}
             isExpired={isExpired}
+            setVotingStarted={setVotingStarted}
             setIsExpired={setIsExpired}
+            buffer={buffer}
           />
           <Progress
             width="100%"
@@ -79,10 +87,10 @@ export default function ProposalRow(props) {
 
           <Divider w="80%" align="center" />
           <HStack>
-            <Button key={p["id"]} onClick={onOpen}>
+            <Button key={p["id"]} onClick={onOpen} isDisabled={!votingStarted}>
               {isExpired == true ? "Details" : "Review & Vote"}
             </Button>
-            {isExpired==true && p["pending"] == false ? (
+            {isExpired == true && p["pending"] == false ? (
               <ProcessModule i={i} p={p} />
             ) : null}
             {p["pending"] == true ? <Sponsor i={i} p={p} /> : null}

@@ -12,8 +12,6 @@ export default function Timer(props) {
   var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    //console.log(time)
-
   useEffect(() => {
     const timer = setInterval(() => {
       setTime((distance) => distance - 1);
@@ -22,14 +20,16 @@ export default function Timer(props) {
     return () => {
       clearInterval(timer);
     };
-
   }, []);
 
   useEffect(() => {
-    if(distance <= 0 && stop==false) {
+    if (distance <= 0 && stop == false) {
       props.setIsExpired(true);
       setStop(true);
-      console.log("time", time)
+      console.log("time", time);
+    }
+    if (Math.round(now / 1000) >= props.buffer && stop == false) {
+      props.setVotingStarted(true);
     }
   }, [time]);
 

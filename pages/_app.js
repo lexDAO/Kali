@@ -53,11 +53,9 @@ function MyApp({ Component, pageProps }) {
 
   const connectToInfura = async () => {
     let result = await checkNetwork(address);
-    if(web3 == null) { // don't reset if user is coming from factory
-      setWeb3(result['web3']);
-      setDaoChain(result['chainId']);
-      setChainId(result['chainId']);
-    }
+    setWeb3(result['web3']);
+    setDaoChain(result['chainId']);
+    setChainId(result['chainId']);
   }
 
   const connect = async () => {

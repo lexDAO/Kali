@@ -34,6 +34,8 @@ export async function fetchDaoInfo(
 
   const balances = await fetchBalances(address, web3);
 
+  const ricardian = await fetchRicardian(address, web3, factory);
+
   const extensions = await fetchExtensions(
     instance,
     daoChain,
@@ -62,6 +64,7 @@ export async function fetchDaoInfo(
     docs,
     balances,
     extensions,
+    ricardian,
     members,
   };
 
@@ -206,4 +209,28 @@ async function fetchRedemption(web3, address, extAddress, balances) {
   };
 
   return details;
+}
+
+async function fetchRicardian(address, web3, factory) {
+  var ricardian = null;
+  const abi_ = require("../abi/RicardianLLC.json");
+  const address_ = await factory.methods.ricardianLLC().call();
+  const contract_ = new web3.eth.Contract(abi_, address_);
+  const events = await contract_.getPastEvents("Transfer", {
+    fromBlock: 0,
+    toBlock: "latest",
+  });
+  console.log(events)
+  let series;
+  for(var i=0; i < events.length; i++) {
+    let to = events[i]["returnValues"]["to"];
+    if(web3.utils.toChecksumAddress(to)==web3.utils.toChecksumAddress(address)) {
+      series = events[i]["returnValues"]["tokenId"];
+      const commonURI = await contract_.methods.commonURI().call();
+      const masterOperatingAgreement = await contract_.methods.masterOperatingAgreement().call();
+      const name = await contract_.methods.name().call();
+      ricardian = { series, commonURI, masterOperatingAgreement, name };
+    }
+  }
+  return ricardian;
 }

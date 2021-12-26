@@ -101,6 +101,8 @@ export default function Factory(props) {
       docs =
         "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/operating/DelawareOperatingAgreement.md";
     } else if (docs == "none") {
+      docs = "none";
+    } else if (docs=="ricardian") {
       docs = "";
     }
 
@@ -140,6 +142,7 @@ export default function Factory(props) {
     { key: "Code of Conduct", value: "COC" },
     { key: "UNA", value: "UNA" },
     { key: "LLC", value: "LLC" },
+    { key: "Ricardian LLC Series", value: "ricardian" },
     { key: "None", value: "none" },
   ];
 

@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity >=0.8.0;
+pragma solidity >=0.8.4;
 
 import '../../libraries/SafeTransferLib.sol';
 import './interfaces/IERC20minimal.sol';
 import '../../utils/ReentrancyGuard.sol';
 
-/// @notice Redemption contract that transfers registered tokens from DAO in proportion to burnt DAO tokens.
+/// @notice Redemption contract that transfers registered tokens from Kali DAO in proportion to burnt DAO tokens.
 contract KaliDAOredemption is ReentrancyGuard {
     using SafeTransferLib for address;
 
@@ -38,8 +38,7 @@ contract KaliDAOredemption is ReentrancyGuard {
         // if redeemables are already set, this call will be interpreted as reset
         if (redeemables[msg.sender].length != 0) delete redeemables[msg.sender];
         
-        // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        // cannot realistically overflow on human timescales
         unchecked {
             for (uint256 i; i < tokens.length; i++) {
                 redeemables[msg.sender].push(tokens[i]);
@@ -81,8 +80,7 @@ contract KaliDAOredemption is ReentrancyGuard {
     }
 
     function addTokens(address[] calldata tokens) public nonReentrant virtual {
-        // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        // cannot realistically overflow on human timescales
         unchecked {
             for (uint256 i; i < tokens.length; i++) {
                 redeemables[msg.sender].push(tokens[i]);

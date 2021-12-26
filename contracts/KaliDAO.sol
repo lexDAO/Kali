@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity >=0.8.0;
+pragma solidity >=0.8.4;
 
 import './KaliDAOtoken.sol';
 import './utils/Multicall.sol';
@@ -8,7 +8,7 @@ import './utils/NFThelper.sol';
 import './utils/ReentrancyGuard.sol';
 import './IKaliDAOextension.sol';
 
-/// @notice Simple gas-optimized DAO core module.
+/// @notice Simple gas-optimized Kali DAO core module.
 contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     /*///////////////////////////////////////////////////////////////
                             EVENTS

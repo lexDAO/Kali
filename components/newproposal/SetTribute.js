@@ -9,7 +9,7 @@ import NumInputField from "../elements/NumInputField";
 
 export default function SetTribute() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address, chainId, balances } =
+  const { web3, loading, account, abi, address, chainId, balances, daoChain } =
     value.state;
 
   const updateExtType = (e) => {
@@ -71,7 +71,7 @@ export default function SetTribute() {
         <Input
           type="hidden"
           name="account_"
-          value={addresses[chainId]["extensions"]["tribute"]}
+          value={addresses[daoChain]["extensions"]["tribute"]}
         />
 
         <Button type="submit">Submit Proposal</Button>

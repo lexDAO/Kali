@@ -8,7 +8,7 @@ import NumInputField from "../elements/NumInputField";
 
 export default function Extensions() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address, chainId, balances } =
+  const { web3, loading, account, abi, address, chainId, balances, daoChain } =
     value.state;
   const [propType, setPropType] = useState("tribute");
   const [ext, setExt] = useState();
@@ -17,7 +17,7 @@ export default function Extensions() {
     try {
       let propType_ = e.target.value;
       setPropType(propType_);
-      let ext_ = addresses[chainId]["extensions"][propType_];
+      let ext_ = addresses[daoChain]["extensions"][propType_];
       setExt(ext_);
       console.log(ext_);
     } catch(e) {

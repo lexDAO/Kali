@@ -9,7 +9,7 @@ export async function fetchDaoInfo(
   factory,
   address,
   web3,
-  chainId,
+  daoChain,
   account
 ) {
   const name = await instance.methods.name().call();
@@ -36,7 +36,7 @@ export async function fetchDaoInfo(
 
   const extensions = await fetchExtensions(
     instance,
-    chainId,
+    daoChain,
     web3,
     address,
     balances
@@ -142,10 +142,10 @@ async function fetchMembers(instance) {
   return holdersArray_;
 }
 
-async function fetchExtensions(instance, chainId, web3, address, balances) {
+async function fetchExtensions(instance, daoChain, web3, address, balances) {
 
   const extensionArray = [];
-  let ext = addresses[chainId]["extensions"];
+  let ext = addresses[daoChain]["extensions"];
   for (const [key, value] of Object.entries(ext)) {
     let bool = await instance.methods.extensions(value).call();
     if (bool == true) {

@@ -9,7 +9,7 @@ import ActionMenu from "../../components/structure/ActionMenu";
 
 export default function Dao() {
   const value = useContext(AppContext);
-  const { visibleView, chainId } = value.state;
+  const { visibleView, daoChain } = value.state;
   // * get DAO address from route * //
   const router = useRouter();
   const address = router.query.dao;
@@ -24,7 +24,7 @@ export default function Dao() {
   return (
 
     <Layout>
-      {chainId == null ? null :
+      {daoChain == null ? null :
       <>
       <ActionMenu />
       {visibleView == 1 ? (

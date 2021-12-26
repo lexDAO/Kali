@@ -27,7 +27,7 @@ const proposalTypes = require("../../constants/params");
 
 export default function Dashboard() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, chainId, visibleView, dao, address } =
+  const { web3, loading, account, abi, chainId, visibleView, dao, address, daoChain } =
     value.state;
 
   const reloadDao = async () => {
@@ -46,14 +46,14 @@ export default function Dashboard() {
     try {
       const instance = new web3.eth.Contract(abi, address);
 
-      const factory = factoryInstance(addresses[chainId]["factory"], web3);
+      const factory = factoryInstance(addresses[daoChain]["factory"], web3);
 
       const { dao_ } = await fetchDaoInfo(
         instance,
         factory,
         address,
         web3,
-        chainId,
+        daoChain,
         account
       );
 

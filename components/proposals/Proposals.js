@@ -11,7 +11,7 @@ import { fetchProposals } from "../../utils/fetchProposals";
 
 export default function Proposals(props) {
   const value = useContext(AppContext);
-  const { web3, loading, proposals, address, dao, chainId } = value.state;
+  const { web3, loading, proposals, address, dao, chainId, daoChain } = value.state;
   const [toggle, setToggle] = useState("active");
 
   useEffect(() => { // dao object must be set before loading proposals
@@ -29,7 +29,7 @@ export default function Proposals(props) {
     try {
       let abi = require("../../abi/KaliDAO.json");
       let instance = new web3.eth.Contract(abi, address);
-      let proposals_ = await fetchProposals(instance, address, web3, chainId, dao);
+      let proposals_ = await fetchProposals(instance, address, web3, daoChain, dao);
       value.setProposals(proposals_);
       console.log(proposals_);
       value.setLoading(false);

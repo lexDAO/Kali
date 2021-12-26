@@ -28,7 +28,7 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 
 export default function Factory(props) {
   const value = useContext(AppContext);
-  const { web3, account, chainId, loading } = value.state;
+  const { web3, account, chainId, loading, daoChain } = value.state;
   const {
     handleSubmit,
     register,
@@ -45,7 +45,7 @@ export default function Factory(props) {
     value.setLoading(true);
     let factory;
     try {
-      factory = factoryInstance(addresses[chainId]['factory'], web3);
+      factory = factoryInstance(addresses[daoChain]['factory'], web3);
     } catch(e) {
       value.toast(e)
     }

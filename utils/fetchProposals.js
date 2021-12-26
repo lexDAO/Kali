@@ -1,6 +1,6 @@
 import { addresses } from "../constants/addresses";
 
-export async function fetchProposals(instance, address, web3, chainId, dao) {
+export async function fetchProposals(instance, address, web3, daoChain, dao) {
   const proposalCount = parseInt(await instance.methods.proposalCount().call());
 
   const proposals_ = {};
@@ -50,7 +50,7 @@ export async function fetchProposals(instance, address, web3, chainId, dao) {
 
         proposal["payloads"] = proposalArrays["payloads"];
 
-        proposal["extensions"] = fetchExtension(proposal['proposalType'], proposalArrays["accounts"], web3, chainId); // null, or array of extensions
+        proposal["extensions"] = fetchExtension(proposal['proposalType'], proposalArrays["accounts"], web3, daoChain); // null, or array of extensions
 
         if (proposal["pending"] == true) {
           proposals_["pending"].push(proposal);
@@ -162,9 +162,9 @@ function isPassing(dao, proposal) {
   return passingText;
 }
 
-function fetchExtension(type, accounts, web3, chainId) {
+function fetchExtension(type, accounts, web3, daoChain) {
   var array = [];
-  let ext = addresses[chainId]['extensions'];
+  let ext = addresses[daoChain]['extensions'];
   console.log(ext, "ext")
   if(type==8) {
     for(var i=0; i < accounts.length; i++) {

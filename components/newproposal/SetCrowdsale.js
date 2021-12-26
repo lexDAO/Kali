@@ -9,7 +9,7 @@ import NumInputField from "../elements/NumInputField";
 
 export default function SetCrowdsale() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address, chainId, dao } = value.state;
+  const { web3, loading, account, abi, address, chainId, dao, daoChain } = value.state;
   const [startDate, setStartDate] = useState(new Date());
 
   const updateExtType = (e) => {
@@ -121,7 +121,7 @@ export default function SetCrowdsale() {
         <Input
           type="hidden"
           name="account_"
-          value={addresses[chainId]["extensions"]["crowdsale"]}
+          value={addresses[daoChain]["extensions"]["crowdsale"]}
         />
 
         <Button type="submit">Submit Proposal</Button>

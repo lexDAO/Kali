@@ -9,7 +9,7 @@ import { tokens } from "../../constants/tokens";
 
 export default function SetRedemption() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, address, chainId, dao } = value.state;
+  const { web3, loading, account, abi, address, chainId, dao, daoChain } = value.state;
   const [startDate, setStartDate] = useState(new Date());
   const [checked, setChecked] = useState();
 
@@ -136,7 +136,7 @@ export default function SetRedemption() {
         <Input
           type="hidden"
           name="account_"
-          value={addresses[chainId]["extensions"]["redemption"]}
+          value={addresses[daoChain]["extensions"]["redemption"]}
         />
 
         <Button type="submit">Submit Proposal</Button>

@@ -44,7 +44,7 @@ export default function SetCrowdsale() {
 
       var amount_ = 0;
 
-      if (dao["extensions"]["crowdsale"] == null) {
+      if (dao["extensions"] != null && dao["extensions"]["crowdsale"] == null) {
         amount_ = 1; // prevent toggling extension back off
       }
 

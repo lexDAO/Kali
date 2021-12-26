@@ -8,7 +8,7 @@ export default function Extensions() {
 
   return(
     <>
-    {dao['extensions'].length > 0 ?
+    {dao['extensions'] == null ? "No extensions installed" :
     <>
     <Text>Extensions</Text>
     <UnorderedList>
@@ -17,7 +17,7 @@ export default function Extensions() {
       ))}
     </UnorderedList>
     </>
-    : <Text>No extensions installed</Text>}
+    }
     </>
   );
 }

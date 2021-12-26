@@ -85,7 +85,7 @@ export default function NewProposal(props) {
               {Object.entries(newProposalHelper).map(([k, v]) =>
                 newProposalHelper[k]["extension"] == null ||
                 ("extensions" in dao &&
-                  newProposalHelper[k]["extension"] in dao["extensions"]) ? (
+                  dao['extensions'] != null && newProposalHelper[k]["extension"] in dao["extensions"]) ? (
                   <option key={`option-${k}`} value={k}>
                     {newProposalHelper[k]["title"]}
                   </option>
@@ -108,7 +108,7 @@ export default function NewProposal(props) {
           >
             {Object.entries(newProposalHelper).map(([k, v]) =>
               newProposalHelper[k]["extension"] == null ||
-              ("extensions" in dao &&
+              ("extensions" in dao && dao['extensions'] != null &&
                 newProposalHelper[k]["extension"] in dao["extensions"]) ? (
                 <ProposalTile
                   key={`propTile-${k}`}

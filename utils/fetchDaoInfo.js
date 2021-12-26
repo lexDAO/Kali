@@ -147,6 +147,7 @@ async function fetchMembers(instance) {
 
 async function fetchExtensions(instance, daoChain, web3, address, balances) {
 
+  let result;
   const extensionArray = [];
   let ext = addresses[daoChain]["extensions"];
   for (const [key, value] of Object.entries(ext)) {
@@ -163,7 +164,12 @@ async function fetchExtensions(instance, daoChain, web3, address, balances) {
       extensionArray[key] = { address: extAddress, details: extDetails };
     }
   }
-  return extensionArray;
+  if(extensionArray.length > 0) {
+    result = extensionArray
+  } else {
+    result = null;
+  }
+  return result;
 }
 
 // helper functions for main getter function

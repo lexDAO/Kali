@@ -81,6 +81,7 @@ export default function Dashboard() {
       ) : (
         <>
           {Object.entries(dashboardHelper).map(([k, v]) => (
+            dashboardHelper[k]["check"] != null && dao[dashboardHelper[k]["check"]] == null ? null :
             <Box
               key={`component-${k}`}
               p={5}

@@ -5,7 +5,7 @@ pragma solidity >=0.8.4;
 import './KaliDAO.sol';
 import './interfaces/IRicardianLLC.sol';
 
-/// @notice Factory to deploy KaliDAO.
+/// @notice Factory to deploy Kali DAO.
 contract KaliDAOfactory {
     event DAOdeployed(KaliDAO indexed kaliDAO, string name);
 

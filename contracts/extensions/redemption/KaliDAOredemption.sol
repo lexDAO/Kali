@@ -38,8 +38,7 @@ contract KaliDAOredemption is ReentrancyGuard {
         // if redeemables are already set, this call will be interpreted as reset
         if (redeemables[msg.sender].length != 0) delete redeemables[msg.sender];
         
-        // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        // cannot realistically overflow on human timescales
         unchecked {
             for (uint256 i; i < tokens.length; i++) {
                 redeemables[msg.sender].push(tokens[i]);
@@ -81,8 +80,7 @@ contract KaliDAOredemption is ReentrancyGuard {
     }
 
     function addTokens(address[] calldata tokens) public nonReentrant virtual {
-        // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        // cannot realistically overflow on human timescales
         unchecked {
             for (uint256 i; i < tokens.length; i++) {
                 redeemables[msg.sender].push(tokens[i]);

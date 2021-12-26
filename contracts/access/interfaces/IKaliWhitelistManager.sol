@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.4;
 
-/// @notice KaliDAO whitelist manager interface.
+/// @notice Kali DAO whitelist manager interface.
 interface IKaliWhitelistManager {
     function whitelistedAccounts(uint256 listId, address account) external returns (bool);
 }

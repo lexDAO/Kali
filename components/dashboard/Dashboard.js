@@ -21,7 +21,7 @@ import { fetchDaoInfo } from "../../utils/fetchDaoInfo";
 import { addresses } from "../../constants/addresses";
 import { factoryInstance } from "../../eth/factory";
 import { dashboardHelper } from "../../constants/dashboardHelper";
-import { checkNetwork } from "../../utils/checkNetwork";
+import { correctNetwork } from "../../utils/network";
 
 const proposalTypes = require("../../constants/params");
 

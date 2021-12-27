@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
 import Router from "next/router";
 import {
@@ -42,7 +42,12 @@ export default function Factory(props) {
   const handleFactorySubmit = async (values) => {
     console.log("Form: ", values);
 
+    if(!web3 || web3 == null) {
+      value.toast("Please connect to Metamask.");
+      return;
+    }
     value.setLoading(true);
+
     let factory;
     try {
       factory = factoryInstance(addresses[chainId]['factory'], web3);
@@ -137,6 +142,10 @@ export default function Factory(props) {
 
     value.setLoading(false);
   };
+
+  useEffect(() => {
+    append({ address: "" })
+  }, []);
 
   const optionsDocs = [
     { key: "Code of Conduct", value: "COC" },
@@ -313,7 +322,9 @@ export default function Factory(props) {
               color="kali.800"
               bg="kali.900"
               opacity="0.90"
-              {...register("votingPeriodUnit")}
+              {...register("votingPeriodUnit", {
+                required: "You must select a voting period unit!"
+              })}
             >
               {optionsVotingPeriod.map((option) => (
                 <option key={option.value} value={option.value}>

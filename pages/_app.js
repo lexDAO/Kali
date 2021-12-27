@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import theme from "../styles/theme";
 const abi = require("../abi/KaliDAO.json");
 import { createToast } from "../utils/toast";
-import { checkNetwork } from "../utils/checkNetwork";
+import { correctNetwork } from "../utils/network";
 import { getNetworkName } from "../utils/formatters";
 import { supportedChains } from "../constants/supportedChains";
 
@@ -52,10 +52,11 @@ function MyApp({ Component, pageProps }) {
   }, [chainId]);
 
   const connectToInfura = async () => {
-    let result = await checkNetwork(address);
+    let result = await correctNetwork(address);
     setWeb3(result['web3']);
     setDaoChain(result['chainId']);
     setChainId(result['chainId']);
+    setAccount(null);
   }
 
   const connect = async () => {

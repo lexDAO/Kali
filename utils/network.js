@@ -1,7 +1,7 @@
 import Web3 from "web3";
 import { supportedChains } from "../constants/supportedChains";
 
-export async function checkNetwork(address) {
+export async function correctNetwork(address) {
   var correctChain = null;
   var correctWeb3 = null;
 

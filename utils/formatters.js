@@ -1,6 +1,7 @@
 // functions to format data for display to user
 import { scientificNotation } from "../constants/numbers";
 import { supportedChains } from "../constants/supportedChains";
+import { tokens } from "../constants/tokens";
 
 export function convertVotingPeriod(seconds) {
   let time;
@@ -145,6 +146,20 @@ export function decodeBytes(payloads, type, p, web3) {
           if (types[i] == "date") {
             formatted = unixToDate(v);
           }
+          if(types[i] == "decimals") {
+            let token;
+            if(type == 8) {
+              console.log("types", types)
+              for(var j=0; j < types.length; j++) {
+                if(types[j] == 'token') {
+                  token = decoded[j];
+                  let decimals = getDecimals(token);
+                  formatted = fromDecimals(parseInt(formatted), decimals)
+                  console.log("decoded[i]", decoded[i])
+                }
+              }
+            }
+          }
           item.push(labels[i] + ": " + formatted);
         }
         i++;
@@ -189,7 +204,7 @@ export function formatAmounts(amounts, type) {
     }
     if (type == 8) {
       // extension
-      formattedAmount = amount;
+      formattedAmount = fromDecimals(amount, 18);
     }
     if (type == 9) {
       // escape
@@ -219,4 +234,14 @@ export function getNetworkName(chainId) {
     }
   }
   return networkName;
+}
+
+export function getDecimals(token) {
+  let decimals;
+  for(var i=0; i < tokens.length; i++) {
+    if(tokens[i]["address"].toLowerCase() == token.toLowerCase()) {
+      decimals = tokens[i]["decimals"];
+    }
+  }
+  return decimals;
 }

@@ -73,6 +73,7 @@ export default function SendToken() {
         let address_ = tokens[tokenIndex]["address"];
         let decimals = tokens[tokenIndex]["decimals"];
         let amt = toDecimals(recipients[i].share, decimals).toString();
+        console.log("amt",amt)
         const tokenContract = new web3.eth.Contract(ierc20, address_);
         var payload_ = tokenContract.methods
           .transfer(recipients[i].address, amt)

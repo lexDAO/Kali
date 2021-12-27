@@ -63,21 +63,22 @@ export default function ProposalModal(props) {
               <ProposalDivider />
             </div>
           )}
+          {decoded.length > 0 ?
+            <div key={`decoded-${index}`}>
+            <ProposalLabel>Details:</ProposalLabel>
+            <ul>
+              {decoded[index].map((item, index) => (
+                <li key={`decoded-${index}`}>{item}</li>
+              ))}
+            </ul>
+            <ProposalDivider />
+          </div>
+          : null}
           {details["payloads"] == null ? null : (
             p["payloads"][index] != "0x" ? // don't display dummy data
             <div key={`payloads-${index}`}>
               <ProposalLabel>payload</ProposalLabel>
               <Text>{p["payloads"][index]}</Text>
-              {decoded.length > 0 ?
-                <>
-                <Text>Decoded:</Text>
-              <ul>
-                {decoded[index].map((item, index) => (
-                  <li key={`decoded-${index}`}>{item}</li>
-                ))}
-              </ul>
-              </>
-              : null}
               <ProposalDivider />
             </div>
             : null

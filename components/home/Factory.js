@@ -25,6 +25,7 @@ import FlexGradient from "../elements/FlexGradient";
 import { addresses } from "../../constants/addresses";
 import { factoryInstance } from "../../eth/factory";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { errorMessages } from "../../constants/errors";
 
 export default function Factory(props) {
   const value = useContext(AppContext);
@@ -43,7 +44,7 @@ export default function Factory(props) {
     console.log("Form: ", values);
 
     if(!web3 || web3 == null) {
-      value.toast("Please connect to Metamask.");
+      value.toast(errorMessages["connect"]);
       return;
     }
     value.setLoading(true);

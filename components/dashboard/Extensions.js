@@ -12,9 +12,9 @@ export default function Extensions() {
     <>
     <Text>Extensions</Text>
     <UnorderedList>
-      {dao["extensions"].map((e, index) => (
-        <ListItem key={index}>{e}</ListItem>
-      ))}
+      {Object.entries(dao["extensions"]).map(([k, v]) =>
+        <ListItem key={k}>{k}</ListItem>
+      )}
     </UnorderedList>
     </>
     }

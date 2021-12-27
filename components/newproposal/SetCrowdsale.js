@@ -37,7 +37,7 @@ export default function SetCrowdsale() {
         purchaseLimit_,
         saleEnds_,
       } = array; // this must contain any inputs from custom forms
-
+      console.log(array)
       saleEnds_ = new Date(saleEnds_).getTime() / 1000;
 
       const listId_ = 0;
@@ -47,6 +47,8 @@ export default function SetCrowdsale() {
       if (dao["extensions"] != null && dao["extensions"]["crowdsale"] == null) {
         amount_ = 1; // prevent toggling extension back off
       }
+
+      console.log("amount", amount_)
 
       purchaseLimit_ = web3.utils.toWei(purchaseLimit_);
 

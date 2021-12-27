@@ -9,8 +9,6 @@ export default function Treasury() {
 
   return(
     <>
-    <Text>Name: {dao["name"]}</Text>
-    <Text>Balances:</Text>
     <UnorderedList>
       {dao["balances"].map((b, index) => (
         <ListItem key={index}>

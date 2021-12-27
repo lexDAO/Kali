@@ -30,11 +30,17 @@ export default function SetTribute() {
 
       var { description_, account_, proposalType_ } = array; // this must contain any inputs from custom forms
 
-      const amount_ = 0;
+      const amount_ = 1;
 
       const payload_ = Array(0);
 
       const instance = new web3.eth.Contract(abi, address);
+
+      console.log(proposalType_,
+      description_,
+      [account_],
+      [amount_],
+      [payload_])
 
       try {
         let result = await instance.methods

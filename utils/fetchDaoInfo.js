@@ -148,11 +148,14 @@ async function fetchMembers(instance) {
 async function fetchExtensions(instance, daoChain, web3, address, balances) {
 
   let result;
+  var extensionsCount = 0;
   const extensionArray = [];
   let ext = addresses[daoChain]["extensions"];
   for (const [key, value] of Object.entries(ext)) {
     let bool = await instance.methods.extensions(value).call();
+    console.log("bool", bool, key)
     if (bool == true) {
+      extensionsCount++;
       let extAddress = value;
       let extDetails;
       if (key == "crowdsale") {
@@ -164,11 +167,13 @@ async function fetchExtensions(instance, daoChain, web3, address, balances) {
       extensionArray[key] = { address: extAddress, details: extDetails };
     }
   }
-  if(extensionArray.length > 0) {
+  console.log("extensionArray", extensionArray)
+  if(extensionsCount > 0) {
     result = extensionArray
   } else {
     result = null;
   }
+  console.log("result", result)
   return result;
 }
 

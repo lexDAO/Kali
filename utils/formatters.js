@@ -46,7 +46,12 @@ export function votingPeriodToSeconds(period, type) {
 }
 
 export function toDecimals(amount, decimals) {
-  return amount * scientificNotation[decimals - 1];
+  // this methodology is necessary to avoid javascript autoconverting large numbers to scientific notation
+  var number = amount.toString();
+  for(var i=0; i < decimals; i++) {
+    number += "0";
+  }
+  return number;
 }
 
 export function fromDecimals(amount, decimals) {

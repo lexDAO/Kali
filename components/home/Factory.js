@@ -180,7 +180,7 @@ export default function Factory(props) {
         gap={3}
       >
         <GridItem colSpan={2}>
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="name">Name</FormLabel>
             <Input
               id="name"
@@ -193,7 +193,7 @@ export default function Factory(props) {
           </FormControl>
         </GridItem>
         <GridItem colSpan={2}>
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="symbol">Symbol</FormLabel>
             <Input
               id="symbol"
@@ -205,7 +205,7 @@ export default function Factory(props) {
           </FormControl>
         </GridItem>
         <GridItem colSpan={2}>
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="docs">Document</FormLabel>
             <Select
               id="docs"
@@ -241,7 +241,7 @@ export default function Factory(props) {
                   control={control}
                   defaultValue={founder.address}
                   render={({ field }) => (
-                    <FormControl>
+                    <FormControl isRequired>
                       <FormLabel htmlFor={`founders.${index}.address`}>
                         Founder
                       </FormLabel>
@@ -260,7 +260,7 @@ export default function Factory(props) {
                   control={control}
                   defaultValue={founder.share}
                   render={({ field }) => (
-                    <FormControl>
+                    <FormControl isRequired>
                       <FormLabel htmlFor={`founders.${index}.share`}>
                         Share {index + 1}
                       </FormLabel>
@@ -289,7 +289,7 @@ export default function Factory(props) {
           <Heading as="h3">Governance Settings</Heading>
         </GridItem>
         <GridItem colSpan={1}>
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="votingPeriod">Voting Period</FormLabel>
             <Controller
               name="votingPeriod"
@@ -315,7 +315,7 @@ export default function Factory(props) {
           </FormControl>
         </GridItem>
         <GridItem colSpan={1}>
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="votingPeriodUnit">Voting Period Unit</FormLabel>
             <Select
               id="votingPeriodUnit"

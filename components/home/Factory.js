@@ -20,12 +20,15 @@ import {
   NumberDecrementStepper,
   List,
   ListItem,
+  IconButton,
 } from "@chakra-ui/react";
 import FlexGradient from "../elements/FlexGradient";
 import { addresses } from "../../constants/addresses";
 import { factoryInstance } from "../../eth/factory";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { errorMessages } from "../../constants/errors";
+import { AiOutlineDelete } from "react-icons/ai";
+import Account from "../structure/Account";
 
 export default function Factory(props) {
   const value = useContext(AppContext);
@@ -43,7 +46,7 @@ export default function Factory(props) {
   const handleFactorySubmit = async (values) => {
     console.log("Form: ", values);
 
-    if(!web3 || web3 == null) {
+    if (!web3 || web3 == null) {
       value.toast(errorMessages["connect"]);
       return;
     }
@@ -51,9 +54,9 @@ export default function Factory(props) {
 
     let factory;
     try {
-      factory = factoryInstance(addresses[chainId]['factory'], web3);
-    } catch(e) {
-      value.toast(e)
+      factory = factoryInstance(addresses[chainId]["factory"], web3);
+    } catch (e) {
+      value.toast(e);
     }
     const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0,0";
     const extensions = new Array(0);
@@ -108,7 +111,7 @@ export default function Factory(props) {
         "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/operating/DelawareOperatingAgreement.md";
     } else if (docs == "none") {
       docs = "none";
-    } else if (docs=="ricardian") {
+    } else if (docs == "ricardian") {
       docs = "";
     }
 
@@ -145,7 +148,7 @@ export default function Factory(props) {
   };
 
   useEffect(() => {
-    append({ address: "" })
+    append({ address: "" });
   }, []);
 
   const optionsDocs = [
@@ -162,6 +165,7 @@ export default function Factory(props) {
     { key: "Days", value: "days" },
   ];
 
+  console.log("account", account);
   return (
     <FlexGradient>
       {/*
@@ -187,9 +191,6 @@ export default function Factory(props) {
               placeholder="KaliDAO"
               {...register("name", { required: "You must name your DAO!" })}
             />
-            <FormErrorMessage>
-              {errors.name && errors.name.message}
-            </FormErrorMessage>
           </FormControl>
         </GridItem>
         <GridItem colSpan={2}>
@@ -274,9 +275,16 @@ export default function Factory(props) {
                     </FormControl>
                   )}
                 />
-                <Button variant="ghost" onClick={() => remove(index)}>
-                  X
-                </Button>
+                <IconButton
+                  aria-label="delete founder"
+                  isRound
+                  variant="ghost"
+                  _hover={{ bg: "kali.600" }}
+                  mt={8}
+                  ml={2}
+                  icon={<AiOutlineDelete />}
+                  onClick={() => remove(index)}
+                />
               </ListItem>
             ))}
           </List>
@@ -324,7 +332,7 @@ export default function Factory(props) {
               bg="kali.900"
               opacity="0.90"
               {...register("votingPeriodUnit", {
-                required: "You must select a voting period unit!"
+                required: "You must select a voting period unit!",
               })}
             >
               {optionsVotingPeriod.map((option) => (
@@ -336,14 +344,18 @@ export default function Factory(props) {
           </FormControl>
         </GridItem>
         <GridItem colSpan={2}>
-          <Button
-            type="submit"
-            variant="solid"
-            isLoading={isSubmitting}
-            isFullWidth
-          >
-            Summon!
-          </Button>
+          {account ? (
+            <Button
+              type="submit"
+              variant="solid"
+              isLoading={isSubmitting}
+              isFullWidth
+            >
+              Summon!
+            </Button>
+          ) : (
+            <Account isFullWidth />
+          )}
         </GridItem>
       </Grid>
     </FlexGradient>

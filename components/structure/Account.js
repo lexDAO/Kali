@@ -3,7 +3,7 @@ import AppContext from "../../context/AppContext";
 import { Button, Text } from "@chakra-ui/react";
 import { truncateAddress } from "../../utils/formatters";
 
-export default function Account() {
+export default function Account(props) {
   const value = useContext(AppContext);
   const { account } = value.state;
 
@@ -16,9 +16,12 @@ export default function Account() {
       color="white"
       mr={2}
       border={0}
+      {...props}
       onClick={value.connect}
     >
-      <Text maxW="xs">{account == null ? "Connect" : truncateAddress(account)}</Text>
+      <Text maxW="xs">
+        {account == null ? "Connect" : truncateAddress(account)}
+      </Text>
     </Button>
   );
 }

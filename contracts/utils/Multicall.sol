@@ -8,8 +8,7 @@ abstract contract Multicall {
     function multicall(bytes[] calldata data) public virtual returns (bytes[] memory results) {
         results = new bytes[](data.length);
         
-        // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        // cannot realistically overflow on human timescales
         unchecked {
             for (uint256 i = 0; i < data.length; i++) {
                 (bool success, bytes memory result) = address(this).delegatecall(data[i]);

@@ -27,7 +27,7 @@ export default function ProposalModal(props) {
   const p = props["p"];
   const type = p["proposalType"];
   const details = viewProposalsHelper[type]["details"];
-  let decoded;
+  var decoded = null;
   if(type==2 || type==8) {
     decoded = decodeBytes(p["payloads"], type, p, web3);
   }
@@ -63,7 +63,7 @@ export default function ProposalModal(props) {
               <ProposalDivider />
             </div>
           )}
-          {decoded.length > 0 ?
+          {decoded != null ?
             <div key={`decoded-${index}`}>
             <ProposalLabel>Details:</ProposalLabel>
             <ul>

@@ -1,36 +1,30 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import AppContext from '../context/AppContext';
-import '@fontsource/roboto/300.css'
-import infura from '../utils/infura';
-import Web3 from 'web3';
-import { useState, useEffect } from 'react';
-import theme from '../styles/theme';
+import AppContext from "../context/AppContext";
+import Web3 from "web3";
+import { useState, useEffect } from "react";
+import theme from "../styles/theme";
 const abi = require("../abi/KaliDAO.json");
-import { alertMessage } from "../utils/helpers";
+import { createToast } from "../utils/toast";
+import { correctNetwork } from "../utils/network";
+import { getNetworkName } from "../utils/formatters";
+import { supportedChains } from "../constants/supportedChains";
 
 function MyApp({ Component, pageProps }) {
-
-  const [web3, setWeb3] = useState(infura[0]);
+  const [web3, setWeb3] = useState(null);
   const [account, setAccount] = useState(null);
-  const [chainId, setChainId] = useState(infura[1]);
+  const [chainId, setChainId] = useState(null);
+  const [daoChain, setDaoChain] = useState(null);
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [reload, setReload] = useState(0);
   const [visibleView, setVisibleView] = useState(1);
-  const [dao, setDao] = useState({});
+  const [dao, setDao] = useState(null);
   const [proposals, setProposals] = useState(null);
-  const [pendingProposals, setPendingProposals] = useState(null);
-  const [balances, setBalances] = useState(null);
-  const [holdersArray, setHoldersArray] = useState([]);
-  const [proposalVoteTypes, setProposalVoteTypes] = useState([]);
-  const [extensions, setExtensions] = useState();
-  const [isMember, setIsMember] = useState();
-  const [crowdsale, setCrowdsale] = useState();
-  const [redemption, setRedemption] = useState();
 
   useEffect(() => {
-
-    if(typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.ethereum !== "undefined"
+    ) {
       ethereum.on("accountsChanged", function (accounts) {
         changeAccount();
       });
@@ -39,8 +33,7 @@ function MyApp({ Component, pageProps }) {
         changeChain();
       });
 
-      ethereum.on("connect", () => {
-      });
+      ethereum.on("connect", () => {});
 
       ethereum.on("disconnect", () => {
         console.log("disconnected");
@@ -48,20 +41,43 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  const connect = async () => {
-    console.log("connect");
-    if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      let metamask = new Web3(window.ethereum);
-      setWeb3(metamask);
-      setAccount(accounts[0]);
-      console.log(accounts[0])
-    } else {
-      alert("please connect to wallet")
+  useEffect(() => {
+    connectToInfura();
+  }, [address]);
+
+  useEffect(() => {
+    if(chainId != null) {
+      isCorrectChain();
     }
+  }, [chainId]);
+
+  const connectToInfura = async () => {
+    let result = await correctNetwork(address);
+    setWeb3(result['web3']);
+    setDaoChain(result['chainId']);
+    setChainId(result['chainId']);
+    setAccount(null);
   }
+
+  const connect = async () => {
+    try {
+      if (
+        typeof window !== "undefined" &&
+        typeof window.ethereum !== "undefined"
+      ) {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        let metamask = new Web3(window.ethereum);
+        let chainId_ =  await window.ethereum.request({ method: 'eth_chainId' });
+        setWeb3(metamask);
+        setAccount(accounts[0]);
+        setChainId(parseInt(chainId_));
+      }
+    } catch(e) {
+      toast(e)
+    }
+  };
 
   const changeAccount = async () => {
     if (window.ethereum) {
@@ -85,14 +101,35 @@ function MyApp({ Component, pageProps }) {
     } else {
       console.log("Make sure you have MetaMask!");
     }
-  }
-
-  const changeChain = async () => {
-    window.location.reload();
   };
 
-  const reloadButton = () => {
-    setReload(reload+1);
+  const changeChain = async () => {
+    console.log("change chain")
+    let chainId_ =  await window.ethereum.request({ method: 'eth_chainId' });
+    setChainId(parseInt(chainId_));
+  };
+
+  const isCorrectChain = async () => {
+    if(address != null) {
+      if(chainId != daoChain) {
+        let name = getNetworkName(daoChain);
+        toast("Please connect to the " + name + " network.");
+      }
+    } else {
+      var supported = false;
+      for(var i=0; i < supportedChains.length; i++) {
+        if(supportedChains[i]["chainId"]==chainId) {
+          supported = true;
+        }
+      }
+      if(supported == false) {
+        toast("This network is not currently supported.")
+      }
+    }
+  }
+
+  const toast = (props) => {
+    createToast(props);
   }
 
   return (
@@ -103,41 +140,25 @@ function MyApp({ Component, pageProps }) {
             web3: web3,
             account: account,
             chainId: chainId,
+            daoChain: daoChain,
             loading: loading,
             address: address,
             abi: abi,
-            reload: reload,
             visibleView: visibleView,
             dao: dao,
             proposals: proposals,
-            pendingProposals: pendingProposals,
-            balances: balances,
-            holdersArray: holdersArray,
-            proposalVoteTypes: proposalVoteTypes,
-            extensions: extensions,
-            isMember: isMember,
-            crowdsale: crowdsale,
-            redemption: redemption
           },
           setWeb3: setWeb3,
           setAccount: setAccount,
           setChainId: setChainId,
+          setDaoChain: setDaoChain,
           setLoading: setLoading,
           setAddress: setAddress,
           connect: connect,
-          setReload: setReload,
-          reloadButton: reloadButton,
           setVisibleView: setVisibleView,
           setDao: setDao,
           setProposals: setProposals,
-          setPendingProposals: setPendingProposals,
-          setBalances: setBalances,
-          setHoldersArray: setHoldersArray,
-          setProposalVoteTypes: setProposalVoteTypes,
-          setExtensions: setExtensions,
-          setIsMember: setIsMember,
-          setCrowdsale: setCrowdsale,
-          setRedemption: setRedemption
+          toast: toast
         }}
       >
         <Component {...pageProps} />

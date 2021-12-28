@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity >=0.8.0;
+pragma solidity >=0.8.4;
 
 import '../../libraries/SafeTransferLib.sol';
 import '../../access/interfaces/IKaliWhitelistManager.sol';
@@ -61,7 +61,7 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
         address account, 
         uint256 amount, 
         bytes calldata
-    ) public payable nonReentrant virtual returns (uint256 amountOut) {
+    ) public payable nonReentrant virtual returns (bool mint, uint256 amountOut) {
         Crowdsale storage sale = crowdsales[msg.sender];
 
         if (block.timestamp > sale.saleEnds) revert SaleEnded();
@@ -88,6 +88,8 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
 
             sale.amountPurchased += uint96(amountOut);
         }
+
+        mint = true;
 
         emit ExtensionCalled(msg.sender, account, amountOut);
     }

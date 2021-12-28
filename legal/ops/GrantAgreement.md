@@ -84,6 +84,8 @@ d.  If any provision of this Agreement is held to be invalid, illegal or unenfor
 
 e.	This Agreement may be executed in counterparts, each of which shall be deemed an original, but both of which together shall constitute one and the same instrument. This Agreement may be executed by commercially acceptable electronic means, and any electronic signatures to this Agreement are the same as handwritten signatures for purposes of validity, enforceability, and admissibility.
 
+f. Any consents, approvals or acknowledgements provided by [DAO NAME] may be provided through an affirmative vote by the DAO's governance framework.
+
 
 *****************************************************
 

@@ -86,7 +86,7 @@ contract KaliWhitelistManager {
         
         require(operatorOf[listId] == address(0), 'ID_EXISTS');
 
-        operatorOf[listId] == msg.sender;
+        operatorOf[listId] = msg.sender;
 
         if (accounts.length != 0) {
             // this is reasonably safe from overflow because incrementing `i` loop beyond

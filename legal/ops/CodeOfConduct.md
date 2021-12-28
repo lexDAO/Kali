@@ -17,6 +17,7 @@ If you do not follow this Code, then you may be removed from this Community and 
 To keep this Community productive, healthy, and welcoming, and to make it more likely we achieve our mission, we follow these Community *DOs* and *DON’Ts*.
 
 **DO:**
+* Participate and contribute actively to this community.
 * Behave as if you’re speaking face-to-face with someone who you trust, like, and respect.
 * Treat everyone with respect, like you’d want to be treated.
 * Be a good, kind, fair person.

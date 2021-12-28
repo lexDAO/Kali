@@ -11,10 +11,6 @@
     "@chakra-ui/react": "^1.7.2",
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "11.6.0",
-    "@fontsource/open-sans": "^4.5.2",
-    "@fontsource/raleway": "^4.5.0",
-    "@fontsource/roboto": "^4.5.1",
-    "@walletconnect/web3-provider": "^1.6.6",
     "@fleekhq/fleek-storage-js": "^1.0.20",
     "dotenv": "^10.0.0",
     "formik": "^2.2.9",
@@ -30,7 +26,6 @@
     "react-hook-form": "^7.21.2",
     "react-icons": "^4.3.1",
     "web3": "^1.6.1",
-    "web3modal": "^1.9.4",
     "yup": "^0.32.11"
   },
   "devDependencies": {

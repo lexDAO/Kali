@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity >=0.8.0;
+pragma solidity >=0.8.4;
 
 /// @notice Modern and gas-optimized ERC-20 + EIP-2612 implementation with COMP-style governance and pausing.
 /// @author Modified from RariCapital (https://github.com/Rari-Capital/solmate/blob/main/src/erc20/ERC20.sol)
@@ -123,8 +123,6 @@ abstract contract KaliDAOtoken {
         unchecked {
             for (uint256 i; i < voters_.length; i++) {
                 _mint(voters_[i], shares_[i]);
-
-                _moveDelegates(address(0), delegates(voters_[i]), shares_[i]);
             }
         }
     }
@@ -399,6 +397,8 @@ abstract contract KaliDAOtoken {
             balanceOf[to] += amount;
         }
 
+        _moveDelegates(address(0), delegates(to), amount);
+
         emit Transfer(address(0), to, amount);
     }
 
@@ -410,6 +410,8 @@ abstract contract KaliDAOtoken {
         unchecked {
             totalSupply -= amount;
         }
+
+        _moveDelegates(delegates(from), address(0), amount);
 
         emit Transfer(from, address(0), amount);
     }

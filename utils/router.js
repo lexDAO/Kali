@@ -2,10 +2,8 @@ import Router, { useRouter } from "next/router";
 
 export function routeHome() {
   Router.push({
-    pathname: '../',
-    query: {
-
-    }
+    pathname: "../",
+    query: {},
   });
-  console.log("worked")
+  console.log("worked");
 }

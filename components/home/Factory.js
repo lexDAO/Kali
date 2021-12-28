@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
 import Router from "next/router";
 import {
@@ -20,11 +20,15 @@ import {
   NumberDecrementStepper,
   List,
   ListItem,
+  IconButton,
 } from "@chakra-ui/react";
 import FlexGradient from "../elements/FlexGradient";
-import { factory_rinkeby } from "../../utils/addresses";
+import { addresses } from "../../constants/addresses";
 import { factoryInstance } from "../../eth/factory";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { errorMessages } from "../../constants/errors";
+import { AiOutlineDelete } from "react-icons/ai";
+import Account from "../structure/Account";
 
 export default function Factory(props) {
   const value = useContext(AppContext);
@@ -42,8 +46,18 @@ export default function Factory(props) {
   const handleFactorySubmit = async (values) => {
     console.log("Form: ", values);
 
+    if (!web3 || web3 == null) {
+      value.toast(errorMessages["connect"]);
+      return;
+    }
     value.setLoading(true);
-    const factory = factoryInstance(factory_rinkeby, web3);
+
+    let factory;
+    try {
+      factory = factoryInstance(addresses[chainId]["factory"], web3);
+    } catch (e) {
+      value.toast(e);
+    }
     const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0,0";
     const extensions = new Array(0);
     const extensionsData = new Array(0);
@@ -69,7 +83,7 @@ export default function Factory(props) {
         votersArray[i] = await web3.eth.ens
           .getAddress(votersArray[i])
           .catch(() => {
-            alert("ENS not found");
+            value.toast("ENS not found");
           });
       }
     }
@@ -96,6 +110,8 @@ export default function Factory(props) {
       docs =
         "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/operating/DelawareOperatingAgreement.md";
     } else if (docs == "none") {
+      docs = "none";
+    } else if (docs == "ricardian") {
       docs = "";
     }
 
@@ -124,17 +140,22 @@ export default function Factory(props) {
         query: { dao: dao },
       });
     } catch (e) {
-      alert(e);
+      value.toast(e);
       console.log(e);
     }
 
     value.setLoading(false);
   };
 
+  useEffect(() => {
+    append({ address: "" });
+  }, []);
+
   const optionsDocs = [
     { key: "Code of Conduct", value: "COC" },
     { key: "UNA", value: "UNA" },
     { key: "LLC", value: "LLC" },
+    { key: "Ricardian LLC Series", value: "ricardian" },
     { key: "None", value: "none" },
   ];
 
@@ -144,6 +165,7 @@ export default function Factory(props) {
     { key: "Days", value: "days" },
   ];
 
+  console.log("account", account);
   return (
     <FlexGradient>
       {/*
@@ -162,20 +184,17 @@ export default function Factory(props) {
         gap={3}
       >
         <GridItem colSpan={2}>
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="name">Name</FormLabel>
             <Input
               id="name"
               placeholder="KaliDAO"
               {...register("name", { required: "You must name your DAO!" })}
             />
-            <FormErrorMessage>
-              {errors.name && errors.name.message}
-            </FormErrorMessage>
           </FormControl>
         </GridItem>
         <GridItem colSpan={2}>
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="symbol">Symbol</FormLabel>
             <Input
               id="symbol"
@@ -187,7 +206,7 @@ export default function Factory(props) {
           </FormControl>
         </GridItem>
         <GridItem colSpan={2}>
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="docs">Document</FormLabel>
             <Select
               id="docs"
@@ -223,7 +242,7 @@ export default function Factory(props) {
                   control={control}
                   defaultValue={founder.address}
                   render={({ field }) => (
-                    <FormControl>
+                    <FormControl isRequired>
                       <FormLabel htmlFor={`founders.${index}.address`}>
                         Founder
                       </FormLabel>
@@ -242,7 +261,7 @@ export default function Factory(props) {
                   control={control}
                   defaultValue={founder.share}
                   render={({ field }) => (
-                    <FormControl>
+                    <FormControl isRequired>
                       <FormLabel htmlFor={`founders.${index}.share`}>
                         Share {index + 1}
                       </FormLabel>
@@ -256,9 +275,16 @@ export default function Factory(props) {
                     </FormControl>
                   )}
                 />
-                <Button variant="ghost" onClick={() => remove(index)}>
-                  X
-                </Button>
+                <IconButton
+                  aria-label="delete founder"
+                  isRound
+                  variant="ghost"
+                  _hover={{ bg: "kali.600" }}
+                  mt={8}
+                  ml={2}
+                  icon={<AiOutlineDelete />}
+                  onClick={() => remove(index)}
+                />
               </ListItem>
             ))}
           </List>
@@ -271,7 +297,7 @@ export default function Factory(props) {
           <Heading as="h3">Governance Settings</Heading>
         </GridItem>
         <GridItem colSpan={1}>
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="votingPeriod">Voting Period</FormLabel>
             <Controller
               name="votingPeriod"
@@ -297,7 +323,7 @@ export default function Factory(props) {
           </FormControl>
         </GridItem>
         <GridItem colSpan={1}>
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel htmlFor="votingPeriodUnit">Voting Period Unit</FormLabel>
             <Select
               id="votingPeriodUnit"
@@ -305,7 +331,9 @@ export default function Factory(props) {
               color="kali.800"
               bg="kali.900"
               opacity="0.90"
-              {...register("votingPeriodUnit")}
+              {...register("votingPeriodUnit", {
+                required: "You must select a voting period unit!",
+              })}
             >
               {optionsVotingPeriod.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -316,14 +344,18 @@ export default function Factory(props) {
           </FormControl>
         </GridItem>
         <GridItem colSpan={2}>
-          <Button
-            type="submit"
-            variant="solid"
-            isLoading={isSubmitting}
-            isFullWidth
-          >
-            Summon!
-          </Button>
+          {account ? (
+            <Button
+              type="submit"
+              variant="solid"
+              isLoading={isSubmitting}
+              isFullWidth
+            >
+              Summon!
+            </Button>
+          ) : (
+            <Account isFullWidth />
+          )}
         </GridItem>
       </Grid>
     </FlexGradient>

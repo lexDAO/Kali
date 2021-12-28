@@ -1,18 +1,13 @@
-import { useContext } from 'react';
-import AppContext from '../../context/AppContext';
-import {
-  Button,
-  Text
-} from "@chakra-ui/react";
+import { useContext } from "react";
+import AppContext from "../../context/AppContext";
+import { Button, Text } from "@chakra-ui/react";
+import { truncateAddress } from "../../utils/formatters";
 
-export default function Account() {
+export default function Account(props) {
   const value = useContext(AppContext);
   const { account } = value.state;
-  let display;
-  if(account) {
-    display = account.substr(0, 5) + '...' + account.substr(account.length-4, account.length);
-  }
-  return(
+
+  return (
     <Button
       flexShrink={0}
       bgGradient="linear(to-br, kali.600, kali.700)"
@@ -21,9 +16,12 @@ export default function Account() {
       color="white"
       mr={2}
       border={0}
+      {...props}
       onClick={value.connect}
     >
-      <Text maxW="xs">{account == null ? "Connect" : display}</Text>
+      <Text maxW="xs">
+        {account == null ? "Connect" : truncateAddress(account)}
+      </Text>
     </Button>
-  )
+  );
 }

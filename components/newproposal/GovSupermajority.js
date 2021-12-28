@@ -1,5 +1,5 @@
-import { useState, useContext, useEffect } from 'react';
-import AppContext from '../../context/AppContext';
+import { useState, useContext, useEffect } from "react";
+import AppContext from "../../context/AppContext";
 import {
   Textarea,
   Button,
@@ -7,10 +7,9 @@ import {
   Select,
   Text,
   HStack,
-  Stack
+  Stack,
 } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
-import { alertMessage } from "../../utils/helpers";
 
 export default function GovSupermajority() {
   const value = useContext(AppContext);
@@ -19,43 +18,41 @@ export default function GovSupermajority() {
   const submitProposal = async (event) => {
     event.preventDefault();
     value.setLoading(true);
-    console.log(value)
-    if(account===null) {
-      alertMessage('connect');
-    } else {
+    console.log(value);
+
+    try {
+      let object = event.target;
+      var array = [];
+      for (let i = 0; i < object.length; i++) {
+        array[object[i].name] = object[i].value;
+      }
+
+      var { description_, amount_, proposalType_ } = array; // this must contain any inputs from custom forms
+
+      var account_ = "0x0000000000000000000000000000000000000000";
+
+      const payload_ = Array(0);
+
+      const instance = new web3.eth.Contract(abi, address);
+
       try {
-        let object = event.target;
-        var array = [];
-        for (let i = 0; i < object.length; i++) {
-          array[object[i].name] = object[i].value;
-        }
-
-        var {
-          description_,
-          amount_,
-          proposalType_
-        } = array; // this must contain any inputs from custom forms
-
-        var account_ = "0x0000000000000000000000000000000000000000";
-
-        const payload_ = Array(0);
-
-        const instance = new web3.eth.Contract(abi, address);
-
-        try {
-          let result = await instance.methods
-            .propose(proposalType_, description_, [account_], [amount_], [payload_])
-            .send({ from: account });
-            value.setReload(value.state.reload+1);
-            value.setVisibleView(1);
-        } catch (e) {
-          alertMessage('send-transaction');
-          value.setLoading(false);
-        }
-      } catch(e) {
-        alertMessage('send-transaction');
+        let result = await instance.methods
+          .propose(
+            proposalType_,
+            description_,
+            [account_],
+            [amount_],
+            [payload_]
+          )
+          .send({ from: account });
+        value.setVisibleView(1);
+      } catch (e) {
+        value.toast(e);
         value.setLoading(false);
       }
+    } catch (e) {
+      value.toast(e);
+      value.setLoading(false);
     }
 
     value.setLoading(false);
@@ -64,9 +61,11 @@ export default function GovSupermajority() {
   return (
     <form onSubmit={submitProposal}>
       <Stack>
-        <Text><b>Details</b></Text>
+        <Text>
+          <b>Details</b>
+        </Text>
         <Textarea name="description_" size="lg" placeholder=". . ." />
-        <Text>Supermajority (currently {dao['supermajority']}%):</Text>
+        <Text>Supermajority (currently {dao["gov"]["supermajority"]}%):</Text>
         <NumInputField name="amount_" />
         <Input type="hidden" name="proposalType_" value="5" />
         <Button type="submit">Submit Proposal</Button>

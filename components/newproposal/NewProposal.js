@@ -14,13 +14,14 @@ import {
 } from "@chakra-ui/react";
 import { BrowserView, MobileView } from "react-device-detect";
 import { newProposalHelper } from "../../constants/newProposalHelper";
+import ConnectWallet from "./ConnectWallet";
 
 export default function NewProposal(props) {
   const [menuItem, setMenuItem] = useState(999); // arbitrary number where no proposal type is selected. if changed, must change below, too
   const value = useContext(AppContext);
   const { web3, loading, account, abi, address, dao, chainId } = value.state;
   const balances = props.balances;
-  console.log(newProposalHelper);
+  console.log("account", account)
 
   const handleClick = () => {
     setMenuItem(999);
@@ -69,7 +70,7 @@ export default function NewProposal(props) {
 
   return (
     <>
-    {dao == null ? null :
+    {dao == null ? null : account == null ? <ConnectWallet /> :
       <>
       <MobileView>
         <form>

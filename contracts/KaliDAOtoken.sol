@@ -123,8 +123,6 @@ abstract contract KaliDAOtoken {
         unchecked {
             for (uint256 i; i < voters_.length; i++) {
                 _mint(voters_[i], shares_[i]);
-
-                _moveDelegates(address(0), delegates(voters_[i]), shares_[i]);
             }
         }
     }

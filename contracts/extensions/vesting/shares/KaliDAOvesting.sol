@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.4;
 
-import '../../utils/ReentrancyGuard.sol';
+import '../../../utils/ReentrancyGuard.sol';
 
 /// @notice Vesting contract for KaliDAO tokens.
 contract KaliDAOvesting is ReentrancyGuard {

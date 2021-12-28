@@ -399,6 +399,8 @@ abstract contract KaliDAOtoken {
             balanceOf[to] += amount;
         }
 
+        _moveDelegates(address(0), delegates(to), amount);
+
         emit Transfer(address(0), to, amount);
     }
 
@@ -410,6 +412,8 @@ abstract contract KaliDAOtoken {
         unchecked {
             totalSupply -= amount;
         }
+
+        _moveDelegates(delegates(from), address(0), amount);
 
         emit Transfer(from, address(0), amount);
     }

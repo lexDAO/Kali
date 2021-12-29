@@ -58,7 +58,9 @@ abstract contract KaliDAOnft {
 
     string public symbol;
 
-    function tokenURI(uint256 id) public view virtual returns (string memory);
+    function tokenURI(uint256) public view virtual returns (string memory) {
+        return 'PLACEHOLDER';
+    }
 
     /*///////////////////////////////////////////////////////////////
                             ERC-721 STORAGE

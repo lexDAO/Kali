@@ -6,8 +6,6 @@ import '../ERC721.sol';
 
 /// @notice Public NFT minter for Kali DAO.
 contract KaliNFT is ERC721 {
-    error NotOwner();
-    
     constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {}
     
     function mint(address to, uint256 tokenId) external { 

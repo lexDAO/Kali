@@ -1,28 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity >=0.8.0;
+pragma solidity >=0.8.4;
 
 import '../ERC721.sol';
 
-/// @notice Public NFT minter for KaliDAO.
-abstract contract KaliNFT is ERC721 {
-    constructor(string memory name_, string memory symbol_) 
-        ERC721(name_, symbol_) {}
+/// @notice Public NFT minter for Kali DAO.
+contract KaliNFT is ERC721 {
+    error NotOwner();
     
-    function mint(
-        address to, 
-        uint256 tokenId
-        // string memory tokenURI_
-    ) external { 
-        _mint(
-            to, 
-            tokenId 
-            // tokenURI_
-        );
+    constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {}
+    
+    function mint(address to, uint256 tokenId) external { 
+        _mint(to, tokenId);
     }
 
     function burn(uint256 tokenId) external {
-        require(msg.sender == ownerOf[tokenId], 'NOT_OWNER');
+        if (msg.sender != ownerOf[tokenId]) revert NotOwner();
 
         _burn(tokenId);
     }

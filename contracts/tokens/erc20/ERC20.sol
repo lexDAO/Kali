@@ -95,10 +95,8 @@ abstract contract ERC20 {
         address to,
         uint256 amount
     ) public virtual returns (bool) {
-        unchecked {
-            if (allowance[from][msg.sender] != type(uint256).max) {
-                allowance[from][msg.sender] -= amount;
-            }
+        if (allowance[from][msg.sender] != type(uint256).max) {
+            allowance[from][msg.sender] -= amount;
         }
 
         balanceOf[from] -= amount;

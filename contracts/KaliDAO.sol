@@ -9,7 +9,7 @@ import './utils/ReentrancyGuard.sol';
 import './IKaliDAOextension.sol';
 
 /// @notice Simple gas-optimized Kali DAO core module.
-contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
+contract KaliDAO is KaliDAOnft, Multicall, NFThelper, ReentrancyGuard {
     /*///////////////////////////////////////////////////////////////
                             EVENTS
     //////////////////////////////////////////////////////////////*/
@@ -152,7 +152,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
         if (govSettings_[1] <= 51 || govSettings_[1] > 100) revert SupermajorityBounds();
 
-        KaliDAOtoken._init(name_, symbol_, paused_, voters_, shares_);
+        KaliDAOnft._init(name_, symbol_, paused_, voters_, shares_);
 
         if (extensions_.length != 0) {
             // this is reasonably safe from overflow because incrementing `i` loop beyond
@@ -415,7 +415,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                     
                 if (prop.proposalType == ProposalType.BURN) 
                     for (uint256 i; i < prop.accounts.length; i++) {
-                        _burn(prop.accounts[i], prop.amounts[i]);
+                        _burn(prop.amounts[i]);
                     }
                     
                 if (prop.proposalType == ProposalType.CALL) 
@@ -519,7 +519,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         if (mint) {
             if (amountOut != 0) _mint(msg.sender, amountOut); 
         } else {
-            if (amountOut != 0) _burn(msg.sender, amount);
+            if (amountOut != 0) _burn(amount);
         }
     }
 }

@@ -217,11 +217,11 @@ describe("KaliDAO", function () {
       30,
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
-    await kali.propose(5, "TEST", [proposer.address], [51], [0x00])
+    await kali.propose(5, "TEST", [proposer.address], [52], [0x00])
     await kali.vote(0, true)
     await advanceTime(35)
     await kali.processProposal(0)
-    expect(await kali.supermajority()).to.equal(51)
+    expect(await kali.supermajority()).to.equal(52)
   })
 
   it("Should process type proposal", async function () {
@@ -426,6 +426,9 @@ describe("KaliDAO", function () {
     await kali.vote(0, true)
     await advanceTime(35)
     await kali.processProposal(0)
+    await purchaseToken
+      .connect(alice)
+      .approve(kaliDAOcrowdsale.address, getBigNumber(50))
     await kali
       .connect(alice)
       .callExtension(kaliDAOcrowdsale.address, getBigNumber(50), 0x0)

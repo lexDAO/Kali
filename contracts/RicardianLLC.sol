@@ -67,7 +67,9 @@ contract RicardianLLC is ERC721, Multicall {
     //////////////////////////////////////////////////////////////*/
 
     function govMint(address to) public onlyGovernance virtual {
-        _mint(to, totalSupply++);
+        uint256 tokenId = totalSupply;
+        
+        _mint(to, tokenId);
     }
 
     function govBurn(uint256 tokenId) public onlyGovernance virtual {

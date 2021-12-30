@@ -296,8 +296,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         // can help external contracts track proposal # changes
         proposalStates[proposal].sponsoredProposal = sponsoredProposal;
 
-        // this is reasonably safe from overflow because incrementing `proposalCount` beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        // cannot realistically overflow on human timescales
         unchecked {
             proposalCount++;
         }
@@ -319,7 +318,6 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         bytes32 r, 
         bytes32 s
     ) public nonReentrant virtual {
-        // validate signature elements
         bytes32 digest =
             keccak256(
                 abi.encodePacked(
@@ -405,8 +403,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         didProposalPass = _countVotes(voteType, prop.yesVotes, prop.noVotes);
         
         if (didProposalPass) {
-            // this is reasonably safe from overflow because incrementing `i` loop beyond
-            // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+            // cannot realistically overflow on human timescales
             unchecked {
                 if (prop.proposalType == ProposalType.MINT) 
                     for (uint256 i; i < prop.accounts.length; i++) {

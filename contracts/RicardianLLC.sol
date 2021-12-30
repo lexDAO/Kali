@@ -31,11 +31,14 @@ contract RicardianLLC is ERC721, Multicall {
         string memory name_, 
         string memory symbol_, 
         string memory commonURI_,
+        string memory masterOperatingAgreement_,
         uint256 mintFee_
     ) ERC721(name_, symbol_) {
         governance = msg.sender;
 
         commonURI = commonURI_;
+
+        masterOperatingAgreement = masterOperatingAgreement_;
 
         mintFee = mintFee_;
     }

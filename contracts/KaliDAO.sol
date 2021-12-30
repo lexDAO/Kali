@@ -155,8 +155,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         KaliDAOtoken._init(name_, symbol_, paused_, voters_, shares_);
 
         if (extensions_.length != 0) {
-            // this is reasonably safe from overflow because incrementing `i` loop beyond
-            // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+            // cannot realistically overflow on human timescales
             unchecked {
                 for (uint256 i; i < extensions_.length; i++) {
                     extensions[extensions_[i]] = true;
@@ -249,8 +248,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             proposer: msg.sender
         });
         
-        // this is reasonably safe from overflow because incrementing `proposalCount` beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        // cannot realistically overflow on human timescales
         unchecked {
             proposalCount++;
         }

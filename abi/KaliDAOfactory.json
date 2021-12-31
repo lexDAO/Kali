@@ -1,132 +1,127 @@
 [
-  {
-    "inputs": [
-      {
-        "internalType": "address payable",
-        "name": "kaliMaster_",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IRicardianLLC",
-        "name": "ricardianLLC_",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "inputs": [],
-    "name": "NullDeploy",
-    "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "contract KaliDAO",
-        "name": "kaliDAO",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "name": "DAOdeployed",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "name_",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "symbol_",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "docs_",
-        "type": "string"
-      },
-      {
-        "internalType": "bool",
-        "name": "paused_",
-        "type": "bool"
-      },
-      {
-        "internalType": "address[]",
-        "name": "extensions_",
-        "type": "address[]"
-      },
-      {
-        "internalType": "bytes[]",
-        "name": "extensionsData_",
-        "type": "bytes[]"
-      },
-      {
-        "internalType": "address[]",
-        "name": "voters_",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "shares_",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "uint32",
-        "name": "votingPeriod_",
-        "type": "uint32"
-      },
-      {
-        "internalType": "uint8[13]",
-        "name": "govSettings_",
-        "type": "uint8[13]"
-      }
-    ],
-    "name": "deployKaliDAO",
-    "outputs": [
-      {
-        "internalType": "contract KaliDAO",
-        "name": "kaliDAO",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "kaliMaster",
-    "outputs": [
-      {
-        "internalType": "address payable",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "ricardianLLC",
-    "outputs": [
-      {
-        "internalType": "contract IRicardianLLC",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  }
+	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "kaliMaster_",
+				"type": "address"
+			},
+			{
+				"internalType": "contract IRicardianLLC",
+				"name": "ricardianLLC_",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "contract KaliDAO",
+				"name": "kaliDAO",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			}
+		],
+		"name": "DAOdeployed",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "name_",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "symbol_",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "docs_",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "paused_",
+				"type": "bool"
+			},
+			{
+				"internalType": "address[]",
+				"name": "extensions_",
+				"type": "address[]"
+			},
+			{
+				"internalType": "bytes[]",
+				"name": "extensionsData_",
+				"type": "bytes[]"
+			},
+			{
+				"internalType": "address[]",
+				"name": "voters_",
+				"type": "address[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "shares_",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint32",
+				"name": "votingPeriod_",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint8[13]",
+				"name": "govSettings_",
+				"type": "uint8[13]"
+			}
+		],
+		"name": "deployKaliDAO",
+		"outputs": [
+			{
+				"internalType": "contract KaliDAO",
+				"name": "kaliDAO",
+				"type": "address"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "kaliMaster",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "ricardianLLC",
+		"outputs": [
+			{
+				"internalType": "contract IRicardianLLC",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
 ]

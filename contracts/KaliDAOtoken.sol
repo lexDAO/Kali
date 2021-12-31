@@ -18,7 +18,7 @@ abstract contract KaliDAOtoken {
 
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
 
-    event PauseFlipped(bool indexed paused);
+    event PauseFlipped(bool paused);
 
     /*///////////////////////////////////////////////////////////////
                             ERRORS
@@ -63,6 +63,19 @@ abstract contract KaliDAOtoken {
     mapping(address => mapping(address => uint256)) public allowance;
 
     /*///////////////////////////////////////////////////////////////
+                            EIP-2612 STORAGE
+    //////////////////////////////////////////////////////////////*/
+
+    bytes32 public constant PERMIT_TYPEHASH =
+        keccak256('Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)');
+
+    uint256 internal INITIAL_CHAIN_ID;
+
+    bytes32 internal INITIAL_DOMAIN_SEPARATOR;
+
+    mapping(address => uint256) public nonces;
+
+    /*///////////////////////////////////////////////////////////////
                             DAO STORAGE
     //////////////////////////////////////////////////////////////*/
 
@@ -81,19 +94,6 @@ abstract contract KaliDAOtoken {
         uint32 fromTimestamp;
         uint96 votes;
     }
-
-    /*///////////////////////////////////////////////////////////////
-                            EIP-2612 STORAGE
-    //////////////////////////////////////////////////////////////*/
-
-    bytes32 public constant PERMIT_TYPEHASH =
-        keccak256('Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)');
-
-    uint256 internal INITIAL_CHAIN_ID;
-
-    bytes32 internal INITIAL_DOMAIN_SEPARATOR;
-
-    mapping(address => uint256) public nonces;
 
     /*///////////////////////////////////////////////////////////////
                             CONSTRUCTOR
@@ -118,13 +118,10 @@ abstract contract KaliDAOtoken {
         
         INITIAL_DOMAIN_SEPARATOR = _computeDomainSeparator();
         
-        // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        // cannot realistically overflow on human timescales
         unchecked {
             for (uint256 i; i < voters_.length; i++) {
                 _mint(voters_[i], shares_[i]);
-
-                _moveDelegates(address(0), delegates(voters_[i]), shares_[i]);
             }
         }
     }
@@ -144,8 +141,8 @@ abstract contract KaliDAOtoken {
     function transfer(address to, uint256 amount) public notPaused virtual returns (bool) {
         balanceOf[msg.sender] -= amount;
 
-        // this is safe from overflow because the sum of all user
-        // balances can't exceed 'type(uint256).max'
+        // cannot overflow because the sum of all user
+        // balances can't exceed the max uint256 value
         unchecked {
             balanceOf[to] += amount;
         }
@@ -167,8 +164,8 @@ abstract contract KaliDAOtoken {
 
         balanceOf[from] -= amount;
 
-        // this is safe from overflow because the sum of all user
-        // balances can't exceed 'type(uint256).max'
+        // cannot overflow because the sum of all user
+        // balances can't exceed the max uint256 value
         unchecked {
             balanceOf[to] += amount;
         }
@@ -181,6 +178,58 @@ abstract contract KaliDAOtoken {
     }
 
     /*///////////////////////////////////////////////////////////////
+                            EIP-2612 LOGIC
+    //////////////////////////////////////////////////////////////*/
+    
+    function permit(
+        address owner,
+        address spender,
+        uint256 value,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) public virtual {
+        if (block.timestamp > deadline) revert SignatureExpired();
+
+        // cannot realistically overflow on human timescales
+        unchecked {
+            bytes32 digest = keccak256(
+                abi.encodePacked(
+                    '\x19\x01',
+                    DOMAIN_SEPARATOR(),
+                    keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, value, nonces[owner]++, deadline))
+                )
+            );
+
+            address recoveredAddress = ecrecover(digest, v, r, s);
+
+            if (recoveredAddress == address(0) || recoveredAddress != owner) revert InvalidSignature();
+
+            allowance[recoveredAddress][spender] = value;
+        }
+
+        emit Approval(owner, spender, value);
+    }
+
+    function DOMAIN_SEPARATOR() public view virtual returns (bytes32) {
+        return block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
+    }
+
+    function _computeDomainSeparator() internal view virtual returns (bytes32) {
+        return 
+            keccak256(
+                abi.encode(
+                    keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
+                    keccak256(bytes(name)),
+                    keccak256(bytes('1')),
+                    block.chainid,
+                    address(this)
+                )
+            );
+    }
+
+    /*///////////////////////////////////////////////////////////////
                             DAO LOGIC
     //////////////////////////////////////////////////////////////*/
 
@@ -190,18 +239,18 @@ abstract contract KaliDAOtoken {
         _;
     }
     
-    function delegates(address delegator) public view virtual returns (address delegatee) {
+    function delegates(address delegator) public view virtual returns (address) {
         address current = _delegates[delegator];
         
-        delegatee = current == address(0) ? delegator : current;
+        return current == address(0) ? delegator : current;
     }
 
-    function getCurrentVotes(address account) public view virtual returns (uint256 votes) {
+    function getCurrentVotes(address account) public view virtual returns (uint256) {
         // this is safe from underflow because decrement only occurs if `nCheckpoints` is positive
         unchecked {
             uint256 nCheckpoints = numCheckpoints[account];
 
-            votes = nCheckpoints != 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
+            return nCheckpoints != 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
         }
     }
 
@@ -227,8 +276,7 @@ abstract contract KaliDAOtoken {
 
         if (signatory == address(0)) revert NullAddress();
         
-        // this is reasonably safe from overflow because incrementing `nonces` beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        // cannot realistically overflow on human timescales
         unchecked {
             if (nonce != nonces[signatory]++) revert InvalidNonce();
         }
@@ -236,7 +284,7 @@ abstract contract KaliDAOtoken {
         _delegate(signatory, delegatee);
     }
 
-    function getPriorVotes(address account, uint256 timestamp) public view virtual returns (uint96 votes) {
+    function getPriorVotes(address account, uint256 timestamp) public view virtual returns (uint96) {
         if (block.timestamp <= timestamp) revert NotDetermined();
 
         uint256 nCheckpoints = numCheckpoints[account];
@@ -325,65 +373,12 @@ abstract contract KaliDAOtoken {
             } else {
                 checkpoints[delegatee][nCheckpoints] = Checkpoint(_safeCastTo32(block.timestamp), _safeCastTo96(newVotes));
                 
-                // this is reasonably safe from overflow because incrementing `nCheckpoints` beyond
-                // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+                // cannot realistically overflow on human timescales
                 numCheckpoints[delegatee] = nCheckpoints + 1;
             }
         }
 
         emit DelegateVotesChanged(delegatee, oldVotes, newVotes);
-    }
-
-    /*///////////////////////////////////////////////////////////////
-                            EIP-2612 LOGIC
-    //////////////////////////////////////////////////////////////*/
-    
-    function DOMAIN_SEPARATOR() public view virtual returns (bytes32 domainSeparator) {
-        domainSeparator = block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
-    }
-
-    function _computeDomainSeparator() internal view virtual returns (bytes32 domainSeparator) {
-        domainSeparator = keccak256(
-            abi.encode(
-                keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
-                keccak256(bytes(name)),
-                keccak256(bytes('1')),
-                block.chainid,
-                address(this)
-            )
-        );
-    }
-
-    function permit(
-        address owner,
-        address spender,
-        uint256 value,
-        uint256 deadline,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) public virtual {
-        if (block.timestamp > deadline) revert SignatureExpired();
-
-        // this is reasonably safe from overflow because incrementing `nonces` beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
-        unchecked {
-            bytes32 digest = keccak256(
-                abi.encodePacked(
-                    '\x19\x01',
-                    DOMAIN_SEPARATOR(),
-                    keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, value, nonces[owner]++, deadline))
-                )
-            );
-
-            address recoveredAddress = ecrecover(digest, v, r, s);
-
-            if (recoveredAddress == address(0) || recoveredAddress != owner) revert InvalidSignature();
-
-            allowance[recoveredAddress][spender] = value;
-        }
-
-        emit Approval(owner, spender, value);
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -393,11 +388,13 @@ abstract contract KaliDAOtoken {
     function _mint(address to, uint256 amount) internal virtual {
         totalSupply += amount;
 
-        // this is safe because the sum of all user
-        // balances can't exceed 'type(uint256).max'
+        // cannot overflow because the sum of all user
+        // balances can't exceed the max uint256 value
         unchecked {
             balanceOf[to] += amount;
         }
+
+        _moveDelegates(address(0), delegates(to), amount);
 
         emit Transfer(address(0), to, amount);
     }
@@ -405,11 +402,13 @@ abstract contract KaliDAOtoken {
     function _burn(address from, uint256 amount) internal virtual {
         balanceOf[from] -= amount;
 
-        // this is safe because a user won't ever
-        // have a balance larger than `totalSupply`
+        // cannot underflow because a user's balance
+        // will never be larger than the total supply
         unchecked {
             totalSupply -= amount;
         }
+
+        _moveDelegates(delegates(from), address(0), amount);
 
         emit Transfer(from, address(0), amount);
     }
@@ -428,15 +427,15 @@ abstract contract KaliDAOtoken {
                             SAFECAST LOGIC
     //////////////////////////////////////////////////////////////*/
     
-    function _safeCastTo32(uint256 x) internal pure virtual returns (uint32 y) {
+    function _safeCastTo32(uint256 x) internal pure virtual returns (uint32) {
         if (x > type(uint32).max) revert Uint32max();
 
-        y = uint32(x);
+        return uint32(x);
     }
     
-    function _safeCastTo96(uint256 x) internal pure virtual returns (uint96 y) {
+    function _safeCastTo96(uint256 x) internal pure virtual returns (uint96) {
         if (x > type(uint96).max) revert Uint96max();
 
-        y = uint96(x);
+        return uint96(x);
     }
 }

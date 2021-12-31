@@ -27,8 +27,17 @@ const proposalTypes = require("../../constants/params");
 
 export default function Dashboard() {
   const value = useContext(AppContext);
-  const { web3, loading, account, abi, chainId, visibleView, dao, address, daoChain } =
-    value.state;
+  const {
+    web3,
+    loading,
+    account,
+    abi,
+    chainId,
+    visibleView,
+    dao,
+    address,
+    daoChain,
+  } = value.state;
 
   const reloadDao = async () => {
     fetchData();
@@ -68,40 +77,45 @@ export default function Dashboard() {
 
   return (
     <>
-    <Reload reload={reloadDao} />
-    <Grid
-      gap={5}
-      templateColumns={{
-        sm: "repeat(1, 1fr)",
-        md: "repeat(2, 1fr)",
-        lg: "repeat(2, 1fr)",
-      }}>
-      {dao == null || web3 == undefined ? (
-        "Loading . . ."
-      ) : (
-        <>
-          {Object.entries(dashboardHelper).map(([k, v]) => (
-            dashboardHelper[k]["check"] != null && dao[dashboardHelper[k]["check"]] == null ? null :
-            <Box
-              key={`component-${k}`}
-              p={5}
-              w="450px"
-              border="1px solid"
-              border="1px solid"
-              rounded="xl"
-              borderColor="black"
-              padding="25px"
-              margin="5px"
-            >
-              <Text fontSize="xl">
-                <b>{dashboardHelper[k]["title"]}</b>
-              </Text>
-              {dashboardHelper[k]["component"]}
-            </Box>
-          ))}
-        </>
-      )}
-    </Grid>
+      <Reload reload={reloadDao} />
+      <Grid
+        gap={5}
+        templateColumns={{
+          sm: "repeat(1, 1fr)",
+          md: "repeat(2, 1fr)",
+          lg: "repeat(2, 1fr)",
+        }}
+      >
+        {dao == null || web3 == undefined ? (
+          "Loading . . ."
+        ) : (
+          <>
+            {Object.entries(dashboardHelper).map(([k, v]) =>
+              dashboardHelper[k]["check"] != null &&
+              dao[dashboardHelper[k]["check"]] == null ? null : (
+                <Box
+                  key={`component-${k}`}
+                  p={5}
+                  w="450px"
+                  border="1px solid"
+                  border="1px solid"
+                  rounded="xl"
+                  borderColor="black"
+                  padding="25px"
+                  margin="5px"
+                  bg="kali.900"
+                  color="kali.800"
+                >
+                  <Text fontSize="xl">
+                    <b>{dashboardHelper[k]["title"]}</b>
+                  </Text>
+                  {dashboardHelper[k]["component"]}
+                </Box>
+              )
+            )}
+          </>
+        )}
+      </Grid>
     </>
   );
 }

@@ -9,7 +9,8 @@ import ActionMenu from "../../components/structure/ActionMenu";
 
 export default function Dao() {
   const value = useContext(AppContext);
-  const { visibleView, daoChain } = value.state;
+  const { visibleView, daoChain, account } = value.state;
+  console.log("account", account)
   // * get DAO address from route * //
   const router = useRouter();
   const address = router.query.dao;

@@ -18,7 +18,7 @@ export default function Nav() {
       {isBrowser == true ? <Kali /> : null}
       <Spacer />
       <Chain />
-      <Account />
+      <Account message="Connect" />
       <DarkModeSwitch />
       <Hamburger />
     </HStack>

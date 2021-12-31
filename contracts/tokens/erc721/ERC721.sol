@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity >=0.8.0;
+pragma solidity >=0.8.4;
 
 /// @notice Modern and gas efficient ERC-721 + ERC-20/EIP-2612-like implementation.
 abstract contract ERC721 {
@@ -15,12 +15,34 @@ abstract contract ERC721 {
     event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
 
     /*///////////////////////////////////////////////////////////////
-                            METADATA STORAGE
+                            ERRORS
+    //////////////////////////////////////////////////////////////*/
+
+    error NotApproved();
+    
+    error NotOwner();
+
+    error InvalidRecipient();
+
+    error SignatureExpired();
+
+    error InvalidSignature();
+
+    error AlreadyMinted();
+
+    error NotMinted();
+
+    /*///////////////////////////////////////////////////////////////
+                            METADATA STORAGE/LOGIC
     //////////////////////////////////////////////////////////////*/
     
     string public name;
 
     string public symbol;
+
+    function tokenURI(uint256) public view virtual returns (string memory) {
+        return 'PLACEHOLDER';
+    }
 
     /*///////////////////////////////////////////////////////////////
                             ERC-721 STORAGE
@@ -31,8 +53,6 @@ abstract contract ERC721 {
     mapping(address => uint256) public balanceOf;
 
     mapping(uint256 => address) public ownerOf;
-
-    mapping(uint256 => string) public tokenURI;
 
     mapping(uint256 => address) public getApproved;
 
@@ -60,9 +80,9 @@ abstract contract ERC721 {
                             CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
     
-    constructor(string memory _name, string memory _symbol) {
-        name = _name;
-        symbol = _symbol;
+    constructor(string memory name_, string memory symbol_) {
+        name = name_;
+        symbol = symbol_;
         
         INITIAL_CHAIN_ID = block.chainid;
         INITIAL_DOMAIN_SEPARATOR = _computeDomainSeparator();
@@ -71,15 +91,11 @@ abstract contract ERC721 {
     /*///////////////////////////////////////////////////////////////
                             ERC-721 LOGIC
     //////////////////////////////////////////////////////////////*/
-
-    function supportsInterface(bytes4 interfaceId) public pure virtual returns (bool supported) {
-        supported = interfaceId == 0x80ac58cd || interfaceId == 0x5b5e139f || interfaceId == 0x01ffc9a7;
-    }
     
     function approve(address spender, uint256 tokenId) public virtual {
         address owner = ownerOf[tokenId];
-        
-        require(msg.sender == owner || isApprovedForAll[owner][msg.sender], 'NOT_APPROVED');
+
+        if (msg.sender != owner && !isApprovedForAll[owner][msg.sender]) revert NotApproved();
         
         getApproved[tokenId] = spender;
         
@@ -92,12 +108,13 @@ abstract contract ERC721 {
         emit ApprovalForAll(msg.sender, operator, approved);
     }
     
-    function transfer(address to, uint256 tokenId) public virtual returns (bool success) {
-        require(msg.sender == ownerOf[tokenId], 'NOT_OWNER');
+    function transfer(address to, uint256 tokenId) public virtual returns (bool) {
+        if (msg.sender != ownerOf[tokenId]) revert NotOwner();
+
+        if (to == address(0)) revert InvalidRecipient();
         
-        // this is safe because ownership is checked
-        // against decrement, and sum of all user
-        // balances can't exceed 'type(uint256).max'
+        // underflow of the sender's balance is impossible because we check for
+        // ownership above and the recipient's balance can't realistically overflow
         unchecked {
             balanceOf[msg.sender]--; 
         
@@ -110,7 +127,7 @@ abstract contract ERC721 {
         
         emit Transfer(msg.sender, to, tokenId); 
         
-        success = true;
+        return true;
     }
 
     function transferFrom(
@@ -118,18 +135,17 @@ abstract contract ERC721 {
         address to, 
         uint256 tokenId
     ) public virtual {
-        require(from == ownerOf[tokenId], 'NOT_OWNER');
+        if (from != ownerOf[tokenId]) revert NotOwner();
+
+        if (to == address(0)) revert InvalidRecipient();
         
-        require(
-            msg.sender == from 
-            || msg.sender == getApproved[tokenId]
-            || isApprovedForAll[from][msg.sender], 
-            'NOT_APPROVED'
-        );
+        if (msg.sender == from 
+            && msg.sender == getApproved[tokenId]
+            && isApprovedForAll[from][msg.sender]
+        ) revert NotApproved();  
         
-        // this is safe because ownership is checked
-        // against decrement, and sum of all user
-        // balances can't exceed 'type(uint256).max'
+        // underflow of the sender's balance is impossible because we check for
+        // ownership above and the recipient's balance can't realistically overflow
         unchecked { 
             balanceOf[from]--; 
         
@@ -148,7 +164,10 @@ abstract contract ERC721 {
         address to, 
         uint256 tokenId
     ) public virtual {
-        safeTransferFrom(from, to, tokenId, '');
+        if (to.code.length != 0 
+            && ERC721TokenReceiver(to).onERC721Received(msg.sender, from, tokenId, '') 
+            != ERC721TokenReceiver.onERC721Received.selector
+        ) revert InvalidRecipient();
     }
     
     function safeTransferFrom(
@@ -159,36 +178,26 @@ abstract contract ERC721 {
     ) public virtual {
         transferFrom(from, to, tokenId); 
         
-        if (to.code.length != 0) {
-            // selector = `onERC721Received(address,address,uint256,bytes)`
-            (, bytes memory returned) = to.staticcall(abi.encodeWithSelector(0x150b7a02,
-                msg.sender, from, tokenId, data));
-                
-            bytes4 selector = abi.decode(returned, (bytes4));
-            
-            require(selector == 0x150b7a02, 'NOT_ERC721_RECEIVER');
-        }
+        if (to.code.length != 0 
+            && ERC721TokenReceiver(to).onERC721Received(msg.sender, from, tokenId, data) 
+            != ERC721TokenReceiver.onERC721Received.selector
+        ) revert InvalidRecipient();
+    }
+
+    /*///////////////////////////////////////////////////////////////
+                            ERC-165 LOGIC
+    //////////////////////////////////////////////////////////////*/
+
+    function supportsInterface(bytes4 interfaceId) public pure virtual returns (bool) {
+        return
+            interfaceId == 0x80ac58cd || // ERC165 Interface ID for ERC721
+            interfaceId == 0x5b5e139f || // ERC165 Interface ID for ERC165
+            interfaceId == 0x01ffc9a7; // ERC165 Interface ID for ERC721Metadata
     }
 
     /*///////////////////////////////////////////////////////////////
                             EIP-2612-LIKE LOGIC
     //////////////////////////////////////////////////////////////*/
-    
-    function DOMAIN_SEPARATOR() public view virtual returns (bytes32 domainSeparator) {
-        domainSeparator = block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
-    }
-
-    function _computeDomainSeparator() internal view virtual returns (bytes32 domainSeparator) {
-        domainSeparator = keccak256(
-            abi.encode(
-                keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
-                keccak256(bytes(name)),
-                keccak256(bytes('1')),
-                block.chainid,
-                address(this)
-            )
-        );
-    }
     
     function permit(
         address spender,
@@ -198,7 +207,7 @@ abstract contract ERC721 {
         bytes32 r,
         bytes32 s
     ) public virtual {
-        require(block.timestamp <= deadline, 'PERMIT_DEADLINE_EXPIRED');
+        if (block.timestamp > deadline) revert SignatureExpired();
         
         address owner = ownerOf[tokenId];
         
@@ -215,9 +224,9 @@ abstract contract ERC721 {
 
             address recoveredAddress = ecrecover(digest, v, r, s);
 
-            require(recoveredAddress != address(0), 'INVALID_PERMIT_SIGNATURE');
+            if (recoveredAddress == address(0)) revert InvalidSignature();
 
-            require(recoveredAddress == owner || isApprovedForAll[owner][recoveredAddress], 'INVALID_SIGNER');
+            if (recoveredAddress != owner && !isApprovedForAll[owner][recoveredAddress]) revert InvalidSignature(); 
         }
         
         getApproved[tokenId] = spender;
@@ -233,7 +242,7 @@ abstract contract ERC721 {
         bytes32 r,
         bytes32 s
     ) public virtual {
-        require(block.timestamp <= deadline, 'PERMIT_DEADLINE_EXPIRED');
+        if (block.timestamp > deadline) revert SignatureExpired();
         
         // this is reasonably safe from overflow because incrementing `nonces` beyond
         // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
@@ -247,11 +256,10 @@ abstract contract ERC721 {
             );
 
             address recoveredAddress = ecrecover(digest, v, r, s);
-            
-            require(
-                (recoveredAddress != address(0) && recoveredAddress == owner) || isApprovedForAll[owner][recoveredAddress],
-                'INVALID_PERMIT_SIGNATURE'
-            );
+
+            if (recoveredAddress == address(0)) revert InvalidSignature();
+
+            if (recoveredAddress != owner && !isApprovedForAll[owner][recoveredAddress]) revert InvalidSignature();
         }
         
         isApprovedForAll[owner][operator] = true;
@@ -259,20 +267,33 @@ abstract contract ERC721 {
         emit ApprovalForAll(owner, operator, true);
     }
 
+    function DOMAIN_SEPARATOR() public view virtual returns (bytes32) {
+        return block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
+    }
+
+    function _computeDomainSeparator() internal view virtual returns (bytes32) {
+        return 
+            keccak256(
+                abi.encode(
+                    keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
+                    keccak256(bytes(name)),
+                    keccak256(bytes('1')),
+                    block.chainid,
+                    address(this)
+                )
+            );
+    }
+
     /*///////////////////////////////////////////////////////////////
                             MINT/BURN LOGIC
     //////////////////////////////////////////////////////////////*/
     
-    function _mint(
-        address to, 
-        uint256 tokenId, 
-        string memory tokenURI_
-    ) internal virtual { 
-        require(ownerOf[tokenId] == address(0), 'ALREADY_MINTED');
+    function _mint(address to, uint256 tokenId) internal virtual { 
+        if (to == address(0)) revert InvalidRecipient();
+
+        if (ownerOf[tokenId] != address(0)) revert AlreadyMinted();
   
-        // this is reasonably safe from overflow because incrementing `totalSupply` beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits,
-        // and because the sum of all user balances can't exceed 'type(uint256).max'
+        // cannot realistically overflow on human timescales
         unchecked {
             totalSupply++;
             
@@ -281,18 +302,15 @@ abstract contract ERC721 {
         
         ownerOf[tokenId] = to;
         
-        tokenURI[tokenId] = tokenURI_;
-        
         emit Transfer(address(0), to, tokenId); 
     }
     
     function _burn(uint256 tokenId) internal virtual { 
         address owner = ownerOf[tokenId];
+
+        if (ownerOf[tokenId] == address(0)) revert NotMinted();
         
-        require(ownerOf[tokenId] != address(0), 'NOT_MINTED');
-        
-        // this is safe because a user won't ever
-        // have a balance larger than `totalSupply`
+        // ownership check ensures no underflow
         unchecked {
             totalSupply--;
         
@@ -301,8 +319,17 @@ abstract contract ERC721 {
         
         delete ownerOf[tokenId];
         
-        delete tokenURI[tokenId];
-        
         emit Transfer(owner, address(0), tokenId); 
     }
+}
+
+/// @notice A generic interface for a contract which properly accepts ERC721 tokens.
+/// @author Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC721.sol)
+interface ERC721TokenReceiver {
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) external returns (bytes4);
 }

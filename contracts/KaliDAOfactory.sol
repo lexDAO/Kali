@@ -30,7 +30,7 @@ contract KaliDAOfactory {
         uint256[] calldata shares_,
         uint32 votingPeriod_,
         uint8[13] memory govSettings_
-    ) external payable returns (KaliDAO kaliDAO) {
+    ) public payable virtual returns (KaliDAO kaliDAO) {
         kaliDAO = KaliDAO(_cloneAsMinimalProxy(kaliMaster));
         
         kaliDAO.init{value: msg.value}(

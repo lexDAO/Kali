@@ -1,14 +1,7 @@
 import { useContext } from "react";
 import AppContext from "../../context/AppContext";
 import { BrowserView, MobileView } from "react-device-detect";
-import {
-  Flex,
-  Button,
-  Spacer,
-  Center,
-  HStack,
-  IconButton,
-} from "@chakra-ui/react";
+import { Button, Center, HStack } from "@chakra-ui/react";
 
 const ActionButton = (props) => {
   return (
@@ -16,18 +9,17 @@ const ActionButton = (props) => {
       onClick={props.onClick}
       size="sm"
       backgroundColor={props.backgroundColor}
+      color="kali.800"
       border="0px"
     >
       {props.children}
     </Button>
   );
 };
-const active = "red";
-const inactive = "white";
 
 export default function ActionMenu(props) {
   const value = useContext(AppContext);
-  const { web3, loading, abi, visibleView } = value.state;
+  const { visibleView } = value.state;
 
   const handleClick = (id) => {
     value.setVisibleView(id);
@@ -38,19 +30,19 @@ export default function ActionMenu(props) {
       <HStack p={5} backgroundColor="lightgrey" rounded="md" m={3} p={3}>
         <ActionButton
           onClick={() => handleClick(1)}
-          backgroundColor={visibleView == 1 ? active : inactive}
+          backgroundColor={visibleView == 1 ? "kali.700" : "kali.900"}
         >
           Dashboard
         </ActionButton>
         <ActionButton
           onClick={() => handleClick(2)}
-          backgroundColor={visibleView == 2 ? active : inactive}
+          backgroundColor={visibleView == 2 ? "kali.700" : "kali.900"}
         >
           Proposals
         </ActionButton>
         <ActionButton
           onClick={() => handleClick(3)}
-          backgroundColor={visibleView == 3 ? active : inactive}
+          backgroundColor={visibleView == 3 ? "kali.700" : "kali.900"}
         >
           New Proposal
         </ActionButton>

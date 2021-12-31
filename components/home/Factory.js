@@ -354,7 +354,7 @@ export default function Factory(props) {
               Summon!
             </Button>
           ) : (
-            <Account isFullWidth />
+            <Account isFullWidth message="Connect Wallet!" />
           )}
         </GridItem>
       </Grid>

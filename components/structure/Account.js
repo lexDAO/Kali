@@ -19,9 +19,7 @@ export default function Account(props) {
       {...props}
       onClick={value.connect}
     >
-      <Text maxW="xs">
-        {account == null ? "Connect" : truncateAddress(account)}
-      </Text>
+      {account == null ? props.message : truncateAddress(account)}
     </Button>
   );
 }

@@ -32,7 +32,7 @@ export default function NewProposal(props) {
   const ProposalTile = (props) => {
     return (
       <LinkBox
-        //bgGradient="linear(to-br, kali.400, kali.100)"
+        bg="kali.900"
         border="1px solid"
         p={5}
         m={2}

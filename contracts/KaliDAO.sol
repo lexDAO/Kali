@@ -458,8 +458,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         if (voteType == VoteType.SIMPLE_MAJORITY_QUORUM_REQUIRED || voteType == VoteType.SUPERMAJORITY_QUORUM_REQUIRED) {
             uint256 minVotes = (totalSupply * quorum) / 100;
             
-            // this is safe from overflow because `yesVotes` and `noVotes` are capped by `totalSupply`
-            // which is checked for overflow in `KaliDAOtoken` contract
+            // this is safe from overflow because `yesVotes` and `noVotes` 
+            // supply are checked in `KaliDAOtoken` contract
             unchecked {
                 uint256 votes = yesVotes + noVotes;
 

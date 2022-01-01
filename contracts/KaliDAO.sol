@@ -63,6 +63,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     //////////////////////////////////////////////////////////////*/
 
     string public docs;
+
+    uint256 public currentSponsoredProposal;
     
     uint256 public proposalCount;
 
@@ -122,6 +124,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
     struct ProposalState {
         uint256 sponsoredProposal;
+        uint256 prevSponsoredProposal;
         bool passed;
         bool processed;
     }
@@ -220,11 +223,6 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         bytes[] calldata payloads
     ) public nonReentrant virtual returns (uint256 proposal) {
         if (accounts.length != amounts.length || amounts.length != payloads.length) revert NoArrayParity();
-
-        bool selfSponsor;
-
-        // if member or extension is making proposal, include sponsorship
-        if (balanceOf[msg.sender] != 0 || extensions[msg.sender]) selfSponsor = true;
         
         if (proposalType == ProposalType.PERIOD) if (amounts[0] == 0 || amounts[0] > 365 days) revert VotingPeriodBounds();
         
@@ -235,6 +233,18 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         if (proposalType == ProposalType.TYPE) if (amounts[0] > 10 || amounts[1] > 3 || amounts.length != 2) revert TypeBounds();
 
         proposal = proposalCount;
+
+        bool selfSponsor;
+
+        // if member or extension is making proposal, include sponsorship
+        if (balanceOf[msg.sender] != 0 || extensions[msg.sender]) {
+            selfSponsor = true;
+
+            proposalCount == 0 ? proposalStates[proposal].prevSponsoredProposal = currentSponsoredProposal - 1 :
+                proposalStates[proposal].prevSponsoredProposal = currentSponsoredProposal;
+
+            currentSponsoredProposal = proposal;
+        }
 
         proposals[proposal] = Proposal({
             proposalType: proposalType,
@@ -278,6 +288,10 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         if (prop.creationTime != 0) revert Sponsored();
 
         sponsoredProposal = proposalCount;
+
+        proposalStates[proposal].prevSponsoredProposal = currentSponsoredProposal;
+
+        currentSponsoredProposal = sponsoredProposal;
 
         proposals[sponsoredProposal] = Proposal({
             proposalType: prop.proposalType,
@@ -392,9 +406,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
         // skip previous proposal processing requirement in case of escape hatch
         if (prop.proposalType != ProposalType.ESCAPE) {
-            // tolerate underflow in this case to allow first proposal
             unchecked {
-                if (proposals[proposal - 1].creationTime != 0) revert PrevNotProcessed();
+                if (proposals[proposalStates[proposal].prevSponsoredProposal].creationTime != 0) revert PrevNotProcessed();
             }
         }
 

@@ -453,6 +453,9 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint256 yesVotes,
         uint256 noVotes
     ) internal view virtual returns (bool didProposalPass) {
+        // fail proposal if no votes
+        if (yesVotes == 0 && noVotes == 0) return false;
+
         // rule out any failed quorums
         if (voteType == VoteType.SIMPLE_MAJORITY_QUORUM_REQUIRED || voteType == VoteType.SUPERMAJORITY_QUORUM_REQUIRED) {
             uint256 minVotes = (totalSupply * quorum) / 100;
@@ -466,9 +469,10 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             }
         }
         
-        // run voting logic
+        // simple majority check
         if (voteType == VoteType.SIMPLE_MAJORITY || voteType == VoteType.SIMPLE_MAJORITY_QUORUM_REQUIRED) {
             if (yesVotes > noVotes) return true;
+        // supermajority check
         } else {
             // example: 7 yes, 2 no, supermajority = 66
             // ((7+2) * 66) / 100 = 5.94; 7 yes will pass

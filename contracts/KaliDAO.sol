@@ -256,7 +256,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             proposer: msg.sender
         });
 
-        currentSponsoredProposal = proposal;
+        if (selfSponsor) currentSponsoredProposal = proposal;
 
         emit NewProposal(msg.sender, proposal);
     }

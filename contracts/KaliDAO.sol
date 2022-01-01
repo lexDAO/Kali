@@ -48,9 +48,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
     error AlreadyVoted();
 
-    error VotingEnded();
-
-    error Processed();
+    error NotVoteable();
 
     error VotingNotEnded();
 
@@ -340,7 +338,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         // this is safe from overflow because `votingPeriod` is capped so it will not combine
         // with unix time to exceed 'type(uint256).max'
         unchecked {
-            if (block.timestamp > prop.creationTime + votingPeriod) revert VotingEnded();
+            if (block.timestamp > prop.creationTime + votingPeriod) revert NotVoteable();
         }
 
         uint96 weight = getPriorVotes(signer, prop.creationTime);
@@ -369,7 +367,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
         VoteType voteType = proposalVoteTypes[prop.proposalType];
 
-        if (prop.creationTime == 0) revert Processed();
+        if (prop.creationTime == 0) revert NotProposal();
         
         // this is safe from overflow because `votingPeriod` is capped so it will not combine
         // with unix time to exceed 'type(uint256).max'

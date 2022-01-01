@@ -137,8 +137,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         bool paused_,
         address[] memory extensions_,
         bytes[] memory extensionsData_,
-        address[] memory voters_,
-        uint256[] memory shares_,
+        address[] calldata voters_,
+        uint256[] calldata shares_,
         uint32 votingPeriod_,
         uint8[13] memory govSettings_
     ) public payable nonReentrant virtual {

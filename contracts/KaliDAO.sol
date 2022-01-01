@@ -451,7 +451,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint256 yesVotes,
         uint256 noVotes
     ) internal view virtual returns (bool didProposalPass) {
-        // fail proposal if no votes
+        // fail proposal if no participation
         if (yesVotes == 0 && noVotes == 0) return false;
 
         // rule out any failed quorums

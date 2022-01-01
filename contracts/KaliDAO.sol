@@ -336,7 +336,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         if (voted[proposal][signer]) revert AlreadyVoted();
         
         // this is safe from overflow because `votingPeriod` is capped so it will not combine
-        // with unix time to exceed 'type(uint256).max'
+        // with unix time to exceed the max uint256 value
         unchecked {
             if (block.timestamp > prop.creationTime + votingPeriod) revert NotVoteable();
         }
@@ -370,7 +370,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         if (prop.creationTime == 0) revert NotProposal();
         
         // this is safe from overflow because `votingPeriod` is capped so it will not combine
-        // with unix time to exceed 'type(uint256).max'
+        // with unix time to exceed the max uint256 value
         unchecked {
             if (block.timestamp <= prop.creationTime + votingPeriod) revert VotingNotEnded();
         }

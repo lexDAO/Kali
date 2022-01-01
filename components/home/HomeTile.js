@@ -1,4 +1,5 @@
 import { Button, Text, Stack } from "@chakra-ui/react";
+import ContactForm from "../elements/ContactForm";
 import FlexGradient from "../elements/FlexGradient";
 
 export default function HomeTile() {
@@ -8,6 +9,7 @@ export default function HomeTile() {
         <Text fontSize="xl">
           Launch and automate your business with real DAO magick
         </Text>
+        {/* <ContactForm /> */}
       </Stack>
     </FlexGradient>
   );

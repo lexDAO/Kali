@@ -21,6 +21,7 @@ import {
   List,
   ListItem,
   IconButton,
+  Switch,
 } from "@chakra-ui/react";
 import FlexGradient from "../elements/FlexGradient";
 import { addresses } from "../../constants/addresses";
@@ -61,13 +62,23 @@ export default function FactoryForm({ initialValues }) {
     } catch (e) {
       value.toast(e);
     }
-    const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0,0";
+    let govSettings = "0,60,0,0,0,0,0,0,0,0,0,0,0";
     const extensions = new Array(0);
     const extensionsData = new Array(0);
 
-    const { name, symbol, docs, founders, votingPeriod, votingPeriodUnit } =
-      values;
+    const {
+      name,
+      symbol,
+      docs,
+      founders,
+      transferability,
+      votingPeriod,
+      votingPeriodUnit,
+    } = values;
 
+    if (transferability) {
+      govSettings = "0,60,0,0,0,0,0,0,0,1,0,0,0";
+    }
     // convert shares to wei
     let sharesArray = [];
     for (let i = 0; i < founders.length; i++) {
@@ -347,6 +358,19 @@ export default function FactoryForm({ initialValues }) {
           </FormControl>
         </GridItem>
         <GridItem colSpan={2}>
+          <FormControl isRequired>
+            <FormLabel htmlFor="transferability">
+              Share Transferability
+            </FormLabel>
+            <Switch
+              id="transferability"
+              size="lg"
+              colorScheme="red"
+              {...register("transferability")}
+            />
+          </FormControl>
+        </GridItem>
+        <GridItem colSpan={2}>
           {account ? (
             <Button
               type="submit"
@@ -357,7 +381,7 @@ export default function FactoryForm({ initialValues }) {
               Summon!
             </Button>
           ) : (
-            <Account isFullWidth />
+            <Account message="Connect wallet" isFullWidth />
           )}
         </GridItem>
       </Grid>

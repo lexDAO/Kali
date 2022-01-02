@@ -1,3 +1,7 @@
+
+<<<<<<< deployer-refactor
+
+=======
 import React, { useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
 import Router from "next/router";
@@ -385,3 +389,4 @@ export default function FactoryForm({ initialValues }) {
     </FlexGradient>
   );
 }
+>>>>>>> main

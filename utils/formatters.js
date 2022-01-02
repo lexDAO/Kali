@@ -56,7 +56,7 @@ export function toDecimals(amount, decimals) {
 }
 
 export function fromDecimals(amount, decimals) {
-  return amount / scientificNotation[decimals - 1];
+  return amount / scientificNotation[decimals];
 }
 
 export function unixToDate(unix) {

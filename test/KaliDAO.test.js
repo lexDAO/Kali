@@ -18,9 +18,9 @@ async function advanceTime(time) {
 describe("KaliDAO", function () {
   let Kali // KaliDAO contract
   let kali // KaliDAO contract instance
-  let proposer // signer
-  let alice //
-  let bob
+  let proposer // signerA
+  let alice // signerB
+  let bob // signerC
 
   beforeEach(async () => {
     ;[proposer, alice, bob] = await ethers.getSigners()
@@ -33,6 +33,143 @@ describe("KaliDAO", function () {
     // console.log("bob eth balance", await bob.getBalance())
   })
 
+  it("Should revert if initialization arrays don't match", async function () {
+    let sender, receiver
+    ;[sender, receiver] = await ethers.getSigners()
+
+    expect(await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [sender.address],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ).should.be.reverted)
+
+    expect(await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address, receiver.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ).should.be.reverted)
+  })
+  it("Should revert if already initialized", async function () {
+    let sender, receiver
+    ;[sender, receiver] = await ethers.getSigners()
+
+    expect(await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ))
+
+    expect(await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ).should.be.reverted)
+  })
+  it("Should revert if voting period is initialized null or longer than year", async function () {
+    let sender, receiver
+    ;[sender, receiver] = await ethers.getSigners()
+
+    expect(await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      0,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ).should.be.reverted)
+
+    expect(await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      31536001,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ).should.be.reverted)
+  })
+  it("Should revert if quorum is initialized greater than 100", async function () {
+    let sender, receiver
+    ;[sender, receiver] = await ethers.getSigners()
+
+    expect(await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [101, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ).should.be.reverted)
+  })
+  it("Should revert if supermajority is initialized less than 52 or greater than 100", async function () {
+    let sender, receiver
+    ;[sender, receiver] = await ethers.getSigners()
+
+    expect(await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [100, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ).should.be.reverted)
+
+    expect(await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [100, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ).should.be.reverted)
+  })
   it("Should process membership proposal", async function () {
     await kali.init(
       "KALI",
@@ -59,7 +196,7 @@ describe("KaliDAO", function () {
     expect(await kali.balanceOf(proposer.address)).to.equal(getBigNumber(1001))
   })
 
-  it("Should process eviction proposal", async function () {
+  it("Should process burn (eviction) proposal", async function () {
     await kali.init(
       "KALI",
       "KALI",
@@ -516,7 +653,6 @@ describe("KaliDAO", function () {
     // console.log(await kali.balanceOf(sender.address))
     // console.log(await kali.balanceOf(receiver.address))
   })
-
   it("Should not allow a member to transfer excess shares", async function () {
     let sender, receiver
     ;[sender, receiver] = await ethers.getSigners()

@@ -41,7 +41,7 @@ contract KaliDAOvesting is ReentrancyGuard {
         uint64 startTime;
         uint64 endTime;
     }
-    uint256 public withdrawn;
+
     function setExtension(bytes calldata extensionData) public nonReentrant virtual {
         (
             address[] memory accounts, 
@@ -140,8 +140,6 @@ contract KaliDAOvesting is ReentrancyGuard {
                 revert VestNotPastCliff();
             }
         }
-
-        withdrawn = vesteeBalance;        
 
         if (vest.withdrawAmount > vest.depositAmount) revert VestExceeded();
 

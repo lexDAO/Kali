@@ -62,7 +62,7 @@ export default function FactoryForm({ initialValues }) {
     } catch (e) {
       value.toast(e);
     }
-    let govSettings = "0,60,0,0,0,0,0,0,0,0,0,0,0";
+    const govSettings = "0,60,0,0,0,0,0,0,0,0,0,0,0";
     const extensions = new Array(0);
     const extensionsData = new Array(0);
 
@@ -76,9 +76,6 @@ export default function FactoryForm({ initialValues }) {
       votingPeriodUnit,
     } = values;
 
-    if (transferability) {
-      govSettings = "0,60,0,0,0,0,0,0,0,1,0,0,0";
-    }
     // convert shares to wei
     let sharesArray = [];
     for (let i = 0; i < founders.length; i++) {
@@ -135,7 +132,7 @@ export default function FactoryForm({ initialValues }) {
           name,
           symbol,
           docs,
-          true,
+          transferability,
           extensions,
           extensionsData,
           votersArray,

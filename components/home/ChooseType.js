@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import AppContext from "../../context/AppContext";
-import { Flex, VStack, Button, Text, LinkBox, LinkOverlay } from "@chakra-ui/react";
+import { Flex, VStack, Button, Text, LinkBox, LinkOverlay, Grid } from "@chakra-ui/react";
 import { supportedChains } from "../../constants/supportedChains";
 import { getNetworkName, convertVotingPeriod } from "../../utils/formatters";
 import { presets } from "../../constants/presets";
@@ -42,7 +42,7 @@ export default function ChooseType(props) {
         }}
       >
         <LinkOverlay href="#" onClick={() => handleClick(item.id)}>
-          <Text>{item.type['type']}</Text>
+          <Text fontSize="xl">{item.type['type']}</Text>
           <Text>Voting Period: {convertVotingPeriod(item.type['voting'])}</Text>
           <Text>Quorum: {item.type['quorum']}%</Text>
           <Text>Supermajority: {item.type['supermajority']}%</Text>
@@ -60,6 +60,13 @@ export default function ChooseType(props) {
   return (
     <VStack>
         <Text>What type of DAO would you like to deploy?</Text>
+        <Grid
+          templateColumns={{
+            sm: "repeat(1, 1fr)",
+            md: "repeat(2, 1fr)",
+            lg: "repeat(2, 1fr)",
+          }}
+        >
         {presets.map((item, index) => (
           <DaoBox key={index} id={index} type={item} />
         ))}
@@ -77,6 +84,7 @@ export default function ChooseType(props) {
             <Text>Pick this option if you want to customize your DAO&apos;s settings.</Text>
           </LinkOverlay>
         </LinkBox>
+        </Grid>
     </VStack>
   );
 }

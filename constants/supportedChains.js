@@ -1,7 +1,7 @@
 export const supportedChains = [
   {
     chainId: 1,
-    name: "mainnet",
+    name: "mainnet (DO NOT SELECT IN TESTING)",
     infura: "mainnet.infura.io"
   },
   {
@@ -11,7 +11,7 @@ export const supportedChains = [
   },
   {
     chainId: 42161,
-    name: "arbitrum",
+    name: "arbitrum (DO NOT SELECT IN TESTING)",
     infura: "arbitrum-mainnet.infura.io"
   }
 ]

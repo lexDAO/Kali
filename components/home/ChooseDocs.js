@@ -54,11 +54,14 @@ export default function ChooseDocs(props) {
         <Text>(Don&apos;t worry - you can update this later through proposal!)</Text>
         <Select onChange={handleSelect}>
           <option value="999"></option>
-          <option value="0">I need an LLC, make one for me</option>
+          <option value="0">I need an LLC, make one for me*</option>
           <option value="1">I have created a legal entity for the DAO, and the link to its governance documents is:</option>
           <option value="2">None</option>
         </Select>
         {docType==1 ? <Input onChange={handleChange} /> : null}
+        {docType==0 ?
+        <Text>*Your DAO will be issued a series of KaliDAO, LLC, a Delaware Series LLC. Click here to learn more about series LLCs, and if it's right for you. (coming soon)</Text>
+        : null}
         <Text>Need a form for your DAO&apos;s governance documents?  Check out our templates. (Link to page in hamburger menu?)</Text>
         {docType != 999 || (docType == 1 && docs != null) ? <Button onClick={() => props.handleNext(6)}>Next</Button> : null}
     </VStack>

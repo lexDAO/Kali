@@ -49,7 +49,7 @@ export default function ChooseType(props) {
           <Text>{item.type['paused'] == 0 ? "Shares transferrable" : "Shares nontransferrable"}</Text>
           <Text>Extras:
             {Object.entries(item.type['extensions']).map(([key, value]) => (
-              <Text>{value['description']}</Text>
+              <Text key={key}>{value['description']}</Text>
             ))}
           </Text>
         </LinkOverlay>
@@ -74,7 +74,7 @@ export default function ChooseType(props) {
         >
           <LinkOverlay href="#" onClick={custom}>
             <Text>Custom</Text>
-            <Text>Pick this option if you want to customize your DAO's settings.</Text>
+            <Text>Pick this option if you want to customize your DAO&apos;s settings.</Text>
           </LinkOverlay>
         </LinkBox>
     </VStack>

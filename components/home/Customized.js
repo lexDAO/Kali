@@ -62,7 +62,7 @@ export default function Customized(props) {
 
   return (
     <VStack>
-        <Text>Customize your DAO's governance settings.</Text>
+        <Text>Customize your DAO&apos;s governance settings.</Text>
         <Text>Voting Period:</Text>
         <HStack>
         <NumInputField

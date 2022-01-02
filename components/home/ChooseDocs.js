@@ -51,7 +51,7 @@ export default function ChooseDocs(props) {
   return (
     <VStack>
         <Text>Choose a legal form for your DAO.</Text>
-        <Text>(Don't worry - you can update this later through proposal!)</Text>
+        <Text>(Don&apos;t worry - you can update this later through proposal!)</Text>
         <Select onChange={handleSelect}>
           <option value="999"></option>
           <option value="0">I need an LLC, make one for me</option>
@@ -59,7 +59,7 @@ export default function ChooseDocs(props) {
           <option value="2">None</option>
         </Select>
         {docType==1 ? <Input onChange={handleChange} /> : null}
-        <Text>Need a form for your DAO's governance documents?  Check out our templates. (Link to page in hamburger menu?)</Text>
+        <Text>Need a form for your DAO&apos;s governance documents?  Check out our templates. (Link to page in hamburger menu?)</Text>
         {docType != 999 || (docType == 1 && docs != null) ? <Button onClick={() => props.handleNext(6)}>Next</Button> : null}
     </VStack>
   );

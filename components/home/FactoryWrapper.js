@@ -46,13 +46,13 @@ export default function FactoryWrapper() {
   }
 
   const views = [
-    <ChooseNetwork details={details} setDetails={setDetails} handleNext={handleNext} />,
-    <ChooseName details={details} setDetails={setDetails} handleNext={handleNext} />,
-    <ChooseType details={details} setDetails={setDetails} handleNext={handleNext} />,
-    <Customized details={details} setDetails={setDetails} handleNext={handleNext} />,
-    <ChooseMembers details={details} setDetails={setDetails} handleNext={handleNext} />,
-    <ChooseDocs details={details} setDetails={setDetails} handleNext={handleNext} />,
-    <Checkout details={details} setDetails={setDetails} handleNext={handleNext} />
+    <ChooseNetwork key="0" details={details} setDetails={setDetails} handleNext={handleNext} />,
+    <ChooseName key="1" details={details} setDetails={setDetails} handleNext={handleNext} />,
+    <ChooseType key="2" details={details} setDetails={setDetails} handleNext={handleNext} />,
+    <Customized key="3" details={details} setDetails={setDetails} handleNext={handleNext} />,
+    <ChooseMembers key="4" details={details} setDetails={setDetails} handleNext={handleNext} />,
+    <ChooseDocs key="5" details={details} setDetails={setDetails} handleNext={handleNext} />,
+    <Checkout key="6" details={details} setDetails={setDetails} handleNext={handleNext} />
   ];
 
   return (

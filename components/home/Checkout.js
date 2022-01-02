@@ -132,7 +132,7 @@ export default function Checkout(props) {
 
   return (
     <VStack>
-      <Text>You've selected:</Text>
+      <Text>You have selected:</Text>
       <List>
           <ListItem>Chain: {details['network']}</ListItem>
           <ListItem>Name: {details['daoName']}</ListItem>
@@ -141,7 +141,7 @@ export default function Checkout(props) {
           <ListItem>Members:
             <List>
               {details['members'].map((item, index) => (
-                <ListItem>{item} ({fromDecimals(details['shares'][index], 18)} shares)</ListItem>
+                <ListItem key={index}>{item} ({fromDecimals(details['shares'][index], 18)} shares)</ListItem>
               ))}
             </List>
           </ListItem>

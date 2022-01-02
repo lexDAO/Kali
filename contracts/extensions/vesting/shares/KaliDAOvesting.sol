@@ -41,9 +41,16 @@ contract KaliDAOvesting is ReentrancyGuard {
         uint64 startTime;
         uint64 endTime;
     }
-
+    uint256 public withdrawn;
     function setExtension(bytes calldata extensionData) public nonReentrant virtual {
-        (address[] memory accounts, uint256[] memory amounts, uint256[] memory cliffTimes, uint256[] memory cliffAmounts, uint256[] memory startTimes, uint256[] memory endTimes) 
+        (
+            address[] memory accounts, 
+            uint256[] memory amounts, 
+            uint256[] memory cliffTimes, 
+            uint256[] memory cliffAmounts, 
+            uint256[] memory startTimes, 
+            uint256[] memory endTimes
+        ) 
             = abi.decode(extensionData, (address[], uint256[], uint256[], uint256[], uint256[], uint256[]));
         
         if (accounts.length != amounts.length 
@@ -71,7 +78,7 @@ contract KaliDAOvesting is ReentrancyGuard {
                     rate = amounts[i] / timeDifference;
                 } else {
                     timeDifference = endTimes[i] - cliffTimes[i];
-                    rate = (amounts[i] - cliffAmounts[i]) / timeDifference;
+                    rate = (amounts[i] - (amounts[i] * cliffAmounts[i]) / 100) / timeDifference;
                 }
 
                 uint256 vestingId = vestingCount++;
@@ -80,7 +87,7 @@ contract KaliDAOvesting is ReentrancyGuard {
                     dao: msg.sender,
                     account: accounts[i],
                     depositAmount: uint128(amounts[i]),
-                    cliffAmount: uint128(cliffAmounts[i]),
+                    cliffAmount: uint128((amounts[i] * cliffAmounts[i]) / 100),
                     withdrawAmount: 0,
                     rate: uint128(rate),
                     cliffTime: uint64(cliffTimes[i]),
@@ -116,23 +123,30 @@ contract KaliDAOvesting is ReentrancyGuard {
             if (vest.cliffAmount == 0) {
                 timeDelta = block.timestamp - vest.startTime;
                 vesteeBalance = (vest.rate * timeDelta) - uint256(vest.withdrawAmount);
+                vest.withdrawAmount += uint128(vesteeBalance);
+            } else if (block.timestamp > vest.endTime) {
+                timeDelta = block.timestamp - vest.startTime;
+                vesteeBalance = vest.depositAmount - uint256(vest.withdrawAmount);
+                vest.withdrawAmount += uint128(vesteeBalance);
             } else if (block.timestamp > vest.cliffTime && vest.cliffAmount > vest.withdrawAmount) { // Cliff vested but not withdrawn
                 timeDelta = block.timestamp - vest.cliffTime;
                 vesteeBalance = vest.cliffAmount + (vest.rate * timeDelta) - uint256(vest.withdrawAmount);
+                vest.withdrawAmount += uint128(vesteeBalance);
             } else if (block.timestamp > vest.cliffTime && vest.cliffAmount < vest.withdrawAmount) { // Cliff vested and withdrawn
                 timeDelta = block.timestamp - vest.cliffTime;
-                vesteeBalance = (vest.rate * timeDelta) - uint256(vest.withdrawAmount);
+                vesteeBalance = vest.cliffAmount + (vest.rate * timeDelta) - uint256(vest.withdrawAmount);
+                vest.withdrawAmount += uint128(vesteeBalance);
             } else {
                 revert VestNotPastCliff();
             }
         }
-        
-        vest.withdrawAmount += uint128(vesteeBalance);
+
+        withdrawn = vesteeBalance;        
 
         if (vest.withdrawAmount > vest.depositAmount) revert VestExceeded();
 
         (mint, amountOut) = (true, vesteeBalance);
 
-        emit ExtensionCalled(msg.sender, vestingId, account, amount);
+        emit ExtensionCalled(msg.sender, vestingId, account, amountOut);
     }
 }

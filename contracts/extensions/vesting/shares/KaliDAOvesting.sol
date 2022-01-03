@@ -125,7 +125,6 @@ contract KaliDAOvesting is ReentrancyGuard {
                 vesteeBalance = (vest.rate * timeDelta) - uint256(vest.withdrawAmount);
                 vest.withdrawAmount += uint128(vesteeBalance);
             } else if (block.timestamp > vest.endTime) {
-                timeDelta = block.timestamp - vest.startTime;
                 vesteeBalance = vest.depositAmount - uint256(vest.withdrawAmount);
                 vest.withdrawAmount += uint128(vesteeBalance);
             } else if (block.timestamp > vest.cliffTime && vest.cliffAmount > vest.withdrawAmount) { // Cliff vested but not withdrawn

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
 import { Flex, VStack, Button, Text, Select } from "@chakra-ui/react";
 import { supportedChains } from "../../constants/supportedChains";
@@ -8,6 +8,13 @@ export default function ChooseNetwork(props) {
   const value = useContext(AppContext);
   const { web3, chainId, loading, account } = value.state;
   const [network, setNetwork] = useState(999); // for visibility handling in this component
+
+  useEffect(() => {
+    if(props.details['network'] != null) {
+      setNetwork(props.details['network']);
+    }
+
+  }, []);
 
   const updateNetwork = (e) => {
     let newValue = e.target.value;
@@ -21,7 +28,7 @@ export default function ChooseNetwork(props) {
   return (
     <VStack>
         <Text>Where do you want to deploy your DAO?</Text>
-        <Select onChange={updateNetwork}>
+        <Select onChange={updateNetwork} defaultValue={props.details['network']}>
             <option value="999"></option>
           {supportedChains.map((item, index) => (
             <option key={index} value={item['chainId']}>{item['name']}</option>

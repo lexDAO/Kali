@@ -7,14 +7,11 @@ import { getNetworkName } from "../../utils/formatters";
 export default function NameDAO(props) {
   const value = useContext(AppContext);
   const { web3, chainId, loading, account } = value.state;
-  const [daoName, setDaoName] = useState(null); // for visibility handling in this component
-  const [symbol, setSymbol] = useState(null); // for visibility handling in this component
 
   const changeDao = (e) => {
     let newValue = e.target.value;
     let array = props.details;
     array['daoName'] = newValue;
-    setDaoName(newValue);
     props.setDetails(array);
     console.log(props.details)
   };
@@ -23,7 +20,6 @@ export default function NameDAO(props) {
     let newValue = e.target.value;
     let array = props.details;
     array['symbol'] = newValue;
-    setSymbol(newValue);
     props.setDetails(array);
     console.log(props.details)
   };
@@ -32,11 +28,11 @@ export default function NameDAO(props) {
     <VStack>
         <Text>Next, give your DAO token a name and a symbol.</Text>
         <Text>This is how your DAO token will appear in Etherscan and other third party token trackers. Once your DAO is deployed, this cannot be changed.</Text>
-        <Text>DAO token name:</Text><Input value={daoName} onChange={changeDao} />
-        <Text>Symbol:</Text><Input value={symbol} onChange={changeSymbol} />
-        {daoName != null && symbol != null ?
-          <Button onClick={() => props.handleNext(2)}>Next</Button>
-        : null}
+        <Text>DAO token name:</Text><Input defaultValue={props.details['daoName']} onChange={changeDao} />
+        <Text>Symbol:</Text><Input defaultValue={props.details['symbol']} onChange={changeSymbol} />
+
+        <Button onClick={() => props.handleNext(2)}>Next</Button>
+
     </VStack>
   );
 }

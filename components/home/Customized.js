@@ -67,7 +67,6 @@ export default function Customized(props) {
         <HStack>
         <NumInputField
           min="1"
-          defaultValue="1"
           onChange={changeVotingPeriod} />
         <Select onChange={changeVotingPeriodUnit}>
           <option value="0">min</option>
@@ -79,18 +78,17 @@ export default function Customized(props) {
         <NumInputField
           min="0"
           max="100"
-          defaultValue="0"
           onChange={changeQuorum} />
         <Text>Supermajority:</Text>
         <NumInputField
           min="51"
           max="100"
-          defaultValue="51"
           onChange={changeSupermajority} />
         <Text>Share Transfer:</Text>
         <Select onChange={changePaused}>
-          <option value="0">Paused</option>
-          <option value="1">Unpaused</option>
+          <option></option>
+          <option value="1">Paused</option>
+          <option value="0">Unpaused</option>
         </Select>
         <Button onClick={() => props.handleNext(4)}>Next</Button>
     </VStack>

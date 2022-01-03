@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Flex, VStack, Progress, Button } from "@chakra-ui/react";
+import { Flex, VStack, Progress, Button, Text } from "@chakra-ui/react";
 import ChooseNetwork from "./ChooseNetwork";
 import ChooseName from "./ChooseName";
 import ChooseType from "./ChooseType";
@@ -24,7 +24,8 @@ export default function FactoryWrapper() {
     quorum: 0,
     supermajority: 51,
     extensions: null,
-    docs: null
+    docs: null,
+    docType: null
   });
 
   const handleNext = (num) => {
@@ -57,8 +58,9 @@ export default function FactoryWrapper() {
 
   return (
     <VStack>
-      {clickPath.length > 0 ? <Button onClick={handleBack}>Back</Button> : null}
+      <Text>Progress:</Text>
       <Progress width="100%" value={(visible * 100) / (views.length - 1)} />
+      {clickPath.length > 0 ? <Button onClick={handleBack}>Back</Button> : null}
       {views[visible]}
     </VStack>
   );

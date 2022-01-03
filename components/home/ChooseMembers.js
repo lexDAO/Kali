@@ -4,7 +4,7 @@ import { FormErrorMessage, FormLabel, FormControl, Input, VStack, Button, Text, 
 import { AiOutlineDelete } from "react-icons/ai";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { supportedChains } from "../../constants/supportedChains";
-import { getNetworkName, toDecimals } from "../../utils/formatters";
+import { getNetworkName, toDecimals, fromDecimals } from "../../utils/formatters";
 
 export default function ChooseMembers(props) {
   const value = useContext(AppContext);
@@ -23,7 +23,14 @@ export default function ChooseMembers(props) {
   });
 
   useEffect(() => {
-    append({ address: "" });
+    if(props.details['members'] == null) {
+      append({ address: "" });
+    } else {
+      for(let i=0; i < props.details['members'].length; i++) {
+        append({ address: props.details['members'][i], share: fromDecimals(props.details['shares'][i], 18) });
+      }
+    }
+
   }, []);
 
   const handleMembersSubmit = async (values) => {
@@ -42,6 +49,10 @@ export default function ChooseMembers(props) {
 
     let votersArray = [];
     for (let i = 0; i < founders.length; i++) {
+      if(web3.utils.isAddress(founders[i].address) == false) {
+        value.toast(founders[i].address + " is not a valid Ethereum address.");
+        return;
+      }
       votersArray.push(founders[i].address);
     }
     console.log("Voters Array", votersArray)

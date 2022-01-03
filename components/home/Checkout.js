@@ -137,7 +137,9 @@ export default function Checkout(props) {
           <ListItem>Chain: {details['network']}</ListItem>
           <ListItem>Name: {details['daoName']}</ListItem>
           <ListItem>Symbol: {details['symbol']}</ListItem>
-          <ListItem>Type: {presets[details['daoType']]['type']}</ListItem>
+          <ListItem>Type:
+            {details['daoType'] == null ? "Custom" : presets[details['daoType']]['type']}
+          </ListItem>
           <ListItem>Members:
             <List>
               {details['members'].map((item, index) => (

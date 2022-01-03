@@ -1,10 +1,12 @@
 # DAO REPRESENTATION AGREEMENT
 
-This DAO REPRESENTATION AGREEMENT (this “Agreement”) is made as of [[Effective Date]], by and between [[DAO Name]] (the “DAO”)[, a [[DAO Legal Structure]]] rooted on the [[Blockchain Name]], chainId:[[chainId]] at the public key [[DAO Public Key]] (the “Public Key”), and [[Representative Name]], a [[Representative Legal Structure]] (the “Representative”).
+This DAO REPRESENTATION AGREEMENT (this “Agreement”) is made as of [[Effective Date]], by and between [[DAO Name]] (the “DAO”)[, a [[DAO Legal Structure]]] rooted on the [[Blockchain Name]], chainId:[[chainId]] at the public key [[DAO Public Key]] (the “Public Key”), and [[Representative Name]], a [[Representative Legal Structure]], [normally residing in [City, State]/a corporate entity duly registered in [State]] (the “Representative”).
 
 ## RECITALS
 
 WHEREAS, the DAO desires to engage the Representative to manage its legal operational concerns, and the Representative desires to offer such services on the terms set forth herein;
+
+AND WHEREAS, the Representative is the sole controller of [Blockchain Name] address [Representative Address];
 
 NOW, THEREFORE, in consideration of the mutual covenants, agreements, representations and warranties contained herein, and intending to be legally bound hereby, the parties hereto hereby agree as follows:
 
@@ -40,19 +42,23 @@ The Representative agrees that at all times during the term of this Agreement it
 
 (d)	Allow the DAO and the employees, attorneys, accountants and other representatives of the DAO, full and free access to its books and records, and all of the facilities of the DAO relating to its business.
 
-**5.	Compensation.**
+**5.  Multiple Representatives
+
+Should the DAO engage with multiple Representatives in either this Agreement or alternative contemporaneous Representative Agreements, no Representatives shall take any action that would negate, counter, hinder, or contradict the actions of another Representative. In the event of conflict between Representatives, any Representative involved in such a conflict shall cease ongoing actions that may be creating such a conflict and not take any further steps that may negate, counter, hinder, or contradict the actions of another Representative. As soon as the DAO or any Representative becomes aware of the existence of such a conflict, a proposal shall be submitted to the DAO to resolve the conflict and any Representative involved in such a conflict shall take no action until such a proposal has been completed.
+
+**6.	Compensation.**
 
 (a)	While Representative is engaged by the DAO hereunder and as otherwise provided in this Agreement, the DAO shall pay to Representative a quarterly fee in the amount of $[[Quarterly Compensation]], payable in advance, with the first payment being due and payable on [[First Compensation Date]], and each succeeding payment being due and payable on the first day of each succeeding calendar quarter during the term of this Agreement.
 
 (b)	While Representative is engaged by the DAO hereunder, the DAO shall reimburse Representative for all reasonable and necessary out-of-pocket business, travel and legal operational expenses incurred by it in the performance of its duties and responsibilities hereunder, subject to the DAO’s normal policies and procedures for expense verification and documentation.
 
-**6.	Term of Agreement; Termination of Rights.**
+**7.	Term of Agreement; Termination of Rights.**
 
 (a)	The term of this Agreement shall commence on its execution, and expire, unless terminated or extended in writing, on [[Termination Date]]. Upon termination of this Agreement, all books and records relating to the operation of the business of the DAO shall be immediately returned to the DAO. Notwithstanding the foregoing, the DAO may terminate this Agreement prior to the expiration of its term upon thirty (30) days advance notice and the payment to the Representative of a termination fee equal to [[Termination Fee]].
 
 (b)	The DAO may, at its option, upon ten (10) days’ written notice terminate this Agreement (if such default is not cured within such ten (10) day period or such longer period as required to effect a cure if a cure is commenced within 10 days and diligently prosecuted) if Representative shall violate or be in material breach of any provision, representation, warranty, covenant or undertaking herein.
 
-**7.	Additional Provisions.**
+**8.	Additional Provisions.**
 
 (a)	This Agreement sets forth the entire understanding and agreement among the parties hereto with reference to the subject matter hereof and may not be modified, amended, discharged or terminated except by a written instrument signed by the parties hereto.
 
@@ -67,6 +73,10 @@ The Representative agrees that at all times during the term of this Agreement it
 (f)	If any provision of this Agreement is invalid, illegal, or unenforceable, the balance of this Agreement shall remain in effect, and if any provision is inapplicable to any person or circumstance, it shall nevertheless remain applicable to all other persons and circumstances.
 
 (g)	The headings in this Agreement are for reference purposes only and shall not in any way affect the meaning or interpretation of this Agreement.
+
+(h) This Agreement can be unilaterally terminated by either party through a proposal to the DAO that clearly states the intention to terminate this Agreement. While such a proposal is pending, whether proposed by the Representative or the DAO, the Representative shall immediately cease any action on behalf of the DAO until such proposal has either passed or failed.
+
+(i) The DAO shall post, in a public a place as is possible, given the capacity of the DAO, the names of the Representatives while this Agreement is in place.
 
 IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first above written.
 

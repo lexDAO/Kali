@@ -27,7 +27,7 @@ export default function ChooseNetwork(props) {
             <option key={index} value={item['chainId']}>{item['name']}</option>
           ))}
         </Select>
-        {network != 999 && chainId != network ?
+        {network != 999 && chainId != network ||  network != 999 && chainId != network && account == null ?
           <>
           <Text>Please connect your wallet to {getNetworkName(network)}.</Text>
           <Button onClick={value.connect}>Connect</Button>

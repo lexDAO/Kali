@@ -57,20 +57,21 @@ contract KaliWhitelistManager {
                             EIP-712 LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function DOMAIN_SEPARATOR() public view virtual returns (bytes32 domainSeparator) {
-        domainSeparator = block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
+    function DOMAIN_SEPARATOR() public view virtual returns (bytes32) {
+        return block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
     }
 
-    function _computeDomainSeparator() internal view virtual returns (bytes32 domainSeparator) {
-        domainSeparator = keccak256(
-            abi.encode(
-                keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
-                keccak256(bytes('KaliWhitelistManager')),
-                keccak256(bytes('1')),
-                block.chainid,
-                address(this)
-            )
-        );
+    function _computeDomainSeparator() internal view virtual returns (bytes32) {
+        return 
+            keccak256(
+                abi.encode(
+                    keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
+                    keccak256(bytes('KaliWhitelistManager')),
+                    keccak256('1'),
+                    block.chainid,
+                    address(this)
+                )
+            );
     }
  
     /*///////////////////////////////////////////////////////////////
@@ -89,8 +90,7 @@ contract KaliWhitelistManager {
         operatorOf[listId] = msg.sender;
 
         if (accounts.length != 0) {
-            // this is reasonably safe from overflow because incrementing `i` loop beyond
-            // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+            // cannot realistically overflow on human timescales
             unchecked {
                 for (uint256 i; i < accounts.length; i++) {
                     _whitelistAccount(listId, accounts[i], true);
@@ -100,13 +100,13 @@ contract KaliWhitelistManager {
             emit WhitelistCreated(listId, msg.sender);
         }
 
-        if (merkleRoot != "")
+        if (merkleRoot != '')
             merkleRoots[listId] = merkleRoot;
 
             emit MerkleRootSet(listId, merkleRoot);
     }
     
-    function isWhitelisted(uint256 listId, uint256 index) public view virtual returns (bool success) {
+    function isWhitelisted(uint256 listId, uint256 index) public view virtual returns (bool) {
         uint256 whitelistedWordIndex = index / 256;
 
         uint256 whitelistedBitIndex = index % 256;
@@ -115,7 +115,7 @@ contract KaliWhitelistManager {
 
         uint256 mask = 1 << whitelistedBitIndex;
 
-        success = claimedWord & mask == mask;
+        return claimedWord & mask == mask;
     }
 
     function whitelistAccounts(
@@ -125,8 +125,7 @@ contract KaliWhitelistManager {
     ) public virtual {
         require(msg.sender == operatorOf[listId], 'NOT_OWNER');
 
-        // this is reasonably safe from overflow because incrementing `i` loop beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        // cannot realistically overflow on human timescales
         unchecked {
             for (uint256 i; i < accounts.length; i++) {
                 _whitelistAccount(listId, accounts[i], approvals[i]);

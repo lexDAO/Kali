@@ -29,7 +29,7 @@ const iconSize = 8;
 
 export default function ProposalRow(props) {
   const value = useContext(AppContext);
-  const { web3, loading } = value.state;
+  const { web3, loading, account } = value.state;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [votingStarted, setVotingStarted] = useState(false);
   const [isExpired, setIsExpired] = useState(false);
@@ -91,6 +91,8 @@ export default function ProposalRow(props) {
               {isExpired == true ? "Details" : "Review & Vote"}
             </Button>
             {isExpired == true && p["pending"] == false ? (
+              account == null ? <Text><i>Please connect to your account to vote.</i></Text>
+              :
               <ProcessModule i={i} p={p} />
             ) : null}
             {p["pending"] == true ? <Sponsor i={i} p={p} /> : null}

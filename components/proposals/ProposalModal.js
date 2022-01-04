@@ -5,11 +5,9 @@ import {
   Input,
   Button,
   Text,
-  Flex,
   HStack,
   Center,
   Divider,
-  Textarea,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -46,7 +44,7 @@ const iconSize = 8;
 
 export default function ProposalModal(props) {
   const value = useContext(AppContext);
-  const { web3, loading } = value.state;
+  const { web3, loading, account } = value.state;
   const p = props["p"];
   const i = props["i"];
 
@@ -69,7 +67,13 @@ export default function ProposalModal(props) {
           <ProposalDetails p={p} i={i} />
 
           <Center>
-            {props.isExpired == false ? <VotingModule p={p} /> : null}
+            {props.isExpired == false ?
+              account == null ?
+              <>
+                <Text><i>Please connect to your account to vote.</i></Text>
+              </>
+              : <VotingModule p={p} />
+            : null}
             {p["pending"] == true ? <Sponsor p={p} /> : null}
           </Center>
         </ModalBody>

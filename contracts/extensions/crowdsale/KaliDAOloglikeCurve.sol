@@ -30,6 +30,8 @@ contract KaliDAOloglikeCurve is ReentrancyGuard {
     error NotPrice();
 
     error PurchaseLimit();
+
+    error InvalidVelocity();
     
     IKaliWhitelistManager public immutable whitelistManager;
 
@@ -61,6 +63,8 @@ contract KaliDAOloglikeCurve is ReentrancyGuard {
             uint32 saleEnds
         ) 
             = abi.decode(extensionData, (uint256, uint256, uint96, uint96, uint96, uint8, uint32));
+
+        if (velocity >= 100 || velocity == 0) revert InvalidVelocity();
 
         crowdsales[msg.sender] = Crowdsale({
             listId: listId,

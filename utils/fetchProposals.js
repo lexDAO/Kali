@@ -124,6 +124,10 @@ function isPassing(dao, proposal) {
 
   let supermajority = dao["gov"]["supermajority"];
 
+  let quorum = dao["gov"]["quorum"];
+
+  let totalSupply = dao["gov"]["totalSupply"];
+
   // first, evaluate whether correct majority reached
   if (voteType == 0) {
     // simple majority

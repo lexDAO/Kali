@@ -59,6 +59,8 @@ export default function Tribute() {
 
       amount_ = toDecimals(amount_, decimals).toString();
 
+      console.log("amount_", amount_)
+
       var value_ = 0;
       if (purchaseToken == "0x0000000000000000000000000000000000000000") {
         value_ = amount_;

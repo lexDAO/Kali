@@ -2,7 +2,6 @@ import DaoInfo from "../components/dashboard/DaoInfo";
 import GovSettings from "../components/dashboard/GovSettings";
 import Treasury from "../components/dashboard/Treasury";
 import Extensions from "../components/dashboard/Extensions";
-import Members from "../components/dashboard/Members";
 import Ricardian from "../components/dashboard/Ricardian";
 
 // if `check` is set, front end will not display content if not set in dao object
@@ -32,10 +31,5 @@ export const dashboardHelper = [
     title: "Extensions",
     component: <Extensions />,
     check: 'extensions'
-  },
-  {
-    title: "Members",
-    component: <Members />,
-    check: null
   }
 ]

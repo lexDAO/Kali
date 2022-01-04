@@ -1281,4 +1281,58 @@ describe("KaliDAO", function () {
       await kali.transfer(receiver.address, getBigNumber(1)).should.be.reverted
     )
   })
+  it("Should not allow share tally after current timestamp", async function () {
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [bob.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    expect(
+      await kali.getPriorVotes(bob.address, 1941275221).should.be.reverted
+    )
+  })
+  it("Should match current votes to undelegated balance", async function () {
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [bob.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    expect(await kali.getCurrentVotes(bob.address)).to.equal(getBigNumber(10))
+  })
+  it("Should allow vote delegation", async function () {
+    let sender, receiver
+    ;[sender, receiver] = await ethers.getSigners()
+
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    await kali.delegate(receiver.address)
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(getBigNumber(10))
+    expect(await kali.getCurrentVotes(receiver.address)).to.equal(getBigNumber(10))
+    expect(await kali.balanceOf(sender.address)).to.equal(getBigNumber(10))
+    expect(await kali.balanceOf(receiver.address)).to.equal(0)
+  })
 })

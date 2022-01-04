@@ -1330,9 +1330,38 @@ describe("KaliDAO", function () {
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
     await kali.delegate(receiver.address)
-    expect(await kali.getCurrentVotes(sender.address)).to.equal(getBigNumber(10))
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(0)
     expect(await kali.getCurrentVotes(receiver.address)).to.equal(getBigNumber(10))
     expect(await kali.balanceOf(sender.address)).to.equal(getBigNumber(10))
     expect(await kali.balanceOf(receiver.address)).to.equal(0)
+    await kali.delegate(sender.address)
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(getBigNumber(10))
+    expect(await kali.getCurrentVotes(receiver.address)).to.equal(0)
+  })
+  it("Should update delegated balance after transfer", async function () {
+    let sender, receiver, receiver2
+    ;[sender, receiver, receiver2] = await ethers.getSigners()
+
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    await kali.delegate(receiver.address)
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(0)
+    expect(await kali.getCurrentVotes(receiver.address)).to.equal(getBigNumber(10))
+    await kali.transfer(receiver2.address, getBigNumber(5))
+    expect(await kali.getCurrentVotes(receiver2.address)).to.equal(getBigNumber(5))
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(0)
+    expect(await kali.getCurrentVotes(receiver.address)).to.equal(getBigNumber(5))
+    await kali.delegate(sender.address)
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(getBigNumber(5))
   })
 })

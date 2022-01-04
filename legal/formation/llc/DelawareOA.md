@@ -169,6 +169,7 @@ By entering into this Agreement, Members represent and warrant to the DAO LLC th
 **DAO LLC Organizer**
 
 */s/ [[DAO LLC Organizer ID]]*
+
 0x[[DAO LLC Organizer EthAddress]]
 
 ## **Membership - Schedule 1**

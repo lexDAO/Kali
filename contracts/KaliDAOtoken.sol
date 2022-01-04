@@ -324,7 +324,7 @@ abstract contract KaliDAOtoken {
     }
 
     function _delegate(address delegator, address delegatee) internal virtual {
-        address currentDelegate = _delegates[delegator];
+        address currentDelegate = delegates(delegator);
 
         _delegates[delegator] = delegatee;
 

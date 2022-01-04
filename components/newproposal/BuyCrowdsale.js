@@ -11,7 +11,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
-import { toDecimals, unixToDate } from "../../utils/formatters";
+import { toDecimals, fromDecimals, unixToDate } from "../../utils/formatters";
 
 export default function Tribute() {
   const value = useContext(AppContext);
@@ -96,7 +96,7 @@ export default function Tribute() {
             Price: {1 / purchaseMultiplier} {token} ({purchaseMultiplier} shares
             per {token})
           </Text>
-          <Text>Maximum shares allowed: {purchaseLimit}</Text>
+          <Text>Maximum shares allowed: {fromDecimals(purchaseLimit, 18)}</Text>
           <Text>Sale ends {unixToDate(saleEnds)}</Text>
           <HStack>
             <Text>

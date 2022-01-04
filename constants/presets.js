@@ -22,7 +22,7 @@ export const presets = [
         description: "ETH crowdsale enabled by default for our Dos Commas accredited investor whitelist. 200 shares per ETH. Limit 1,000 shares per wallet. Sale ends in 30 days.",
         purchaseToken: "0x0000000000000000000000000000000000000000",
         purchaseMultiplier: 200,
-        purchaseLimit: 1000000000000000000000, // 1,000 shares
+        purchaseLimit: "1000000000000000000000", // 1,000 shares - string, to avoid BigNumber errors
         saleEnds: 2592000, // 30 days from today
         listId: 0 // CHANGE THIS FOR LIVE DEPLOYMENT!
       },

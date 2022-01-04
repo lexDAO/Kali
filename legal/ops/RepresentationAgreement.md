@@ -1,12 +1,12 @@
 # DAO REPRESENTATION AGREEMENT
 
-This DAO REPRESENTATION AGREEMENT (this “Agreement”) is made as of [[Effective Date]], by and between [[DAO Name]] (the “DAO”)[, a [[DAO Legal Structure]]] rooted on the [[Blockchain Name]], chainId:[[chainId]] at the public key [[DAO Public Key]] (the “Public Key”), and [[Representative Name]], a [[Representative Legal Structure]], [normally residing in [City, State]/a corporate entity duly registered in [State]] (the “Representative”).
+This DAO REPRESENTATION AGREEMENT (this “Agreement”) is made as of [[Effective Date]], by and between [[DAO Name]] (the “DAO”)[, a [[DAO Legal Structure]]] rooted on the [[Blockchain Name]], chainId:[[chainId]] at the public key [[DAO Public Key]] (the “Public Key”), and [[Representative Name]], a [[Representative Legal Structure]] (the “Representative”).
 
 ## RECITALS
 
 WHEREAS, the DAO desires to engage the Representative to manage its legal operational concerns, and the Representative desires to offer such services on the terms set forth herein;
 
-AND WHEREAS, the Representative is the sole controller of [Blockchain Name] address [Representative Address];
+AND WHEREAS, the Representative is the sole controller of the public key [[Representative Public Key]] at the [[Blockchain Name]], chainId:[[chainId]];
 
 NOW, THEREFORE, in consideration of the mutual covenants, agreements, representations and warranties contained herein, and intending to be legally bound hereby, the parties hereto hereby agree as follows:
 

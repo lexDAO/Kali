@@ -71,7 +71,7 @@ export default function Checkout(props) {
             listId,
             purchaseToken,
             purchaseMultiplier,
-            purchaseLimit,
+            purchaseLimit.toString(), // to prevent BigNumber errors
             saleEnds,
           ]
         );

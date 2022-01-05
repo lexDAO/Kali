@@ -32,7 +32,7 @@ export default function Proposals(props) {
       let instance = new web3.eth.Contract(abi, address);
       let proposals_ = await fetchProposals(instance, address, web3, daoChain, dao);
       value.setProposals(proposals_);
-      console.log(proposals_);
+      console.log("proposals", proposals_);
       value.setLoading(false);
     } catch(e) {
       value.toast(e);

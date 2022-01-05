@@ -63,151 +63,6 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "Initialized",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "InvalidNonce",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "InvalidSignature",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "NoArrayParity",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "NotDetermined",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "NotExtension",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "NotMember",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "NotProposal",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "NotProposer",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "NullAddress",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "Paused",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "PrevNotProcessed",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "Processed",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "QuorumMax",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "Reentrancy",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "SignatureExpired",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "Sponsored",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "SupermajorityBounds",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "TypeBounds",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "Uint32max",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "Uint96max",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "VotingEnded",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "VotingNotEnded",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "VotingPeriodBounds",
-		"type": "error"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "spender",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "Approval",
-		"type": "event"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "uint256",
@@ -272,56 +127,6 @@
 		"type": "function"
 	},
 	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "delegator",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "fromDelegate",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "toDelegate",
-				"type": "address"
-			}
-		],
-		"name": "DelegateChanged",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "delegate",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "previousBalance",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "newBalance",
-				"type": "uint256"
-			}
-		],
-		"name": "DelegateVotesChanged",
-		"type": "event"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "string",
@@ -380,6 +185,21 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "Initialized",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "InvalidNonce",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "InvalidSignature",
+		"type": "error"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "bytes[]",
@@ -399,36 +219,49 @@
 		"type": "function"
 	},
 	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "proposer",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "proposal",
-				"type": "uint256"
-			}
-		],
-		"name": "NewProposal",
-		"type": "event"
+		"inputs": [],
+		"name": "NoArrayParity",
+		"type": "error"
 	},
 	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "paused",
-				"type": "bool"
-			}
-		],
-		"name": "PauseFlipped",
-		"type": "event"
+		"inputs": [],
+		"name": "NotDetermined",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NotExtension",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NotMember",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NotProposal",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NotProposer",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NotVoteable",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NullAddress",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "Paused",
+		"type": "error"
 	},
 	{
 		"inputs": [
@@ -474,6 +307,11 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "PrevNotProcessed",
+		"type": "error"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "uint256",
@@ -496,69 +334,6 @@
 		],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "proposer",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "proposal",
-				"type": "uint256"
-			}
-		],
-		"name": "ProposalCancelled",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "proposal",
-				"type": "uint256"
-			},
-			{
-				"indexed": true,
-				"internalType": "bool",
-				"name": "didProposalPass",
-				"type": "bool"
-			}
-		],
-		"name": "ProposalProcessed",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "sponsor",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "proposal",
-				"type": "uint256"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "sponsoredProposal",
-				"type": "uint256"
-			}
-		],
-		"name": "ProposalSponsored",
-		"type": "event"
 	},
 	{
 		"inputs": [
@@ -600,6 +375,26 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "QuorumMax",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "Reentrancy",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "SignatureExpired",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "Sponsored",
+		"type": "error"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "uint256",
@@ -608,15 +403,14 @@
 			}
 		],
 		"name": "sponsorProposal",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "sponsoredProposal",
-				"type": "uint256"
-			}
-		],
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "SupermajorityBounds",
+		"type": "error"
 	},
 	{
 		"inputs": [
@@ -641,31 +435,6 @@
 		],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "Transfer",
-		"type": "event"
 	},
 	{
 		"inputs": [
@@ -695,6 +464,21 @@
 		],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "TypeBounds",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "Uint32max",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "Uint96max",
+		"type": "error"
 	},
 	{
 		"inputs": [
@@ -751,6 +535,205 @@
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "VotingNotEnded",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "VotingPeriodBounds",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "Approval",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "delegator",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "fromDelegate",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "toDelegate",
+				"type": "address"
+			}
+		],
+		"name": "DelegateChanged",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "delegate",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "previousBalance",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "newBalance",
+				"type": "uint256"
+			}
+		],
+		"name": "DelegateVotesChanged",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "proposer",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "proposal",
+				"type": "uint256"
+			}
+		],
+		"name": "NewProposal",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "paused",
+				"type": "bool"
+			}
+		],
+		"name": "PauseFlipped",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "proposer",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "proposal",
+				"type": "uint256"
+			}
+		],
+		"name": "ProposalCancelled",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "proposal",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "bool",
+				"name": "didProposalPass",
+				"type": "bool"
+			}
+		],
+		"name": "ProposalProcessed",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "sponsor",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "proposal",
+				"type": "uint256"
+			}
+		],
+		"name": "ProposalSponsored",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "Transfer",
+		"type": "event"
 	},
 	{
 		"anonymous": false,
@@ -1257,6 +1240,11 @@
 				"type": "string"
 			},
 			{
+				"internalType": "uint256",
+				"name": "prevProposal",
+				"type": "uint256"
+			},
+			{
 				"internalType": "uint96",
 				"name": "yesVotes",
 				"type": "uint96"
@@ -1290,11 +1278,6 @@
 		],
 		"name": "proposalStates",
 		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "sponsoredProposal",
-				"type": "uint256"
-			},
 			{
 				"internalType": "bool",
 				"name": "passed",

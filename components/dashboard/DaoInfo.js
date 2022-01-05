@@ -1,13 +1,26 @@
 import { useState, useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
-import { Text, HStack, Link, Icon, UnorderedList, ListItem } from "@chakra-ui/react";
+import { Text, HStack, Link, Icon, UnorderedList, ListItem, Button } from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from '@chakra-ui/react'
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs";
+import { useDisclosure } from "@chakra-ui/react";
+import CapTable from "./CapTable";
 
 export default function DaoInfo() {
   const value = useContext(AppContext);
   const { dao } = value.state;
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   return(
+    <>
     <UnorderedList>
     <ListItem>Name: {dao["name"]}</ListItem>
     <ListItem>
@@ -35,5 +48,23 @@ export default function DaoInfo() {
     : null}
     <ListItem>Members: {dao["members"].length}</ListItem>
     </UnorderedList>
+    <Button onClick={onOpen}>View Cap Table</Button>
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <ModalOverlay />
+    <ModalContent>
+      <ModalHeader>Cap Table</ModalHeader>
+      <ModalCloseButton />
+      <ModalBody>
+        <CapTable />
+      </ModalBody>
+
+      <ModalFooter>
+        <Button colorScheme='blue' mr={3} onClick={onClose}>
+          Close
+        </Button>
+      </ModalFooter>
+    </ModalContent>
+  </Modal>
+  </>
   );
 }

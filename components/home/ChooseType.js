@@ -26,14 +26,6 @@ export default function ChooseType(props) {
   }
 
   const custom = () => {
-    let array = props.details;
-    array['daoType'] = null;
-    array['quorum'] = null;
-    array['supermajority'] = null;
-    array['votingPeriod'] = null;
-    array['paused'] = null;
-    array['extensions'] = null;
-    props.setDetails(array);
     props.handleNext(3);
   }
 

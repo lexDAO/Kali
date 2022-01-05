@@ -3,15 +3,31 @@ import AppContext from "../../context/AppContext";
 import { Flex, VStack, HStack, Button, Input, Text, Select } from "@chakra-ui/react";
 import NumInputField from "../elements/NumInputField";
 import { supportedChains } from "../../constants/supportedChains";
-import { getNetworkName } from "../../utils/formatters";
+import { getNetworkName, convertVotingPeriod } from "../../utils/formatters";
 import { presets } from "../../constants/presets";
 import { extensionDescriptions } from "../../constants/extensionsHelper";
 
 export default function Customized(props) {
   const value = useContext(AppContext);
   const { web3, chainId, loading, account } = value.state;
-  const [votingPeriodUnit, setVotingPeriodUnit] = useState(0);
-  const [votingPeriod, setVotingPeriod] = useState(1);
+  const [votingPeriodUnit, setVotingPeriodUnit] = useState(null);
+  const [votingPeriod, setVotingPeriod] = useState(null);
+
+  useEffect(() => {
+    let converted = convertVotingPeriod(props.details['votingPeriod']);
+    console.log(converted)
+    let value = parseInt(converted.split(" ")[0]);
+    console.log(value)
+    setVotingPeriod(value);
+    if(converted.includes("min")) {
+      setVotingPeriodUnit(0);
+    } else if(converted.includes("min")) {
+      setVotingPeriodUnit(1);
+    } else {
+      setVotingPeriodUnit(2);
+    }
+
+  }, []);
 
   const changeVotingPeriodUnit = (e) => {
     let unit = e.target.value;
@@ -66,9 +82,10 @@ export default function Customized(props) {
         <Text>Voting Period:</Text>
         <HStack>
         <NumInputField
+          defaultValue={votingPeriod}
           min="1"
           onChange={changeVotingPeriod} />
-        <Select onChange={changeVotingPeriodUnit}>
+        <Select defaultValue={votingPeriodUnit} onChange={changeVotingPeriodUnit}>
           <option value="0">min</option>
           <option value="1">hours</option>
           <option value="2">days</option>
@@ -76,16 +93,18 @@ export default function Customized(props) {
         </HStack>
         <Text>Quorum:</Text>
         <NumInputField
+          defaultValue={props.details['quorum']}
           min="0"
           max="100"
           onChange={changeQuorum} />
         <Text>Supermajority:</Text>
         <NumInputField
+          defaultValue={props.details['supermajority']}
           min="51"
           max="100"
           onChange={changeSupermajority} />
         <Text>Share Transfer:</Text>
-        <Select onChange={changePaused}>
+        <Select defaultValue={props.details['paused']} onChange={changePaused}>
           <option></option>
           <option value="1">Paused</option>
           <option value="0">Unpaused</option>

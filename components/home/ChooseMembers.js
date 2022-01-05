@@ -68,6 +68,8 @@ export default function ChooseMembers(props) {
 
   return (
     <VStack as="form" onSubmit={handleSubmit(handleMembersSubmit)}>
+      <Text>Who will the founding members be? Please input their wallet addresses below and how many shares they should receive.</Text>
+      <Text>(You can add more by proposal later!)</Text>
       <List spacing={2}>
         {fields.map((founder, index) => (
           <ListItem

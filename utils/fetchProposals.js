@@ -11,7 +11,7 @@ export async function fetchProposals(instance, address, web3, daoChain, dao) {
 
   var foundZero = false; // loops through proposals in reverse order, and stops when it finds zeros
 
-  for (var i = proposalCount - 1; i >= 0; i--) {
+  for (var i = proposalCount; i >= 0; i--) {
     if (foundZero == false) {
       var proposal = await instance.methods.proposals(i).call();
 
@@ -123,6 +123,10 @@ function isPassing(dao, proposal) {
   let voteType = dao["gov"]["proposalVoteTypes"][proposalType];
 
   let supermajority = dao["gov"]["supermajority"];
+
+  let quorum = dao["gov"]["quorum"];
+
+  let totalSupply = dao["gov"]["totalSupply"];
 
   // first, evaluate whether correct majority reached
   if (voteType == 0) {

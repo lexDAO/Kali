@@ -3,7 +3,7 @@
 pragma solidity >=0.8.4;
 
 import '../../libraries/SafeTransferLib.sol';
-import './interfaces/IERC20minimal.sol';
+import '../../interfaces/IERC20minimal.sol';
 import '../../utils/ReentrancyGuard.sol';
 
 /// @notice Redemption contract that transfers registered tokens from Kali DAO in proportion to burnt DAO tokens.

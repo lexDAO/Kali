@@ -491,7 +491,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint256 amount, 
         bytes calldata extensionData
     ) public payable nonReentrant virtual returns (bool mint, uint256 amountOut) {
-        if (!extensions[extension] || !extensions[msg.sender]) revert NotExtension();
+        if (!extensions[extension] && !extensions[msg.sender]) revert NotExtension();
         
         address account;
 

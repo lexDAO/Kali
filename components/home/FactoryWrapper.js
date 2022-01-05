@@ -19,14 +19,15 @@ export default function FactoryWrapper() {
     daoType: null,
     members: null,
     shares: null,
-    votingPeriod: null,
+    votingPeriod: 60,
     paused: 1,
-    quorum: 0,
-    supermajority: 51,
+    quorum: 10,
+    supermajority: 60,
     extensions: null,
     docs: null,
     docType: null
   });
+  console.log("details", details);
 
   const handleNext = (num) => {
     let array = clickPath;

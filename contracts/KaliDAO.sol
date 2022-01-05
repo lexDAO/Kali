@@ -6,7 +6,7 @@ import './KaliDAOtoken.sol';
 import './utils/Multicall.sol';
 import './utils/NFThelper.sol';
 import './utils/ReentrancyGuard.sol';
-import './IKaliDAOextension.sol';
+import './interfaces/IKaliDAOextension.sol';
 
 /// @notice Simple gas-optimized Kali DAO core module.
 contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {

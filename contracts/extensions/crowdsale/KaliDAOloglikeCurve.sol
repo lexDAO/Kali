@@ -3,7 +3,8 @@
 pragma solidity >=0.8.4;
 
 import '../../libraries/SafeTransferLib.sol';
-import '../../access/interfaces/IKaliWhitelistManager.sol';
+import '../../interfaces/IERC20minimal.sol';
+import '../../interfaces/IKaliWhitelistManager.sol';
 import '../../utils/ReentrancyGuard.sol';
 
 /// @notice Crowdsale contract that receives ETH or tokens to mint registered DAO tokens, including merkle whitelisting.
@@ -121,10 +122,10 @@ contract KaliDAOloglikeCurve is ReentrancyGuard {
 
         uint256 currentBlock = totalSupply / sale.blockSize;
 
-        uint256 increment = blockPriceIncrement;
+        uint256 increment = sale.blockPriceIncrement;
 
         for (uint256 i = 0; i < currentBlock; i++) {
-            increment = changeIncrement(increment);
+            increment = changeIncrement(sale, increment);
 
             currentPrice += increment;
         }
@@ -138,9 +139,9 @@ contract KaliDAOloglikeCurve is ReentrancyGuard {
 
             currentBlock = totalSupply / sale.blockSize;
 
-            increment = blockPriceIncrement;
+            increment = sale.blockPriceIncrement;
             for (uint256 i = 0; i < currentBlock; i++) {
-                increment = changeIncrement(increment);
+                increment = changeIncrement(sale, increment);
             }
 
             currentPrice += increment;
@@ -154,7 +155,7 @@ contract KaliDAOloglikeCurve is ReentrancyGuard {
             for (uint256 i = 0; i < blocksRemaining; i++) {
                 estTotal += currentPrice * sale.blockSize;
 
-                increment = changeIncrement(increment);
+                increment = changeIncrement(sale, increment);
 
                 currentPrice += increment;
             }
@@ -167,7 +168,7 @@ contract KaliDAOloglikeCurve is ReentrancyGuard {
         return estTotal;
     }
 
-    function changeIncrement(uint256 increment) public view returns(uint256) {
-      return (increment * velocity) / 100;
+    function changeIncrement(Crowdsale memory sale, uint256 increment) public pure returns (uint256) {
+      return (increment * sale.velocity) / 100;
     }
 }

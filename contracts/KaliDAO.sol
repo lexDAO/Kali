@@ -18,7 +18,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
     event ProposalCancelled(address indexed proposer, uint256 indexed proposal);
 
-    event ProposalSponsored(address indexed sponsor, uint256 indexed proposal, uint256 indexed sponsoredProposal);
+    event ProposalSponsored(address indexed sponsor, uint256 indexed proposal);
     
     event VoteCast(address indexed voter, uint256 indexed proposal, bool indexed approve);
 
@@ -44,13 +44,11 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
     error NotMember();
 
-    error NotProposal();
+    error NotCurrentProposal();
 
     error AlreadyVoted();
 
-    error VotingEnded();
-
-    error Processed();
+    error NotVoteable();
 
     error VotingNotEnded();
 
@@ -63,6 +61,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     //////////////////////////////////////////////////////////////*/
 
     string public docs;
+
+    uint256 private currentSponsoredProposal;
     
     uint256 public proposalCount;
 
@@ -114,6 +114,7 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         address[] accounts; // member(s) being added/kicked; account(s) receiving payload
         uint256[] amounts; // value(s) to be minted/burned/spent; gov setting [0]
         bytes[] payloads; // data for CALL proposals
+        uint256 prevProposal;
         uint96 yesVotes;
         uint96 noVotes;
         uint32 creationTime;
@@ -121,7 +122,6 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     }
 
     struct ProposalState {
-        uint256 sponsoredProposal;
         bool passed;
         bool processed;
     }
@@ -137,8 +137,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         bool paused_,
         address[] memory extensions_,
         bytes[] memory extensionsData_,
-        address[] memory voters_,
-        uint256[] memory shares_,
+        address[] calldata voters_,
+        uint256[] calldata shares_,
         uint32 votingPeriod_,
         uint8[13] memory govSettings_
     ) public payable nonReentrant virtual {
@@ -220,11 +220,6 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         bytes[] calldata payloads
     ) public nonReentrant virtual returns (uint256 proposal) {
         if (accounts.length != amounts.length || amounts.length != payloads.length) revert NoArrayParity();
-
-        bool selfSponsor;
-
-        // if member or extension is making proposal, include sponsorship
-        if (balanceOf[msg.sender] != 0 || extensions[msg.sender]) selfSponsor = true;
         
         if (proposalType == ProposalType.PERIOD) if (amounts[0] == 0 || amounts[0] > 365 days) revert VotingPeriodBounds();
         
@@ -234,6 +229,16 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
         if (proposalType == ProposalType.TYPE) if (amounts[0] > 10 || amounts[1] > 3 || amounts.length != 2) revert TypeBounds();
 
+        bool selfSponsor;
+
+        // if member or extension is making proposal, include sponsorship
+        if (balanceOf[msg.sender] != 0 || extensions[msg.sender]) selfSponsor = true;
+
+        // cannot realistically overflow on human timescales
+        unchecked {
+            proposalCount++;
+        }
+
         proposal = proposalCount;
 
         proposals[proposal] = Proposal({
@@ -242,16 +247,14 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             accounts: accounts,
             amounts: amounts,
             payloads: payloads,
+            prevProposal: selfSponsor ? currentSponsoredProposal : 0,
             yesVotes: 0,
             noVotes: 0,
             creationTime: selfSponsor ? _safeCastTo32(block.timestamp) : 0,
             proposer: msg.sender
         });
-        
-        // cannot realistically overflow on human timescales
-        unchecked {
-            proposalCount++;
-        }
+
+        if (selfSponsor) currentSponsoredProposal = proposal;
 
         emit NewProposal(msg.sender, proposal);
     }
@@ -268,40 +271,22 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         emit ProposalCancelled(msg.sender, proposal);
     }
 
-    function sponsorProposal(uint256 proposal) public nonReentrant virtual returns (uint256 sponsoredProposal) {
+    function sponsorProposal(uint256 proposal) public nonReentrant virtual {
         Proposal storage prop = proposals[proposal];
 
         if (balanceOf[msg.sender] == 0) revert NotMember();
 
-        if (prop.proposer == address(0)) revert NotProposal();
+        if (prop.proposer == address(0)) revert NotCurrentProposal();
 
         if (prop.creationTime != 0) revert Sponsored();
 
-        sponsoredProposal = proposalCount;
+        prop.prevProposal = currentSponsoredProposal;
 
-        proposals[sponsoredProposal] = Proposal({
-            proposalType: prop.proposalType,
-            description: prop.description,
-            accounts: prop.accounts,
-            amounts: prop.amounts,
-            payloads: prop.payloads,
-            yesVotes: 0,
-            noVotes: 0,
-            creationTime: _safeCastTo32(block.timestamp),
-            proposer: prop.proposer
-        }); 
+        currentSponsoredProposal = proposal;
 
-        // can help external contracts track proposal # changes
-        proposalStates[proposal].sponsoredProposal = sponsoredProposal;
+        prop.creationTime = _safeCastTo32(block.timestamp);
 
-        // cannot realistically overflow on human timescales
-        unchecked {
-            proposalCount++;
-        }
-
-        delete proposals[proposal];
-
-        emit ProposalSponsored(msg.sender, proposal, sponsoredProposal);
+        emit ProposalSponsored(msg.sender, proposal);
     } 
 
     function vote(uint256 proposal, bool approve) public nonReentrant virtual {
@@ -351,9 +336,9 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         if (voted[proposal][signer]) revert AlreadyVoted();
         
         // this is safe from overflow because `votingPeriod` is capped so it will not combine
-        // with unix time to exceed 'type(uint256).max'
+        // with unix time to exceed the max uint256 value
         unchecked {
-            if (block.timestamp > prop.creationTime + votingPeriod) revert VotingEnded();
+            if (block.timestamp > prop.creationTime + votingPeriod) revert NotVoteable();
         }
 
         uint96 weight = getPriorVotes(signer, prop.creationTime);
@@ -382,21 +367,17 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
         VoteType voteType = proposalVoteTypes[prop.proposalType];
 
-        if (prop.creationTime == 0) revert Processed();
+        if (prop.creationTime == 0) revert NotCurrentProposal();
         
         // this is safe from overflow because `votingPeriod` is capped so it will not combine
-        // with unix time to exceed 'type(uint256).max'
+        // with unix time to exceed the max uint256 value
         unchecked {
             if (block.timestamp <= prop.creationTime + votingPeriod) revert VotingNotEnded();
         }
 
         // skip previous proposal processing requirement in case of escape hatch
-        if (prop.proposalType != ProposalType.ESCAPE) {
-            // tolerate underflow in this case to allow first proposal
-            unchecked {
-                if (proposals[proposal - 1].creationTime != 0) revert PrevNotProcessed();
-            }
-        }
+        if (prop.proposalType != ProposalType.ESCAPE) 
+            if (proposals[prop.prevProposal].creationTime != 0) revert PrevNotProcessed();
 
         didProposalPass = _countVotes(voteType, prop.yesVotes, prop.noVotes);
         
@@ -470,12 +451,15 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
         uint256 yesVotes,
         uint256 noVotes
     ) internal view virtual returns (bool didProposalPass) {
+        // fail proposal if no participation
+        if (yesVotes == 0 && noVotes == 0) return false;
+
         // rule out any failed quorums
         if (voteType == VoteType.SIMPLE_MAJORITY_QUORUM_REQUIRED || voteType == VoteType.SUPERMAJORITY_QUORUM_REQUIRED) {
             uint256 minVotes = (totalSupply * quorum) / 100;
             
-            // this is safe from overflow because `yesVotes` and `noVotes` are capped by `totalSupply`
-            // which is checked for overflow in `KaliDAOtoken` contract
+            // this is safe from overflow because `yesVotes` and `noVotes` 
+            // supply are checked in `KaliDAOtoken` contract
             unchecked {
                 uint256 votes = yesVotes + noVotes;
 
@@ -483,9 +467,10 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
             }
         }
         
-        // run voting logic
+        // simple majority check
         if (voteType == VoteType.SIMPLE_MAJORITY || voteType == VoteType.SIMPLE_MAJORITY_QUORUM_REQUIRED) {
             if (yesVotes > noVotes) return true;
+        // supermajority check
         } else {
             // example: 7 yes, 2 no, supermajority = 66
             // ((7+2) * 66) / 100 = 5.94; 7 yes will pass

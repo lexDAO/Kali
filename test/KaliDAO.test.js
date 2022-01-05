@@ -93,17 +93,14 @@ describe("KaliDAO", function () {
     ).should.be.reverted)
   })
   it("Should revert if initialization arrays don't match", async function () {
-    let sender, receiver
-    ;[sender, receiver] = await ethers.getSigners()
-
     expect(await kali.init(
       "KALI",
       "KALI",
       "DOCS",
       false,
-      [sender.address],
+      [bob.address],
       [],
-      [sender.address],
+      [bob.address],
       [getBigNumber(10)],
       30,
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -115,16 +112,13 @@ describe("KaliDAO", function () {
       false,
       [],
       [],
-      [sender.address, receiver.address],
+      [bob.address, alice.address],
       [getBigNumber(10)],
       30,
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ).should.be.reverted)
   })
   it("Should revert if already initialized", async function () {
-    let sender, receiver
-    ;[sender, receiver] = await ethers.getSigners()
-
     expect(await kali.init(
       "KALI",
       "KALI",
@@ -132,7 +126,7 @@ describe("KaliDAO", function () {
       false,
       [],
       [],
-      [sender.address],
+      [bob.address],
       [getBigNumber(10)],
       30,
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -144,16 +138,13 @@ describe("KaliDAO", function () {
       false,
       [],
       [],
-      [sender.address],
+      [bob.address],
       [getBigNumber(10)],
       30,
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ).should.be.reverted)
   })
   it("Should revert if voting period is initialized null or longer than year", async function () {
-    let sender, receiver
-    ;[sender, receiver] = await ethers.getSigners()
-
     expect(await kali.init(
       "KALI",
       "KALI",
@@ -161,7 +152,7 @@ describe("KaliDAO", function () {
       false,
       [],
       [],
-      [sender.address],
+      [bob.address],
       [getBigNumber(10)],
       0,
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -173,16 +164,13 @@ describe("KaliDAO", function () {
       false,
       [],
       [],
-      [sender.address],
+      [bob.address],
       [getBigNumber(10)],
       31536001,
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ).should.be.reverted)
   })
   it("Should revert if quorum is initialized greater than 100", async function () {
-    let sender, receiver
-    ;[sender, receiver] = await ethers.getSigners()
-
     expect(await kali.init(
       "KALI",
       "KALI",
@@ -190,16 +178,13 @@ describe("KaliDAO", function () {
       false,
       [],
       [],
-      [sender.address],
+      [bob.address],
       [getBigNumber(10)],
       30,
       [101, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ).should.be.reverted)
   })
   it("Should revert if supermajority is initialized less than 52 or greater than 100", async function () {
-    let sender, receiver
-    ;[sender, receiver] = await ethers.getSigners()
-
     expect(await kali.init(
       "KALI",
       "KALI",
@@ -207,7 +192,7 @@ describe("KaliDAO", function () {
       false,
       [],
       [],
-      [sender.address],
+      [bob.address],
       [getBigNumber(10)],
       30,
       [100, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -219,16 +204,13 @@ describe("KaliDAO", function () {
       false,
       [],
       [],
-      [sender.address],
+      [bob.address],
       [getBigNumber(10)],
       30,
       [100, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ).should.be.reverted)
   })
   it("Should revert if proposal arrays don't match", async function () {
-    let sender, receiver
-    ;[sender, receiver] = await ethers.getSigners()
-
     await kali.init(
       "KALI",
       "KALI",
@@ -236,7 +218,7 @@ describe("KaliDAO", function () {
       true,
       [],
       [],
-      [proposer.address],
+      [bob.address],
       [getBigNumber(1)],
       30,
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -244,15 +226,12 @@ describe("KaliDAO", function () {
     expect(await kali.propose(
       0,
       "TEST",
-      [proposer.address, alice.address],
+      [bob.address, alice.address],
       [getBigNumber(1000)],
       [0x00]
     ).should.be.reverted)
   })
   it("Should revert if period proposal is for null or longer than year", async function () {
-    let sender, receiver
-    ;[sender, receiver] = await ethers.getSigners()
-
     await kali.init(
       "KALI",
       "KALI",
@@ -260,7 +239,7 @@ describe("KaliDAO", function () {
       true,
       [],
       [],
-      [proposer.address],
+      [bob.address],
       [getBigNumber(1)],
       30,
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -269,29 +248,26 @@ describe("KaliDAO", function () {
     await kali.propose(
       3,
       "TEST",
-      [proposer.address],
+      [bob.address],
       [9000],
       [0x00]
     )
     expect(await kali.propose(
       3,
       "TEST",
-      [proposer.address],
+      [bob.address],
       [0],
       [0x00]
     ).should.be.reverted)
     expect(await kali.propose(
       3,
       "TEST",
-      [proposer.address],
+      [bob.address],
       [31536001],
       [0x00]
     ).should.be.reverted)
   })
   it("Should revert if quorum proposal is for greater than 100", async function () {
-    let sender, receiver
-    ;[sender, receiver] = await ethers.getSigners()
-
     await kali.init(
       "KALI",
       "KALI",
@@ -299,7 +275,7 @@ describe("KaliDAO", function () {
       true,
       [],
       [],
-      [proposer.address],
+      [bob.address],
       [getBigNumber(1)],
       30,
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -308,22 +284,19 @@ describe("KaliDAO", function () {
     await kali.propose(
       4,
       "TEST",
-      [proposer.address],
+      [bob.address],
       [20],
       [0x00]
     )
     expect(await kali.propose(
       4,
       "TEST",
-      [proposer.address],
+      [bob.address],
       [101],
       [0x00]
     ).should.be.reverted)
   })
   it("Should revert if supermajority proposal is for less than 52 or greater than 100", async function () {
-    let sender, receiver
-    ;[sender, receiver] = await ethers.getSigners()
-
     await kali.init(
       "KALI",
       "KALI",
@@ -331,7 +304,7 @@ describe("KaliDAO", function () {
       true,
       [],
       [],
-      [proposer.address],
+      [bob.address],
       [getBigNumber(1)],
       30,
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -340,29 +313,26 @@ describe("KaliDAO", function () {
     await kali.propose(
       5,
       "TEST",
-      [proposer.address],
+      [bob.address],
       [60],
       [0x00]
     )
     expect(await kali.propose(
       5,
       "TEST",
-      [proposer.address],
+      [bob.address],
       [51],
       [0x00]
     ).should.be.reverted)
     expect(await kali.propose(
       5,
       "TEST",
-      [proposer.address],
+      [bob.address],
       [101],
       [0x00]
     ).should.be.reverted)
   })
   it("Should revert if type proposal has proposal type greater than 10, vote type greater than 3, or setting length isn't 2", async function () {
-    let sender, receiver
-    ;[sender, receiver] = await ethers.getSigners()
-
     await kali.init(
       "KALI",
       "KALI",
@@ -370,7 +340,7 @@ describe("KaliDAO", function () {
       true,
       [],
       [],
-      [proposer.address],
+      [bob.address],
       [getBigNumber(1)],
       30,
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -379,21 +349,21 @@ describe("KaliDAO", function () {
     await kali.propose(
       6,
       "TEST",
-      [proposer.address, bob.address],
+      [bob.address, alice.address],
       [0, 1],
       [0x00, 0x00]
     )
     expect(await kali.propose(
       6,
       "TEST",
-      [proposer.address, bob.address],
+      [bob.address, alice.address],
       [11, 2],
       [0x00, 0x00]
     ).should.be.reverted)
     expect(await kali.propose(
       6,
       "TEST",
-      [proposer.address, bob.address],
+      [bob.address, alice.address],
       [0, 5],
       [0x00, 0x00]
     ).should.be.reverted)
@@ -425,7 +395,7 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.connect(alice).cancelProposal(0)
+    await kali.connect(alice).cancelProposal(1)
   })
   it("Should forbid non-proposer from cancelling unsponsored proposal", async function () {
     await kali.init(
@@ -469,8 +439,8 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.sponsorProposal(0)
-    expect(await kali.connect(alice).cancelProposal(0).should.be.reverted)
+    await kali.sponsorProposal(1)
+    expect(await kali.connect(alice).cancelProposal(1).should.be.reverted)
   })
   it("Should forbid cancelling non-existent proposal", async function () {
     await kali.init(
@@ -514,7 +484,7 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.sponsorProposal(0)
+    await kali.sponsorProposal(1)
     await kali.vote(1, true)
     await advanceTime(35)
     await kali.processProposal(1)
@@ -562,12 +532,12 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.sponsorProposal(0)
+    await kali.sponsorProposal(1)
     await kali.vote(1, true)
     await advanceTime(35)
     await kali.processProposal(1)
     expect(await kali.balanceOf(alice.address)).to.equal(getBigNumber(1000))
-    expect(await kali.sponsorProposal(0).should.be.reverted)
+    expect(await kali.sponsorProposal(1).should.be.reverted)
     expect(await kali.sponsorProposal(100).should.be.reverted)
   })
   it("Should forbid sponsoring an already sponsored proposal", async function () {
@@ -590,8 +560,7 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.sponsorProposal(0)
-    expect(await kali.sponsorProposal(0).should.be.reverted)
+    await kali.sponsorProposal(1)
     expect(await kali.sponsorProposal(1).should.be.reverted)
   })
   it("Should allow self-sponsorship by a member", async function () {
@@ -614,7 +583,7 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.vote(0, true)
+    await kali.vote(1, true)
   })
   it("Should forbid a non-member from voting on proposal", async function () {
     await kali.init(
@@ -636,7 +605,7 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    expect(await kali.connect(alice).vote(0, true).should.be.reverted)
+    expect(await kali.connect(alice).vote(1, true).should.be.reverted)
   })
   it("Should forbid a member from voting again on proposal", async function () {
     await kali.init(
@@ -658,8 +627,8 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.vote(0, true)
-    expect(await kali.vote(0, true).should.be.reverted)
+    await kali.vote(1, true)
+    expect(await kali.vote(1, true).should.be.reverted)
   })
   it("Should forbid voting after period ends", async function () {
     await kali.init(
@@ -682,7 +651,7 @@ describe("KaliDAO", function () {
       [0x00]
     )
     await advanceTime(35)
-    expect(await kali.vote(0, true).should.be.reverted)
+    expect(await kali.vote(1, true).should.be.reverted)
   })
   it("Should process membership proposal", async function () {
     await kali.init(
@@ -704,9 +673,9 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     expect(await kali.balanceOf(proposer.address)).to.equal(getBigNumber(1001))
   })
   it("Should process burn (eviction) proposal", async function () {
@@ -723,9 +692,9 @@ describe("KaliDAO", function () {
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
     await kali.propose(1, "TEST", [proposer.address], [getBigNumber(1)], [0x00])
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     expect(await kali.balanceOf(proposer.address)).to.equal(0)
   })
   it("Should process contract call proposal - Single", async function () {
@@ -749,9 +718,9 @@ describe("KaliDAO", function () {
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
     await kali.propose(2, "TEST", [fixedERC20.address], [0], [payload])
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     expect(await fixedERC20.totalSupply()).to.equal(getBigNumber(100))
     expect(await fixedERC20.balanceOf(alice.address)).to.equal(getBigNumber(15))
   })
@@ -802,9 +771,9 @@ describe("KaliDAO", function () {
       [0, getBigNumber(4)],
       [payload, payload2]
     )
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     expect(await fixedERC20.totalSupply()).to.equal(getBigNumber(100))
     expect(await fixedERC20.balanceOf(alice.address)).to.equal(getBigNumber(15))
     expect(await dropETH.amount()).to.equal(getBigNumber(2))
@@ -824,9 +793,9 @@ describe("KaliDAO", function () {
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
     await kali.propose(3, "TEST", [proposer.address], [5], [0x00])
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     expect(await kali.votingPeriod()).to.equal(5)
   })
   it("Should process quorum proposal", async function () {
@@ -843,9 +812,9 @@ describe("KaliDAO", function () {
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
     await kali.propose(4, "TEST", [proposer.address], [100], [0x00])
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     expect(await kali.quorum()).to.equal(100)
   })
   it("Should process supermajority proposal", async function () {
@@ -862,9 +831,9 @@ describe("KaliDAO", function () {
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
     await kali.propose(5, "TEST", [proposer.address], [52], [0x00])
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     expect(await kali.supermajority()).to.equal(52)
   })
   it("Should process type proposal", async function () {
@@ -887,9 +856,9 @@ describe("KaliDAO", function () {
       [0, 3],
       [0x00, 0x00]
     )
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     expect(await kali.proposalVoteTypes(0)).to.equal(3)
   })
   it("Should process pause proposal", async function () {
@@ -906,9 +875,9 @@ describe("KaliDAO", function () {
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
     await kali.propose(7, "TEST", [proposer.address], [0], [0x00])
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     expect(await kali.paused()).to.equal(false)
   })
   it("Should process extension proposal - General", async function () {
@@ -925,9 +894,9 @@ describe("KaliDAO", function () {
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
     await kali.propose(8, "TEST", [wethAddress], [0], [0x00])
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     expect(await kali.extensions(wethAddress)).to.equal(false)
   })
   it("Should toggle extension proposal", async function () {
@@ -944,9 +913,9 @@ describe("KaliDAO", function () {
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
     await kali.propose(8, "TEST", [wethAddress], [1], [0x00])
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     expect(await kali.extensions(wethAddress)).to.equal(true)
   })
   it("Should process extension proposal - KaliDAOcrowdsale with ETH", async function () {
@@ -969,7 +938,6 @@ describe("KaliDAO", function () {
     )
     let kaliWhitelistManager = await KaliWhitelistManager.deploy()
     await kaliWhitelistManager.deployed()
-
     // Instantiate extension contract
     let KaliDAOcrowdsale = await ethers.getContractFactory("KaliDAOcrowdsale")
     let kaliDAOcrowdsale = await KaliDAOcrowdsale.deploy(
@@ -994,9 +962,9 @@ describe("KaliDAO", function () {
       ]
     )
     await kali.propose(8, "TEST", [kaliDAOcrowdsale.address], [1], [payload])
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     await kali
       .connect(alice)
       .callExtension(kaliDAOcrowdsale.address, 0, 0x0, {
@@ -1055,9 +1023,9 @@ describe("KaliDAO", function () {
       [1, purchaseToken.address, 2, getBigNumber(100), 1672174799]
     )
     await kali.propose(8, "TEST", [kaliDAOcrowdsale.address], [1], [payload])
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     await purchaseToken
       .connect(alice)
       .approve(kaliDAOcrowdsale.address, getBigNumber(50))
@@ -1089,7 +1057,7 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await kali.propose(
       0,
       "TEST",
@@ -1097,11 +1065,11 @@ describe("KaliDAO", function () {
       [getBigNumber(99)],
       [0x00]
     )
-    await kali.vote(1, false)
-    await kali.propose(9, "TEST", [proposer.address], [1], [0x00])
-    await kali.vote(2, true)
+    await kali.vote(2, false)
+    await kali.propose(9, "TEST", [proposer.address], [2], [0x00])
+    await kali.vote(3, true)
     await advanceTime(35)
-    await kali.processProposal(2)
+    await kali.processProposal(3)
     // Proposal #1 remains intact
     // console.log(await kali.proposals(0))
     // Proposal #2 deleted
@@ -1121,9 +1089,9 @@ describe("KaliDAO", function () {
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
     await kali.propose(10, "TEST", [], [], [])
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     expect(await kali.docs()).to.equal("TEST")
   })
   it("Should forbid processing a non-existent proposal", async function () {
@@ -1139,7 +1107,7 @@ describe("KaliDAO", function () {
       30,
       [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
-    expect(await kali.processProposal(1).should.be.reverted)
+    expect(await kali.processProposal(2).should.be.reverted)
   })
   it("Should forbid processing a proposal that was already processed", async function () {
     await kali.init(
@@ -1161,10 +1129,10 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
-    expect(await kali.processProposal(0).should.be.reverted)
+    await kali.processProposal(1)
+    expect(await kali.processProposal(1).should.be.reverted)
   })
   it("Should forbid processing a proposal before voting period ends", async function () {
     await kali.init(
@@ -1186,9 +1154,9 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(20)
-    expect(await kali.processProposal(0).should.be.reverted)
+    expect(await kali.processProposal(1).should.be.reverted)
   })
   it("Should forbid processing a proposal before previous processes", async function () {
     await kali.init(
@@ -1211,9 +1179,9 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.vote(0, true)
+    await kali.vote(1, true)
     await advanceTime(35)
-    await kali.processProposal(0)
+    await kali.processProposal(1)
     // check case
     await kali.propose(
       0,
@@ -1222,7 +1190,7 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.vote(1, true)
+    await kali.vote(2, true)
     await kali.propose(
       0,
       "TEST",
@@ -1230,11 +1198,11 @@ describe("KaliDAO", function () {
       [getBigNumber(1000)],
       [0x00]
     )
-    await kali.vote(2, true)
+    await kali.vote(3, true)
     await advanceTime(35)
-    expect(await kali.processProposal(2).should.be.reverted)
-    await kali.processProposal(1)
+    expect(await kali.processProposal(3).should.be.reverted)
     await kali.processProposal(2)
+    await kali.processProposal(3)
   })
   it("Should forbid calling a non-whitelisted extension", async function () {
     await kali.init(
@@ -1312,5 +1280,88 @@ describe("KaliDAO", function () {
     expect(
       await kali.transfer(receiver.address, getBigNumber(1)).should.be.reverted
     )
+  })
+  it("Should not allow share tally after current timestamp", async function () {
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [bob.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    expect(
+      await kali.getPriorVotes(bob.address, 1941275221).should.be.reverted
+    )
+  })
+  it("Should match current votes to undelegated balance", async function () {
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [bob.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    expect(await kali.getCurrentVotes(bob.address)).to.equal(getBigNumber(10))
+  })
+  it("Should allow vote delegation", async function () {
+    let sender, receiver
+    ;[sender, receiver] = await ethers.getSigners()
+
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    await kali.delegate(receiver.address)
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(0)
+    expect(await kali.getCurrentVotes(receiver.address)).to.equal(getBigNumber(10))
+    expect(await kali.balanceOf(sender.address)).to.equal(getBigNumber(10))
+    expect(await kali.balanceOf(receiver.address)).to.equal(0)
+    await kali.delegate(sender.address)
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(getBigNumber(10))
+    expect(await kali.getCurrentVotes(receiver.address)).to.equal(0)
+  })
+  it("Should update delegated balance after transfer", async function () {
+    let sender, receiver, receiver2
+    ;[sender, receiver, receiver2] = await ethers.getSigners()
+
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    await kali.delegate(receiver.address)
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(0)
+    expect(await kali.getCurrentVotes(receiver.address)).to.equal(getBigNumber(10))
+    await kali.transfer(receiver2.address, getBigNumber(5))
+    expect(await kali.getCurrentVotes(receiver2.address)).to.equal(getBigNumber(5))
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(0)
+    expect(await kali.getCurrentVotes(receiver.address)).to.equal(getBigNumber(5))
+    await kali.delegate(sender.address)
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(getBigNumber(5))
   })
 })

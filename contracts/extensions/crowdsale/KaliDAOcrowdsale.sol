@@ -74,13 +74,7 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
         emit ExtensionSet(crowdsaleId, listId, msg.sender, purchaseToken, purchaseMultiplier, purchaseLimit, saleEnds);
     }
 
-    function callExtension(
-        address, 
-        uint256 amount, 
-        bytes calldata data
-    ) public payable nonReentrant virtual returns (bool mint, uint256 amountOut) {
-        uint256 crowdsaleId = abi.decode(data, (uint256));
-
+    function callExtension(uint256 crowdsaleId, uint256 amount) public payable nonReentrant virtual returns (uint256 amountOut) {
         Crowdsale storage sale = crowdsales[crowdsaleId];
 
         bytes memory extensionData = abi.encode(true);
@@ -113,8 +107,6 @@ contract KaliDAOcrowdsale is ReentrancyGuard {
 
             IKaliDAOextension(sale.dao).callExtension(msg.sender, amountOut, extensionData);
         }
-
-        mint = true;
 
         emit ExtensionCalled(crowdsaleId, msg.sender, sale.dao, amountOut);
     }

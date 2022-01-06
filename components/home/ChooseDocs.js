@@ -41,32 +41,30 @@ export default function ChooseDocs(props) {
 
   const templateOptions = () => [
     {
-      name: "Code of Conduct Template",
-      url: "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/CodeOfConduct.md"
+      name: "DAO Charter",
+      url: "https://github.com/lexDAO/Kali/blob/main/legal/formation/Charter.md"
     },
     {
       name: "Trustless Unincorporated Nonprofit Association Agreement",
-      url: "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/TUNAA.md",
+      url: "https://github.com/lexDAO/Kali/blob/main/legal/formation/una/TUNAA.md",
     },
     {
       name: "Delaware LLC Operating Agreement",
-      url: "https://github.com/lexDAO/LexCorpus/blob/master/contracts/legal/dao/membership/operating/DelawareOperatingAgreement.md"
+      url: "https://github.com/lexDAO/Kali/blob/main/legal/formation/llc/DelawareOA.md"
     }
   ];
 
   return (
     <VStack>
-        <Text>Choose a legal form for your DAO.</Text>
-        <Text>(Don&apos;t worry - you can update this later through proposal!)</Text>
+        <Text fontSize="xl"><b>Add a legal structure</b></Text>
         <Select onChange={handleSelect} defaultValue={props.details['docType']}>
           <option value="999"></option>
-          <option value="0">I need an LLC, make one for me*</option>
-          <option value="1">I have created a legal entity for the DAO, and the link to its governance documents is:</option>
+          <option value="0">Form an LLC</option>
+          <option value="1">Provide your own governance docs:</option>
           <option value="2">None</option>
         </Select>
         {selectedType==1 ? <Input defaultValue={props.details['docs']} onChange={handleChange} /> : null}
-        {selectedType==0 ? <Text>*Your DAO will be issued a series of KaliDAO, LLC, a Delaware Series LLC. Click here to learn more about series LLCs, and if it&apos;s right for you. (coming soon)</Text> : null}
-        <Text>Need a form for your DAO&apos;s governance documents?  Check out our templates. (Link to page in hamburger menu?)</Text>
+        {selectedType==0 ? <Text><i>Your DAO will be issued a series NFT under KaliCo Ricardian LLC, a Delaware Series LLC. Click <a href="https://ricardian.gitbook.io/ricardian-llc/">here</a> to learn more.</i></Text> : null}
         {selectedType != 999 ? <Button onClick={() => props.handleNext(6)}>Next</Button> : null}
     </VStack>
   );

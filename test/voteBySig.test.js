@@ -2,8 +2,6 @@ const { BigNumber } = require("ethers")
 const chai = require("chai")
 const { expect } = require("chai")
 
-const wethAddress = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
-
 chai.should()
 
 // Defaults to e18 using amount * 10^18
@@ -15,7 +13,7 @@ async function advanceTime(time) {
   await ethers.provider.send("evm_increaseTime", [time])
 }
 
-describe("KaliDAO", function () {
+describe("KaliDAO voteBySig", function () {
   let Kali // KaliDAO contract
   let kali // KaliDAO contract instance
   let proposer // signerA
@@ -32,50 +30,65 @@ describe("KaliDAO", function () {
     // console.log("alice eth balance", await alice.getBalance())
     // console.log("bob eth balance", await bob.getBalance())
   })
-  
-  const Domain = (kali) => ({
-    name: "Kali voteBySig",
-    chainId: 1, // await web3.eth.net.getId(); See: https://github.com/trufflesuite/ganache-core/issues/515
-    verifyingContract: kali._address,
-  })
-  const Types = {
-    Vote: [
-      { name: "signer", type: "address" },
-      { name: "proposal", type: "uint256" },
-      { name: "approve", type: "bool" },
-    ],
-  }
 
   it("reverts if the signatory is invalid", async () => {
-    expect(await kali.voteBySig(proposer.address, 0, true, 0, "0xbad", "0xbad")).should.be.reverted
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [proposer.address],
+      [getBigNumber(1)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    await kali.propose(0, "TEST", [alice.address], [0], [0x00])
+    const rs = ethers.utils.formatBytes32String("rs")
+    expect(kali.voteBySig(proposer.address, 0, true, 0, rs, rs).should.be.reverted)
   })
 
-  it("casts vote on behalf of the signatory", async () => {
-    // await enfranchise(comp, a1, 400001)
-    // await send(
-    //   gov,
-    //   "propose",
-    //   [targets, values, signatures, callDatas, "do nothing"],
-    //   { from: a1 }
-    // )
-    // proposalId = await call(gov, "latestProposalIds", [a1])
+  it("casts vote by signing message", async () => {
+    const domain = {
+      name: "KALI",
+      version: "1",
+      chainId: 31337,
+      verifyingContract: kali.address,
+    }
+    const types = {
+      SignVote: [
+        { name: "signer", type: "address" },
+        { name: "proposal", type: "uint256" },
+        { name: "approve", type: "bool" },
+      ]
+    }
+    const value = {
+      signer: proposer.address,
+      proposal: 0,
+      approve: true,
+    }
 
-    // const { v, r, s } = EIP712.sign(
-    //   Domain(gov),
-    //   "Ballot",
-    //   { proposalId, support: 1 },
-    //   Types,
-    //   unlockedAccount(a1).secretKey
-    // )
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [proposer.address],
+      [getBigNumber(1)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    await kali.propose(0, "TEST", [alice.address], [getBigNumber(1000)], [0x00])
 
-    // let beforeFors = (await call(gov, "proposals", [proposalId])).forVotes
-    // await mineBlock()
-    // const tx = await send(gov, "castVoteBySig", [proposalId, 1, v, r, s])
-    // expect(tx.gasUsed < 80000)
+    const signature = await proposer._signTypedData(domain, types, value)
+    const { r, s, v } = ethers.utils.splitSignature(signature)
 
-    // let afterFors = (await call(gov, "proposals", [proposalId])).forVotes
-    // expect(new BigNumber(afterFors)).toEqual(
-    //   new BigNumber(beforeFors).plus(etherMantissa(400001))
-    // )
+    await kali.voteBySig(proposer.address, 0, true, v, r, s)
+    await advanceTime(35)
+    await kali.processProposal(0)
+    expect(await kali.balanceOf(alice.address)).to.equal(getBigNumber(1000))
   })
 })

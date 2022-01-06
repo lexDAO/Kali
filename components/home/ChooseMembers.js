@@ -68,7 +68,7 @@ export default function ChooseMembers(props) {
 
   return (
     <VStack as="form" onSubmit={handleSubmit(handleMembersSubmit)}>
-      <Text fontSize="xl"><b>Add founders to cap table</b></Text>
+      <Text fontSize="xl"><b>Build your cap table</b></Text>
       <List spacing={2}>
         {fields.map((founder, index) => (
           <ListItem

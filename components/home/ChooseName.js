@@ -27,7 +27,7 @@ export default function NameDAO(props) {
   return (
     <VStack>
         <Text>Give your DAO a name and a symbol</Text>
-        <Text>This is how your DAO token will appear in Etherscan and wallets</Text>
+        <Text>This is how your voting token will appear in Etherscan and wallets</Text>
         <Text><b>Name</b></Text><Input defaultValue={props.details['daoName']} onChange={changeDao} />
         <Text><b>Symbol</b></Text><Input defaultValue={props.details['symbol']} onChange={changeSymbol} />
 

@@ -27,7 +27,7 @@ export default function ChooseNetwork(props) {
 
   return (
     <VStack>
-        <Text>Where do you want to deploy your DAO?</Text>
+        <Text fontSize="xl"><b>Select your chain</b></Text>
         <Select onChange={updateNetwork} defaultValue={props.details['network']}>
             <option value="999"></option>
           {supportedChains.map((item, index) => (
@@ -36,12 +36,12 @@ export default function ChooseNetwork(props) {
         </Select>
         {network != 999 && chainId != network ||  network != 999 && chainId != network && account == null ?
           <>
-          <Text>Please connect your wallet to {getNetworkName(network)}.</Text>
+          <Text>please connect your wallet to {getNetworkName(network)}</Text>
           <Button onClick={value.connect}>Connect</Button>
           </>
         : network != 999 && chainId == network ?
           <>
-          <Text>Connected to {getNetworkName(network)}!</Text>
+          <Text><i>connected to {getNetworkName(network)}</i></Text>
           <Button onClick={() => props.handleNext(1)}>Next</Button>
           </>
         : null}

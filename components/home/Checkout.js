@@ -134,26 +134,25 @@ export default function Checkout(props) {
     <VStack>
       <Text>You have selected:</Text>
       <List>
-          <ListItem>Chain: {details['network']}</ListItem>
-          <ListItem>Name: {details['daoName']}</ListItem>
-          <ListItem>Symbol: {details['symbol']}</ListItem>
-          <ListItem>Type:
-            {details['daoType'] == null ? "Custom" : presets[details['daoType']]['type']}
+          <ListItem><b>Chain</b> <i>{details['network']}</i></ListItem>
+          <ListItem><b>Name</b> <i>{details['daoName']}</i></ListItem>
+          <ListItem><b>Symbol</b> {details['symbol']}</ListItem>
+          <ListItem><b>Type</b> <i>{details['daoType'] == null ? "Custom" : presets[details['daoType']]['type']}</i>
           </ListItem>
-          <ListItem>Members:
+          <ListItem><b>Members</b>
             <List>
-              {details['members'].map((item, index) => (
+            <i>{details['members'].map((item, index) => (
                 <ListItem key={index}>{item} ({fromDecimals(details['shares'][index], 18)} shares)</ListItem>
-              ))}
+              ))}</i>
             </List>
           </ListItem>
-          <ListItem>Voting period: {convertVotingPeriod(details['votingPeriod'])}</ListItem>
-          <ListItem>Share transfer: {details['paused']==1 ? "paused" : "unrestricted"}</ListItem>
-          <ListItem>Quorum: {details['quorum']}%</ListItem>
-          <ListItem>Supermajority: {details['supermajority']}%</ListItem>
-          <ListItem>Docs: {details['docs']=="" ? "Ricardian" : details['docs']}</ListItem>
+          <ListItem><b>Voting period</b> <i>{convertVotingPeriod(details['votingPeriod'])}</i></ListItem>
+          <ListItem><b>Share transerability</b> <i>{details['paused']==1 ? "restricted" : "unrestricted"}</i></ListItem>
+          <ListItem><b>Quorum</b> <i>{details['quorum']}%</i></ListItem>
+          <ListItem><b>Supermajority</b> <i>{details['supermajority']}%</i></ListItem>
+          <ListItem><b>Docs</b> <i>{details['docs']=="" ? "Ricardian" : details['docs']}</i></ListItem>
       </List>
-      <Button onClick={deploy}>Deploy my DAO!</Button>
+      <Button onClick={deploy}>Deploy</Button>
     </VStack>
   );
 }

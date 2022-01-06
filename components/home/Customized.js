@@ -78,8 +78,8 @@ export default function Customized(props) {
 
   return (
     <VStack>
-        <Text>Customize your DAO&apos;s governance settings.</Text>
-        <Text>Voting Period:</Text>
+        <Text fontSize="xl"><b>Customize your governance</b></Text>
+        <Text><b>Voting Period</b></Text>
         <HStack>
         <NumInputField
           defaultValue={votingPeriod}
@@ -91,23 +91,23 @@ export default function Customized(props) {
           <option value="2">days</option>
         </Select>
         </HStack>
-        <Text>Quorum:</Text>
+        <Text><b>Quorum</b></Text>
         <NumInputField
           defaultValue={props.details['quorum']}
           min="0"
           max="100"
           onChange={changeQuorum} />
-        <Text>Supermajority:</Text>
+        <Text><b>Supermajority</b></Text>
         <NumInputField
           defaultValue={props.details['supermajority']}
           min="51"
           max="100"
           onChange={changeSupermajority} />
-        <Text>Share Transfer:</Text>
+        <Text><b>Share Transferability</b></Text>
         <Select defaultValue={props.details['paused']} onChange={changePaused}>
           <option></option>
-          <option value="1">Paused</option>
-          <option value="0">Unpaused</option>
+          <option value="1">Transferable</option>
+          <option value="0">Nontransferable</option>
         </Select>
         <Button onClick={() => props.handleNext(4)}>Next</Button>
     </VStack>

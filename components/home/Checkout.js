@@ -134,26 +134,25 @@ export default function Checkout(props) {
     <VStack>
       <Text>You have selected:</Text>
       <List>
-          <ListItem>Chain: {details['network']}</ListItem>
-          <ListItem>Name: {details['daoName']}</ListItem>
-          <ListItem>Symbol: {details['symbol']}</ListItem>
-          <ListItem>Type:
-            {details['daoType'] == null ? "Custom" : presets[details['daoType']]['type']}
+          <ListItem>Chain <b>{details['network']}</b></ListItem>
+          <ListItem>Name <b>{details['daoName']}</b></ListItem>
+          <ListItem>Symbol <b>{details['symbol']}</b></ListItem>
+          <ListItem>Type <b>{details['daoType'] == null ? "Custom" : presets[details['daoType']]['type']}</b>
           </ListItem>
-          <ListItem>Members:
+          <ListItem>Members
             <List>
-              {details['members'].map((item, index) => (
+            <b>{details['members'].map((item, index) => (
                 <ListItem key={index}>{item} ({fromDecimals(details['shares'][index], 18)} shares)</ListItem>
-              ))}
+              ))}</b>
             </List>
           </ListItem>
-          <ListItem>Voting period: {convertVotingPeriod(details['votingPeriod'])}</ListItem>
-          <ListItem>Share transfer: {details['paused']==1 ? "paused" : "unrestricted"}</ListItem>
-          <ListItem>Quorum: {details['quorum']}%</ListItem>
-          <ListItem>Supermajority: {details['supermajority']}%</ListItem>
-          <ListItem>Docs: {details['docs']=="" ? "Ricardian" : details['docs']}</ListItem>
+          <ListItem>Voting period <b>{convertVotingPeriod(details['votingPeriod'])}</b></ListItem>
+          <ListItem>Share transerability <b>{details['paused']==1 ? "restricted" : "unrestricted"}</b></ListItem>
+          <ListItem>Quorum <b>{details['quorum']}%</b></ListItem>
+          <ListItem>Supermajority <b>{details['supermajority']}%</b></ListItem>
+          <ListItem>Docs <b>{details['docs']=="" ? "Ricardian" : details['docs']}</b></ListItem>
       </List>
-      <Button onClick={deploy}>Deploy my DAO!</Button>
+      <Button onClick={deploy}>Deploy</Button>
     </VStack>
   );
 }

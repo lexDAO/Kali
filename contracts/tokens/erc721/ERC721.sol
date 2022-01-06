@@ -319,6 +319,8 @@ abstract contract ERC721 {
         
         delete ownerOf[tokenId];
         
+        delete getApproved[id];
+        
         emit Transfer(owner, address(0), tokenId); 
     }
 }

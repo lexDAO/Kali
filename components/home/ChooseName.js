@@ -26,10 +26,8 @@ export default function NameDAO(props) {
 
   return (
     <VStack>
-        <Text>Next, give your DAO token a name and a symbol.</Text>
-        <Text>This is how your DAO token will appear in Etherscan and other third party token trackers. Once your DAO is deployed, this cannot be changed.</Text>
-        <Text>DAO token name:</Text><Input defaultValue={props.details['daoName']} onChange={changeDao} />
-        <Text>Symbol:</Text><Input defaultValue={props.details['symbol']} onChange={changeSymbol} />
+        <Text fontSize="xl"><b>Name</b></Text><Input defaultValue={props.details['daoName']} onChange={changeDao} />
+        <Text fontSize="xl"><b>Symbol</b></Text><Input defaultValue={props.details['symbol']} onChange={changeSymbol} />
 
         <Button onClick={() => props.handleNext(2)}>Next</Button>
 

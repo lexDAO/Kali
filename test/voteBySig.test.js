@@ -31,7 +31,7 @@ describe("KaliDAO voteBySig", function () {
     // console.log("bob eth balance", await bob.getBalance())
   })
 
-  it("reverts if the signatory is invalid", async () => {
+  it("voteBySig should revert if the signature is invalid", async () => {
     await kali.init(
       "KALI",
       "KALI",
@@ -49,7 +49,7 @@ describe("KaliDAO voteBySig", function () {
     expect(kali.voteBySig(proposer.address, 0, true, 0, rs, rs).should.be.reverted)
   })
 
-  it("casts vote by signing message", async () => {
+  it("Should process membership proposal via voteBySig", async () => {
     const domain = {
       name: "KALI",
       version: "1",

@@ -134,23 +134,23 @@ export default function Checkout(props) {
     <VStack>
       <Text>You have selected:</Text>
       <List>
-          <ListItem><b>Chain</b> <i>{details['network']}</i></ListItem>
-          <ListItem><b>Name</b> <i>{details['daoName']}</i></ListItem>
-          <ListItem><b>Symbol</b> {details['symbol']}</ListItem>
-          <ListItem><b>Type</b> <i>{details['daoType'] == null ? "Custom" : presets[details['daoType']]['type']}</i>
+          <ListItem>Chain <b>{details['network']}</b></ListItem>
+          <ListItem>Name <b>{details['daoName']}</b></ListItem>
+          <ListItem>Symbol <b>{details['symbol']}</b></ListItem>
+          <ListItem>Type <b>{details['daoType'] == null ? "Custom" : presets[details['daoType']]['type']}</b>
           </ListItem>
-          <ListItem><b>Members</b>
+          <ListItem>Members
             <List>
-            <i>{details['members'].map((item, index) => (
+            <b>{details['members'].map((item, index) => (
                 <ListItem key={index}>{item} ({fromDecimals(details['shares'][index], 18)} shares)</ListItem>
-              ))}</i>
+              ))}</b>
             </List>
           </ListItem>
-          <ListItem><b>Voting period</b> <i>{convertVotingPeriod(details['votingPeriod'])}</i></ListItem>
-          <ListItem><b>Share transerability</b> <i>{details['paused']==1 ? "restricted" : "unrestricted"}</i></ListItem>
-          <ListItem><b>Quorum</b> <i>{details['quorum']}%</i></ListItem>
-          <ListItem><b>Supermajority</b> <i>{details['supermajority']}%</i></ListItem>
-          <ListItem><b>Docs</b> <i>{details['docs']=="" ? "Ricardian" : details['docs']}</i></ListItem>
+          <ListItem>Voting period <b>{convertVotingPeriod(details['votingPeriod'])}</b></ListItem>
+          <ListItem>Share transerability <b>{details['paused']==1 ? "restricted" : "unrestricted"}</b></ListItem>
+          <ListItem>Quorum <b>{details['quorum']}%</b></ListItem>
+          <ListItem>Supermajority <b>{details['supermajority']}%</b></ListItem>
+          <ListItem>Docs <b>{details['docs']=="" ? "Ricardian" : details['docs']}</b></ListItem>
       </List>
       <Button onClick={deploy}>Deploy</Button>
     </VStack>

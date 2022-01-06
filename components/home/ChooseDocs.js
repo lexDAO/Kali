@@ -60,7 +60,7 @@ export default function ChooseDocs(props) {
         <Select onChange={handleSelect} defaultValue={props.details['docType']}>
           <option value="999"></option>
           <option value="0">Form an LLC</option>
-          <option value="1">Provide your own governance docs:</option>
+          <option value="1">Use your own docs</option>
           <option value="2">None</option>
         </Select>
         {selectedType==1 ? <Input defaultValue={props.details['docs']} onChange={handleChange} /> : null}

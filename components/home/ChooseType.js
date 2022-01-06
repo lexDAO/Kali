@@ -58,7 +58,7 @@ export default function ChooseType(props) {
 
   return (
     <VStack>
-        <Text fontSize="xl"><b>Select DAO type</b></Text>
+        <Text fontSize="xl"><b>Select governance type</b></Text>
         <Grid
           templateColumns={{
             sm: "repeat(1, 1fr)",

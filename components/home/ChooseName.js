@@ -26,9 +26,8 @@ export default function NameDAO(props) {
 
   return (
     <VStack>
-        <Text fontSize="xl"><b>Select a name and symbol for your DAO shares</b></Text>
-        <Text><b>Name</b></Text><Input defaultValue={props.details['daoName']} onChange={changeDao} />
-        <Text><b>Symbol</b></Text><Input defaultValue={props.details['symbol']} onChange={changeSymbol} />
+        <Text fontSize="xl"><b>Name</b></Text><Input defaultValue={props.details['daoName']} onChange={changeDao} />
+        <Text fontSize="xl"><b>Symbol</b></Text><Input defaultValue={props.details['symbol']} onChange={changeSymbol} />
 
         <Button onClick={() => props.handleNext(2)}>Next</Button>
 

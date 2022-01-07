@@ -1,0 +1,3 @@
+[submodule "subgraph"]
+	path = subgraph
+	url = ./subgraph

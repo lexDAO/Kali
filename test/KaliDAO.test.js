@@ -979,7 +979,7 @@ describe("KaliDAO", function () {
     await kali.processProposal(1)
     expect(await kali.extensions(wethAddress)).to.equal(true)
   })
-  it("Should process extension proposal - KaliDAOcrowdsale with ETH", async function () {
+  it.only("Should process extension proposal - KaliDAOcrowdsale with ETH", async function () {
     // Instantiate KaliDAO
     await kali.init(
       "KALI",
@@ -1026,9 +1026,9 @@ describe("KaliDAO", function () {
     await kali.vote(1, true)
     await advanceTime(35)
     await kali.processProposal(1)
-    await kali
+    await kaliDAOcrowdsale 
       .connect(alice)
-      .callExtension(kaliDAOcrowdsale.address, 0, 0x0, {
+      .callExtension(0, 0x0, {
         value: getBigNumber(50),
       })
     expect(await ethers.provider.getBalance(kali.address)).to.equal(
@@ -1036,7 +1036,7 @@ describe("KaliDAO", function () {
     )
     expect(await kali.balanceOf(alice.address)).to.equal(getBigNumber(100))
   })
-  it("Should process extension proposal - KaliDAOcrowdsale with ERC20", async function () {
+  it.only("Should process extension proposal - KaliDAOcrowdsale with ERC20", async function () {
     // Instantiate purchaseToken
     let PurchaseToken = await ethers.getContractFactory("FixedERC20")
     let purchaseToken = await PurchaseToken.deploy(
@@ -1090,9 +1090,9 @@ describe("KaliDAO", function () {
     await purchaseToken
       .connect(alice)
       .approve(kaliDAOcrowdsale.address, getBigNumber(50))
-    await kali
+    await kaliDAOcrowdsale
       .connect(alice)
-      .callExtension(kaliDAOcrowdsale.address, getBigNumber(50), 0x0)
+      .callExtension(0, getBigNumber(50))
     expect(await purchaseToken.balanceOf(kali.address)).to.equal(
       getBigNumber(50)
     )

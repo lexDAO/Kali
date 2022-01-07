@@ -979,7 +979,7 @@ describe("KaliDAO", function () {
     await kali.processProposal(1)
     expect(await kali.extensions(wethAddress)).to.equal(true)
   })
-  it.only("Should process extension proposal - KaliDAOcrowdsale with ETH", async function () {
+  it("Should process extension proposal - KaliDAOcrowdsale with ETH", async function () {
     // Instantiate KaliDAO
     await kali.init(
       "KALI",
@@ -1036,7 +1036,7 @@ describe("KaliDAO", function () {
     )
     expect(await kali.balanceOf(alice.address)).to.equal(getBigNumber(100))
   })
-  it.only("Should process extension proposal - KaliDAOcrowdsale with ERC20", async function () {
+  it("Should process extension proposal - KaliDAOcrowdsale with ERC20", async function () {
     // Instantiate purchaseToken
     let PurchaseToken = await ethers.getContractFactory("FixedERC20")
     let purchaseToken = await PurchaseToken.deploy(
@@ -1280,6 +1280,21 @@ describe("KaliDAO", function () {
     )
     expect(await kali.callExtension(wethAddress, 10, 0x0).should.be.reverted)
   })
+  it("Should forbid non-whitelisted extension calling DAO", async function () {
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [proposer.address],
+      [getBigNumber(1)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    expect(await kali.connect(alice).callExtension(bob.address, 10, 0x0).should.be.reverted)
+  })
   it("Should allow a member to transfer shares", async function () {
     let sender, receiver
     ;[sender, receiver] = await ethers.getSigners()
@@ -1342,7 +1357,86 @@ describe("KaliDAO", function () {
       await kali.transfer(receiver.address, getBigNumber(1)).should.be.reverted
     )
   })
-  it("Should not allow share tally after current timestamp", async function () {
+  it("Should allow a member to approve pull transfers", async function () {
+    let sender, receiver
+    ;[sender, receiver] = await ethers.getSigners()
+
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    await kali.approve(receiver.address, getBigNumber(4))
+    expect(await kali.allowance(sender.address, receiver.address)).to.equal(getBigNumber(4))
+  })
+  it("Should allow an approved account to pull transfer (transferFrom)", async function () {
+    let sender, receiver
+    ;[sender, receiver] = await ethers.getSigners()
+
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    await kali.approve(receiver.address, getBigNumber(4))
+    expect(await kali.allowance(sender.address, receiver.address)).to.equal(getBigNumber(4))
+    await kali.connect(receiver).transferFrom(sender.address, receiver.address, getBigNumber(4))
+  })
+  it("Should not allow an account to pull transfer (transferFrom) beyond approval", async function () {
+    let sender, receiver
+    ;[sender, receiver] = await ethers.getSigners()
+
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    await kali.approve(receiver.address, getBigNumber(4))
+    expect(await kali.allowance(sender.address, receiver.address)).to.equal(getBigNumber(4))
+    expect(await kali.connect(receiver).transferFrom(sender.address, receiver.address, getBigNumber(5)).should.be.reverted)
+  })
+  it("Should not allow an approved account to pull transfer (transferFrom) if paused", async function () {
+    let sender, receiver
+    ;[sender, receiver] = await ethers.getSigners()
+
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    await kali.approve(receiver.address, getBigNumber(4))
+    expect(await kali.allowance(sender.address, receiver.address)).to.equal(getBigNumber(4))
+    expect(await kali.connect(receiver).transferFrom(sender.address, receiver.address, getBigNumber(4)).should.be.reverted)
+  })
+  it("Should not allow vote tally after current timestamp", async function () {
     await kali.init(
       "KALI",
       "KALI",
@@ -1424,5 +1518,146 @@ describe("KaliDAO", function () {
     expect(await kali.getCurrentVotes(receiver.address)).to.equal(getBigNumber(5))
     await kali.delegate(sender.address)
     expect(await kali.getCurrentVotes(sender.address)).to.equal(getBigNumber(5))
+  })
+  it("Should update delegated balance after pull transfer (transferFrom)", async function () {
+    let sender, receiver, receiver2
+    ;[sender, receiver, receiver2] = await ethers.getSigners()
+
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      false,
+      [],
+      [],
+      [sender.address],
+      [getBigNumber(10)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    await kali.delegate(receiver.address)
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(0)
+    expect(await kali.getCurrentVotes(receiver.address)).to.equal(getBigNumber(10))
+    await kali.approve(receiver.address, getBigNumber(5))
+    await kali.connect(receiver).transferFrom(sender.address, receiver2.address, getBigNumber(5))
+    expect(await kali.getCurrentVotes(receiver2.address)).to.equal(getBigNumber(5))
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(0)
+    expect(await kali.getCurrentVotes(receiver.address)).to.equal(getBigNumber(5))
+    await kali.delegate(sender.address)
+    expect(await kali.getCurrentVotes(sender.address)).to.equal(getBigNumber(5))
+  })
+  it("permit should work if the signature is valid", async () => {
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [proposer.address],
+      [getBigNumber(1)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    const domain = {
+      name: "KALI",
+      version: "1",
+      chainId: 31337,
+      verifyingContract: kali.address,
+    }
+    const types = {
+      PERMIT_TYPEHASH: [
+        { name: "owner", type: "address" },
+        { name: "spender", type: "address" },
+        { name: "value", type: "uint256" },
+        { name: "nonce", type: "uint256" },
+        { name: "deadline", type: "uint256" },
+      ],
+    }
+    const value = {
+      owner: proposer.address,
+      spender: bob.address,
+      value: getBigNumber(1),
+      nonce: 0,
+      deadline: 1941543121
+    }
+
+    const signature = await proposer._signTypedData(domain, types, value)
+    const { r, s, v } = ethers.utils.splitSignature(signature)
+
+    kali.permit(proposer.address, bob.address, getBigNumber(1), 1941543121, v, r, s)
+  })
+  it("permit should revert if the signature is invalid", async () => {
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [proposer.address],
+      [getBigNumber(1)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    const rs = ethers.utils.formatBytes32String("rs")
+    expect(
+      kali.permit(proposer.address, bob.address, getBigNumber(1), 1941525801, 0, rs, rs).should.be.reverted
+    )
+  })
+  it("delegateBySig should work if the signature is valid", async () => {
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [proposer.address],
+      [getBigNumber(1)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    const domain = {
+      name: "KALI",
+      version: "1",
+      chainId: 31337,
+      verifyingContract: kali.address,
+    }
+    const types = {
+      Delegation: [
+        { name: "delegatee", type: "address" },
+        { name: "nonce", type: "uint256" },
+        { name: "expiry", type: "uint256" },
+      ],
+    }
+    const value = {
+      delegatee: bob.address,
+      nonce: 0,
+      expiry: 1941543121
+    }
+
+    const signature = await proposer._signTypedData(domain, types, value)
+    const { r, s, v } = ethers.utils.splitSignature(signature)
+
+    kali.delegateBySig(bob.address, 0, 1941525801, v, r, s)
+  })
+  it("delegateBySig should revert if the signature is invalid", async () => {
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [proposer.address],
+      [getBigNumber(1)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    const rs = ethers.utils.formatBytes32String("rs")
+    expect(
+      kali.delegateBySig(bob.address, 0, 1941525801, 0, rs, rs).should.be.reverted
+    )
   })
 })

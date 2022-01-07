@@ -2,14 +2,20 @@ Kali FAQ - Getting a Handle on the Hands
 1.  What is Kali?
 Kali is a protocol for the smooth and straightforward establishment of a DAO operating under MolochDAO/Compound style governance. With just a few decisions and clicks, users can establish a flexible and user-friendly org that has a core functionality adequate for both large and small DAOs. Uniquely, Kali has the ability to 'wrap' the established DAO in a legal wrapper under either a Wyoming or Delaware LLC (Limited Liability Company) (in alpha). Kali also provides the options of drafting a 'boilerplate' Community Code of Conduct that your DAO can then expand upon, as well as a Charter. Lastly, Kali provides the option of establishing a UNA (Unincorporated Nonprofit Association) instead of an LLC.
 2.  What things should I be thinking about when I set up a KaliDAO?
-The more consideration as to the needs and structure of your DAO at the time of establishment, the fewer changes may be required in the future (which may reduce gas fees required to make subsequent DAO changes).
+The more consideration as to the needs and structure of your DAO at the time of establishment, the fewer changes may be required in the future (which may reduce gas fees required to make subsequent changes to your DAO).
 The most important considerations to make (other than your name and symbol!) are:
 - Who are the founders?;
 - How many tokens are each of those founders initially receiving?;
-- Do you want to establish the DAO with a legal wrapper, and if so, do you want an LLC (Limited Liability Company) or an UNA (Unincorporated Nonprofit Association)? <b>KaliDAO and LexDAO recommend that you discuss this decision with a legal and tax expert prior to establishing the DAO</b>.
-3.  KaliDAO settings:
-3a. Name
-Input the desired name of your DAO.
+- What voting procedures should the DAO operate by?; and
+- Do you want to establish the DAO with a legal wrapper (more on this later)? <b>KaliDAO and LexDAO recommend that you discuss this decision with a legal and tax expert prior to establishing the DAO</b>.
+3.  Setting up your DAO:
+Step 1 - Choose your DAO's name and Symbol <b>TO FIX - Is $ required?<b>
+Step 2 - Choose a DAO governance structure from one of the three templates or choose to create a custom DAOInput the desired name of your DAO.
+
+KALI Templates
+Social - A DAO established for social purposes - Anyone can join by paying the established tribute, a smaller quorum is required to pass proposals to keep things moving and fun!
+Investment Club - A DAO established for collective investing (including ERC-721 and ERC-1155 NFTs) - Upon summoning, the DAO will immediately commence a 30 day ETH crowdsale at a price of 200 shares per ETH.
+
 3b. Symbol
 Input the desired token symbol for your DAO.
 3c. Docs (Alpha)

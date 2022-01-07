@@ -1,12 +1,12 @@
-**DAO LLC OPERATING AGREEMENT**
+# **DAO LLC OPERATING AGREEMENT**
 
-**[[DAO LLC Name]] LLC**
+## **[[DAO LLC Name]] LLC**
 
-*A Member-Managed DAO LLC* 
+## *A Member-Managed DAO LLC* 
 
-**DELAWARE LLC OPERATING AGREEMENT**
+## **DELAWARE LLC OPERATING AGREEMENT**
 
-*Designated Blockchain: [[Designated Blockchain]]*
+### *Designated Blockchain: [[Designated Blockchain]]*
 
 **THIS OPERATING AGREEMENT** is made and entered into effective [[DAO LLC Formation Date]], by and among the parties assigned cryptographic interests in the decentralized autonomous organization described on *Schedule 1* (collectively referred to in this agreement as the "***Members***").
 
@@ -167,8 +167,6 @@ By entering into this Agreement, Members represent and warrant to the DAO LLC th
 **IN WITNESS WHEREOF**, the parties to this Agreement execute this Operating Agreement as of the date and year first above written. 
 
 **DAO LLC Organizer**
-
-*/s/ [[DAO LLC Organizer ID]]*
 
 0x[[DAO LLC Organizer EthAddress]]
 

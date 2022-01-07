@@ -22,7 +22,6 @@ export default function ChooseType(props) {
     console.log(props.details)
 
     props.handleNext(4);
-
   }
 
   const custom = () => {
@@ -59,7 +58,7 @@ export default function ChooseType(props) {
 
   return (
     <VStack>
-        <Text>What type of DAO would you like to deploy?</Text>
+        <Text fontSize="xl"><b>Select governance type</b></Text>
         <Grid
           templateColumns={{
             sm: "repeat(1, 1fr)",
@@ -80,8 +79,7 @@ export default function ChooseType(props) {
           }}
         >
           <LinkOverlay href="#" onClick={custom}>
-            <Text>Custom</Text>
-            <Text>Pick this option if you want to customize your DAO&apos;s settings.</Text>
+            <Text fontSize="xl"><b>Custom</b></Text>
           </LinkOverlay>
         </LinkBox>
         </Grid>

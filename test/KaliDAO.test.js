@@ -678,6 +678,67 @@ describe("KaliDAO", function () {
     await kali.processProposal(1)
     expect(await kali.balanceOf(proposer.address)).to.equal(getBigNumber(1001))
   })
+  it("voteBySig should revert if the signature is invalid", async () => {
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [proposer.address],
+      [getBigNumber(1)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    await kali.propose(0, "TEST", [alice.address], [0], [0x00])
+    const rs = ethers.utils.formatBytes32String("rs")
+    expect(
+      kali.voteBySig(proposer.address, 0, true, 0, rs, rs).should.be.reverted
+    )
+  })
+  it("Should process membership proposal via voteBySig", async () => {
+    const domain = {
+      name: "KALI",
+      version: "1",
+      chainId: 31337,
+      verifyingContract: kali.address,
+    }
+    const types = {
+      SignVote: [
+        { name: "signer", type: "address" },
+        { name: "proposal", type: "uint256" },
+        { name: "approve", type: "bool" },
+      ],
+    }
+    const value = {
+      signer: proposer.address,
+      proposal: 1,
+      approve: true,
+    }
+
+    await kali.init(
+      "KALI",
+      "KALI",
+      "DOCS",
+      true,
+      [],
+      [],
+      [proposer.address],
+      [getBigNumber(1)],
+      30,
+      [30, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    )
+    await kali.propose(0, "TEST", [alice.address], [getBigNumber(1000)], [0x00])
+
+    const signature = await proposer._signTypedData(domain, types, value)
+    const { r, s, v } = ethers.utils.splitSignature(signature)
+
+    await kali.voteBySig(proposer.address, 1, true, v, r, s)
+    await advanceTime(35)
+    await kali.processProposal(1)
+    expect(await kali.balanceOf(alice.address)).to.equal(getBigNumber(1000))
+  })
   it("Should process burn (eviction) proposal", async function () {
     await kali.init(
       "KALI",
@@ -918,7 +979,7 @@ describe("KaliDAO", function () {
     await kali.processProposal(1)
     expect(await kali.extensions(wethAddress)).to.equal(true)
   })
-  it("Should process extension proposal - KaliDAOcrowdsale with ETH", async function () {
+  it.only("Should process extension proposal - KaliDAOcrowdsale with ETH", async function () {
     // Instantiate KaliDAO
     await kali.init(
       "KALI",
@@ -965,9 +1026,9 @@ describe("KaliDAO", function () {
     await kali.vote(1, true)
     await advanceTime(35)
     await kali.processProposal(1)
-    await kali
+    await kaliDAOcrowdsale 
       .connect(alice)
-      .callExtension(kaliDAOcrowdsale.address, 0, 0x0, {
+      .callExtension(0, 0x0, {
         value: getBigNumber(50),
       })
     expect(await ethers.provider.getBalance(kali.address)).to.equal(
@@ -975,7 +1036,7 @@ describe("KaliDAO", function () {
     )
     expect(await kali.balanceOf(alice.address)).to.equal(getBigNumber(100))
   })
-  it("Should process extension proposal - KaliDAOcrowdsale with ERC20", async function () {
+  it.only("Should process extension proposal - KaliDAOcrowdsale with ERC20", async function () {
     // Instantiate purchaseToken
     let PurchaseToken = await ethers.getContractFactory("FixedERC20")
     let purchaseToken = await PurchaseToken.deploy(
@@ -1029,9 +1090,9 @@ describe("KaliDAO", function () {
     await purchaseToken
       .connect(alice)
       .approve(kaliDAOcrowdsale.address, getBigNumber(50))
-    await kali
+    await kaliDAOcrowdsale
       .connect(alice)
-      .callExtension(kaliDAOcrowdsale.address, getBigNumber(50), 0x0)
+      .callExtension(0, getBigNumber(50))
     expect(await purchaseToken.balanceOf(kali.address)).to.equal(
       getBigNumber(50)
     )

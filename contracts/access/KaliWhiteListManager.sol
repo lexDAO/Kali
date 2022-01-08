@@ -207,19 +207,15 @@ contract KaliWhitelistManager {
     ) public virtual {
         if (isWhitelisted(listId, index)) revert WhitelistClaimed();
 
-        bytes32 node = keccak256(abi.encodePacked(index, account));
-
-        bytes32 computedHash = node;
+        bytes32 computedHash = keccak256(abi.encodePacked(index, account));
 
         for (uint256 i = 0; i < merkleProof.length; i++) {
             bytes32 proofElement = merkleProof[i];
 
             if (computedHash <= proofElement) {
-                // hash(current computed hash + current element of the proof)
-                computedHash = keccak256(abi.encodePacked(computedHash, proofElement));
+                computedHash = _efficientHash(computedHash, proofElement);
             } else {
-                // hash(current element of the proof + current computed hash)
-                computedHash = keccak256(abi.encodePacked(proofElement, computedHash));
+                computedHash = _efficientHash(proofElement, computedHash);
             }
         }
         // check if the computed hash (root) is equal to the provided root
@@ -235,5 +231,13 @@ contract KaliWhitelistManager {
         _whitelistAccount(listId, account, true);
 
         emit WhitelistJoined(listId, index, account);
+    }
+
+    function _efficientHash(bytes32 a, bytes32 b) internal pure virtual returns (bytes32 value) {
+        assembly {
+            mstore(0x00, a)
+            mstore(0x20, b)
+            value := keccak256(0x00, 0x40)
+        }
     }
 }

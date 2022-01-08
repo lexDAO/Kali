@@ -119,6 +119,25 @@
 				"internalType": "address",
 				"name": "dao",
 				"type": "address"
+			}
+		],
+		"name": "call",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "amountOut",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "dao",
+				"type": "address"
 			},
 			{
 				"internalType": "uint256",
@@ -179,6 +198,19 @@
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "dao",
+				"type": "address"
+			}
+		],
+		"name": "set",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{

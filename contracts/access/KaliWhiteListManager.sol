@@ -118,10 +118,11 @@ contract KaliWhitelistManager {
             emit WhitelistCreated(listId, msg.sender);
         }
 
-        if (merkleRoot != '')
+        if (merkleRoot != '') {
             merkleRoots[listId] = merkleRoot;
 
             emit MerkleRootSet(listId, merkleRoot);
+        }
     }
     
     function isWhitelisted(uint256 listId, uint256 index) public view virtual returns (bool) {

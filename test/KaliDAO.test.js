@@ -1028,7 +1028,7 @@ describe("KaliDAO", function () {
     await kali.processProposal(1)
     await kaliDAOcrowdsale 
       .connect(alice)
-      .callExtension(0, 0x0, {
+      .callExtension(kali.address, getBigNumber(50), {
         value: getBigNumber(50),
       })
     expect(await ethers.provider.getBalance(kali.address)).to.equal(
@@ -1092,7 +1092,7 @@ describe("KaliDAO", function () {
       .approve(kaliDAOcrowdsale.address, getBigNumber(50))
     await kaliDAOcrowdsale
       .connect(alice)
-      .callExtension(0, getBigNumber(50))
+      .callExtension(kali.address, getBigNumber(50))
     expect(await purchaseToken.balanceOf(kali.address)).to.equal(
       getBigNumber(50)
     )

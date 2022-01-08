@@ -1578,7 +1578,7 @@ describe("KaliDAO", function () {
       owner: proposer.address,
       spender: bob.address,
       value: getBigNumber(1),
-      nonce: 1,
+      nonce: 0,
       deadline: 1941543121
     }
 

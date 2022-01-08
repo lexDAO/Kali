@@ -1,39 +1,64 @@
 Kali FAQ - Getting a Handle on the Hands
 1.  What is Kali?
 Kali is a protocol for the smooth and straightforward establishment of a DAO operating under MolochDAO/Compound style governance. With just a few decisions and clicks, users can establish a flexible and user-friendly org that has a core functionality adequate for both large and small DAOs. Uniquely, Kali has the ability to 'wrap' the established DAO in a legal wrapper under either a Wyoming or Delaware LLC (Limited Liability Company) (in alpha). Kali also provides the options of drafting a 'boilerplate' Community Code of Conduct that your DAO can then expand upon, as well as a Charter. Lastly, Kali provides the option of establishing a UNA (Unincorporated Nonprofit Association) instead of an LLC.
+
 2.  What things should I be thinking about when I set up a KaliDAO?
-The more consideration as to the needs and structure of your DAO at the time of establishment, the fewer changes may be required in the future (which may reduce gas fees required to make subsequent DAO changes).
+The more consideration as to the needs and structure of your DAO at the time of establishment, the fewer changes may be required in the future (which may reduce gas fees required to make subsequent changes to your DAO).
 The most important considerations to make (other than your name and symbol!) are:
 - Who are the founders?;
 - How many tokens are each of those founders initially receiving?;
-- Do you want to establish the DAO with a legal wrapper, and if so, do you want an LLC (Limited Liability Company) or an UNA (Unincorporated Nonprofit Association)? <b>KaliDAO and LexDAO recommend that you discuss this decision with a legal and tax expert prior to establishing the DAO</b>.
-3.  KaliDAO settings:
-3a. Name
-Input the desired name of your DAO.
+- What voting procedures should the DAO operate by?; and
+- Do you want to establish the DAO with a legal wrapper (more on this later)? <b>KaliDAO and LexDAO recommend that you discuss this decision with a legal and tax expert prior to establishing the DAO</b>.
+
+3.  Setting up your DAO:
+
+Step 1 - Choose your DAO's name and Symbol.
+
+Step 2 - Choose a DAO governance structure from Kali preset templates or customize your governance settings.
+
+KALI Templates
+
+Social - A DAO established for social purposes - Anyone can join by paying the established tribute, a smaller quorum is required to pass proposals to keep things moving and fun!
+
+Investment Club - A DAO established for collective investing (including ERC-721 and ERC-1155 NFTs) - Upon summoning, the DAO will immediately commence a 30 day ETH crowdsale at a price of 200 shares per ETH.
+
 3b. Symbol
+
 Input the desired token symbol for your DAO.
+
 3c. Docs (Alpha)
+
 Select a doc template to structure under. 
+
 3d. Founders
+
 Input the addresses for each of the founders. <b>Be sure to use the addresses from the same network upon which you are deploying the DAO (e.g. input Polygon addresses if deploying on Polygon)</b>. ENS domains (.eth) are accepted.
 
-Addresses should be separated by a comma <b>with no spaces</b>. For example, "alice.eth,bob.eth,0x...55A"
 3e. Shares
+
 Input the number of tokens each founder will receive <b>in the same order as the founders are inputted</b> in the 'Shares' field.
+
 3f. Voting Period
+
 How many days a proposal can be voted on by members before being ratified or rejected by the DAO. 
+
 3g. Voting Period Unit
+
 Select whether the number inputted under 'Voting Period' is counted in minutes, hours, or days.
+
 3h. Quorum
+
 Is there a minimum number of votes required in order to make the proposal official? Proposals that do not reach quorum will fail at the end of the Voting Period.
+
 4.Information about Documents:
 4a. Code of Conduct
 4b. Charter
 4c. UNA
 4d. LLC
 4e. Series LLC
-//Won't complete until we finalize list and discuss as team.
+
 5. What operations can my DAO run?
+
 Kali can run the following operations:
 <b>MINT</b>: create more membership tokens.
 <b>BURN</b>: burn membership tokens, similar to Moloch DAO ragekick().
@@ -46,14 +71,18 @@ Kali can run the following operations:
 <b>EXTENSION</b>: toggle approval for certain contract external calls via extensionCall().
 <b>ESCAPE</b>: remove a proposal from the processing queue in case of emergencies.
 <b>DOCS</b>: amend organizational doc string stored in smart contract.
+
 5. Where can I use Kali?
 Kali is currently deployed to the following networks:
 -Ethereum Mainnet
 -Arbitrum
 -Polygon
 -Rinkeby (Testnet)
+
 KaliDAO will look to deploy on other networks upon adequate testing of the networks and after determining sufficient demand.
+
 6. Who made Kali?
 Kali core contributors include Shivanshi Tyagi, Jordan Teague, and Ross Campbell. It is supported by the friendly shadowy super lawyers at LexDAO (https://www.lexdao.coop/).
+
 7. Limitations on Legal Advice
 The content of this website has been prepared for informational purposes only and does not constitute legal advice. The information on this website shall not be construed as an offer to represent you, nor is it intended to create, nor shall the receipt of such information constitute, an attorney-client relationship. We hope that you will find the information informative and useful, and we would be delighted to speak with you to answer any questions you may have.

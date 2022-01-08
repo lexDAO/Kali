@@ -65,14 +65,14 @@ export default function Tribute() {
       if (purchaseToken == "0x0000000000000000000000000000000000000000") {
         value_ = amount_;
       }
-
-      const calldata = "0x";
-
-      const instance = new web3.eth.Contract(abi, address);
+      
+      const saleAbi = require("../../abi/KaliDAOcrowdsale.json");
+      
+      const instance = new web3.eth.Contract(saleAbi, extAddress);
 
       try {
         let result = await instance.methods
-          .callExtension(extAddress, amount_, calldata)
+          .callExtension(address, amount_)
           .send({ from: account, value: value_ });
         value.setVisibleView(1);
       } catch (e) {

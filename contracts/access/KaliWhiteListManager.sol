@@ -207,7 +207,13 @@ contract KaliWhitelistManager {
     ) public virtual {
         if (isWhitelisted(listId, index)) revert WhitelistClaimed();
 
-        bytes32 computedHash = keccak256(abi.encodePacked(index, account));
+        bytes32 computedHash;
+
+        assembly {
+            mstore(0x00, index)
+            mstore(0x20, account)
+            computedHash := keccak256(0x00, 0x40)
+        }
 
         for (uint256 i = 0; i < merkleProof.length; i++) {
             bytes32 proofElement = merkleProof[i];
@@ -218,7 +224,7 @@ contract KaliWhitelistManager {
                 computedHash = _efficientHash(proofElement, computedHash);
             }
         }
-        // check if the computed hash (root) is equal to the provided root
+
         if (computedHash != merkleRoots[listId]) revert NotRooted();
 
         uint256 whitelistedWordIndex = index / 256;
@@ -233,6 +239,7 @@ contract KaliWhitelistManager {
         emit WhitelistJoined(listId, index, account);
     }
 
+    /// @dev modified from OpenZeppelin (https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/cryptography/MerkleProof.sol)
     function _efficientHash(bytes32 a, bytes32 b) internal pure virtual returns (bytes32 value) {
         assembly {
             mstore(0x00, a)

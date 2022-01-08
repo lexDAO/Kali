@@ -72,7 +72,7 @@ Proposals can be made under 11 types:
 
 Kali allows orgs to flexibly extend their rules for minting and burning shares through external contract calls by using an interface, `IKaliDAOExtension` and `callExtension()`. In this manner, the core Kali contracts can remain simple and easy to verify, while still giving a great deal of optionality to orgs as they determine their goals. Saving gas and making it more clear where calls are being directed, Kali extensions are each a single contract that DAOs register to, avoiding duplicative contract deployment costs.
 
-![image](https://user-images.githubusercontent.com/92001561/144905154-3735687b-fde9-43c2-9d6b-2f172ceb9f66.png)
+![image](https://user-images.githubusercontent.com/92001561/148625538-82869098-1aab-4bfb-813f-20df58b51647.png)
 
 Currently, the following extensions are supported on deployment (by factory call to `setExtension()`) or can be added through Kali proposals:
 
@@ -102,7 +102,7 @@ Further, all Kali function calls are batchable using `multicall()`, adapted from
 
 ## Security
 
-Kali adopts standard security conventions, including a [`ReentrancyGuard`](https://github.com/lexDAO/Kali/blob/main/contracts/ReentrancyGuard.sol) module for core functions to avoid the potential of reentrancy attacks, as well as an internal function, `_computeDomainSeparator()` to help protect against signature replay in the event of a blockchain fork. In addition, as much as possible, Kali incorporates well-tested and common solidity patterns to make the code easier to audit and avoid 'reinventing the wheel', which can lead to the known unknown of novel attack surfaces. [Tests](https://github.com/lexDAO/Kali/blob/main/test/KaliDAO.test.js) are also included in JavaScript to demonstrate the performance of Kali operations.
+Kali adopts standard security conventions, including a [`ReentrancyGuard`](https://github.com/lexDAO/Kali/blob/main/contracts/ReentrancyGuard.sol) module for core functions to avoid the potential of reentrancy attacks, as well as an internal function, `_computeDomainSeparator()` to help protect against signature replay in the event of a blockchain fork. In addition, as much as possible, Kali incorporates well-tested and common solidity patterns to make the code easier to audit and avoid 'reinventing the wheel', which can lead to the known unknown of novel attack surfaces. [Tests](https://github.com/lexDAO/Kali/blob/main/test/KaliDAO.test.js) are also included in JavaScript to demonstrate the performance of Kali operations. An audit report provided by [BlockApex](https://twitter.com/block_apex) can be reviewed [here](https://github.com/lexDAO/Kali/blob/main/audit/Final_Audit_KaliDAO.pdf) for the Kali core contracts.
 
 ## Deployments
 

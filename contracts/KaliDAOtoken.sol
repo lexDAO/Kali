@@ -200,7 +200,7 @@ abstract contract KaliDAOtoken {
                 abi.encodePacked(
                     '\x19\x01',
                     DOMAIN_SEPARATOR(),
-                    keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, value, nonces[owner]++, deadline))
+                    keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, value, _nonce, deadline))
                 )
             );
 

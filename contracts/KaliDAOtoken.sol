@@ -261,14 +261,14 @@ abstract contract KaliDAOtoken {
     function delegateBySig(
         address delegatee, 
         uint256 nonce, 
-        uint256 expiry, 
+        uint256 deadline, 
         uint8 v, 
         bytes32 r, 
         bytes32 s
     ) public virtual {
-        if (block.timestamp > expiry) revert SignatureExpired();
+        if (block.timestamp > deadline) revert SignatureExpired();
 
-        bytes32 structHash = keccak256(abi.encode(DELEGATION_TYPEHASH, delegatee, nonce, expiry));
+        bytes32 structHash = keccak256(abi.encode(DELEGATION_TYPEHASH, delegatee, nonce, deadline));
 
         bytes32 digest = keccak256(abi.encodePacked('\x19\x01', DOMAIN_SEPARATOR(), structHash));
 

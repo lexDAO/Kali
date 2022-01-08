@@ -534,7 +534,7 @@ interface IKaliDAOextension {
 }
 
 /// @notice Simple gas-optimized Kali DAO core module.
-contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
+contract KaliDAOflat is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
     /*///////////////////////////////////////////////////////////////
                             EVENTS
     //////////////////////////////////////////////////////////////*/

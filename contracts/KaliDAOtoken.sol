@@ -194,6 +194,8 @@ abstract contract KaliDAOtoken {
 
         // cannot realistically overflow on human timescales
         unchecked {
+            uint256 _nonce = nonces[owner] + 1;
+
             bytes32 digest = keccak256(
                 abi.encodePacked(
                     '\x19\x01',

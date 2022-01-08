@@ -2,6 +2,30 @@
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "dao",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "callExtension",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "amountOut",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "contract IKaliWhitelistManager",
 				"name": "whitelistManager_",
 				"type": "address"
@@ -13,11 +37,6 @@
 	{
 		"inputs": [],
 		"name": "ETHtransferFailed",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "NotDAO",
 		"type": "error"
 	},
 	{
@@ -55,20 +74,14 @@
 		"inputs": [
 			{
 				"indexed": true,
-				"internalType": "uint256",
-				"name": "crowdsaleId",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
 				"internalType": "address",
-				"name": "member",
+				"name": "dao",
 				"type": "address"
 			},
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "dao",
+				"name": "member",
 				"type": "address"
 			},
 			{
@@ -85,22 +98,16 @@
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "crowdsaleId",
-				"type": "uint256"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "listId",
-				"type": "uint256"
-			},
-			{
-				"indexed": true,
+				"indexed": false,
 				"internalType": "address",
 				"name": "dao",
 				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "listId",
+				"type": "uint256"
 			},
 			{
 				"indexed": false,
@@ -133,46 +140,22 @@
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "crowdsaleId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
+				"internalType": "bytes",
+				"name": "extensionData",
+				"type": "bytes"
 			}
 		],
-		"name": "callExtension",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "amountOut",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "crowdsaleCount",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
+		"name": "setExtension",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "address",
 				"name": "",
-				"type": "uint256"
+				"type": "address"
 			}
 		],
 		"name": "crowdsales",
@@ -181,11 +164,6 @@
 				"internalType": "uint256",
 				"name": "listId",
 				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "dao",
-				"type": "address"
 			},
 			{
 				"internalType": "address",
@@ -214,19 +192,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes",
-				"name": "extensionData",
-				"type": "bytes"
-			}
-		],
-		"name": "setExtension",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{

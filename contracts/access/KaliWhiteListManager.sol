@@ -21,6 +21,24 @@ contract KaliWhitelistManager {
     event WhitelistJoined(uint256 indexed listId, uint256 indexed index, address indexed account);
 
     /*///////////////////////////////////////////////////////////////
+                            ERRORS
+    //////////////////////////////////////////////////////////////*/
+
+    error NullId();
+
+    error IdExists();
+
+    error NotOperator();
+
+    error SignatureExpired();
+
+    error InvalidSignature();
+
+    error WhitelistClaimed();
+
+    error NotRooted();
+
+    /*///////////////////////////////////////////////////////////////
                             EIP-712 STORAGE
     //////////////////////////////////////////////////////////////*/
 
@@ -83,9 +101,9 @@ contract KaliWhitelistManager {
         address[] calldata accounts,
         bytes32 merkleRoot
     ) public virtual {
-        require(listId != 0, 'NULL_ID');
-        
-        require(operatorOf[listId] == address(0), 'ID_EXISTS');
+        if (listId == 0) revert NullId();
+
+        if (operatorOf[listId] != address(0)) revert IdExists();
 
         operatorOf[listId] = msg.sender;
 
@@ -123,7 +141,7 @@ contract KaliWhitelistManager {
         address[] calldata accounts, 
         bool[] calldata approvals
     ) public virtual {
-        require(msg.sender == operatorOf[listId], 'NOT_OWNER');
+        if (msg.sender != operatorOf[listId]) revert NotOperator();
 
         // cannot realistically overflow on human timescales
         unchecked {
@@ -142,7 +160,7 @@ contract KaliWhitelistManager {
         bytes32 r,
         bytes32 s
     ) public virtual {
-        require(block.timestamp <= deadline, 'WHITELIST_DEADLINE_EXPIRED');
+        if (block.timestamp > deadline) revert SignatureExpired();
 
         bytes32 digest = keccak256(
             abi.encodePacked(
@@ -154,7 +172,7 @@ contract KaliWhitelistManager {
 
         address recoveredAddress = ecrecover(digest, v, r, s);
 
-        require(recoveredAddress == operatorOf[listId], 'INVALID_WHITELIST_SIGNATURE');
+        if (recoveredAddress != operatorOf[listId]) revert InvalidSignature();
 
         _whitelistAccount(listId, account, approved);
     }
@@ -174,7 +192,7 @@ contract KaliWhitelistManager {
     //////////////////////////////////////////////////////////////*/
 
     function setMerkleRoot(uint256 listId, bytes32 merkleRoot) public virtual {
-        require(operatorOf[listId] == msg.sender, 'NOT_OPERATOR');
+        if (msg.sender != operatorOf[listId]) revert NotOperator();
         
         merkleRoots[listId] = merkleRoot;
 
@@ -187,7 +205,7 @@ contract KaliWhitelistManager {
         address account,
         bytes32[] calldata merkleProof
     ) public virtual {
-        require(!isWhitelisted(listId, index), 'WHITELIST_CLAIMED');
+        if (isWhitelisted(listId, index)) revert WhitelistClaimed();
 
         bytes32 node = keccak256(abi.encodePacked(index, account));
 
@@ -205,7 +223,7 @@ contract KaliWhitelistManager {
             }
         }
         // check if the computed hash (root) is equal to the provided root
-        require(computedHash == merkleRoots[listId], 'NOT_ROOTED');
+        if (computedHash != merkleRoots[listId]) revert NotRooted();
 
         uint256 whitelistedWordIndex = index / 256;
 

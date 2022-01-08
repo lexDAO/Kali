@@ -1,4 +1,4 @@
-<b> Certificate of Independent Legal Advice or Waiver of Legal Advice<b>
+# Certificate of Independent Legal Advice or Waiver of Legal Advice
 
 By utilizing the KaliDAO Protocol (the "Protocol") and signing a transaction to summon a DAO using the Protocol (the "Summoning"), the Summoner, with Ethereum address 0x[[address]] (the "Summoner"), and Founders, with Ethereum addresses [[address 1, address 2, ...]] (together, the "Founders"), acknowledge:
 

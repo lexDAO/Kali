@@ -1566,7 +1566,7 @@ describe("KaliDAO", function () {
       verifyingContract: kali.address,
     }
     const types = {
-      PERMIT_TYPEHASH: [
+      Permit: [
         { name: "owner", type: "address" },
         { name: "spender", type: "address" },
         { name: "value", type: "uint256" },
@@ -1584,8 +1584,34 @@ describe("KaliDAO", function () {
 
     const signature = await proposer._signTypedData(domain, types, value)
     const { r, s, v } = ethers.utils.splitSignature(signature)
+    
+    await kali.permit(proposer.address, bob.address, getBigNumber(1), 1941543121, v, r, s)
 
-    kali.permit(proposer.address, bob.address, getBigNumber(1), 1941543121, v, r, s)
+    // Unpause to unblock transferFrom
+    await kali.propose(7, "TEST", [proposer.address], [0], [0x00])
+    await kali.vote(1, true)
+    await advanceTime(35)
+    await kali.processProposal(1)
+    expect(await kali.paused()).to.equal(false)
+
+    // console.log(
+    //   "Proposer's balance before delegation: ",
+    //   await kali.balanceOf(proposer.address)
+    // )
+    // console.log(
+    //   "Bob's balance before delegation: ",
+    //   await kali.balanceOf(bob.address)
+    // )
+    await kali.connect(bob).transferFrom(proposer.address, bob.address, getBigNumber(1))
+    // console.log(
+    //   "Proposer's balance after delegation: ",
+    //   await kali.balanceOf(proposer.address)
+    // )
+    // console.log(
+    //   "Bob's balance after delegation: ",
+    //   await kali.balanceOf(bob.address)
+    // )
+    expect(await kali.balanceOf(bob.address)).to.equal(getBigNumber(1))
   })
   it("permit should revert if the signature is invalid", async () => {
     await kali.init(

@@ -6,7 +6,7 @@ import './KaliDAO.sol';
 import './interfaces/IRicardianLLC.sol';
 
 /// @notice Factory to deploy Kali DAO.
-contract KaliDAOfactory {
+contract KaliDAOfactory is Multicall {
     event DAOdeployed(KaliDAO indexed kaliDAO, string name);
 
     address payable public immutable kaliMaster;
@@ -31,7 +31,7 @@ contract KaliDAOfactory {
         uint32 votingPeriod_,
         uint8[13] memory govSettings_
     ) public payable virtual returns (KaliDAO kaliDAO) {
-        kaliDAO = KaliDAO(_cloneAsMinimalProxy(kaliMaster));
+        kaliDAO = KaliDAO(_cloneAsMinimalProxy(kaliMaster, name_));
         
         kaliDAO.init{value: msg.value}(
             name_, 
@@ -56,7 +56,7 @@ contract KaliDAOfactory {
     }
 
     /// @dev modified from Aelin (https://github.com/AelinXYZ/aelin/blob/main/contracts/MinimalProxyFactory.sol)
-    function _cloneAsMinimalProxy(address payable base) internal virtual returns (address payable clone) {
+    function _cloneAsMinimalProxy(address payable base, string memory name_) internal virtual returns (address payable clone) {
         bytes memory createData = abi.encodePacked(
             // constructor
             bytes10(0x3d602d80600a3d3981f3),
@@ -66,14 +66,17 @@ contract KaliDAOfactory {
             bytes15(0x5af43d82803e903d91602b57fd5bf3)
         );
 
+        bytes32 salt = keccak256(bytes(name_));
+
         assembly {
-            clone := create(
+            clone := create2(
                 0, // no value
                 add(createData, 0x20), // data
-                55 // data is always 55 bytes (10 constructor + 45 code)
+                mload(createData),
+                salt
             )
         }
-        // if CREATE fails for some reason, address(0) is returned
+        // if CREATE2 fails for some reason, address(0) is returned
         require(clone != address(0), 'NULL_DEPLOY');
     }
 }

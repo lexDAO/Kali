@@ -9,6 +9,8 @@ import './interfaces/IRicardianLLC.sol';
 contract KaliDAOfactory is Multicall {
     event DAOdeployed(KaliDAO indexed kaliDAO, string name);
 
+    error NullDeploy();
+
     address payable public immutable kaliMaster;
 
     IRicardianLLC public immutable ricardianLLC;
@@ -77,6 +79,6 @@ contract KaliDAOfactory is Multicall {
             )
         }
         // if CREATE2 fails for some reason, address(0) is returned
-        require(clone != address(0), 'NULL_DEPLOY');
+        if (clone == address(0)) revert NullDeploy();
     }
 }

@@ -1,37 +1,55 @@
 import { useState, useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
-import { Text, HStack, Link, Icon, UnorderedList, ListItem } from "@chakra-ui/react";
+import { Text, HStack, Link, Icon, Spacer } from "@chakra-ui/react";
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs";
+import DashedDivider from "../elements/DashedDivider";
 
 export default function Ricardian() {
   const value = useContext(AppContext);
   const { dao } = value.state;
 
+  const array = [
+    {
+      name: "Name",
+      info: "Ricardian LLC, " + dao["ricardian"]["series"] + " Series",
+      link: null
+    },
+    {
+      name: "Common URI",
+      info: null,
+      link: dao["ricardian"]["commonURI"]
+    },
+    {
+      name: "Master Operating Agreement",
+      info: null,
+      link: dao["ricardian"]["masterOperatingAgreement"]
+    },
+  ]
+
   return(
     <>
-    {dao['ricardian'] == null ? "None" :
-    <UnorderedList>
-      <ListItem>Name: Ricardian LLC, {dao["ricardian"]["series"]} Series</ListItem>
-      <ListItem>
-        <Text>Common URI: </Text>
+    {array.map((item, index) => (
+      <>
+        <>
+      <HStack>
+        <Text>{item.name}</Text>
+        <Spacer />
+        {item.info != null ?
+        <Text>{item.info}</Text>
+        : null}
+        {item.link != null ?
         <Link
           passHref
-          href={dao["ricardian"]["commonURI"]}
+          href={item.link}
         >
           <Icon as={BsFillArrowUpRightSquareFill} />
         </Link>
-      </ListItem>
-      <ListItem>
-        <Text>Master Operating Agreement: </Text>
-        <Link
-          passHref
-          href={dao["ricardian"]["masterOperatingAgreement"]}
-        >
-          <Icon as={BsFillArrowUpRightSquareFill} />
-        </Link>
-      </ListItem>
-    </UnorderedList>
-    }
+        : null}
+      </HStack>
+      <DashedDivider />
+      </>
+      </>
+    ))}
     </>
   );
 }

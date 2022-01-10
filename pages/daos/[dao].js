@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import AppContext from "../../context/AppContext";
-import Layout from "../../components/structure/Layout";
+import LayoutApp from "../../components/structure/LayoutApp";
 import Proposals from "../../components/proposals/Proposals";
 import NewProposal from "../../components/newproposal/NewProposal";
 import Dashboard from "../../components/dashboard/Dashboard";
@@ -24,10 +24,9 @@ export default function Dao() {
 
   return (
 
-    <Layout>
+    <LayoutApp>
       {daoChain == null ? null :
       <>
-      <ActionMenu />
       {visibleView == 1 ? (
         <Dashboard />
       ) : visibleView == 2 ? (
@@ -37,6 +36,6 @@ export default function Dao() {
       ) : null}
       </>
       }
-    </Layout>
+    </LayoutApp>
   );
 }

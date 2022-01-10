@@ -1,20 +1,51 @@
 import { useState, useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
-import { Text, UnorderedList, ListItem } from "@chakra-ui/react";
+import { Text, UnorderedList, ListItem, HStack, Spacer } from "@chakra-ui/react";
 import { convertVotingPeriod } from "../../utils/formatters";
+import DashedDivider from "../elements/DashedDivider";
 
 export default function GovSettings() {
   const value = useContext(AppContext);
   const { dao } = value.state;
+  const array = [
+    {
+      name: "Paused",
+      info: dao["token"]["paused"].toString(),
+    },
+    {
+      name: "Voting Period",
+      info: convertVotingPeriod(dao["gov"]["votingPeriod"])
+    },
+    {
+      name: "Quorum",
+      info: dao["gov"]["quorum"] + "%"
+    },
+    {
+      name: "Supermajority",
+      info: dao["gov"]["supermajority"] + "%"
+    }
+  ]
 
   return(
-    <UnorderedList>
-    <ListItem>Paused: {dao["token"]["paused"].toString()}</ListItem>
-    <ListItem>
-      Voting period: {convertVotingPeriod(dao["gov"]["votingPeriod"])}
-    </ListItem>
-    <ListItem>Quorum: {dao["gov"]["quorum"]}%</ListItem>
-    <ListItem>Supermajority: {dao["gov"]["supermajority"]}%</ListItem>
-    </UnorderedList>
+    <>
+    {array.map((item, index) => (
+      <>
+      <HStack>
+        <Text>{item.name}</Text>
+        <Spacer />
+        <Text>{item.info}</Text>
+        {item.link != null ?
+        <Link
+          passHref
+          href={item.link}
+        >
+          <Icon as={BsFillArrowUpRightSquareFill} />
+        </Link>
+        : null}
+      </HStack>
+      <DashedDivider />
+      </>
+    ))}
+    </>
   );
 }

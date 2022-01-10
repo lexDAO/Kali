@@ -9,17 +9,11 @@ export default function Account(props) {
 
   return (
     <Button
-      flexShrink={0}
-      bgGradient="linear(to-br, kali.600, kali.700)"
-      //display={{sm: "none", md: "block", lg: "block", xl: "block"}}
-      variant="ghost"
-      color="white"
-      mr={2}
-      border={0}
-      {...props}
+      variant="link"
       onClick={value.connect}
+      id="nav-account"
     >
-      {account == null ? props.message : truncateAddress(account)}
+      {account == null ? "connect" : truncateAddress(account)}
     </Button>
   );
 }

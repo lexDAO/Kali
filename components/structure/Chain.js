@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import AppContext from "../../context/AppContext";
-import { Button, Text, Icon } from "@chakra-ui/react";
+import { Button, Text, Icon, Divider } from "@chakra-ui/react";
 import { getNetworkName } from "../../utils/formatters";
 import { IoIosGitNetwork } from "react-icons/io";
 
@@ -20,18 +20,13 @@ export default function Chain() {
     <>
     {chainId == null ? null :
 
-    <Button
-      flexShrink={0}
-      bgGradient={bg}
-      //display={{sm: "none", md: "block", lg: "block", xl: "block"}}
-      variant="ghost"
-      color="white"
-      mr={2}
-      border={0}
-    >
-      <Icon as={IoIosGitNetwork} />
-      <Text>{getNetworkName(chainId)}</Text>
-    </Button>
+      <>
+      <Button variant="link" id="nav-chainName">
+        <Icon as={IoIosGitNetwork} id="nav-chainIcon" />
+        {getNetworkName(chainId)}
+        <Divider orientation="vertical" border="1px solid" />
+      </Button>
+      </>
     }
     </>
   );

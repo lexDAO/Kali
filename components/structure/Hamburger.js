@@ -10,6 +10,7 @@ import { TiThMenu } from "react-icons/ti";
 
 export default function Hamburger() {
   return (
+    <div id="nav-hamburger">
     <Menu isLazy>
       <MenuButton
         as={IconButton}
@@ -33,5 +34,6 @@ export default function Hamburger() {
         </MenuGroup>
       </MenuList>
     </Menu>
+    </div>
   );
 }

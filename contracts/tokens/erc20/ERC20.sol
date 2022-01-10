@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity >=0.8.0;
+pragma solidity >=0.8.4;
 
-/// @notice Modern and gas efficient ERC-20 + EIP-2612 implementation.
-/// @author Modified from RariCapital (https://github.com/Rari-Capital/solmate/blob/main/src/erc20/ERC20.sol)
-/// License-Identifier: AGPL-3.0-only
+/// @notice Modern and gas efficient ERC20 + EIP-2612 implementation.
+/// @author Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol)
+/// @dev Do not manually set balances without updating totalSupply, as the sum of all user balances must not exceed it.
 abstract contract ERC20 {
     /*///////////////////////////////////////////////////////////////
                             EVENTS
@@ -13,6 +13,14 @@ abstract contract ERC20 {
     event Transfer(address indexed from, address indexed to, uint256 amount);
 
     event Approval(address indexed owner, address indexed spender, uint256 amount);
+
+    /*///////////////////////////////////////////////////////////////
+                            ERRORS
+    //////////////////////////////////////////////////////////////*/
+
+    error SignatureExpired();
+
+    error InvalidSignature();
 
     /*///////////////////////////////////////////////////////////////
                             METADATA STORAGE
@@ -57,10 +65,13 @@ abstract contract ERC20 {
         uint8 decimals_
     ) {
         name = name_;
+
         symbol = symbol_;
+
         decimals = decimals_;
 
         INITIAL_CHAIN_ID = block.chainid;
+
         INITIAL_DOMAIN_SEPARATOR = _computeDomainSeparator();
     }
 
@@ -79,8 +90,8 @@ abstract contract ERC20 {
     function transfer(address to, uint256 amount) public virtual returns (bool) {
         balanceOf[msg.sender] -= amount;
 
-        // this is safe because the sum of all user
-        // balances can't exceed 'type(uint256).max'
+        // cannot overflow because the sum of all user
+        // balances can't exceed the max uint256 value
         unchecked {
             balanceOf[to] += amount;
         }
@@ -95,14 +106,14 @@ abstract contract ERC20 {
         address to,
         uint256 amount
     ) public virtual returns (bool) {
-        if (allowance[from][msg.sender] != type(uint256).max) {
-            allowance[from][msg.sender] -= amount;
-        }
+        uint256 allowed = allowance[from][msg.sender]; // saves gas for limited approvals
+
+        if (allowed != type(uint256).max) allowance[from][msg.sender] = allowed - amount;
 
         balanceOf[from] -= amount;
 
-        // this is safe because the sum of all user
-        // balances can't exceed 'type(uint256).max'
+        // cannot overflow because the sum of all user
+        // balances can't exceed the max uint256 value
         unchecked {
             balanceOf[to] += amount;
         }
@@ -116,23 +127,6 @@ abstract contract ERC20 {
                             EIP-2612 LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function DOMAIN_SEPARATOR() public view virtual returns (bytes32) {
-        return block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
-    }
-    
-    function _computeDomainSeparator() internal view virtual returns (bytes32) {
-        return
-            keccak256(
-                abi.encode(
-                    keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
-                    keccak256(bytes(name)),
-                    keccak256(bytes('1')),
-                    block.chainid,
-                    address(this)
-                )
-            );
-    }
-
     function permit(
         address owner,
         address spender,
@@ -142,10 +136,9 @@ abstract contract ERC20 {
         bytes32 r,
         bytes32 s
     ) public virtual {
-        require(block.timestamp <= deadline, 'PERMIT_DEADLINE_EXPIRED');
+        if (block.timestamp > deadline) revert SignatureExpired();
 
-        // this is safe because the only math done is incrementing
-        // the owner's nonce which cannot realistically overflow
+        // cannot realistically overflow on human timescales
         unchecked {
             bytes32 digest = keccak256(
                 abi.encodePacked(
@@ -156,13 +149,30 @@ abstract contract ERC20 {
             );
 
             address recoveredAddress = ecrecover(digest, v, r, s);
-            
-            require(recoveredAddress != address(0) && recoveredAddress == owner, 'INVALID_PERMIT_SIGNATURE');
+
+            if (recoveredAddress == address(0) || recoveredAddress != owner) revert InvalidSignature();
 
             allowance[recoveredAddress][spender] = value;
         }
 
         emit Approval(owner, spender, value);
+    }
+
+    function DOMAIN_SEPARATOR() public view virtual returns (bytes32) {
+        return block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : _computeDomainSeparator();
+    }
+
+    function _computeDomainSeparator() internal view virtual returns (bytes32) {
+        return
+            keccak256(
+                abi.encode(
+                    keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
+                    keccak256(bytes(name)),
+                    keccak256('1'),
+                    block.chainid,
+                    address(this)
+                )
+            );
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -172,8 +182,8 @@ abstract contract ERC20 {
     function _mint(address to, uint256 amount) internal virtual {
         totalSupply += amount;
 
-        // this is safe because the sum of all user
-        // balances can't exceed 'type(uint256).max'
+        // cannot overflow because the sum of all user
+        // balances can't exceed the max uint256 value
         unchecked {
             balanceOf[to] += amount;
         }
@@ -184,8 +194,8 @@ abstract contract ERC20 {
     function _burn(address from, uint256 amount) internal virtual {
         balanceOf[from] -= amount;
 
-        // this is safe because a user won't ever
-        // have a balance larger than `totalSupply`
+        // cannot underflow because a user's balance
+        // will never be larger than the total supply
         unchecked {
             totalSupply -= amount;
         }

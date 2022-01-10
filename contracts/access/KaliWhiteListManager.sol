@@ -21,6 +21,24 @@ contract KaliWhitelistManager {
     event WhitelistJoined(uint256 indexed listId, uint256 indexed index, address indexed account);
 
     /*///////////////////////////////////////////////////////////////
+                            ERRORS
+    //////////////////////////////////////////////////////////////*/
+
+    error NullId();
+
+    error IdExists();
+
+    error NotOperator();
+
+    error SignatureExpired();
+
+    error InvalidSignature();
+
+    error WhitelistClaimed();
+
+    error NotRooted();
+
+    /*///////////////////////////////////////////////////////////////
                             EIP-712 STORAGE
     //////////////////////////////////////////////////////////////*/
 
@@ -83,9 +101,9 @@ contract KaliWhitelistManager {
         address[] calldata accounts,
         bytes32 merkleRoot
     ) public virtual {
-        require(listId != 0, 'NULL_ID');
-        
-        require(operatorOf[listId] == address(0), 'ID_EXISTS');
+        if (listId == 0) revert NullId();
+
+        if (operatorOf[listId] != address(0)) revert IdExists();
 
         operatorOf[listId] = msg.sender;
 
@@ -100,10 +118,11 @@ contract KaliWhitelistManager {
             emit WhitelistCreated(listId, msg.sender);
         }
 
-        if (merkleRoot != '')
+        if (merkleRoot != '') {
             merkleRoots[listId] = merkleRoot;
 
             emit MerkleRootSet(listId, merkleRoot);
+        }
     }
     
     function isWhitelisted(uint256 listId, uint256 index) public view virtual returns (bool) {
@@ -123,7 +142,7 @@ contract KaliWhitelistManager {
         address[] calldata accounts, 
         bool[] calldata approvals
     ) public virtual {
-        require(msg.sender == operatorOf[listId], 'NOT_OWNER');
+        if (msg.sender != operatorOf[listId]) revert NotOperator();
 
         // cannot realistically overflow on human timescales
         unchecked {
@@ -142,7 +161,7 @@ contract KaliWhitelistManager {
         bytes32 r,
         bytes32 s
     ) public virtual {
-        require(block.timestamp <= deadline, 'WHITELIST_DEADLINE_EXPIRED');
+        if (block.timestamp > deadline) revert SignatureExpired();
 
         bytes32 digest = keccak256(
             abi.encodePacked(
@@ -154,7 +173,7 @@ contract KaliWhitelistManager {
 
         address recoveredAddress = ecrecover(digest, v, r, s);
 
-        require(recoveredAddress == operatorOf[listId], 'INVALID_WHITELIST_SIGNATURE');
+        if (recoveredAddress != operatorOf[listId]) revert InvalidSignature();
 
         _whitelistAccount(listId, account, approved);
     }
@@ -174,7 +193,7 @@ contract KaliWhitelistManager {
     //////////////////////////////////////////////////////////////*/
 
     function setMerkleRoot(uint256 listId, bytes32 merkleRoot) public virtual {
-        require(operatorOf[listId] == msg.sender, 'NOT_OPERATOR');
+        if (msg.sender != operatorOf[listId]) revert NotOperator();
         
         merkleRoots[listId] = merkleRoot;
 
@@ -187,25 +206,27 @@ contract KaliWhitelistManager {
         address account,
         bytes32[] calldata merkleProof
     ) public virtual {
-        require(!isWhitelisted(listId, index), 'WHITELIST_CLAIMED');
+        if (isWhitelisted(listId, index)) revert WhitelistClaimed();
 
-        bytes32 node = keccak256(abi.encodePacked(index, account));
+        bytes32 computedHash;
 
-        bytes32 computedHash = node;
+        assembly {
+            mstore(0x00, index)
+            mstore(0x20, account)
+            computedHash := keccak256(0x00, 0x40)
+        }
 
         for (uint256 i = 0; i < merkleProof.length; i++) {
             bytes32 proofElement = merkleProof[i];
 
             if (computedHash <= proofElement) {
-                // hash(current computed hash + current element of the proof)
-                computedHash = keccak256(abi.encodePacked(computedHash, proofElement));
+                computedHash = _efficientHash(computedHash, proofElement);
             } else {
-                // hash(current element of the proof + current computed hash)
-                computedHash = keccak256(abi.encodePacked(proofElement, computedHash));
+                computedHash = _efficientHash(proofElement, computedHash);
             }
         }
-        // check if the computed hash (root) is equal to the provided root
-        require(computedHash == merkleRoots[listId], 'NOT_ROOTED');
+
+        if (computedHash != merkleRoots[listId]) revert NotRooted();
 
         uint256 whitelistedWordIndex = index / 256;
 
@@ -217,5 +238,14 @@ contract KaliWhitelistManager {
         _whitelistAccount(listId, account, true);
 
         emit WhitelistJoined(listId, index, account);
+    }
+
+    /// @dev modified from OpenZeppelin (https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/cryptography/MerkleProof.sol)
+    function _efficientHash(bytes32 a, bytes32 b) internal pure virtual returns (bytes32 value) {
+        assembly {
+            mstore(0x00, a)
+            mstore(0x20, b)
+            value := keccak256(0x00, 0x40)
+        }
     }
 }

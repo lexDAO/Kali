@@ -40,9 +40,7 @@ abstract contract ERC721 {
 
     string public symbol;
 
-    function tokenURI(uint256) public view virtual returns (string memory) {
-        return 'PLACEHOLDER';
-    }
+    function tokenURI(uint256 tokenId) public view virtual returns (string memory);
 
     /*///////////////////////////////////////////////////////////////
                             ERC-721 STORAGE
@@ -82,9 +80,11 @@ abstract contract ERC721 {
     
     constructor(string memory name_, string memory symbol_) {
         name = name_;
+        
         symbol = symbol_;
         
         INITIAL_CHAIN_ID = block.chainid;
+        
         INITIAL_DOMAIN_SEPARATOR = _computeDomainSeparator();
     }
 
@@ -211,8 +211,7 @@ abstract contract ERC721 {
         
         address owner = ownerOf[tokenId];
         
-        // this is reasonably safe from overflow because incrementing `nonces` beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        // cannot realistically overflow on human timescales
         unchecked {
             bytes32 digest = keccak256(
                 abi.encodePacked(
@@ -244,8 +243,7 @@ abstract contract ERC721 {
     ) public virtual {
         if (block.timestamp > deadline) revert SignatureExpired();
         
-        // this is reasonably safe from overflow because incrementing `nonces` beyond
-        // 'type(uint256).max' is exceedingly unlikely compared to optimization benefits
+        // cannot realistically overflow on human timescales
         unchecked {
             bytes32 digest = keccak256(
                 abi.encodePacked(

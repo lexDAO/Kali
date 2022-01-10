@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
-import { Text, UnorderedList, ListItem, HStack, Spacer } from "@chakra-ui/react";
+import { Text, UnorderedList, ListItem, HStack, Spacer, Link, Icon } from "@chakra-ui/react";
 import { convertVotingPeriod } from "../../utils/formatters";
 import DashedDivider from "../elements/DashedDivider";
 

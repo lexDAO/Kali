@@ -325,6 +325,7 @@ abstract contract ERC721 {
 
 /// @notice A generic interface for a contract which properly accepts ERC721 tokens.
 /// @author Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC721.sol)
+/// License-Identifier: AGPL-3.0-only
 interface ERC721TokenReceiver {
     function onERC721Received(
         address operator,

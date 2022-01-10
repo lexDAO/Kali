@@ -4,6 +4,7 @@ pragma solidity >=0.8.4;
 
 /// @notice Modern and gas efficient ERC20 + EIP-2612 implementation.
 /// @author Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol)
+/// License-Identifier: AGPL-3.0-only
 /// @dev Do not manually set balances without updating totalSupply, as the sum of all user balances must not exceed it.
 abstract contract ERC20 {
     /*///////////////////////////////////////////////////////////////

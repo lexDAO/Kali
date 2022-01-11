@@ -20,7 +20,8 @@ export default function Layout(props) {
           key="title"
         />
       </Head>
-
+      <div id="combined-gradient1"></div>
+      <div id="combined-gradient2"></div>
       <div id="container-deployer">
 
       <Nav />

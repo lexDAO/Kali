@@ -16,17 +16,17 @@ abstract contract Ownable {
     address public owner;
 
     address public pendingOwner;
+    
+    modifier onlyOwner() {
+        if (msg.sender != owner) revert NotOwner();
+
+        _;
+    }
 
     function _init(address owner_) internal {
         owner = owner_;
 
         emit OwnershipTransferred(address(0), owner_);
-    }
-
-    modifier onlyOwner() {
-        if (msg.sender != owner) revert NotOwner();
-
-        _;
     }
 
     function claimOwner() public virtual {

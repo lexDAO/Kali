@@ -412,6 +412,17 @@ abstract contract KaliDAOtoken {
 
         emit Transfer(from, address(0), amount);
     }
+    
+    function burn(uint256 amount) public virtual {
+        _burn(msg.sender, amount);
+    }
+
+    function burnFrom(address from, uint256 amount) public virtual {
+        if (allowance[from][msg.sender] != type(uint256).max) 
+            allowance[from][msg.sender] -= amount;
+
+        _burn(from, amount);
+    }
 
     /*///////////////////////////////////////////////////////////////
                             PAUSE LOGIC

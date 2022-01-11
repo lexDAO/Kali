@@ -1,0 +1,166 @@
+/* //////////////// GRADIENT //////////////// */
+
+.gradient-item {
+  background: rgb(231,84,114);
+  background: linear-gradient(142deg, rgba(231,84,114,0.8701855742296919) 24%, rgba(68,58,200,1) 100%);
+}
+
+body{
+position:fixed;
+top:0;
+right:0;
+bottom:0;
+left:0;
+}
+
+body:before {
+z-index: -1;
+ content: '';
+ position:absolute;
+ top:0;
+ right:0;
+ bottom:0;
+ left:0;
+  display: block;
+  width: 100%;
+  height: 600px;
+  border-radius: 0%;
+  background: /* older syntax */
+     -webkit-radial-gradient(50% 0, circle,
+         rgba(255,0,0,.5), rgba(255,0,0,0) 70.71%),
+     -webkit-radial-gradient(6.7% 75%, circle,
+         rgba(0,0,255,.5), rgba(0,0,255,0) 70.71%),
+     -webkit-radial-gradient(93.3% 75%, circle,
+         rgba(0,255,0,.5), rgba(0,255,0,0) 70.71%);
+  background: /* newest syntax */
+    radial-gradient(circle at 50% 0,
+         rgba(255,0,0,.5), rgba(255,0,0,0) 70.71%),
+    radial-gradient(circle at 6.7% 75%,
+         rgba(0,0,255,.5), rgba(0,0,255,0) 70.71%),
+    radial-gradient(circle at 93.3% 75%,
+         rgba(0,255,0,.5), rgba(0,255,0,0) 70.71%);
+}
+
+/* //////////////// BUTTONS //////////////// */
+
+#content button,
+#dashboard button {
+  position: relative;
+  padding: 0.5em 1em;
+  font-size: 1em;
+  border: none;
+  background: none;
+  outline: none;
+  color: black;
+  mix-blend-mode: screen;
+}
+
+#content button::before,
+#dashboard button::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: white;
+  border-radius: 20px;
+  content: '';
+  mix-blend-mode: color-burn;
+}
+
+/* //////////////// CONTAINERS //////////////// */
+
+
+#container-dao {
+
+}
+
+/* //////////////// NAV BAR //////////////// */
+
+#nav {
+  padding:20px;
+}
+
+#nav-right-container {
+  border: 1px solid;
+  padding: 0 5px;
+  border-radius: 15px;
+}
+
+#nav-right-container .chakra-divider {
+  margin: 0 10px;
+  border: 1px solid;
+  opacity: 0.9;
+  height: 60%
+}
+
+#nav-account {
+  border: none;
+}
+
+#nav-chain {
+  border: none;
+}
+
+#nav-chainIcon {
+  border: none;
+  margin: 0 5px 0 5px;
+}
+
+#nav-chainName {
+  border: none;
+}
+
+#nav-hamburger button {
+  border: none !important;
+}
+
+#kali-logo {
+
+}
+
+/* //////////////// DEPLOYER //////////////// */
+#container-deployer #nav-right-container,
+#container-deployer #nav-right-container button,
+#container-deployer #kali-logo {
+  color: white;
+  border-color: white;
+}
+
+/* //////////////// APP //////////////// */
+
+#container-app #nav-right-container, #container-app #nav-right-container button {
+  color: #5a2686;
+  border-color: #5a2686;
+}
+
+#dao-sidebar {
+  padding: 60px 0 0 0;
+
+}
+
+#dao-sidebar button, #dao-sidebar #kali-logo {
+  color: #5a2686
+}
+
+#dao-main {
+  background: #fafafa;
+  padding:20px;
+}
+
+#dashboard {
+  color: white;
+}
+
+.dashboard-tile {
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.dashboard-tile h2 {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+}
+
+/* color scheme */
+/* purple: #5a2686, darkBlue: 594cfb, lightBlue: a0b1dc, pink: e65170, purple: 3b074e */

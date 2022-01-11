@@ -7,7 +7,19 @@ import './interfaces/IRicardianLLC.sol';
 
 /// @notice Factory to deploy Kali DAO.
 contract KaliDAOfactory is Multicall {
-    event DAOdeployed(KaliDAO indexed kaliDAO, string name);
+    event DAOdeployed(
+        KaliDAO indexed kaliDAO, 
+        string name, 
+        string symbol, 
+        string docs, 
+        bool paused, 
+        address[] extensions, 
+        bytes[] extensionsData,
+        address[] voters,
+        uint256[] shares,
+        uint32 votingPeriod,
+        uint8[13] govSettings
+    );
 
     error NullDeploy();
 
@@ -54,7 +66,7 @@ contract KaliDAOfactory is Multicall {
             ricardianLLC.mintLLC(address(kaliDAO));
         }
 
-        emit DAOdeployed(kaliDAO, name_);
+        emit DAOdeployed(kaliDAO, name_, symbol_, docs_, paused_, extensions_, extensionsData_, voters_, shares_, votingPeriod_, govSettings_);
     }
 
     /// @dev modified from Aelin (https://github.com/AelinXYZ/aelin/blob/main/contracts/MinimalProxyFactory.sol)

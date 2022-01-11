@@ -5,8 +5,8 @@
   background: linear-gradient(142deg, rgba(231,84,114,0.8701855742296919) 24%, rgba(68,58,200,1) 100%);
 }
 
-#combined-gradient1 {
-  background: linear-gradient(90deg, red, cyan);
+#gradient1 {
+  background: linear-gradient(90deg, #ee5871, #e34b76);
   position: absolute;
   top: 0;
   left: 0;
@@ -15,9 +15,9 @@
   z-index: -1;
 }
 
-#combined-gradient2 {
+#gradient2 {
   mask-image: linear-gradient(to bottom, transparent, black);
-  background: linear-gradient(90deg, hotpink, rebeccapurple);
+  background: linear-gradient(90deg, #4d46f9, #e133a4);
   position: absolute;
   top: 0;
   left: 0;

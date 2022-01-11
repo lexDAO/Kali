@@ -5,7 +5,30 @@
   background: linear-gradient(142deg, rgba(231,84,114,0.8701855742296919) 24%, rgba(68,58,200,1) 100%);
 }
 
+/*#container-deployer {
+  background: rgb(67,82,159);
+background: linear-gradient(32deg, rgba(67,82,159,1) 12%, rgba(188,92,147,1) 41%, rgba(208,74,146,1) 50%, rgba(230,80,121,1) 68%);
+}*/
 
+#combined-gradient1 {
+  background: repeating-linear-gradient(45deg, rgba(00, 00, 255, 0.8), rgba(00, 00, 255, 0.8) 5px, rgba(255, 255, 255, 0) 5px, rgba(255, 255, 255, 0) 10px), radial-gradient(rgba(255, 0, 0, 0.8), rgba(255, 255, 0, 0.8), rgba(30, 144, 255, 0.8));
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+#combined-gradient2 {
+  background: radial-gradient(rgba(255, 0, 0, 0.8), rgba(255, 255, 0, 0.8), rgba(30, 144, 255, 0.8)), repeating-linear-gradient(45deg, rgba(00, 00, 255, 1), rgba(00, 00, 255, 1) 5px, rgba(255, 255, 255, 0) 5px, rgba(255, 255, 255, 0) 10px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+}
 
 /* //////////////// BUTTONS //////////////// */
 

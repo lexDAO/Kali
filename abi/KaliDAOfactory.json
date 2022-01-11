@@ -34,6 +34,60 @@
 				"internalType": "string",
 				"name": "name",
 				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "symbol",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "docs",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "paused",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
+				"internalType": "address[]",
+				"name": "extensions",
+				"type": "address[]"
+			},
+			{
+				"indexed": false,
+				"internalType": "bytes[]",
+				"name": "extensionsData",
+				"type": "bytes[]"
+			},
+			{
+				"indexed": false,
+				"internalType": "address[]",
+				"name": "voters",
+				"type": "address[]"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256[]",
+				"name": "shares",
+				"type": "uint256[]"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint32",
+				"name": "votingPeriod",
+				"type": "uint32"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint8[13]",
+				"name": "govSettings",
+				"type": "uint8[13]"
 			}
 		],
 		"name": "DAOdeployed",
@@ -104,6 +158,19 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "kaliMaster",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "bytes[]",
@@ -120,19 +187,6 @@
 			}
 		],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "kaliMaster",
-		"outputs": [
-			{
-				"internalType": "address payable",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{

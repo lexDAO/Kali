@@ -4,6 +4,7 @@ import { Container, HStack, Center, Spacer } from "@chakra-ui/react";
 import Head from "next/head";
 import NavRightContainer from "./NavRightContainer";
 import Kali from "./Kali";
+import KaliIcon from "../elements/KaliIcon";
 import ActionMenu from "./ActionMenu";
 import LoadingIndicator from "./Loading";
 import Footer from "./Footer";
@@ -31,20 +32,20 @@ export default function Layout(props) {
         minH="100vh"
         minW='200px'
         maxW='300px'
-        width={{sm: '200px', md: '250px', lg: '300px'}}
+        width={{sm: '200px', md: '250px', lg: '250px'}}
       >
-          <Center><Kali /></Center>
+          <Center><KaliIcon /></Center>
           <ActionMenu />
       </Container>
       <Container
         id="dao-main"
         h="100vh"
         minH="100vh"
-        maxW="container.lg"
+        maxW="container.xl"
         alignItems="center"
         justifyContent="center"
       >
-        <HStack><Spacer /><NavRightContainer /></HStack>
+        <HStack id="nav"><Spacer /><NavRightContainer /></HStack>
         {props.children}
         <Footer />
       </Container>

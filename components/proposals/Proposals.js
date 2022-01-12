@@ -2,10 +2,9 @@ import { useState, useContext, useEffect } from "react";
 import Router, { useRouter } from "next/router";
 import AppContext from "../../context/AppContext";
 //import ProposalDetails from './ProposalDetails';
-import { chakra, Center, Text, Grid, Button } from "@chakra-ui/react";
+import { chakra, Center, Text, Grid, Button, HStack, Spacer, Link } from "@chakra-ui/react";
 import Layout from "../structure/Layout";
 import ProposalRow from "./ProposalRow";
-import Reload from "../elements/Reload";
 import ToggleProposals from "./ToggleProposals";
 import { proposalTypes, voteTypes } from "../../constants/params";
 import { fetchProposals } from "../../utils/fetchProposals";
@@ -72,8 +71,7 @@ export default function Proposals(props) {
 
   return (
     <>
-      <ToggleProposals handleClick={handleClick} toggle={toggle} />
-      <Reload reload={reloadProposals} />
+      <ToggleProposals handleClick={handleClick} toggle={toggle} reloadProposals={reloadProposals} />
       {proposals != null ? (
         <ProposalContainer proposals={proposals[toggle]} />
       ) : null}

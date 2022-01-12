@@ -11,7 +11,7 @@ import { TiCancel } from "react-icons/ti";
 
 export const viewProposalsHelper = {
   0: {
-    title: "send shares",
+    title: "Send Shares",
     details: {
       amounts: "shares",
       accounts: "account(s)",
@@ -21,7 +21,7 @@ export const viewProposalsHelper = {
     decode: false,
   },
   1: {
-    title: "remove member",
+    title: "Remove Member",
     details: {
       amounts: "shares",
       accounts: "account(s)",
@@ -31,7 +31,7 @@ export const viewProposalsHelper = {
     decode: false,
   },
   2: {
-    title: "contract integration",
+    title: "Contract Integration",
     details: {
       amounts: "value of transaction(s)",
       accounts: "contract(s)",
@@ -41,7 +41,7 @@ export const viewProposalsHelper = {
     decode: true,
   },
   3: {
-    title: "modify voting period",
+    title: "Modify Voting Period",
     details: {
       amounts: "proposed voting period",
       accounts: null,
@@ -51,7 +51,7 @@ export const viewProposalsHelper = {
     decode: false,
   },
   4: {
-    title: "modify quorum threshold",
+    title: "Modify Quorum Threshold",
     details: {
       amounts: "proposed quorum threshold",
       accounts: null,
@@ -61,7 +61,7 @@ export const viewProposalsHelper = {
     decode: false,
   },
   5: {
-    title: "modify supermajority threshold",
+    title: "Modify Supermajority Threshold",
     details: {
       amounts: "proposed supermajority threshold",
       accounts: null,
@@ -71,7 +71,7 @@ export const viewProposalsHelper = {
     decode: false,
   },
   6: {
-    title: "modify proposal vote type",
+    title: "Modify Proposal Vote Type",
     details: {
       amounts: "proposed proposal/vote type",
       accounts: null,
@@ -81,7 +81,7 @@ export const viewProposalsHelper = {
     decode: false,
   },
   7: {
-    title: "pause/unpause share transfer",
+    title: "Pause/Unpause Share Transfer",
     details: {
       amounts: null,
       accounts: null,
@@ -91,7 +91,7 @@ export const viewProposalsHelper = {
     decode: false,
   },
   8: {
-    title: "extension integration",
+    title: "Extension Integration",
     details: {
       amounts: null,
       accounts: "address(es) of extension(s)",
@@ -101,7 +101,7 @@ export const viewProposalsHelper = {
     decode: true,
   },
   9: {
-    title: "escape",
+    title: "Escape",
     details: {
       amounts: "proposal number(s)",
       accounts: null,
@@ -111,7 +111,7 @@ export const viewProposalsHelper = {
     decode: false,
   },
   10: {
-    title: "change docs",
+    title: "Change Docs",
     details: {
       amounts: null,
       accounts: null,

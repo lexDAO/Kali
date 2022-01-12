@@ -4,6 +4,7 @@ import {
   Input,
   Button,
   Text,
+  Heading,
   Flex,
   Box,
   Icon,
@@ -14,6 +15,7 @@ import {
   Divider,
   Modal,
   Progress,
+  Spacer
 } from "@chakra-ui/react";
 import FlexOutline from "../elements/FlexOutline";
 import Timer from "./Timer";
@@ -24,8 +26,7 @@ import ProcessModule from "./ProcessModule";
 import Sponsor from "./Sponsor";
 import { useDisclosure } from "@chakra-ui/react";
 import { viewProposalsHelper } from "../../constants/viewProposalsHelper";
-
-const iconSize = 8;
+import { fromDecimals } from "../../utils/formatters";
 
 export default function ProposalRow(props) {
   const value = useContext(AppContext);
@@ -54,40 +55,54 @@ export default function ProposalRow(props) {
       </Modal>
 
       <Box
-        border="1px solid"
-        rounded="xl"
-        borderColor="black"
-        padding="25px"
-        margin="5px"
+        className="proposal-tile gradient-item"
       >
         <VStack>
-          <ProposalIcon p={p} />
-          <Text casing="uppercase">
-            {viewProposalsHelper[p["proposalType"]]["title"]}
-          </Text>
+          <HStack className="proposal-title" width="100%">
+            <ProposalIcon p={p} />
+            <Heading>
+              {viewProposalsHelper[p["proposalType"]]["title"]}
+            </Heading>
+          </HStack>
           {p["pending"] == true ? (
             <Text casing="uppercase">needs sponsor</Text>
           ) : null}
-          <Timer
-            expires={p["expires"]}
-            open={p["open"]}
-            isExpired={isExpired}
-            setVotingStarted={setVotingStarted}
-            setIsExpired={setIsExpired}
-            buffer={buffer}
-          />
+
+          <HStack width="100%" className="timer-container">
+            <Text className="timer-label">remaining:</Text>
+            <Spacer />
+            <Timer
+              expires={p["expires"]}
+              open={p["open"]}
+              isExpired={isExpired}
+              setVotingStarted={setVotingStarted}
+              setIsExpired={setIsExpired}
+              buffer={buffer}
+            />
+          </HStack>
+
+          <HStack width="100%">
+          <VStack className="vote-count">
+            <Text>YES</Text>
+            <Text>{fromDecimals(p["yesVotes"], 18)}</Text>
+          </VStack>
           <Progress
             width="100%"
-            colorScheme="green"
-            backgroundColor="pink"
+            colorScheme="teal"
+            backgroundColor="transparent"
+            border="1px solid"
             value={p["progress"]}
+            rounded={10}
           />
+          <VStack className="vote-count">
+            <Text>NO</Text>
+            <Text>{fromDecimals(p["noVotes"], 18)}</Text>
+          </VStack>
+          </HStack>
+          <Text className="vote-status">{p["passing"]}</Text>
 
-          <Text casing="uppercase">{p["passing"]}</Text>
-
-          <Divider w="80%" align="center" />
           <HStack>
-            <Button key={p["id"]} onClick={onOpen} isDisabled={!votingStarted}>
+            <Button className="transparent-btn" key={p["id"]} onClick={onOpen} isDisabled={!votingStarted}>
               {isExpired == true ? "Details" : "Review & Vote"}
             </Button>
             {isExpired == true && p["pending"] == false ? (

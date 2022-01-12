@@ -28,8 +28,7 @@
 
 /* //////////////// BUTTONS //////////////// */
 
-#content button,
-#dashboard button {
+.transparent-btn {
   position: relative;
   padding: 0.5em 1em;
   font-size: 1em;
@@ -38,17 +37,17 @@
   outline: none;
   color: black;
   mix-blend-mode: screen;
+  border-radius: 20px !important;
 }
 
-#content button::before,
-#dashboard button::before {
+.transparent-btn::before {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   background: white;
-  border-radius: 20px;
+  border-radius: 20px !important;
   content: '';
   mix-blend-mode: color-burn;
 }
@@ -63,12 +62,12 @@
 /* //////////////// NAV BAR //////////////// */
 
 #nav {
-  padding:20px;
+  padding:10px;
 }
 
 #nav-right-container {
   border: 1px solid;
-  padding: 0 5px;
+  padding: 0 5px 0px 15px;
   border-radius: 15px;
 }
 
@@ -89,7 +88,7 @@
 
 #nav-chainIcon {
   border: none;
-  margin: 0 5px 0 5px;
+  margin: 0 5px 0 0px;
 }
 
 #nav-chainName {
@@ -98,10 +97,6 @@
 
 #nav-hamburger button {
   border: none !important;
-}
-
-#kali-logo {
-
 }
 
 /* //////////////// DEPLOYER //////////////// */
@@ -114,6 +109,15 @@
 
 /* //////////////// APP //////////////// */
 
+div#dao-main {
+  padding-left: 45px;
+  padding-right: 45px;
+}
+
+#dao-main h1 {
+  color: #5a2686;
+}
+
 #container-app #nav-right-container, #container-app #nav-right-container button {
   color: #5a2686;
   border-color: #5a2686;
@@ -122,6 +126,10 @@
 #dao-sidebar {
   padding: 60px 0 0 0;
 
+}
+
+#action-menu {
+  margin-top: 50px;
 }
 
 #dao-sidebar button, #dao-sidebar #kali-logo {
@@ -138,7 +146,7 @@
 }
 
 .dashboard-tile {
-  padding: 20px;
+  padding: 30px;
   border-radius: 15px;
 }
 
@@ -146,6 +154,50 @@
   font-size: 1.5em;
   margin-bottom: 15px;
 }
+
+.proposal-tile {
+  padding: 30px;
+  margin: 20px;
+  border-radius: 15px;
+  color: white;
+}
+
+.proposal-tile h2 {
+  font-size: 1.2em;
+  padding: 0 0 5px 0;
+}
+
+.proposal-icon {
+
+}
+
+.proposal-title {
+  margin-bottom: 20px;
+}
+
+.timer-container {
+  margin-bottom: 20px !important;
+}
+
+.timer-label {
+  font-size:0.8em;
+}
+
+.timer {
+  font-size:1.7em;
+  font-weight: bold;
+}
+
+.vote-count {
+  line-height: 0.5em;
+  border-bottom: 1px dashed white;
+  padding:10px;
+}
+
+.vote-status {
+  margin-bottom: 10px !important;
+}
+
 
 /* color scheme */
 /* purple: #5a2686, darkBlue: 594cfb, lightBlue: a0b1dc, pink: e65170, purple: 3b074e */

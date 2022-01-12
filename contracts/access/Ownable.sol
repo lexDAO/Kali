@@ -16,7 +16,7 @@ abstract contract Ownable {
     address public owner;
 
     address public pendingOwner;
-    
+
     modifier onlyOwner() {
         if (msg.sender != owner) revert NotOwner();
 

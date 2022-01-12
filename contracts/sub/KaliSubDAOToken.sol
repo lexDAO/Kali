@@ -8,7 +8,7 @@ import '../../access/KaliOwnable.sol';
 /// @dev Designed for subDAOs and/or "Loot"-like systems with remote ownership.
 /// @author Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/erc20/ERC20.sol)
 /// License-Identifier: AGPL-3.0-only
-abstract contract KaliSubDAOToken is Ownable {
+abstract contract KaliSubDAOToken is KaliOwnable {
     /*///////////////////////////////////////////////////////////////
                             EVENTS
     //////////////////////////////////////////////////////////////*/
@@ -108,7 +108,8 @@ abstract contract KaliSubDAOToken is Ownable {
         uint8 decimals_,
         bool paused_,
         address[] memory voters_,
-        uint256[] memory shares_
+        uint256[] memory shares_,
+        address owner_
     ) internal virtual {
         if (voters_.length != shares_.length) revert NoArrayParity();
 
@@ -130,6 +131,8 @@ abstract contract KaliSubDAOToken is Ownable {
                 _mint(voters_[i], shares_[i]);
             }
         }
+
+        KaliOwnable(owner_);
     }
 
     /*///////////////////////////////////////////////////////////////

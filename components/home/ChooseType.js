@@ -21,11 +21,11 @@ export default function ChooseType(props) {
     props.setDetails(array);
     console.log(props.details)
 
-    props.handleNext(4);
+    props.handleNext();
   }
 
   const custom = () => {
-    props.handleNext(3);
+    props.handleNext();
   }
 
   const DaoBox = (item) => {

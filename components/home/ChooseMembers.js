@@ -63,7 +63,7 @@ export default function ChooseMembers(props) {
     props.setDetails(array);
     console.log(props.details)
 
-    props.handleNext(5);
+    props.handleNext();
   };
 
   return (

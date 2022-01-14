@@ -95,7 +95,7 @@ export default function ChooseDocs(props) {
         </Text>
       ) : null}
       {selectedType != 999 ? (
-        <Button onClick={() => props.handleNext(6)}>Next</Button>
+        <Button onClick={() => props.handleNext()}>Next</Button>
       ) : null}
     </VStack>
   );

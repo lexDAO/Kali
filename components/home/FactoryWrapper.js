@@ -7,11 +7,11 @@ import Customized from "./Customized";
 import ChooseMembers from "./ChooseMembers";
 import ChooseDocs from "./ChooseDocs";
 import Checkout from "./Checkout";
+import StepProgressBar from "./StepProgressBar";
 
 export default function FactoryWrapper() {
 
   const [visible, setVisible] = useState(0);
-  const [clickPath, setClickPath] = useState([]);
   const [details, setDetails] = useState({
     network: 999,
     daoName: null,
@@ -29,39 +29,28 @@ export default function FactoryWrapper() {
   });
   console.log("details", details);
 
-  const handleNext = (num) => {
-    let array = clickPath;
-    array.push(visible);
-    setClickPath(array);
-    setVisible(num);
-    console.log("clickPath", array);
+  const handleNext = () => {
+    setVisible(visible + 1);
   }
 
-  const handleBack = () => {
-    let array = clickPath;
-    let last = array.length - 1;
-    console.log(last);
-    setVisible(array[last]);
-    array.splice(-1,1);
-    setClickPath(array);
-    console.log("clickPath", array);
+  const handleBack = (num) => {
+    if(num < visible) {
+      setVisible(num);
+    }
   }
 
   const views = [
     <ChooseNetwork key="0" details={details} setDetails={setDetails} handleNext={handleNext} />,
     <ChooseName key="1" details={details} setDetails={setDetails} handleNext={handleNext} />,
     <ChooseType key="2" details={details} setDetails={setDetails} handleNext={handleNext} />,
-    <Customized key="3" details={details} setDetails={setDetails} handleNext={handleNext} />,
-    <ChooseMembers key="4" details={details} setDetails={setDetails} handleNext={handleNext} />,
-    <ChooseDocs key="5" details={details} setDetails={setDetails} handleNext={handleNext} />,
-    <Checkout key="6" details={details} setDetails={setDetails} handleNext={handleNext} />
+    <ChooseMembers key="3" details={details} setDetails={setDetails} handleNext={handleNext} />,
+    <ChooseDocs key="4" details={details} setDetails={setDetails} handleNext={handleNext} />,
+    <Checkout key="5" details={details} setDetails={setDetails} handleNext={handleNext} />
   ];
 
   return (
     <VStack>
-      <Text>Progress:</Text>
-      <Progress width="100%" value={(visible * 100) / (views.length - 1)} />
-      {clickPath.length > 0 ? <Button onClick={handleBack}>Back</Button> : null}
+      <StepProgressBar steps={views.length} visible={visible} handleBack={handleBack} />
       {views[visible]}
     </VStack>
   );

@@ -2,10 +2,11 @@ import { useState, useContext, useEffect } from "react";
 import Router, { useRouter } from "next/router";
 import AppContext from "../../context/AppContext";
 //import ProposalDetails from './ProposalDetails';
-import { chakra, Center, Text, Grid, Button, HStack, Spacer, Link } from "@chakra-ui/react";
+import { chakra, Center, Text, Grid, Button, HStack, Spacer, Link, Icon, Heading } from "@chakra-ui/react";
 import Layout from "../structure/Layout";
 import ProposalRow from "./ProposalRow";
 import ToggleProposals from "./ToggleProposals";
+import { RiStackLine } from "react-icons/ri";
 import { proposalTypes, voteTypes } from "../../constants/params";
 import { fetchProposals } from "../../utils/fetchProposals";
 
@@ -71,6 +72,10 @@ export default function Proposals(props) {
 
   return (
     <>
+    <HStack>
+      <Icon as={RiStackLine} w={10} h={10} color="#5a2686" />
+      <Heading as="h1">Proposals</Heading>
+    </HStack>
       <ToggleProposals handleClick={handleClick} toggle={toggle} reloadProposals={reloadProposals} />
       {proposals != null ? (
         <ProposalContainer proposals={proposals[toggle]} />

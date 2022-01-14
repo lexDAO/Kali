@@ -42,7 +42,7 @@ export default function ChooseNetwork(props) {
         : network != 999 && chainId == network ?
           <>
           <Text><i>connected to {getNetworkName(network)}</i></Text>
-          <Button onClick={() => props.handleNext(1)}>Next</Button>
+          <Button onClick={() => props.handleNext()}>Next</Button>
           </>
         : null}
     </VStack>

@@ -13,7 +13,7 @@ export default function Treasury() {
         {dao["balances"].map((b, index) => (
           <ListItem key={index}>
             {b["token"]} (
-            {b["token"] === "USDC"
+            {b["token"] === "USDC" || b["token"] === "USDT"
               ? fromDecimals(b["balance"], 6)
               : fromDecimals(b["balance"], 18)}
             )

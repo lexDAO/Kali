@@ -29,7 +29,7 @@ export default function NameDAO(props) {
         <Text fontSize="xl"><b>Name</b></Text><Input defaultValue={props.details['daoName']} onChange={changeDao} />
         <Text fontSize="xl"><b>Symbol</b></Text><Input defaultValue={props.details['symbol']} onChange={changeSymbol} />
 
-        <Button onClick={() => props.handleNext()}>Next</Button>
+        <Button className="transparent-btn" onClick={() => props.handleNext()}>Next</Button>
 
     </VStack>
   );

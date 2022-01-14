@@ -107,6 +107,10 @@
   border-color: white;
 }
 
+#container-deployer {
+  color: white;
+}
+
 /* //////////////// APP //////////////// */
 
 div#dao-main {
@@ -191,7 +195,8 @@ div#dao-main {
 .vote-count {
   line-height: 0.5em;
   border-bottom: 1px dashed white;
-  padding:10px;
+  padding:5px;
+  font-size:0.8em;
 }
 
 .vote-status {

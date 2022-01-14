@@ -129,8 +129,8 @@ export default function ChooseMembers(props) {
           </ListItem>
         ))}
       </List>
-      <Button onClick={() => append({ address: "" })}>Add Founder</Button>
-      <Button type="submit">Next</Button>
+      <Button className="transparent-btn" onClick={() => append({ address: "" })}>Add Founder</Button>
+      <Button className="transparent-btn" type="submit">Next</Button>
     </VStack>
   );
 }

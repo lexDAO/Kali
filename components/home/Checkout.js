@@ -1,17 +1,41 @@
 import React, { useState, useContext } from "react";
 import Router from "next/router";
 import AppContext from "../../context/AppContext";
-import { Flex, VStack, Button, Text, Select, List, ListItem } from "@chakra-ui/react";
+import { Flex, VStack, Button, Text, Select, List, ListItem, HStack, Stack, Spacer } from "@chakra-ui/react";
 import { supportedChains } from "../../constants/supportedChains";
 import { getNetworkName, convertVotingPeriod, fromDecimals } from "../../utils/formatters";
 import { addresses } from "../../constants/addresses";
 import { factoryInstance } from "../../eth/factory";
 import { presets } from "../../constants/presets";
+import DashedDivider from "../elements/DashedDivider";
+import KaliButton from "../elements/KaliButton";
 
 export default function Checkout(props) {
   const value = useContext(AppContext);
   const { web3, chainId, loading, account } = value.state;
   const details = props.details;
+
+  // for use at the end
+  let paused;
+  if(details['paused']==1) {
+    paused = "restricted";
+  } else {
+    paused = "unrestricted";
+  }
+
+  let daoType;
+  if(details['daoType'] == null) {
+    daoType = "Custom";
+  } else {
+    daoType = presets[details['daoType']]['type'];
+  }
+
+  let docs;
+  if(details['docs']=="") {
+    docs = "Ricardian";
+  } else {
+    docs = details['docs'];
+  }
 
   const deploy = async () => {
     if (!web3 || web3 == null) {
@@ -130,29 +154,73 @@ export default function Checkout(props) {
     value.setLoading(false);
   }
 
+  const checkoutDetails = [
+    {
+      name: "Chain",
+      details: details['network']
+    },
+    {
+      name: "Name",
+      details: details['daoName']
+    },
+    {
+      name: "Symbol",
+      details: details['symbol']
+    },
+    {
+      name: "Type",
+      details: daoType
+    },
+    {
+      name: "Members",
+      details: details['members']
+    },
+    {
+      name: "Voting period",
+      details: convertVotingPeriod(details['votingPeriod'])
+    },
+    {
+      name: "Share transferability",
+      details: paused
+    },
+    {
+      name: "Quorum",
+      details: details['quorum'] + "%"
+    },
+    {
+      name: "Supermajority",
+      details: details['supermajority'] + "%"
+    },
+    {
+      name: "Docs",
+      details: docs
+    },
+  ];
+
   return (
-    <VStack>
-      <Text>You have selected:</Text>
-      <List>
-          <ListItem>Chain <b>{details['network']}</b></ListItem>
-          <ListItem>Name <b>{details['daoName']}</b></ListItem>
-          <ListItem>Symbol <b>{details['symbol']}</b></ListItem>
-          <ListItem>Type <b>{details['daoType'] == null ? "Custom" : presets[details['daoType']]['type']}</b>
-          </ListItem>
-          <ListItem>Members
+    <>
+    <Stack>
+      {checkoutDetails.map((item, index) => (
+        <>
+        <HStack>
+          <Text>{item.name}</Text>
+          <Spacer />
+          {Array.isArray(item.details) ? // members array
             <List>
-            <b>{details['members'].map((item, index) => (
-                <ListItem key={index}>{item} ({fromDecimals(details['shares'][index], 18)} shares)</ListItem>
-              ))}</b>
+            {item.details.map((member, i) => (
+              <ListItem>{member} ({fromDecimals(details.shares[i], 18)} shares)</ListItem>
+            ))
+            }
             </List>
-          </ListItem>
-          <ListItem>Voting period <b>{convertVotingPeriod(details['votingPeriod'])}</b></ListItem>
-          <ListItem>Share transerability <b>{details['paused']==1 ? "restricted" : "unrestricted"}</b></ListItem>
-          <ListItem>Quorum <b>{details['quorum']}%</b></ListItem>
-          <ListItem>Supermajority <b>{details['supermajority']}%</b></ListItem>
-          <ListItem>Docs <b>{details['docs']=="" ? "Ricardian" : details['docs']}</b></ListItem>
-      </List>
-      <Button onClick={deploy}>Deploy</Button>
-    </VStack>
+          :
+          <Text>{item.details}</Text>
+          }
+        </HStack>
+        <DashedDivider />
+        </>
+      ))}
+    </Stack>
+    <KaliButton onClick={deploy}>Deploy</KaliButton>
+    </>
   );
 }

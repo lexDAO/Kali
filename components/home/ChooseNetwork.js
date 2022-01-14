@@ -37,12 +37,12 @@ export default function ChooseNetwork(props) {
         {network != 999 && chainId != network ||  network != 999 && chainId != network && account == null ?
           <>
           <Text>please connect your wallet to {getNetworkName(network)}</Text>
-          <Button onClick={value.connect}>Connect</Button>
+          <Button className="transparent-btn" onClick={value.connect}>Connect</Button>
           </>
         : network != 999 && chainId == network ?
           <>
           <Text><i>connected to {getNetworkName(network)}</i></Text>
-          <Button onClick={() => props.handleNext()}>Next</Button>
+          <Button className="transparent-btn" onClick={() => props.handleNext()}>Next</Button>
           </>
         : null}
     </VStack>

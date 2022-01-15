@@ -143,8 +143,8 @@ select {
 
 #container-deployer {
   color: white;
-  padding:20px;
   min-height: 100vh;
+  padding:20px;
 }
 
 #container-deployer .social {
@@ -209,7 +209,6 @@ div.dao-type:hover {
 /* //////////////// APP //////////////// */
 
 #container-app {
-  padding:20px;
   min-height: 100vh;
 }
 

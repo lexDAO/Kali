@@ -51,7 +51,7 @@ export default function Checkout(props) {
       value.toast(e);
     }
 
-    const {
+    var {
         network,
         daoName,
         symbol,
@@ -120,7 +120,7 @@ export default function Checkout(props) {
     console.log("extensionsArray", extensionsArray);
     console.log("extensionsData", extensionsData);
 
-    console.log(daoName, symbol, docs, paused, extensionsArray, extensionsData, members, shares, votingPeriod, govSettings);
+    console.log("form", daoName, symbol, docs, paused, extensionsArray, extensionsData, members, shares, votingPeriod, govSettings);
 
     try {
       let result = await factory.methods
@@ -199,28 +199,29 @@ export default function Checkout(props) {
 
   return (
     <>
-    <Stack>
+    <Stack id="checkout">
       {checkoutDetails.map((item, index) => (
         <>
-        <HStack>
-          <Text>{item.name}</Text>
-          <Spacer />
           {Array.isArray(item.details) ? // members array
+            <>
+            <Text>{item.name}</Text>
             <List>
             {item.details.map((member, i) => (
               <ListItem>{member} ({fromDecimals(details.shares[i], 18)} shares)</ListItem>
             ))
             }
             </List>
+            </>
           :
-          <Text>{item.details}</Text>
+          <HStack>
+            <Text>{item.name}</Text><Spacer /><Text>{item.details}</Text>
+          </HStack>
           }
-        </HStack>
         <DashedDivider />
         </>
       ))}
     </Stack>
-    <KaliButton onClick={deploy}>Deploy</KaliButton>
+    <KaliButton id="deploy-btn" onClick={deploy}>Deploy Your DAO!</KaliButton>
     </>
   );
 }

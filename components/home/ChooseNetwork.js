@@ -1,8 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
-import { Flex, VStack, Button, Text, Select } from "@chakra-ui/react";
+import { Flex, VStack, HStack, Button, Text, Select, Icon, Heading } from "@chakra-ui/react";
 import { supportedChains } from "../../constants/supportedChains";
 import { getNetworkName } from "../../utils/formatters";
+import { AiOutlineCheckCircle, AiOutlineWarning } from "react-icons/ai";
 
 export default function ChooseNetwork(props) {
   const value = useContext(AppContext);
@@ -27,7 +28,7 @@ export default function ChooseNetwork(props) {
 
   return (
     <VStack>
-        <Text fontSize="xl"><b>Select your chain</b></Text>
+        <Heading as="h1"><b>Select your chain:</b></Heading>
         <Select onChange={updateNetwork} defaultValue={props.details['network']}>
             <option value="999"></option>
           {supportedChains.map((item, index) => (
@@ -36,13 +37,15 @@ export default function ChooseNetwork(props) {
         </Select>
         {network != 999 && chainId != network ||  network != 999 && chainId != network && account == null ?
           <>
-          <Text>please connect your wallet to {getNetworkName(network)}</Text>
+          <HStack id="not-connected">
+          <Icon as={AiOutlineWarning} /><Text>please connect your wallet to {getNetworkName(network)}</Text>
+          </HStack>
           <Button className="transparent-btn" onClick={value.connect}>Connect</Button>
           </>
         : network != 999 && chainId == network ?
           <>
-          <Text><i>connected to {getNetworkName(network)}</i></Text>
-          <Button className="transparent-btn" onClick={() => props.handleNext()}>Next</Button>
+          <HStack id="connected-to-network"><Icon as={AiOutlineCheckCircle} /><Text><i>connected to {getNetworkName(network)}</i></Text></HStack>
+          <Button className="transparent-btn" onClick={() => props.handleNext()}>Next »</Button>
           </>
         : null}
     </VStack>

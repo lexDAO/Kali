@@ -26,7 +26,7 @@
   z-index: -1;
 }
 
-/* //////////////// BUTTONS //////////////// */
+/* //////////////// BUTTONS AND FORM ELEMENTS //////////////// */
 
 .transparent-btn {
   position: relative;
@@ -38,6 +38,10 @@
   color: black;
   mix-blend-mode: screen;
   border-radius: 20px !important;
+}
+
+.transparent-btn:hover {
+  background:#fcffba !important;
 }
 
 .transparent-btn::before {
@@ -52,6 +56,27 @@
   mix-blend-mode: color-burn;
 }
 
+select {
+  border-radius: 20px !important;
+}
+
+.num-input {
+  width: 100px;
+  border-radius: 0px !important;
+}
+
+.social {
+  background: none !important;
+  border: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.delete-icon {
+  background: none !important;
+  border: 0 !important;
+}
+
 /* //////////////// CONTAINERS //////////////// */
 
 
@@ -60,10 +85,6 @@
 }
 
 /* //////////////// NAV BAR //////////////// */
-
-#nav {
-  padding:10px;
-}
 
 #nav-right-container {
   border: 1px solid;
@@ -99,19 +120,106 @@
   border: none !important;
 }
 
+/* //////////////// FOOTER //////////////// */
+
+#social-icons {
+  border: 1px solid;
+  border-radius: 10px;
+}
+
+#footer {
+
+}
+
 /* //////////////// DEPLOYER //////////////// */
 #container-deployer #nav-right-container,
 #container-deployer #nav-right-container button,
-#container-deployer #kali-logo {
+#container-deployer #kali-logo,
+#container-deployer
+ {
   color: white;
   border-color: white;
 }
 
 #container-deployer {
   color: white;
+  padding:20px;
+  min-height: 100vh;
+}
+
+#container-deployer .social {
+  color: white !important;
+}
+
+#container-deployer #social-icons {
+  border-color: white !important;
+}
+
+#container-deployer h1 {
+  font-size: 1.8em !important;
+  margin-bottom: 20px !important;
+}
+
+#container-deployer .delete-icon {
+  color: white !important;
+}
+
+.dao-type h2 {
+  font-size: 1.2em;
+}
+
+div.dao-type {
+  border: 1px solid;
+  padding: 20px;
+  margin: 2px;
+  border-radius: 15px;
+}
+
+div.dao-type:hover {
+  background: rgba(255,255,255,.2);
+  border: 2px solid;
+  margin: 1px;
+}
+
+#not-connected {
+  color: #ffc9e2;
+}
+
+#connected-to-network {
+  color: #ffffed;
+}
+
+.member-address {
+  width:450px !important;
+  margin-right: 10px !important;
+}
+
+#deploy-btn {
+  margin:20px !important;
+}
+
+#choose-docs {
+
+}
+
+#checkout {
+  width:70%;
 }
 
 /* //////////////// APP //////////////// */
+
+#container-app {
+  padding:20px;
+  min-height: 100vh;
+}
+
+#container-app .social {
+  color: #5a2686 !important;
+}
+
+#container-app #social-icons {
+  border-color: #5a2686 !important;
+}
 
 div#dao-main {
   padding-left: 45px;
@@ -203,6 +311,18 @@ div#dao-main {
   margin-bottom: 10px !important;
 }
 
+.RSPBprogressBar {
+  background: transparent !important;
+  border: 1px dashed rgba(255,255,255,.2) !important;
+}
+
+.RSPBprogression {
+  border:1px dashed white !important;
+}
+
+.RSPBstep {
+
+}
 
 /* color scheme */
 /* purple: #5a2686, darkBlue: 594cfb, lightBlue: a0b1dc, pink: e65170, purple: 3b074e */

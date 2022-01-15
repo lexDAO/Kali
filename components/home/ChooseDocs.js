@@ -3,6 +3,7 @@ import AppContext from "../../context/AppContext";
 import {
   Flex,
   VStack,
+  HStack,
   Button,
   Text,
   List,
@@ -10,7 +11,10 @@ import {
   Link,
   Select,
   Input,
+  Heading,
+  Icon
 } from "@chakra-ui/react";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 import { supportedChains } from "../../constants/supportedChains";
 import { getNetworkName } from "../../utils/formatters";
 import { presets } from "../../constants/presets";
@@ -64,11 +68,10 @@ export default function ChooseDocs(props) {
   ];
 
   return (
+    <>
     <VStack>
-      <Text fontSize="xl">
-        <b>Add a legal structure</b>
-      </Text>
-      <Select onChange={handleSelect} defaultValue={props.details["docType"]}>
+      <Heading as="h1">Add your legal docs:</Heading>
+      <Select id="choose-docs" onChange={handleSelect} defaultValue={props.details["docType"]}>
         <option value="999"></option>
         <option value="0">Form an LLC</option>
         <option value="1">Use your own docs</option>
@@ -77,7 +80,12 @@ export default function ChooseDocs(props) {
       {selectedType == 1 ? (
         <Input defaultValue={props.details["docs"]} onChange={handleChange} />
       ) : null}
+    </VStack>
+    <VStack>
+      <>
       {selectedType == 0 ? (
+        <HStack>
+        <Icon as={AiOutlineInfoCircle} />
         <Text as="i">
           Your DAO will be issued a series NFT under KaliCo Ricardian LLC, a
           Delaware Series LLC. Click{" "}
@@ -93,10 +101,14 @@ export default function ChooseDocs(props) {
           {"  "}
           to learn more.
         </Text>
+        </HStack>
       ) : null}
+
       {selectedType != 999 ? (
         <Button className="transparent-btn" onClick={() => props.handleNext()}>Next</Button>
       ) : null}
+      </>
     </VStack>
+    </>
   );
 }

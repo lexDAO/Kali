@@ -30,9 +30,16 @@ const SVG = () => {
 }
 
 const KaliButton = (props) => {
+  let id;
+  if(props.id) {
+    id = props.id;
+  } else {
+    id = 1;
+  }
   return(
     <Button
       className="transparent-btn"
+      id={id}
       leftIcon={<SVG />}
       onClick={props.onClick}
       variant="ghost"

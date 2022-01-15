@@ -76,7 +76,7 @@ export default function StepProgressBar(props) {
           width={750}
           height={1}
           percent={100 * (visible / (steps - 1))}
-          filledBackground="white"
+          filledBackground="none"
         >
           {array.map((step, index) => {
             let cursor;
@@ -90,6 +90,8 @@ export default function StepProgressBar(props) {
                 position={100 * (index / steps)}
                 transition="scale"
                 children={({ accomplished }) => (
+                  <>
+                  {index < (steps - 1) ?
                   <div
                     onClick={() => props.handleBack(index)}
                     style={{
@@ -98,19 +100,36 @@ export default function StepProgressBar(props) {
                       alignItems: "center",
                       justifyContent: "center",
                       borderRadius: "50%",
-                      width: 60,
-                      height: 60,
+                      width: 30,
+                      height: 30,
                       color: "white",
-                      backgroundColor: accomplished ? "none" : "none"
+                      backgroundColor: accomplished ? "white" : "rgba(255,255,255,.5)"
                     }}
                   >
-                    {index < (steps - 1) ? "👁" :
-                      visible == steps - 1 ?
-                    <Icon as={SVG} />
-                    :
-                    <Icon as={SVGtransparent} />
-                    }
+
                   </div>
+                  : <div
+                    onClick={() => props.handleBack(index)}
+                    style={{
+                      display: "flex",
+                      cursor: cursor,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "50%",
+                      width: 40,
+                      height: 40,
+                      color: "white",
+                      backgroundColor: accomplished ? "transparent" : "transparent"
+                    }}
+                  >
+                  {visible == steps - 1 ?
+                  <Icon as={SVG} />
+                  :
+                  <Icon as={SVGtransparent} />
+                  }
+                  </div>
+                  }
+                  </>
                 )}
               />
             );

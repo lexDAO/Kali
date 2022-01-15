@@ -1,6 +1,13 @@
+import { Icon } from "@chakra-ui/react";
+
+import { HiUserGroup } from "react-icons/hi";
+import { FaMoneyBillAlt } from "react-icons/fa";
+import { BsTools } from "react-icons/bs";
+
 export const presets = [
   {
-    type: "Social",
+    type: "Social Club",
+    icon: HiUserGroup,
     voting: 259200,
     quorum: 10,
     supermajority: 60,
@@ -13,21 +20,22 @@ export const presets = [
   },
   {
     type: "Investment Club",
+    icon: FaMoneyBillAlt,
     voting: 259200,
     quorum: 30,
     supermajority: 80,
     paused: 1,
     extensions: {
       crowdsale: {
-        description: "ETH crowdsale enabled by default for our Dos Commas accredited investor whitelist. 200 shares per ETH. Limit 1,000 shares per wallet. Sale ends in 30 days.",
+        description: "30-day ETH crowdsale for Dos Commas accredited investors. 200 shares per ETH. Limit 100,000.",
         purchaseToken: "0x0000000000000000000000000000000000000000",
         purchaseMultiplier: 200,
-        purchaseLimit: "1000000000000000000000", // 1,000 shares - string, to avoid BigNumber errors
+        purchaseLimit: "100000000000000000000000", // 100,000 shares - string, to avoid BigNumber errors
         saleEnds: 2592000, // 30 days from today
         listId: 0 // CHANGE THIS FOR LIVE DEPLOYMENT!
       },
       redemption: {
-        description: "Members may ragequit for their fair share of the DAO's ETH reserves. Redemption option triggered 30 days after launch. DAO may make other tokens eligible for redemption at a later date by proposal.",
+        description: "Members may ragequit for share of DAO's ETH reserves. Option triggered 30 days after launch.",
         redemptionStart: 2592000, // 30 days from today
         tokenArray: ["0x0000000000000000000000000000000000000000"]
       }
@@ -35,13 +43,14 @@ export const presets = [
   },
   {
     type: "Services Company",
+    icon: BsTools,
     voting: 86400,
     quorum: 20,
     supermajority: 80,
     paused: 1,
     extensions: {
       redemption: {
-        description: "Members may ragequit for their fair share of the DAO's ETH reserves. Redemption option triggered 180 days after launch.  DAO may make other tokens eligible for redemption at a later date by proposal.",
+        description: "Members may ragequit for share of DAO's ETH reserves. Option triggered 180 days after launch.",
         redemptionStart: 15552000, // 180 days from today
         tokenArray: ["0x0000000000000000000000000000000000000000"]
       }

@@ -14,12 +14,10 @@ export default function Nav() {
   const value = useContext(AppContext);
   const { account, chainId } = value.state;
   return (
-    <div id="nav">
-    <HStack p={5}>
+    <HStack id="nav">
       {isBrowser == true ? <Kali /> : null}
       <Spacer />
       <NavRightContainer />
     </HStack>
-    </div>
   );
 }

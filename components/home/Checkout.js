@@ -207,7 +207,7 @@ export default function Checkout(props) {
             <Text>{item.name}</Text>
             <List>
             {item.details.map((member, i) => (
-              <ListItem>{member} ({fromDecimals(details.shares[i], 18)} shares)</ListItem>
+              <ListItem key={i}>{member} ({fromDecimals(details.shares[i], 18)} shares)</ListItem>
             ))
             }
             </List>

@@ -8,6 +8,7 @@ import { createToast } from "../utils/toast";
 import { correctNetwork } from "../utils/network";
 import { getNetworkName } from "../utils/formatters";
 import { supportedChains } from "../constants/supportedChains";
+import "../styles/style.css";
 
 function MyApp({ Component, pageProps }) {
   const [web3, setWeb3] = useState(null);

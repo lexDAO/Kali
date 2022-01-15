@@ -3,7 +3,7 @@ import { BrowserView, MobileView, isBrowser } from "react-device-detect";
 import AppContext from "../../context/AppContext";
 import Link from "next/link";
 import { Flex, Spacer, HStack } from "@chakra-ui/react";
-import DarkModeSwitch from "./DarkModeSwitch";
+import NavRightContainer from "./NavRightContainer";
 import Hamburger from "./Hamburger";
 import Kali from "./Kali";
 import KaliMobile from "./KaliMobile";
@@ -14,13 +14,10 @@ export default function Nav() {
   const value = useContext(AppContext);
   const { account, chainId } = value.state;
   return (
-    <HStack p={5}>
+    <HStack id="nav">
       {isBrowser == true ? <Kali /> : null}
       <Spacer />
-      <Chain />
-      <Account message="Connect" />
-      <DarkModeSwitch />
-      <Hamburger />
+      <NavRightContainer />
     </HStack>
   );
 }

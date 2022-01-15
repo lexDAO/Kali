@@ -1,0 +1,327 @@
+/* //////////////// GRADIENT //////////////// */
+
+.gradient-item {
+  background: rgb(231,84,114);
+  background: linear-gradient(142deg, rgba(231,84,114,0.8701855742296919) 24%, rgba(68,58,200,1) 100%);
+}
+
+#gradient1 {
+  background: linear-gradient(90deg, #ee5871, #e34b76);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+#gradient2 {
+  mask-image: linear-gradient(to bottom, transparent, black);
+  background: linear-gradient(90deg, #4d46f9, #e133a4);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+/* //////////////// BUTTONS AND FORM ELEMENTS //////////////// */
+
+.transparent-btn {
+  position: relative;
+  padding: 0.5em 1em;
+  font-size: 1em;
+  border: none;
+  background: none;
+  outline: none;
+  color: black;
+  mix-blend-mode: screen;
+  border-radius: 20px !important;
+}
+
+.transparent-btn:hover {
+  background:#fcffba !important;
+}
+
+.transparent-btn::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: white;
+  border-radius: 20px !important;
+  content: '';
+  mix-blend-mode: color-burn;
+}
+
+select {
+  border-radius: 20px !important;
+}
+
+.num-input {
+  width: 100px;
+  border-radius: 0px !important;
+}
+
+.social {
+  background: none !important;
+  border: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.delete-icon {
+  background: none !important;
+  border: 0 !important;
+}
+
+/* //////////////// CONTAINERS //////////////// */
+
+
+#container-dao {
+
+}
+
+/* //////////////// NAV BAR //////////////// */
+
+#nav-right-container {
+  border: 1px solid;
+  padding: 0 5px 0px 15px;
+  border-radius: 15px;
+}
+
+#nav-right-container .chakra-divider {
+  margin: 0 10px;
+  border: 1px solid;
+  opacity: 0.9;
+  height: 60%
+}
+
+#nav-account {
+  border: none;
+}
+
+#nav-chain {
+  border: none;
+}
+
+#nav-chainIcon {
+  border: none;
+  margin: 0 5px 0 0px;
+}
+
+#nav-chainName {
+  border: none;
+}
+
+#nav-hamburger button {
+  border: none !important;
+}
+
+/* //////////////// FOOTER //////////////// */
+
+#social-icons {
+  border: 1px solid;
+  border-radius: 10px;
+}
+
+#footer {
+
+}
+
+/* //////////////// DEPLOYER //////////////// */
+#container-deployer #nav-right-container,
+#container-deployer #nav-right-container button,
+#container-deployer #kali-logo,
+#container-deployer
+ {
+  color: white;
+  border-color: white;
+}
+
+#container-deployer {
+  color: white;
+  min-height: 100vh;
+  padding:20px;
+}
+
+#container-deployer .social {
+  color: white !important;
+}
+
+#container-deployer #social-icons {
+  border-color: white !important;
+}
+
+#container-deployer h1 {
+  font-size: 1.8em !important;
+  margin-bottom: 20px !important;
+}
+
+#container-deployer .delete-icon {
+  color: white !important;
+}
+
+.dao-type h2 {
+  font-size: 1.2em;
+}
+
+div.dao-type {
+  border: 1px solid;
+  padding: 20px;
+  margin: 2px;
+  border-radius: 15px;
+}
+
+div.dao-type:hover {
+  background: rgba(255,255,255,.2);
+  border: 2px solid;
+  margin: 1px;
+}
+
+#not-connected {
+  color: #ffc9e2;
+}
+
+#connected-to-network {
+  color: #ffffed;
+}
+
+.member-address {
+  width:450px !important;
+  margin-right: 10px !important;
+}
+
+#deploy-btn {
+  margin:20px !important;
+}
+
+#choose-docs {
+
+}
+
+#checkout {
+  width:70%;
+}
+
+/* //////////////// APP //////////////// */
+
+#container-app {
+  min-height: 100vh;
+}
+
+#container-app .social {
+  color: #5a2686 !important;
+}
+
+#container-app #social-icons {
+  border-color: #5a2686 !important;
+}
+
+div#dao-main {
+  padding-left: 45px;
+  padding-right: 45px;
+}
+
+#dao-main h1 {
+  color: #5a2686;
+}
+
+#container-app #nav-right-container, #container-app #nav-right-container button {
+  color: #5a2686;
+  border-color: #5a2686;
+}
+
+#dao-sidebar {
+  padding: 60px 0 0 0;
+
+}
+
+#action-menu {
+  margin-top: 50px;
+}
+
+#dao-sidebar button, #dao-sidebar #kali-logo {
+  color: #5a2686
+}
+
+#dao-main {
+  background: #fafafa;
+  padding:20px;
+}
+
+#dashboard {
+  color: white;
+}
+
+.dashboard-tile {
+  padding: 30px;
+  border-radius: 15px;
+}
+
+.dashboard-tile h2 {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+}
+
+.proposal-tile {
+  padding: 30px;
+  margin: 20px;
+  border-radius: 15px;
+  color: white;
+}
+
+.proposal-tile h2 {
+  font-size: 1.2em;
+  padding: 0 0 5px 0;
+}
+
+.proposal-icon {
+
+}
+
+.proposal-title {
+  margin-bottom: 20px;
+}
+
+.timer-container {
+  margin-bottom: 20px !important;
+}
+
+.timer-label {
+  font-size:0.8em;
+}
+
+.timer {
+  font-size:1.7em;
+  font-weight: bold;
+}
+
+.vote-count {
+  line-height: 0.5em;
+  border-bottom: 1px dashed white;
+  padding:5px;
+  font-size:0.8em;
+}
+
+.vote-status {
+  margin-bottom: 10px !important;
+}
+
+.RSPBprogressBar {
+  background: transparent !important;
+  border: 1px dashed rgba(255,255,255,.2) !important;
+}
+
+.RSPBprogression {
+  border:1px dashed white !important;
+}
+
+.RSPBstep {
+
+}
+
+/* color scheme */
+/* purple: #5a2686, darkBlue: 594cfb, lightBlue: a0b1dc, pink: e65170, purple: 3b074e */

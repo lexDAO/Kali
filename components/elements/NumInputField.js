@@ -11,6 +11,7 @@ export default function NumInputField(props) {
   let max;
   let onChange;
   let defaultValue;
+  let id;
   if (props.min) {
     min = props.min;
   } else {
@@ -29,15 +30,21 @@ export default function NumInputField(props) {
   } else {
     defaultValue = 0;
   }
+  if(props.id) {
+    id = props.id;
+  } else {
+    id = 1;
+  }
 
   return (
     <NumberInput
+      className="num-input"
       name={props.name}
-      size="lg"
       defaultValue={defaultValue}
       min={min}
       max={max}
       onChange={onChange}
+      id={id}
     >
       <NumberInputField focusBorderColor="red.200" />
 

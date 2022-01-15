@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
-import { Text, HStack, Link, Icon, UnorderedList, ListItem, Button } from "@chakra-ui/react";
+import { Text, HStack, Link, Icon, Button, Divider, Spacer, Center } from "@chakra-ui/react";
 import {
   Modal,
   ModalOverlay,
@@ -13,42 +13,74 @@ import {
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs";
 import { useDisclosure } from "@chakra-ui/react";
 import CapTable from "./CapTable";
+import { fromDecimals } from "../../utils/formatters";
+import DashedDivider from "../elements/DashedDivider";
 
 export default function DaoInfo() {
   const value = useContext(AppContext);
   const { dao } = value.state;
   const { isOpen, onOpen, onClose } = useDisclosure()
 
+  const array = [
+    {
+      name: "Name",
+      info: dao['name'],
+      link: null
+    },
+    {
+      name: "Address",
+      info: dao['address'],
+      link: `https://rinkeby.etherscan.io/address/${dao["address"]}`
+    },
+    {
+      name: "Symbol",
+      info: dao['token']['symbol'],
+      link: null
+    },
+    {
+      name: "Shares",
+      info: fromDecimals(dao['token']['totalSupply'], 18),
+      link: null
+    },
+    {
+      name: "Docs",
+      info: dao['docs'],
+      link: `${dao["docs"]}`
+    },
+    {
+      name: "Members",
+      info: dao['members'].length,
+      link: null
+    }
+  ]
+
   return(
-    <>
-    <UnorderedList>
-    <ListItem>Name: {dao["name"]}</ListItem>
-    <ListItem>
-      <Text>{dao["address"]}</Text>
-      <Link
-        passHref
-        href={`https://rinkeby.etherscan.io/address/${dao["address"]}`}
-      >
-        <Icon as={BsFillArrowUpRightSquareFill} />
-      </Link>
-    </ListItem>
-    <ListItem>Symbol: {dao["token"]["symbol"]}</ListItem>
-    <ListItem>
-      Shares: {dao["token"]["totalSupply"] / 1000000000000000000}{" "}
-    </ListItem>
-    {dao['docs'] != undefined ?
-    <>
-    <ListItem>
-      <Text>Docs: {dao["docs"]}</Text>
-      <Link href={`${dao["docs"]}`}>
-        <Icon as={BsFillArrowUpRightSquareFill} />
-      </Link>
-    </ListItem>
-    </>
-    : null}
-    <ListItem>Members: {dao["members"].length}</ListItem>
-    </UnorderedList>
-    <Button onClick={onOpen}>View Cap Table</Button>
+    <div>
+    {array.map((item, index) => (
+      <>
+      {item.info != undefined ?
+        <>
+      <HStack>
+        <Text>{item.name}</Text>
+        <Spacer />
+        <Text>{item.info}</Text>
+        {item.link != null ?
+        <Link
+          passHref
+          href={item.link}
+        >
+          <Icon as={BsFillArrowUpRightSquareFill} />
+        </Link>
+        : null}
+      </HStack>
+      <DashedDivider />
+      </>
+      : null}
+      </>
+    ))}
+    <Center>
+      <Button className="transparent-btn" onClick={onOpen}>View Cap Table</Button>
+    </Center>
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
     <ModalOverlay />
     <ModalContent>
@@ -65,6 +97,6 @@ export default function DaoInfo() {
       </ModalFooter>
     </ModalContent>
   </Modal>
-  </>
+  </div>
   );
 }

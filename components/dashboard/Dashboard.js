@@ -13,9 +13,11 @@ import {
   Grid,
   Box,
   Divider,
+  Spacer,
 } from "@chakra-ui/react";
 import FlexGradient from "../elements/FlexGradient.js";
 import Reload from "../elements/Reload.js";
+import { BiGridAlt } from "react-icons/bi";
 import { convertVotingPeriod, fromDecimals } from "../../utils/formatters";
 import { fetchDaoInfo } from "../../utils/fetchDaoInfo";
 import { addresses } from "../../constants/addresses";
@@ -76,13 +78,20 @@ export default function Dashboard() {
   }
 
   return (
-    <>
+    <div id="dashboard">
+    <HStack>
+      <Icon as={BiGridAlt} w={10} h={10} color="#5a2686" />
+      <Heading as="h1">Dashboard</Heading>
+    </HStack>
+    <HStack>
+      <Spacer />
       <Reload reload={reloadDao} />
+    </HStack>
       <Grid
         gap={5}
         templateColumns={{
           sm: "repeat(1, 1fr)",
-          md: "repeat(2, 1fr)",
+          md: "repeat(1, 1fr)",
           lg: "repeat(2, 1fr)",
         }}
       >
@@ -93,29 +102,19 @@ export default function Dashboard() {
             {Object.entries(dashboardHelper).map(([k, v]) =>
               dashboardHelper[k]["check"] != null &&
               dao[dashboardHelper[k]["check"]] == null ? null : (
+                <div className="gradient-item dashboard-tile">
                 <Box
                   key={`component-${k}`}
-                  p={5}
-                  w="450px"
-                  border="1px solid"
-                  border="1px solid"
-                  rounded="xl"
-                  borderColor="black"
-                  padding="25px"
-                  margin="5px"
-                  bg="kali.900"
-                  color="kali.800"
                 >
-                  <Text fontSize="xl">
-                    <b>{dashboardHelper[k]["title"]}</b>
-                  </Text>
+                  <Heading>{dashboardHelper[k]["title"]}</Heading>
                   {dashboardHelper[k]["component"]}
                 </Box>
+                </div>
               )
             )}
           </>
         )}
       </Grid>
-    </>
+    </div>
   );
 }

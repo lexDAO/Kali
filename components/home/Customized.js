@@ -127,7 +127,7 @@ export default function Customized(props) {
         <option value="1">Transferable</option>
         <option value="0">Nontransferable</option>
       </Select>
-      <Button onClick={() => props.handleNext(4)}>Next</Button>
+      <Button onClick={() => props.handleNext()}>Next</Button>
     </VStack>
   );
 }

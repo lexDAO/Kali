@@ -15,6 +15,8 @@ export default function Reload(props) {
       aria-label="refresh"
       icon={<BiRefresh />}
       onClick={props.reload}
+      color="#5a2686"
+      background="none"
     />
   );
 }

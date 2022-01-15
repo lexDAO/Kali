@@ -7,15 +7,19 @@ export default function Treasury() {
   const value = useContext(AppContext);
   const { dao } = value.state;
 
-  return(
+  return (
     <>
-    <UnorderedList>
-      {dao["balances"].map((b, index) => (
-        <ListItem key={index}>
-          {b["token"]} ({fromDecimals(b["balance"], 18)})
-        </ListItem>
-      ))}
-    </UnorderedList>
+      <UnorderedList>
+        {dao["balances"].map((b, index) => (
+          <ListItem key={index}>
+            {b["token"]} (
+            {b["token"] === "USDC" || b["token"] === "USDT"
+              ? fromDecimals(b["balance"], 6)
+              : fromDecimals(b["balance"], 18)}
+            )
+          </ListItem>
+        ))}
+      </UnorderedList>
     </>
   );
 }

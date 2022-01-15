@@ -87,6 +87,7 @@ export default function StepProgressBar(props) {
             }
             return (
               <Step
+                key={index}
                 position={100 * (index / steps)}
                 transition="scale"
                 children={({ accomplished }) => (

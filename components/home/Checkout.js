@@ -122,6 +122,10 @@ export default function Checkout(props) {
 
     console.log("form", daoName, symbol, docs, paused, extensionsArray, extensionsData, members, shares, votingPeriod, govSettings);
 
+    console.log("account", account)
+
+    console.log("factory", factory);
+
     try {
       let result = await factory.methods
         .deployKaliDAO(

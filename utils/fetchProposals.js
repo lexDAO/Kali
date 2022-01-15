@@ -1,4 +1,5 @@
 import { addresses } from "../constants/addresses";
+import { fromDecimals } from "./formatters";
 
 export async function fetchProposals(instance, address, web3, daoChain, dao) {
   const proposalCount = parseInt(await instance.methods.proposalCount().call());
@@ -108,25 +109,25 @@ function getProgress(yesVotes, noVotes) {
 }
 
 function isPassing(dao, proposal) {
-  let passing;
+  var passing = false;
 
-  let passingText;
+  var passingText = "";
 
-  let yesVotes = proposal["yesVotes"];
+  let yesVotes = fromDecimals(parseInt(proposal["yesVotes"]), 18);
 
-  let noVotes = proposal["noVotes"];
+  let noVotes = fromDecimals(parseInt(proposal["noVotes"]), 18);
 
   let open = proposal["open"];
 
-  let proposalType = proposal["proposalType"];
+  let proposalType = parseInt(proposal["proposalType"]);
 
-  let voteType = dao["gov"]["proposalVoteTypes"][proposalType];
+  let voteType = parseInt(dao["gov"]["proposalVoteTypes"][proposalType]);
 
-  let supermajority = dao["gov"]["supermajority"];
+  let supermajority = parseInt(dao["gov"]["supermajority"]);
 
-  let quorum = dao["gov"]["quorum"];
+  let quorum = parseInt(dao["gov"]["quorum"]);
 
-  let totalSupply = dao["gov"]["totalSupply"];
+  let totalSupply = fromDecimals(parseInt(dao["token"]["totalSupply"]), 18);
 
   // first, evaluate whether correct majority reached
   if (voteType == 0) {
@@ -149,10 +150,12 @@ function isPassing(dao, proposal) {
   }
   // second, if quorum fails, mark as failed/failing
   if (voteType == 1 || voteType == 3) {
-    let minVotes = (totalSupply * quorum) / 100;
+    let minVotes = Math.ceil((totalSupply * quorum) / 100);
+    console.log(minVotes, "minVotes")
     let votes = yesVotes + noVotes;
-    if (votes < minVotes) {
-      passing = false;
+    console.log(votes, "votes")
+    if (votes >= minVotes) {
+      passing = true;
     }
   }
   if (passing == true && open == true) {

@@ -13,11 +13,9 @@ import {
   Grid,
   Box,
   Divider,
-  Spacer,
 } from "@chakra-ui/react";
 import FlexGradient from "../elements/FlexGradient.js";
 import Reload from "../elements/Reload.js";
-import { BiGridAlt } from "react-icons/bi";
 import { convertVotingPeriod, fromDecimals } from "../../utils/formatters";
 import { fetchDaoInfo } from "../../utils/fetchDaoInfo";
 import { addresses } from "../../constants/addresses";
@@ -79,14 +77,7 @@ export default function Dashboard() {
 
   return (
     <div id="dashboard">
-    <HStack>
-      <Icon as={BiGridAlt} w={10} h={10} color="#5a2686" />
-      <Heading as="h1">Dashboard</Heading>
-    </HStack>
-    <HStack>
-      <Spacer />
       <Reload reload={reloadDao} />
-    </HStack>
       <Grid
         gap={5}
         templateColumns={{
@@ -102,7 +93,7 @@ export default function Dashboard() {
             {Object.entries(dashboardHelper).map(([k, v]) =>
               dashboardHelper[k]["check"] != null &&
               dao[dashboardHelper[k]["check"]] == null ? null : (
-                <div className="gradient-item dashboard-tile">
+                <div class="gradient-item dashboard-tile">
                 <Box
                   key={`component-${k}`}
                 >

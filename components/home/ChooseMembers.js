@@ -1,14 +1,16 @@
 import React, { useState, useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
-import { FormErrorMessage, FormLabel, FormControl, Input, VStack, Button, Text, List, ListItem, IconButton } from "@chakra-ui/react";
+import { FormErrorMessage, FormLabel, FormControl, Input, VStack, Button, Text, Heading, List, ListItem, IconButton } from "@chakra-ui/react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { supportedChains } from "../../constants/supportedChains";
 import { getNetworkName, toDecimals, fromDecimals } from "../../utils/formatters";
+import NumInputField from "../elements/NumInputField";
 
 export default function ChooseMembers(props) {
   const value = useContext(AppContext);
   const { web3, chainId, loading, account } = value.state;
+  const [defaults, setDefaults] = useState([]);
 
   const {
     handleSubmit,
@@ -25,9 +27,13 @@ export default function ChooseMembers(props) {
   useEffect(() => {
     if(props.details['members'] == null) {
       append({ address: "" });
+      setDefaults([1]);
     } else {
       for(let i=0; i < props.details['members'].length; i++) {
         append({ address: props.details['members'][i], share: fromDecimals(props.details['shares'][i], 18) });
+        let array = defaults;
+        array[i] = fromDecimals(props.details['shares'][i], 18);
+        setDefaults(array);
       }
     }
 
@@ -42,9 +48,13 @@ export default function ChooseMembers(props) {
 
     // convert shares to wei
     let sharesArray = [];
-    for (let i = 0; i < founders.length; i++) {
-      sharesArray.push(toDecimals(founders[i].share, 18));
+
+    for(let i=0; i < founders.length; i++) {
+      let element = document.getElementById(`founders.${i}.share`);
+      let value = element.value;
+      sharesArray.push(toDecimals(value, 18));
     }
+
     console.log("Shares Array", sharesArray);
 
     let votersArray = [];
@@ -63,14 +73,15 @@ export default function ChooseMembers(props) {
     props.setDetails(array);
     console.log(props.details)
 
-    props.handleNext(5);
+    props.handleNext();
   };
 
   return (
     <VStack as="form" onSubmit={handleSubmit(handleMembersSubmit)}>
-      <Text fontSize="xl"><b>Build your cap table</b></Text>
+      <Heading as="h1"><b>Build your cap table:</b></Heading>
       <List spacing={2}>
         {fields.map((founder, index) => (
+
           <ListItem
             display="flex"
             flexDirection="row"
@@ -88,7 +99,8 @@ export default function ChooseMembers(props) {
                     Founder
                   </FormLabel>
                   <Input
-                    placeholder="0x address or ENS"
+                    className="member-address"
+                    placeholder="0x address"
                     {...field}
                     {...register(`founders.${index}.address`, {
                       required: "You must assign share!",
@@ -104,23 +116,19 @@ export default function ChooseMembers(props) {
               render={({ field }) => (
                 <FormControl isRequired>
                   <FormLabel htmlFor={`founders.${index}.share`}>
-                    Share {index + 1}
+                    Shares
                   </FormLabel>
-                  <Input
-                    placeholder="1"
-                    {...field}
-                    {...register(`founders.${index}.share`, {
-                      required: "You must assign share!",
-                    })}
-                  />
+                  <NumInputField
+                    min="1"
+                    defaultValue={defaults[index]}
+                    id={`founders.${index}.share`}
+                    />
                 </FormControl>
               )}
             />
             <IconButton
+              className="delete-icon"
               aria-label="delete founder"
-              isRound
-              variant="ghost"
-              _hover={{ bg: "kali.600" }}
               mt={8}
               ml={2}
               icon={<AiOutlineDelete />}
@@ -129,8 +137,8 @@ export default function ChooseMembers(props) {
           </ListItem>
         ))}
       </List>
-      <Button onClick={() => append({ address: "" })}>Add Founder</Button>
-      <Button type="submit">Next</Button>
+      <Button className="transparent-btn" onClick={() => append({ address: "" })}>+ Add Founder</Button>
+      <Button className="transparent-btn" type="submit">Next »</Button>
     </VStack>
   );
 }

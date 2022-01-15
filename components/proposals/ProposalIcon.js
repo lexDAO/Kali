@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import AppContext from "../../context/AppContext";
 import { Icon } from "@chakra-ui/react";
 
-const iconSize = 8;
+const iconSize = 6;
 import { viewProposalsHelper } from "../../constants/viewProposalsHelper";
 
 export default function ProposalRow(props) {
@@ -11,11 +11,11 @@ export default function ProposalRow(props) {
   const p = props["p"];
 
   return (
-    <>
+    <div className="proposal-icon">
       <Icon
         as={viewProposalsHelper[p["proposalType"]]["icon"]}
         boxSize={iconSize}
       />
-    </>
+    </div>
   );
 }

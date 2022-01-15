@@ -20,9 +20,10 @@ export default function Layout(props) {
           key="title"
         />
       </Head>
-      <div id="gradient1"></div>
-      <div id="gradient2"></div>
+      <div id="combined-gradient1"></div>
+      <div id="combined-gradient2"></div>
       <div id="container-deployer">
+
       <Nav />
       <Container
         minH="70vh"
@@ -30,7 +31,9 @@ export default function Layout(props) {
         alignItems="center"
         justifyContent="center"
       >
+        <div id="content">
         {props.children}
+        </div>
       </Container>
       <Footer />
       </div>

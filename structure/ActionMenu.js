@@ -2,7 +2,7 @@ import { useContext } from "react";
 import AppContext from "../../context/AppContext";
 import { BrowserView, MobileView } from "react-device-detect";
 import { Button, Center, HStack, VStack } from "@chakra-ui/react";
-import { BiGridAlt, BiEdit} from "react-icons/bi";
+import { BiGridAlt } from "react-icons/bi";
 import { RiStackLine } from "react-icons/ri";
 import { VscNewFile } from "react-icons/vsc";
 
@@ -28,7 +28,7 @@ export default function ActionMenu(props) {
   };
 
   return (
-      <VStack id="action-menu" gap={3}>
+      <VStack p={5}>
         <ActionButton
           onClick={() => handleClick(1)}
           backgroundColor={visibleView == 1 ? "#eeeeee" : "none"}
@@ -46,7 +46,7 @@ export default function ActionMenu(props) {
         <ActionButton
           onClick={() => handleClick(3)}
           backgroundColor={visibleView == 3 ? "#eeeeee" : "none"}
-          icon={<BiEdit />}
+          icon={<VscNewFile />}
         >
           New Proposal
         </ActionButton>

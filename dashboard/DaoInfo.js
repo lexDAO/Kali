@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
-import { Text, HStack, Link, Icon, Button, Divider, Spacer, Center } from "@chakra-ui/react";
+import { Text, HStack, Link, Icon, Button, Divider, Spacer } from "@chakra-ui/react";
 import {
   Modal,
   ModalOverlay,
@@ -78,9 +78,7 @@ export default function DaoInfo() {
       : null}
       </>
     ))}
-    <Center>
-      <Button className="transparent-btn" onClick={onOpen}>View Cap Table</Button>
-    </Center>
+    <Button onClick={onOpen}>View Cap Table</Button>
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
     <ModalOverlay />
     <ModalContent>

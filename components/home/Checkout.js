@@ -65,7 +65,14 @@ export default function Checkout(props) {
         var { listId, purchaseToken, purchaseMultiplier, purchaseLimit, saleEnds } = extensions['crowdsale'];
         let now = parseInt(new Date().getTime() / 1000);
         saleEnds += now;
-        const payload = web3.eth.abi.encodeParameters(
+
+        const sale = require("../../abi/KaliDAOcrowdsale.json");
+
+        const saleAddress = addresses[chainId]["extensions"]["crowdsale"];
+
+        const saleContract = new web3.eth.Contract(sale, saleAddress);
+
+        const encodedParams = web3.eth.abi.encodeParameters(
           ["uint256", "address", "uint8", "uint96", "uint32"],
           [
             listId,
@@ -75,6 +82,11 @@ export default function Checkout(props) {
             saleEnds,
           ]
         );
+
+        var payload = saleContract.methods
+          .setExtension(encodedParams)
+          .encodeABI(); 
+
         extensionsData.push(payload);
       }
 

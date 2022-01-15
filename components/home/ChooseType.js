@@ -74,7 +74,7 @@ export default function ChooseType(props) {
           <Text>Extras:
             <UnorderedList>
             {Object.entries(item.type['extensions']).map(([key, value]) => (
-              <ListItem><Text key={key}>{value['description']}</Text></ListItem>
+              <ListItem key={key}><Text>{value['description']}</Text></ListItem>
             ))}
             </UnorderedList>
           </Text>

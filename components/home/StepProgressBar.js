@@ -11,7 +11,7 @@ const SVG = () => {
     Created by potrace 1.16, written by Peter Selinger 2001-2019
     </metadata>
     <g transform="translate(0.000000,204.000000) scale(0.100000,-0.100000)"
-    fill="#ffffff" fill-opacity="100%">
+    fill="#ffffff" fillOpacity="100%">
     <path d="M126 2018 c-8 -13 -40 -63 -71 -113 l-56 -90 29 -3 29 -3 5 -127 c6
     -151 25 -213 95 -316 80 -118 192 -184 349 -207 l74 -11 0 -59 0 -59 -145 0
     -145 0 0 -85 0 -85 145 0 145 0 0 -235 0 -235 79 0 78 0 7 39 c13 86 128 181
@@ -41,7 +41,7 @@ const SVGtransparent = () => {
     Created by potrace 1.16, written by Peter Selinger 2001-2019
     </metadata>
     <g transform="translate(0.000000,204.000000) scale(0.100000,-0.100000)"
-    fill="#ffffff" fill-opacity="40%">
+    fill="#ffffff" fillOpacity="40%">
     <path d="M126 2018 c-8 -13 -40 -63 -71 -113 l-56 -90 29 -3 29 -3 5 -127 c6
     -151 25 -213 95 -316 80 -118 192 -184 349 -207 l74 -11 0 -59 0 -59 -145 0
     -145 0 0 -85 0 -85 145 0 145 0 0 -235 0 -235 79 0 78 0 7 39 c13 86 128 181

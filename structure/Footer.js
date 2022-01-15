@@ -1,18 +1,23 @@
 import {
   Text,
-  HStack,
+  Container,
   Stack,
   Button,
-  Spacer,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { BsTwitter, BsGithub } from "react-icons/bs";
 
 export default function Footer() {
   return (
-    <HStack
+    <Container
+      as={Stack}
+      mt={5}
+      maxW={"5xl"}
+      py={4}
+      direction={{ base: "column", md: "row" }}
       spacing={4}
-      id="footer"
+      justify={{ base: "center", md: "space-between" }}
+      align={{ base: "center", md: "center" }}
     >
       <Text fontSize="xs">
         Summoned with{" "}
@@ -20,27 +25,32 @@ export default function Footer() {
           <i>LexDAO</i>
         </a>
       </Text>
-      <Spacer />
-      <Stack direction={"row"} spacing={4} id="social-icons">
+      <Stack direction={"row"} spacing={4}>
         <Button
-          className="social"
           rounded={"full"}
           as={"a"}
           href={"https://twitter.com/_KaliDAO"}
           target="_blank"
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          transition={"background 0.3s ease"}
         >
           <BsTwitter />
         </Button>
         <Button
-          className="social"
           rounded={"full"}
           as={"a"}
           href={"https://github.com/lexDAO/Kali"}
           target="_blank"
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          transition={"background 0.3s ease"}
         >
           <BsGithub />
         </Button>
       </Stack>
-    </HStack>
+    </Container>
   );
 }

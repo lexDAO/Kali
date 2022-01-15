@@ -1,9 +1,10 @@
 import React, { useState, useContext } from "react";
 import AppContext from "../../context/AppContext";
-import { Flex, VStack, Button, Text, LinkBox, LinkOverlay, Grid } from "@chakra-ui/react";
+import { Flex, VStack, HStack, Button, Text, LinkBox, LinkOverlay, Grid, Icon, Spacer, Divider, Heading, UnorderedList, ListItem } from "@chakra-ui/react";
 import { supportedChains } from "../../constants/supportedChains";
 import { getNetworkName, convertVotingPeriod } from "../../utils/formatters";
 import { presets } from "../../constants/presets";
+import { HiUserGroup } from "react-icons/hi";
 
 export default function ChooseType(props) {
   const value = useContext(AppContext);
@@ -21,67 +22,82 @@ export default function ChooseType(props) {
     props.setDetails(array);
     console.log(props.details)
 
-    props.handleNext(4);
+    props.handleNext();
   }
 
   const custom = () => {
-    props.handleNext(3);
+
+  }
+
+  const DashedDivider = () => {
+    return (
+      <Divider
+        orientation="horizontal"
+        variant="dashed"
+        borderColor="white"
+        mt={1}
+        mb={5}
+      />
+    )
   }
 
   const DaoBox = (item) => {
+    console.log(item.icon)
     return(
       <LinkBox
+        className="dao-type"
         key={item.id}
-        border="1px solid"
-        p={5}
-        m={2}
-        borderRadius="2xl"
-        _hover={{
-          bgGradient: "linear(to-br, kali.600, kali.700)",
-        }}
       >
         <LinkOverlay href="#" onClick={() => handleClick(item.id)}>
-          <Text fontSize="xl">{item.type['type']}</Text>
-          <Text>Voting Period: {convertVotingPeriod(item.type['voting'])}</Text>
-          <Text>Quorum: {item.type['quorum']}%</Text>
-          <Text>Supermajority: {item.type['supermajority']}%</Text>
-          <Text>{item.type['paused'] == 0 ? "Shares transferrable" : "Shares nontransferrable"}</Text>
+
+          <HStack mb={5}>
+            <Icon as={item.type['icon']} color='white.500' boxSize={10} />
+            <Heading>{item.type['type']}</Heading>
+          </HStack>
+
+          <HStack>
+            <Text>Voting Period</Text><Spacer /><Text>{convertVotingPeriod(item.type['voting'])}</Text>
+          </HStack>
+          <DashedDivider />
+          <HStack>
+            <Text>Quorum</Text><Spacer /><Text>{item.type['quorum']}%</Text>
+          </HStack>
+          <DashedDivider />
+          <HStack>
+            <Text>Supermajority</Text><Spacer /><Text>{item.type['supermajority']}%</Text>
+          </HStack>
+          <DashedDivider />
+          <HStack>
+            <Text>Shares</Text><Spacer /><Text>{item.type['paused'] == 0 ? "Transferrable" : "Nontransferrable"}</Text>
+          </HStack>
+          <Spacer p={5} />
           <Text>Extras:
+            <UnorderedList>
             {Object.entries(item.type['extensions']).map(([key, value]) => (
-              <Text key={key}>{value['description']}</Text>
+              <ListItem key={key}><Text>{value['description']}</Text></ListItem>
             ))}
+            </UnorderedList>
           </Text>
+
         </LinkOverlay>
       </LinkBox>
     )
   }
 
   return (
-    <VStack>
-        <Text fontSize="xl"><b>Select governance type</b></Text>
+    <VStack id="chooseDaoType">
+        <Heading as="h1"><b>Select governance type:</b></Heading>
         <Grid
           templateColumns={{
             sm: "repeat(1, 1fr)",
-            md: "repeat(2, 1fr)",
-            lg: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
+            lg: "repeat(3, 1fr)",
           }}
+          gap={15}
         >
         {presets.map((item, index) => (
           <DaoBox key={index} id={index} type={item} />
         ))}
-        <LinkBox
-          border="1px solid"
-          p={5}
-          m={2}
-          borderRadius="2xl"
-          _hover={{
-            bgGradient: "linear(to-br, kali.600, kali.700)",
-          }}
-        >
-          <LinkOverlay href="#" onClick={custom}>
-            <Text fontSize="xl"><b>Custom</b></Text>
-          </LinkOverlay>
-        </LinkBox>
         </Grid>
     </VStack>
   );

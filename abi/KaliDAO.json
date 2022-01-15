@@ -6,6 +6,11 @@
 	},
 	{
 		"inputs": [],
+		"name": "InitCallFail",
+		"type": "error"
+	},
+	{
+		"inputs": [],
 		"name": "Initialized",
 		"type": "error"
 	},

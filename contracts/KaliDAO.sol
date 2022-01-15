@@ -36,6 +36,8 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
 
     error SupermajorityBounds();
 
+    error InitCallFail();
+
     error TypeBounds();
 
     error NotProposer();
@@ -160,8 +162,11 @@ contract KaliDAO is KaliDAOtoken, Multicall, NFThelper, ReentrancyGuard {
                 for (uint256 i; i < extensions_.length; i++) {
                     extensions[extensions_[i]] = true;
 
-                    if (extensionsData_[i].length != 0) IKaliDAOextension(extensions_[i])
-                        .setExtension(extensionsData_[i]);
+                    if (extensionsData_[i].length != 0) {
+                        (bool success, ) = extensions_[i].call(extensionsData_[i]);
+
+                        if (!success) revert InitCallFail();
+                    }
                 }
             }
         }

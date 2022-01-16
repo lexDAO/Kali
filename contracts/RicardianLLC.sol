@@ -19,7 +19,9 @@ contract RicardianLLC is ERC721, Multicall {
 
     string public masterOperatingAgreement;
 
-    uint256 private mintFee;
+    uint256 public mintFee;
+
+    mapping(uint256 => string) public tokenDetails;
 
     modifier onlyGovernance {
         if (msg.sender != governance) revert NotGovernance();
@@ -63,6 +65,12 @@ contract RicardianLLC is ERC721, Multicall {
         if (msg.sender != ownerOf[tokenId]) revert NotOwner();
 
         _burn(tokenId);
+    }
+
+    function updateTokenDetails(uint256 tokenId, string calldata details) public virtual {
+        if (msg.sender != ownerOf[tokenId]) revert NotOwner();
+
+        tokenDetails[tokenId] = details;
     }
 
     /*///////////////////////////////////////////////////////////////

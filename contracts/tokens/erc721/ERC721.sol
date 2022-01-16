@@ -151,9 +151,9 @@ abstract contract ERC721 {
 
         if (to == address(0)) revert InvalidRecipient();
         
-        if (msg.sender == from 
-            && msg.sender == getApproved[tokenId]
-            && isApprovedForAll[from][msg.sender]
+        if (msg.sender != from 
+            && msg.sender != getApproved[tokenId]
+            && !isApprovedForAll[from][msg.sender]
         ) revert NotApproved();  
         
         // underflow of the sender's balance is impossible because we check for
@@ -177,7 +177,7 @@ abstract contract ERC721 {
         uint256 tokenId
     ) public virtual {
         transferFrom(from, to, tokenId); 
-        
+
         if (to.code.length != 0 
             && ERC721TokenReceiver(to).onERC721Received(msg.sender, from, tokenId, '') 
             != ERC721TokenReceiver.onERC721Received.selector
@@ -204,9 +204,9 @@ abstract contract ERC721 {
 
     function supportsInterface(bytes4 interfaceId) public pure virtual returns (bool) {
         return
-            interfaceId == 0x80ac58cd || // ERC165 Interface ID for ERC721
-            interfaceId == 0x5b5e139f || // ERC165 Interface ID for ERC165
-            interfaceId == 0x01ffc9a7; // ERC165 Interface ID for ERC721Metadata
+            interfaceId == 0x80ac58cd || // ERC-165 Interface ID for ERC-721
+            interfaceId == 0x5b5e139f || // ERC-165 Interface ID for ERC-165
+            interfaceId == 0x01ffc9a7; // ERC-165 Interface ID for ERC-721 Metadata
     }
 
     /*///////////////////////////////////////////////////////////////

@@ -5,8 +5,8 @@ pragma solidity >=0.8.4;
 import "./tokens/erc721/ERC721.sol";
 import "./utils/Multicall.sol";
 
-/// @notice Ricardian LLC NFT minter.
-contract RicardianLLC is ERC721, Multicall {
+/// @notice KaliCo Ricardian LLC NFT minter.
+contract KaliCoRicardianLLC is ERC721, Multicall {
     error NotGovernance();
 
     error NotFee();

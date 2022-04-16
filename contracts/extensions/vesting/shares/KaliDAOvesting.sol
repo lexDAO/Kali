@@ -6,17 +6,15 @@ import '../../../utils/ReentrancyGuard.sol';
 
 /// @notice Vesting contract for KaliDAO tokens.
 contract KaliDAOvesting is ReentrancyGuard {
-    event ExtensionSet(address indexed dao, address[] accounts, uint256[] amounts, uint256[] startTimes, uint256[] endTimes);
+    event ExtensionSet(address indexed dao, address[] accounts, uint256[] amounts, uint256[] cliffTimes, uint256[] cliffAmounts, uint256[] startTimes, uint256[] endTimes);
 
     event ExtensionCalled(address indexed dao, uint256 vestingId, address indexed member, uint256 indexed amountOut);
 
     error NoArrayParity();
 
+    error InvalidCliffAmount();
+
     error InvalidTimespan();
-
-    error InsufficientAmount();
-
-    error AmountNotSpanMultiple();
 
     error NotDAO();
 
@@ -26,6 +24,8 @@ contract KaliDAOvesting is ReentrancyGuard {
 
     error VestExceeded();
 
+    error VestNotPastCliff();
+
     uint256 vestingCount;
 
     mapping(uint256 => Vesting) public vestings;
@@ -33,19 +33,30 @@ contract KaliDAOvesting is ReentrancyGuard {
     struct Vesting {
         address dao;
         address account;
-        uint128 depositAmount;
-        uint128 withdrawAmount;
-        uint128 rate;
+        uint128 depositAmount; // total shares to vest
+        uint128 cliffAmount;
+        uint128 withdrawAmount; // shares vested and withdrawn 
+        uint128 rate; 
+        uint64 cliffTime;
         uint64 startTime;
         uint64 endTime;
     }
 
     function setExtension(bytes calldata extensionData) public nonReentrant virtual {
-        (address[] memory accounts, uint256[] memory amounts, uint256[] memory startTimes, uint256[] memory endTimes) 
-            = abi.decode(extensionData, (address[], uint256[], uint256[], uint256[]));
+        (
+            address[] memory accounts, 
+            uint256[] memory amounts, 
+            uint256[] memory cliffTimes, 
+            uint256[] memory cliffAmounts, 
+            uint256[] memory startTimes, 
+            uint256[] memory endTimes
+        ) 
+            = abi.decode(extensionData, (address[], uint256[], uint256[], uint256[], uint256[], uint256[]));
         
         if (accounts.length != amounts.length 
-            || amounts.length != startTimes.length 
+            || amounts.length != cliffTimes.length 
+            || cliffTimes.length != cliffAmounts.length 
+            || cliffAmounts.length != startTimes.length 
             || startTimes.length != endTimes.length) 
             revert NoArrayParity();
 
@@ -56,13 +67,19 @@ contract KaliDAOvesting is ReentrancyGuard {
             for (uint256 i; i < accounts.length; i++) {
                 if (startTimes[i] > endTimes[i]) revert InvalidTimespan();
 
-                uint256 timeDifference = endTimes[i] - startTimes[i];
+                if (cliffAmounts[i] > amounts[i]) revert InvalidCliffAmount();
+                
+                uint256 timeDifference;
 
-                if (amounts[i] > timeDifference) revert InsufficientAmount();
-
-                if (amounts[i] % timeDifference != 0) revert AmountNotSpanMultiple();
-
-                uint256 rate = amounts[i] / timeDifference;
+                uint256 rate;
+            
+                if (cliffAmounts[i] == 0) {
+                    timeDifference = endTimes[i] - startTimes[i];
+                    rate = amounts[i] / timeDifference;
+                } else {
+                    timeDifference = endTimes[i] - cliffTimes[i];
+                    rate = (amounts[i] - (amounts[i] * cliffAmounts[i]) / 100) / timeDifference;
+                }
 
                 uint256 vestingId = vestingCount++;
 
@@ -70,15 +87,17 @@ contract KaliDAOvesting is ReentrancyGuard {
                     dao: msg.sender,
                     account: accounts[i],
                     depositAmount: uint128(amounts[i]),
+                    cliffAmount: uint128((amounts[i] * cliffAmounts[i]) / 100),
                     withdrawAmount: 0,
                     rate: uint128(rate),
+                    cliffTime: uint64(cliffTimes[i]),
                     startTime: uint64(startTimes[i]),
                     endTime: uint64(endTimes[i])
                 });
             }
         }
 
-        emit ExtensionSet(msg.sender, accounts, amounts, startTimes, endTimes);
+        emit ExtensionSet(msg.sender, accounts, amounts, cliffAmounts, cliffTimes, startTimes, endTimes);
     }
 
     function callExtension(
@@ -87,6 +106,10 @@ contract KaliDAOvesting is ReentrancyGuard {
         bytes calldata extensionData
     ) public nonReentrant virtual returns (bool mint, uint256 amountOut) {
         uint256 vestingId = abi.decode(extensionData, (uint256));
+
+        uint256 timeDelta;
+
+        uint256 vesteeBalance;
 
         Vesting storage vest = vestings[vestingId];
 
@@ -97,20 +120,30 @@ contract KaliDAOvesting is ReentrancyGuard {
         if (block.timestamp < vest.startTime) revert VestNotStarted();
 
         unchecked {
-            uint256 timeDelta = block.timestamp - vest.startTime;
-
-            uint256 vesteeBalance = (vest.rate * timeDelta) - uint256(vest.withdrawAmount);
-
-            if (amount > vesteeBalance) revert VestExceeded();
+            if (vest.cliffAmount == 0) {
+                timeDelta = block.timestamp - vest.startTime;
+                vesteeBalance = (vest.rate * timeDelta) - uint256(vest.withdrawAmount);
+                vest.withdrawAmount += uint128(vesteeBalance);
+            } else if (block.timestamp > vest.endTime) {
+                vesteeBalance = vest.depositAmount - uint256(vest.withdrawAmount);
+                vest.withdrawAmount += uint128(vesteeBalance);
+            } else if (block.timestamp > vest.cliffTime && vest.cliffAmount > vest.withdrawAmount) { // Cliff vested but not withdrawn
+                timeDelta = block.timestamp - vest.cliffTime;
+                vesteeBalance = vest.cliffAmount + (vest.rate * timeDelta) - uint256(vest.withdrawAmount);
+                vest.withdrawAmount += uint128(vesteeBalance);
+            } else if (block.timestamp > vest.cliffTime && vest.cliffAmount < vest.withdrawAmount) { // Cliff vested and withdrawn
+                timeDelta = block.timestamp - vest.cliffTime;
+                vesteeBalance = vest.cliffAmount + (vest.rate * timeDelta) - uint256(vest.withdrawAmount);
+                vest.withdrawAmount += uint128(vesteeBalance);
+            } else {
+                revert VestNotPastCliff();
+            }
         }
 
-        // this is safe as amount is checked in above reversion
-        unchecked {
-            vest.withdrawAmount += uint128(amount);
-        }
+        if (vest.withdrawAmount > vest.depositAmount) revert VestExceeded();
 
-        (mint, amountOut) = (true, amount);
+        (mint, amountOut) = (true, vesteeBalance);
 
-        emit ExtensionCalled(msg.sender, vestingId, account, amount);
+        emit ExtensionCalled(msg.sender, vestingId, account, amountOut);
     }
 }

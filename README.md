@@ -1,4 +1,7 @@
 # Kali
+
+Now hosted on -> [KALI](https://github.com/kalidao/kali-contracts)
+
 > programmable structures for web3 companies and funds
 
 ```ml
